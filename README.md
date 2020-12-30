@@ -19,8 +19,8 @@ https://github.com/coreybutler/nvm-windows/releases/download/1.1.7/nvm-setup.zip
 nvm install 14.15.3    //安装14.15.3版本的nodejs，也可根据个人需求额外安装其它版本
 nvm list               //查看已经安装的nodejs版本
 nvm on                 //启动nvm
-node                   //启动nodejs，可看到正在使用的版本
 nvm use xx.xx.x        //切换nodejs版本，本项目使用14.15.3版本
+node                   //启动nodejs，可看到正在使用的版本
 ```
 至此nodejs环境已经安装完毕
 
@@ -40,7 +40,11 @@ npm config get registry   //查看当前所使用的源地址
 ```
 
 ## 项目安装
+### 克隆项目到本地,并安装
+进入PowerShell命令行，进入想保存本项目的目录位置，并执行以下命令：
 ```
+git clone https://gitee.com/gosc-cnic/frontend.git
+cd frontend
 npm install
 ```
 
