@@ -78,3 +78,8 @@ npm run lint
 ### 4. 开启VSCode保存时自动格式化代码功能
 强烈推荐在VSCode设置中，开启Format on Save功能。
 开启后，每次代码保存均会调用ESLint进行代码格式化，十分方便。
+
+## DEBUG
+### 1. git pull最新代码后，执行npm run serve显示缺少module或其它问题，导致无法运行
+可能原因：项目仍在初期阶段，package.json中的配置随时可能修改，导致新配置的包需要手动安装
+解决方案：在项目根目录下，执行：npm install 
