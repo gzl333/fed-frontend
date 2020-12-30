@@ -1,4 +1,4 @@
-# frontend
+# GOSC-FrontEnd
 
 ## 简介
 GOSC前端，基于Vue.js 3.0 + TypeScript
@@ -40,7 +40,7 @@ npm config get registry   //查看当前所使用的源地址
 ```
 
 ## 项目安装
-### 克隆项目到本地,并安装
+### 1. 克隆项目到本地,并安装
 进入PowerShell命令行，进入想保存本项目的目录位置，并执行以下命令：
 ```
 git clone https://gitee.com/gosc-cnic/frontend.git
@@ -48,17 +48,33 @@ cd frontend
 npm install
 ```
 
-### 开发模式运行：会对项目进行编译及热更新
+### 2. 开发模式运行：会对项目进行编译及热更新
 ```
 npm run serve
 ```
 
-### 生产模式打包：会对项目进行编译及压缩
+### 3. 生产模式打包：会对项目进行编译及压缩
 ```
 npm run build
 ```
 
-### 代码自动审查修复
+### 4. 代码自动审查修复
 ```
 npm run lint
 ```
+
+## VSCode开发工具搭建
+### 1. 下载并安装VisualStudio Code软件
+
+### 2. 安装ESLint插件
+这里使用其代码审查、格式化功能。
+安装后会请求调用本地项目中ESLint模块的权限，可允许全局权限或者局部权限。
+必须在其设置中开启Format功能。
+
+### 3. 安装Vetur插件
+这里使用其vue3代码高亮及提示功能。
+必须在Vetur的设置中关闭Format功能，否则与ESLint冲突。
+
+### 4. 开启VSCode保存时自动格式化代码功能
+强烈推荐在VSCode设置中，开启Format on Save功能。
+开启后，每次代码保存均会调用ESLint进行代码格式化，十分方便。
