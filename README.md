@@ -16,7 +16,7 @@ https://github.com/coreybutler/nvm-windows/releases/download/1.1.7/nvm-setup.zip
 ```
 3. 进入PowerShell命令行，并执行以下命令：
 ```
-nvm nvm node_mirror https://npm.taobao.org/mirrors/node/    
+nvm node_mirror https://npm.taobao.org/mirrors/node/    
                          //使用taobao的nodejs源，在国内网速较快
 nvm install 14.15.3      //安装14.15.3版本的nodejs，也可根据个人需求额外安装其它版本
 nvm list                 //查看已经安装的nodejs版本
