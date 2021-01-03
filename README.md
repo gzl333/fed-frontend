@@ -89,7 +89,7 @@ C:\Users\<username>\AppData\Local\Programs\Microsoft VS Code
 这里使用其代码审查、代码格式化功能。  
 ESlint安装后，会请求调用本地项目中ESLint模块的权限，点击Allow Everywhere。  
 进入ESLint插件设置页面：
-    1）在ESlint>Format一项中，勾选Format功能：Enables ESlint as a formatter.
+    1）在**ESlint>Format**一项中，**勾选Enables ESlint as a formatter.** 开启ESlint代码格式化功能。
 
 ### 4. 在VSCode中安装Vetur插件，版本在v0.31以上
 这里使用其Vue3代码高亮及提示功能。  
