@@ -65,13 +65,7 @@ npm run lint
 ```
 
 ## VSCode开发工具搭建
-### 1. 卸载之前安装的VSCode软件，并保证以下目录已经删除：
-```
-C:\Users\<username>\.vscode
-C:\Users\<username>\AppData\Roaming\Code
-C:\Users\<username>\AppData\Local\Programs\Microsoft VS Code
-```
-### 2. 下载并安装VSCode软件
+### 1. 下载并安装VSCode软件
 安装过程中，在**选择附加任务**一页，将全部任务勾选，方便开发中使用。    
 如下所示：
 ```
@@ -85,38 +79,12 @@ C:\Users\<username>\AppData\Local\Programs\Microsoft VS Code
          添加到 PATH (重启后生效)
 ```
 
-### 3. 在VSCode中安装ESLint插件，版本在v2.1以上
+### 2. 在VSCode中安装ESLint插件，版本在v2.1以上
 这里使用其代码审查、代码格式化功能。  
 ESlint安装后，会请求调用本地项目中ESLint模块的权限，点击Allow Everywhere。  
-进入ESLint插件设置页面：
-    1）在**ESlint>Format**一项中，**勾选Enables ESlint as a formatter.** 开启ESlint代码格式化功能。
 
-### 4. 在VSCode中安装Vetur插件，版本在v0.31以上
+### 3. 在VSCode中安装Vetur插件，版本在v0.31以上
 这里使用其Vue3代码高亮及提示功能。  
-进入Vetur插件设置页面：  
-    1）在**Vetur>Format**一项中，**取消勾选 Enable/disable the Vetur document formatter.** 否则Format功能会与ESLint冲突。  
-    2）在**Vetur>Experimental:Template Interpolation Service**一项中，**勾选 Enable template interpolation service that offers hover/definition/references in Vue interpolations.** 开启后，Vetur可对template部分中的TS代码进行高亮提示。
-
-### 5. 开启VSCode保存时自动格式化代码功能
-开启Format on Save功能后，每次保存文件均会调用ESLint自动格式化代码，十分方便。  
-进入VSCode设置页面：
-    1）在**User>Text Editor>Formatting**页面中，**勾选Format on Save**功能。  
-
-### 6. 检查VSCode的设置文件  
-打开VSCode的设置文件：
-```
-C:\Users\<username>\AppData\Roaming\Code\User\settings.json
-```
-其内容应如下所示,则表示配置成功：
-```
-{
-    "eslint.format.enable": true,
-    "vetur.format.enable": false,
-    "vetur.experimental.templateInterpolationService": true,
-    "editor.formatOnSave": true
-}
-```
-如果配置多于如上所示，则表示有其它插件的配置信息写入，请自行确保不与上述配置冲突。
 
 ## DEBUG
 ### 1. git pull最新代码后，执行npm run serve显示缺少module或其它问题，导致无法运行
