@@ -1,0 +1,6 @@
+{
+    "eslint.format.enable": true,
+    "vetur.format.enable": false,
+    "vetur.experimental.templateInterpolationService": true,
+    "editor.formatOnSave": true
+}
