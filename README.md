@@ -95,7 +95,7 @@ ESlint安装后，会请求调用本地项目中ESLint模块的权限，点击Al
 这里使用其Vue3代码高亮及提示功能。  
 进入Vetur插件设置页面：  
     1）在**Vetur>Format**一项中，**取消勾选 Enable/disable the Vetur document formatter.** 否则Format功能会与ESLint冲突。  
-    2）在**Vetur>Experimental:Template Interpolation Service**一项中，**勾选 Enable template interpolation service that offers hover/definition/references in Vue interpolations.**开启后，Vetur可对template部分中的TS代码进行高亮提示。
+    2）在**Vetur>Experimental:Template Interpolation Service**一项中，**勾选 Enable template interpolation service that offers hover/definition/references in Vue interpolations.** 开启后，Vetur可对template部分中的TS代码进行高亮提示。
 
 ### 5. 开启VSCode保存时自动格式化代码功能
 开启Format on Save功能后，每次保存文件均会调用ESLint自动格式化代码，十分方便。  
