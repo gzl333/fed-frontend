@@ -15,11 +15,9 @@
     "vetur.validation.template": false, //disable vetur default linting, then vetur use eslint rules from .eslintrc
     "vetur.format.enable": true,
     "vetur.experimental.templateInterpolationService": true, //enable interpolation in template section of .vue file
-    /*vetur uses different formatters for each part of .vue file
-    ts section uses VSCode formatter, ie.eslint formatter.   
-    other sections use vetur formatter */
-    "vetur.format.defaultFormatter.ts": "vscode-typescript", //redirecting to eslint formatter。 "vscode-typescript": For js/ts. The same js/ts formatter for VS Code.
-    "vetur.format.defaultFormatter.js": "vscode-typescript",
+    //vetur uses different formatters for each part of .vue file
+    "vetur.format.defaultFormatter.ts": "none", //disable vetur formatter for ts section of .vue file
+    "vetur.format.defaultFormatter.js": "none",
     "vetur.format.defaultFormatter.html": "prettier",
     "vetur.format.defaultFormatter.css": "prettier",
     ////eslint settings
