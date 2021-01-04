@@ -1,7 +1,7 @@
 <template>
   <div class="home">
-    <img alt="Vue logo" src="../assets/logo.png">
-    <HelloWorld msg="中国科研云联邦"/>
+    <img alt="Vue logo" src="../assets/logo.png" />
+    <HelloWorld msg="中国科技云联邦" />
   </div>
 </template>
 

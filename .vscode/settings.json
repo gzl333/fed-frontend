@@ -1,36 +1,30 @@
 {
-    "vetur.format.enable": true,
-    "vetur.experimental.templateInterpolationService": true,
-    "vetur.format.defaultFormatter.ts": "none",
-    "vetur.format.defaultFormatter.js": "none",
-    "vetur.format.defaultFormatter.html": "prettier",
-    // "vetur.format.defaultFormatterOptions": {
-    //     "js-beautify-html": {
-    //         "wrap_attributes": "auto"
-    //     },
-    //     "prettier": {
-    //         "singleQuote": true,
-    //         "semi": true,
-    //         "tabWidth": 4
-    //     },
-    //     "prettyhtml": {
-    //         "singleQuote": false,
-    //         "wrapAttributes": false,
-    //         "sortAttributes": false
-    //     }
-    // },
-    "eslint.validate": [
-        "typescript",
-    ],
-    "eslint.format.enable": true,
-    "editor.formatOnSave": true,
-    "editor.codeActionsOnSave": {
+    //////these are vscode roaming settings. all settings here will shadow vscode local settings.//////
+    ////vscode settings
+    "editor.formatOnSave": true, //format on save
+    "editor.codeActionsOnSave": { //lint and fix on save
         "source.fixAll.eslint": true
     },
     "[typescript]": {
-        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint" //.ts files use eslint as formatter
     },
     "[vue]": {
-        "editor.defaultFormatter": "octref.vetur"
-    }
+        "editor.defaultFormatter": "octref.vetur" //.vue files use vetur as formatter
+    },
+    ////vetur settings
+    "vetur.validation.template": false, //disable vetur default linting, then vetur use eslint rules from .eslintrc
+    "vetur.format.enable": true,
+    "vetur.experimental.templateInterpolationService": true, //enable interpolation in template section of .vue file
+    /*vetur uses different formatters for each part of .vue file
+    ts section uses VSCode formatter, ie.eslint formatter.   
+    other sections use vetur formatter */
+    "vetur.format.defaultFormatter.ts": "vscode-typescript", //redirecting to eslint formatter。 "vscode-typescript": For js/ts. The same js/ts formatter for VS Code.
+    "vetur.format.defaultFormatter.js": "vscode-typescript",
+    "vetur.format.defaultFormatter.html": "prettier",
+    "vetur.format.defaultFormatter.css": "prettier",
+    ////eslint settings
+    "eslint.validate": [
+        "typescript", //tell eslint to lint .ts files
+    ],
+    "eslint.format.enable": true, //eslinte formatter must be enabled for .ts files and ts section of .vue files.
 }
