@@ -15,11 +15,11 @@
         "editor.defaultFormatter": "octref.vetur" //.vue files use vetur as formatter
     },
     ////vetur settings
-    "vetur.format.enable": true, //must enable
-    "vetur.validation.template": false, //disable vetur default linting, then vetur use eslint rules from .eslintrc
+    "vetur.format.enable": true, //must be enabled
+    "vetur.validation.template": false, //disable vetur default template linter, then vetur uses eslint rules from .eslintrc to lint template section in .vue files
     "vetur.experimental.templateInterpolationService": true, //enable interpolation in template section of .vue file
     //vetur uses different formatters for different languages
-    "vetur.format.defaultFormatter.ts": "none",
+    "vetur.format.defaultFormatter.ts": "none", //do not use "vscode-typescript" which is a built-in formatter other than the designated formatter in editor.defaultFormatter item
     "vetur.format.defaultFormatter.js": "none",
     "vetur.format.defaultFormatter.html": "prettier",
     "vetur.format.defaultFormatter.css": "prettier",
