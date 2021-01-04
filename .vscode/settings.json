@@ -1,6 +1,24 @@
 {
-    "vetur.format.enable": false,
+    "vetur.format.enable": true,
     "vetur.experimental.templateInterpolationService": true,
+    "vetur.format.defaultFormatter.ts": "none",
+    "vetur.format.defaultFormatter.js": "none",
+    "vetur.format.defaultFormatter.html": "prettier",
+    // "vetur.format.defaultFormatterOptions": {
+    //     "js-beautify-html": {
+    //         "wrap_attributes": "auto"
+    //     },
+    //     "prettier": {
+    //         "singleQuote": true,
+    //         "semi": true,
+    //         "tabWidth": 4
+    //     },
+    //     "prettyhtml": {
+    //         "singleQuote": false,
+    //         "wrapAttributes": false,
+    //         "sortAttributes": false
+    //     }
+    // },
     "eslint.validate": [
         "typescript",
     ],
@@ -11,5 +29,8 @@
     },
     "[typescript]": {
         "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[vue]": {
+        "editor.defaultFormatter": "octref.vetur"
     }
 }
