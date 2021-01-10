@@ -1,18 +1,18 @@
 <template>
-  <div>this is $TM_FILENAME_BASE</div>
+  <div class="bg-dark footer-content">©CNIC 中国科学院计算机网络中心 2021</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: '$TM_FILENAME_BASE',
+  name: 'Footer',
   components: {
   },
   props: {
   },
   setup () {
-    return{
+    return {
     }
   },
   data () {
@@ -25,4 +25,12 @@ export default defineComponent({
 </script>
 
 <style>
+.footer-content {
+  min-height: 36px;
+  font-family: "Microsoft YaHei";
+  color: #ffffff;
+}
+.bg-dark {
+  background: #040c20;
+}
 </style>

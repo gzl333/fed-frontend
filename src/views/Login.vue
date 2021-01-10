@@ -1,18 +1,18 @@
 <template>
-  <div>this is $TM_FILENAME_BASE</div>
+  <div>this is Login</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: '$TM_FILENAME_BASE',
+  name: 'Login',
   components: {
   },
   props: {
   },
   setup () {
-    return{
+    return {
     }
   },
   data () {
