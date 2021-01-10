@@ -1,31 +1,53 @@
 {
     //////these are vscode roaming settings. all settings here will shadow vscode local settings.//////
-    ////vscode settings
+    ////vscode////
+    "files.autoSave": "off",
     "editor.formatOnSave": true, //format on save
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true //lint and fix on save
     },
+    "[html]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[css]": {
+        "editor.defaultFormatter": "octref.vetur"
+    },
     "[javascript]": {
-        "editor.defaultFormatter": "dbaeumer.vscode-eslint" //.js files use eslint as formatter
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[javascriptreact]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
     },
     "[typescript]": {
-        "editor.defaultFormatter": "dbaeumer.vscode-eslint" //.ts files use eslint as formatter
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
+    },
+    "[typescriptreact]": {
+        "editor.defaultFormatter": "dbaeumer.vscode-eslint"
     },
     "[vue]": {
         "editor.defaultFormatter": "octref.vetur" //.vue files use vetur as formatter
     },
-    ////vetur settings
-    "vetur.format.enable": true, //must be enabled
-    "vetur.validation.template": false, //disable vetur default template linter, then vetur uses eslint rules from .eslintrc to lint template section in .vue files
-    "vetur.experimental.templateInterpolationService": true, //enable interpolation in template section of .vue file
-    //vetur uses different formatters for different languages
-    "vetur.format.defaultFormatter.ts": "none", //do not use "vscode-typescript" which is a built-in formatter other than the designated formatter in editor.defaultFormatter item
-    "vetur.format.defaultFormatter.js": "none",
-    "vetur.format.defaultFormatter.html": "prettier",
-    "vetur.format.defaultFormatter.css": "prettier",
-    ////eslint settings
+    ////eslint//// to format and lint all but styles
     "eslint.format.enable": true,
     "eslint.validate": [
         "typescript", //tell eslint to lint typescript
+        "typescriptreact",
+        "javascript",
+        "javascriptreact",
+        "html",
+        "vue",
     ],
+    ////vetur//// only to format and lint styles
+    //vetur linter
+    "vetur.validation.template": false, //disable vetur template linter, let eslint lint template section of .vue files
+    "vetur.validation.templateProps": true, //Validate props usage in <template> region. 
+    "vetur.validation.interpolation": false, //?not sure yet
+    "vetur.validation.script": false, //disable vetur script linter, let eslint lint script section of .vue files
+    "vetur.validation.style": true, //let vetur lint style section of .vue files
+    "vetur.experimental.templateInterpolationService": true, //enable interpolation in template section of .vue file
+    //vetur formatter, which uses different formatters for different languages
+    "vetur.format.enable": true, //must be enabled
+    "vetur.format.defaultFormatter.html": "prettier", //turn this to "none" if uses "plugin:vue/vue3-recommended" in .eslintrc.js, or may conflict
+    "vetur.format.defaultFormatter.js": "none",
+    "vetur.format.defaultFormatter.ts": "none", //do not use "vscode-typescript" which is a built-in formatter other than the designated formatter in editor.defaultFormatter item
 }
