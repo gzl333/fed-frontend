@@ -3,7 +3,7 @@
     <el-col :span="8">
       <div class="grid-content">
         <img src="@/assets/logo.png" class="logo" />
-        GOSC 中国科技云联邦
+        <span>GOSC 中国科技云联邦</span>
       </div>
     </el-col>
     <el-col :span="8">
@@ -23,7 +23,11 @@
           <el-menu-item index="1"> 首页 </el-menu-item>
           <el-menu-item index="2"> 资源&服务 </el-menu-item>
           <el-menu-item index="3"> 资源提供者 </el-menu-item>
-          <el-button plain> English </el-button>
+
+          <el-button>登 录</el-button>
+          <el-button type="primary">注 册</el-button>
+
+          <el-button type="text"> English </el-button>
         </el-menu>
         <el-menu
           v-else
@@ -99,8 +103,10 @@ import { defineComponent, PropType } from 'vue'
 
 export interface UserProps {
   isLogin: boolean;
-  name?: string;
   id?: number;
+  role?: 'user'|'manager'|'provider'|'vo';
+  name?: string;
+
 }
 
 export default defineComponent({
@@ -145,7 +151,7 @@ export default defineComponent({
   color: #ffffff;
 }
 .logo {
-  width: 30px;
+  width: 50px;
 }
 .el-dropdown-link {
   color: #ffffff;

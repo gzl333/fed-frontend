@@ -1,9 +1,9 @@
 <template>
   <el-container>
     <el-aside width="200px" style="height: 100%">
-      <global-nav currentItem="/main" />
+      <global-nav currentItem="/statistics" />
     </el-aside>
-    <el-main>Main</el-main>
+    <el-main>Statistics</el-main>
   </el-container>
 </template>
 
@@ -12,7 +12,7 @@ import { defineComponent } from 'vue'
 import GlobalNav from '@/components/GlobalNav.vue'
 
 export default defineComponent({
-  name: 'Main',
+  name: 'Statistics',
   components: {
     GlobalNav
   },

@@ -14,12 +14,6 @@ export default defineComponent({
   setup () {
     return{
     }
-  },
-  data () {
-    return {
-    }
-  },
-  methods: {
   }
 })
 </script>

@@ -17,7 +17,9 @@ import GlobalHeader, { UserProps } from '@/components/GlobalHeader.vue'
 
 const currentUser: UserProps = {
   isLogin: false,
-  name: 'SampleUser'
+  name: 'SampleUser',
+  id: 1,
+  role: 'user'
 }
 
 export default defineComponent({
@@ -39,23 +41,23 @@ body {
   padding: 0;
 }
 
-.el-header,
-.el-footer {
+.el-header {
   background-color: #b3c0d1;
   color: #333;
   text-align: center;
-  line-height: 60px;
 }
 
 .el-main {
+  margin-top: 0px;
   background-color: #e9eef3;
   color: #333;
   text-align: center;
   line-height: 160px;
   min-height: 100%;
+  overflow: hidden;
 }
 
-body > .el-container {
-  margin-bottom: 40px;
+.el-container {
+  background-color: #e9eef3;
 }
 </style>
