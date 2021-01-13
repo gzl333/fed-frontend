@@ -1,14 +1,12 @@
 <template>
-  <div class="common-layout">
-    <el-container>
-      <el-header style="padding: 0">
-        <global-header :user="currentUser" />
-      </el-header>
-      <el-main style="padding: 0">
-        <router-view />
-      </el-main>
-    </el-container>
-  </div>
+  <el-container>
+    <el-header style="padding: 0">
+      <global-header :user="currentUser" />
+    </el-header>
+    <el-main style="padding: 0">
+      <router-view />
+    </el-main>
+  </el-container>
 </template>
 
 <script lang="ts">
@@ -16,7 +14,7 @@ import { defineComponent } from 'vue'
 import GlobalHeader, { UserProps } from '@/components/GlobalHeader.vue'
 
 const currentUser: UserProps = {
-  isLogin: false,
+  isLogin: true,
   name: 'SampleUser',
   id: 1,
   role: 'user'
@@ -36,9 +34,16 @@ export default defineComponent({
 </script>
 
 <style>
-body {
+body,
+html {
   margin: 0;
   padding: 0;
+  height: 100%;
+}
+#app {
+  margin: 0;
+  padding: 0;
+  height: 100%;
 }
 
 .el-header {

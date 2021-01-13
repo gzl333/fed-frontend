@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-aside width="200px" style="height: 100%">
-      <global-nav currentItem="/data" />
+      <global-nav currentView="/data" />
     </el-aside>
     <el-main>Data</el-main>
   </el-container>

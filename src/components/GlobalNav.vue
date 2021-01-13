@@ -1,8 +1,8 @@
 <template>
   <el-menu
     router="true"
-    :default-active="currentItem"
-    class="el-menu-vertical-demo"
+    :default-active="currentView"
+    class="el-menu-vertical"
     @open="handleOpen"
     @close="handleClose"
     background-color="#545c64"
@@ -64,7 +64,7 @@ export default defineComponent({
   components: {
   },
   props: {
-    currentItem: {
+    currentView: {
       type: String,
       required: true
     }
@@ -77,4 +77,7 @@ export default defineComponent({
 </script>
 
 <style>
+.el-menu-vertical {
+  /* min-height应该用一个计算值 */
+}
 </style>

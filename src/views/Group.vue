@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-aside width="200px" style="height: 100%">
-      <global-nav currentItem="/group" />
+      <global-nav currentView="/group" />
     </el-aside>
     <el-main>Group</el-main>
   </el-container>

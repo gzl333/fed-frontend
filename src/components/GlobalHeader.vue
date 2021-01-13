@@ -3,7 +3,7 @@
     <el-col :span="8">
       <div class="grid-content">
         <img src="@/assets/logo.png" class="logo" />
-        <span>GOSC 中国科技云联邦</span>
+        <span>中国科技云联邦</span>
       </div>
     </el-col>
     <el-col :span="8">
@@ -151,7 +151,7 @@ export default defineComponent({
   color: #ffffff;
 }
 .logo {
-  width: 50px;
+  height: 55px;
 }
 .el-dropdown-link {
   color: #ffffff;
