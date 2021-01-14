@@ -15,6 +15,7 @@ module.exports = {
   rules: {
     'no-console': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
     'no-debugger': process.env.NODE_ENV === 'production' ? 'warn' : 'off',
-    'vue/comment-directive':'off'  //get rid of the linting error at the very last line of index.html
+    'vue/comment-directive':'off',  //get rid of the linting error at the very last line of index.html
+    // "vue/no-unused-components": "off"
   }
 }

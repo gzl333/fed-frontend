@@ -8,11 +8,13 @@
         <global-breadcrum :currentPosition="['在用资源', '云服务器']" />
       </div>
       <div>
-        <el-tabs type="card">
-          <el-tab-pane label="用户管理">用户管理</el-tab-pane>
-          <el-tab-pane label="配置管理">配置管理</el-tab-pane>
-          <el-tab-pane label="角色管理">角色管理</el-tab-pane>
-          <el-tab-pane label="定时任务补偿">定时任务补偿</el-tab-pane>
+        <el-tabs type="border-card" value="云服务器">
+          <el-tab-pane label="云服务器">
+            <vm-manager />
+          </el-tab-pane>
+          <el-tab-pane label="云硬盘">云硬盘</el-tab-pane>
+          <el-tab-pane label="对象存储">对象存储</el-tab-pane>
+          <el-tab-pane label="资源智能发现">资源智能发现</el-tab-pane>
         </el-tabs>
       </div>
     </el-main>
@@ -23,12 +25,14 @@
 import { defineComponent } from 'vue'
 import GlobalNav from '@/components/GlobalNav.vue'
 import GlobalBreadcrum from '@/components/GlobalBreadcrum.vue'
+import VmManager from '@/components/Usage/VmManager.vue'
 
 export default defineComponent({
   name: 'Usage',
   components: {
     GlobalNav,
-    GlobalBreadcrum
+    GlobalBreadcrum,
+    VmManager
   },
   props: {
   },
@@ -48,5 +52,15 @@ export default defineComponent({
 .breadcrum {
   padding: 15px;
   background-color: #f5f5f5;
+}
+.el-tabs__nav {
+  height: 40px;
+  line-height: 40px;
+}
+.el-tabs__item {
+  min-width: 200px;
+}
+.el-main {
+  line-height: 100px;
 }
 </style>

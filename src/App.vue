@@ -47,6 +47,7 @@ html {
 }
 
 .el-header {
+  padding: 0;
   background-color: #b3c0d1;
   color: #333;
   text-align: center;
