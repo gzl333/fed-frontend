@@ -2,8 +2,7 @@
   <el-row type="flex" class="bg-dark">
     <el-col :span="8">
       <div class="grid-content">
-        <img src="@/assets/logo.png" class="logo" />
-        <span>中国科技云联邦</span>
+        <img src="@/assets/banner.png" class="logo" />
       </div>
     </el-col>
     <el-col :span="8">
@@ -143,6 +142,8 @@ export default defineComponent({
   background: #040c20;
 }
 .grid-content {
+  padding-top: 10.5px;
+  height: 50.5px;
   margin-left: 30px;
   float: left;
   border-radius: 4px;
@@ -151,7 +152,10 @@ export default defineComponent({
   color: #ffffff;
 }
 .logo {
-  height: 55px;
+  height: 40px;
+}
+.el-menu {
+  top: -10px;
 }
 .el-dropdown-link {
   color: #ffffff;
