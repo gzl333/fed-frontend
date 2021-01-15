@@ -37,7 +37,7 @@
           @select="handleSelect"
         >
           <el-menu-item index="1">
-            <el-dropdown>
+            <el-dropdown trigger="click">
               <span class="el-dropdown-link">
                 帮助<i class="el-icon-arrow-down el-icon--right"></i>
               </span>
@@ -55,7 +55,7 @@
           </el-menu-item>
 
           <el-menu-item index="2">
-            <el-dropdown>
+            <el-dropdown trigger="click">
               <span class="el-dropdown-link">
                 消息通知
                 <i class="el-icon-arrow-down el-icon--right"></i>
@@ -74,7 +74,7 @@
           </el-menu-item>
 
           <el-menu-item index="3">
-            <el-dropdown>
+            <el-dropdown trigger="click">
               <span class="el-dropdown-link el-icon-user-solid">
                 {{ user.name }}的信息
                 <i class="el-icon-arrow-down el-icon--right"></i>

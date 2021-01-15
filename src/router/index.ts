@@ -5,7 +5,10 @@ const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     name: 'Home',
-    component: Home
+    component: Home,
+    meta: {
+      title: '中国科技云联邦'
+    }
   },
   {
     path: '/login',
@@ -13,17 +16,26 @@ const routes: Array<RouteRecordRaw> = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "Login" */ '@/views/Login.vue')
+    component: () => import(/* webpackChunkName: "Login" */ '@/views/Login.vue'),
+    meta: {
+      title: '中国科技云联邦 - 注册'
+    }
   },
   {
     path: '/main',
     name: 'Main',
-    component: () => import(/* webpackChunkName: "Main" */ '@/views/Main.vue')
+    component: () => import(/* webpackChunkName: "Main" */ '@/views/Main.vue'),
+    meta: {
+      title: '中国科技云联邦 - 首页'
+    }
   },
   {
     path: '/usage',
     name: 'Usage',
-    component: () => import(/* webpackChunkName: "Usage" */ '@/views/Usage.vue')
+    component: () => import(/* webpackChunkName: "Usage" */ '@/views/Usage.vue'),
+    meta: {
+      title: '中国科技云联邦 - 在用资源'
+    }
   },
   {
     path: '/group',
@@ -81,6 +93,14 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to, from, next) => {
+  /* 路由发生变化修改页面title */
+  if (to.meta.title) {
+    document.title = to.meta.title
+  }
+  next()
 })
 
 export default router

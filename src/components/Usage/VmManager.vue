@@ -5,13 +5,15 @@
         机构树
       </el-button>
     </el-col>
-    <el-col :span="16" class="searchbar"> <global-search-bar /></el-col>
+    <el-col :span="16" class="searchbar"> <search-bar /></el-col>
     <el-col :span="4">
       <el-button type="success" icon="el-icon-plus"> 创建云主机 </el-button>
     </el-col>
   </el-row>
 
-  <div v-if="currentShow === 'vm'">showing vm</div>
+  <div v-if="currentShow === 'vmlist'">
+    <vm-list />
+  </div>
   <div v-if="currentShow === 'orgTree'">showing orgTree</div>
   <div v-if="currentShow === 'advSearch'">showing adv search</div>
   <div v-if="currentShow === 'create'">showing create vm</div>
@@ -19,17 +21,19 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import GlobalSearchBar from '@/components/GlobalSearchBar.vue'
+import SearchBar from '@/components/Usage/SearchBar.vue'
+import VmList from '@/components/Usage/VmList.vue'
 
 export default defineComponent({
   name: 'VMManager',
   components: {
-    GlobalSearchBar
+    SearchBar,
+    VmList
   },
   props: {
   },
   setup () {
-    const currentShow = 'vm'
+    const currentShow = 'vmlist'
     return {
       currentShow
     }

@@ -8,12 +8,12 @@
             class="carousel-content"
             :style="{ backgroundImage: `url(${item})` }"
           >
-            <img
+            <!-- <img
               style="height: 250px; margin-top: 100px; margin-bottom: -100px"
               src="@/assets/logo.png"
               alt=""
-            />
-            <div class="carousel-text">中国科技云联邦</div>
+            /> -->
+            <!-- <div class="carousel-text">中国科技云联邦</div> -->
           </div>
         </el-carousel-item>
       </el-carousel>
