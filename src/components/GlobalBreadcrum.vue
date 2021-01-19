@@ -2,7 +2,7 @@
   <el-breadcrumb separator-class="el-icon-arrow-right">
     <el-breadcrumb-item>当前位置：首页</el-breadcrumb-item>
     <el-breadcrumb-item
-      v-for="(position, index) in currentPosition"
+      v-for="(position, index) in currentPosition.breadcrum"
       :key="index"
     >
       {{ position }}
@@ -11,20 +11,21 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useStore } from 'vuex'
+import { GlobalDataProps } from '@/store/index.ts'
 
 export default defineComponent({
   name: 'GlobalBreadcrum',
   components: {
   },
   props: {
-    currentPosition: {
-      type: Array as PropType<string[]>,
-      require: true
-    }
   },
   setup () {
+    const store = useStore<GlobalDataProps>()
+    const currentPosition = computed(() => store.state.position)
     return {
+      currentPosition
     }
   }
 })

@@ -98,35 +98,22 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType } from 'vue'
-
-export interface UserProps {
-  isLogin: boolean;
-  id?: number;
-  role?: 'user'|'manager'|'provider'|'vo';
-  name?: string;
-
-}
+import { computed, defineComponent } from 'vue'
+import { useStore } from 'vuex'
+import { GlobalDataProps } from '@/store/index.ts'
 
 export default defineComponent({
   name: 'Header',
   components: {
   },
   props: {
-    user: {
-      type: Object as PropType<UserProps>,
-      require: true
-    }
   },
   setup () {
+    const store = useStore<GlobalDataProps>()
+    const user = computed(() => store.state.user)
     return {
+      user
     }
-  },
-  data () {
-    return {
-    }
-  },
-  methods: {
   }
 })
 </script>

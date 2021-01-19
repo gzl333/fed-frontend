@@ -53,6 +53,10 @@
       <i class="el-icon-setting"></i>
       <template #title>已供资源</template>
     </el-menu-item>
+    <el-menu-item index="/users">
+      <i class="el-icon-setting"></i>
+      <template #title>用户管理</template>
+    </el-menu-item>
   </el-menu>
 </template>
 

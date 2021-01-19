@@ -5,10 +5,14 @@
     </el-aside>
     <el-main class="main">
       <div class="breadcrum">
-        <global-breadcrum :currentPosition="['在用资源', '云服务器']" />
+        <global-breadcrum />
       </div>
       <div>
-        <el-tabs type="border-card" value="云服务器">
+        <el-tabs
+          @tab-click="gotoSubview('vmlist')"
+          type="border-card"
+          value="云服务器"
+        >
           <el-tab-pane label="云服务器">
             <vm-manager />
           </el-tab-pane>
@@ -23,6 +27,9 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
+import { useStore } from 'vuex'
+import { GlobalDataProps } from '@/store/index.ts'
+
 import GlobalNav from '@/components/GlobalNav.vue'
 import GlobalBreadcrum from '@/components/GlobalBreadcrum.vue'
 import VmManager from '@/components/Usage/VmManager.vue'
@@ -37,7 +44,10 @@ export default defineComponent({
   props: {
   },
   setup () {
+    const store = useStore<GlobalDataProps>()
+    const gotoSubview = (subView: string) => store.commit('gotoSubview', subView)
     return {
+      gotoSubview
     }
   }
 })

@@ -1,7 +1,7 @@
 <template>
   <el-container>
     <el-header style="padding: 0">
-      <global-header :user="currentUser" />
+      <global-header />
     </el-header>
     <el-main style="padding: 0">
       <router-view />
@@ -11,14 +11,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import GlobalHeader, { UserProps } from '@/components/GlobalHeader.vue'
-
-const currentUser: UserProps = {
-  isLogin: true,
-  name: 'SampleUser',
-  id: 1,
-  role: 'user'
-}
+import GlobalHeader from '@/components/GlobalHeader.vue'
 
 export default defineComponent({
   name: 'App',
@@ -27,7 +20,6 @@ export default defineComponent({
   },
   setup () {
     return {
-      currentUser
     }
   }
 })
