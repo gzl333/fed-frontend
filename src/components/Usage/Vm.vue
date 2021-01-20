@@ -24,7 +24,7 @@
         </el-button>
       </router-link>
       <router-link :to="{ name: 'vmcreate' }">
-        <el-button type="success" icon="el-icon-plus"> 创建云主机 </el-button>
+        <el-button type="success" icon="el-icon-plus"> 创建云服务器 </el-button>
       </router-link>
     </el-col>
   </el-row>

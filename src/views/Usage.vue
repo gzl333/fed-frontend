@@ -44,13 +44,7 @@ export default defineComponent({
   padding: 15px;
   background-color: #f5f5f5;
 }
-.el-tabs__nav {
-  height: 40px;
-  line-height: 40px;
-}
-.el-tabs__item {
-  min-width: 200px;
-}
+
 .el-main {
   line-height: 100px;
 }

@@ -29,6 +29,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "Main" */ '@/views/Main.vue'),
     meta: {
       title: '首页-中国科技云联邦',
+      breadcrum: [],
       requireLogin: true
     }
   },
