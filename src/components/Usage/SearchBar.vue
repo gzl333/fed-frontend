@@ -10,14 +10,12 @@
           <el-button icon="el-icon-search"></el-button>
         </template>
       </el-input>
-      <el-button
-        @click="gotoSubview('vmadvsearch')"
-        icon="el-icon-arrow-down"
-        type="primary"
-        plain
-      >
-        云服务器高级搜索
-      </el-button>
+      <router-link :to="{ name: 'vmsearch' }">
+        <el-button icon="el-icon-arrow-down" type="primary" plain>
+          高级搜索
+        </el-button>
+      </router-link>
+
       for dev: {{ input }}
     </div>
     <div v-if="caller === 'disk'">
@@ -30,14 +28,11 @@
           <el-button icon="el-icon-search"></el-button>
         </template>
       </el-input>
-      <el-button
-        @click="gotoSubview('vmadvsearch')"
-        icon="el-icon-arrow-down"
-        type="primary"
-        plain
-      >
-        云硬盘高级搜索
-      </el-button>
+      <router-link :to="{ name: 'disksearch' }">
+        <el-button icon="el-icon-arrow-down" type="primary" plain>
+          云硬盘高级搜索
+        </el-button>
+      </router-link>
       for dev: {{ input }}
     </div>
   </div>
@@ -46,7 +41,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
-import { GlobalDataProps, Subview } from '@/store/index.ts'
+import { GlobalDataProps } from '@/store/index.ts'
 
 export default defineComponent({
   name: 'GlobalSearchBar',
@@ -60,10 +55,8 @@ export default defineComponent({
   },
   setup () {
     const store = useStore<GlobalDataProps>()
-    const gotoSubview = (subview: Subview) => store.commit('gotoSubview', subview)
     return {
-      input: ref(''),
-      gotoSubview
+      input: ref('')
     }
   }
 })

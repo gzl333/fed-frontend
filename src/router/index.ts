@@ -5,7 +5,7 @@ import store from '@/store'
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
-    name: 'Home',
+    name: 'home',
     component: Home,
     meta: {
       title: '中国科技云联邦'
@@ -13,7 +13,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/login',
-    name: 'Login',
+    name: 'login',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
@@ -25,7 +25,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/main',
-    name: 'Main',
+    name: 'main',
     component: () => import(/* webpackChunkName: "Main" */ '@/views/Main.vue'),
     meta: {
       title: '首页-中国科技云联邦',
@@ -34,16 +34,108 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/usage',
-    name: 'Usage',
+    name: 'usage',
     component: () => import(/* webpackChunkName: "Usage" */ '@/views/Usage.vue'),
+    redirect: '/usage/vm/list',
     meta: {
       title: '在用资源-中国科技云联邦',
       requireLogin: true
-    }
+    },
+    children: [
+      {
+        path: '',
+        name: 'usage/',
+        component: () => import(/* webpackChunkName: "Usage/" */ '@/components/Usage/Vm.vue'),
+        redirect: '/usage/vm/list',
+        meta: {
+          requireLogin: true
+        }
+      },
+      {
+        path: 'vm',
+        name: 'vm',
+        component: () => import(/* webpackChunkName: "Usage/vm" */ '@/components/Usage/Vm.vue'),
+        redirect: '/usage/vm/list',
+        meta: {
+          requireLogin: true
+        },
+        children: [
+          {
+            path: '',
+            name: 'vm/',
+            component: () => import(/* webpackChunkName: "Usage/vm/" */ '@/components/Usage/VmList.vue'),
+            redirect: '/usage/vm/list',
+            meta: {
+              requireLogin: true
+            }
+          },
+          {
+            path: 'list',
+            name: 'vmlist',
+            component: () => import(/* webpackChunkName: "Usage/vm/list" */ '@/components/Usage/VmList.vue'),
+            meta: {
+              breadcrum: ['在用资源', '云服务器', '云服务器列表'],
+              requireLogin: true
+            }
+          },
+          {
+            path: 'create',
+            name: 'vmcreate',
+            component: () => import(/* webpackChunkName: "Usage/vm/create" */ '@/components/Usage/VmCreate.vue'),
+            meta: {
+              breadcrum: ['在用资源', '云服务器', '创建云服务器'],
+              requireLogin: true
+            }
+          },
+          {
+            path: 'search',
+            name: 'vmsearch',
+            component: () => import(/* webpackChunkName: "Usage/vm/search" */ '@/components/Usage/VmSearch.vue'),
+            meta: {
+              breadcrum: ['在用资源', '云服务器', '云服务器搜索'],
+              requireLogin: true
+            }
+          },
+          {
+            path: 'org',
+            name: 'vmorgtree',
+            component: () => import(/* webpackChunkName: "Usage/vm/org" */ '@/components/Usage/OrgTree.vue'),
+            meta: {
+              breadcrum: ['在用资源', '云服务器', '机构树'],
+              requireLogin: true
+            }
+          }
+        ]
+      },
+      {
+        path: 'disk',
+        name: 'disk',
+        component: () => import(/* webpackChunkName: "Usage/disk" */ '@/components/Usage/Disk.vue'),
+        meta: {
+          requireLogin: true
+        }
+      },
+      {
+        path: 'obs',
+        name: 'obs',
+        component: () => import(/* webpackChunkName: "Usage/obs" */ '@/components/Usage/Obs.vue'),
+        meta: {
+          requireLogin: true
+        }
+      },
+      {
+        path: 'discovery',
+        name: 'discovery',
+        component: () => import(/* webpackChunkName: "Usage/discovery" */ '@/components/Usage/Discovery.vue'),
+        meta: {
+          requireLogin: true
+        }
+      }
+    ]
   },
   {
     path: '/group',
-    name: 'Group',
+    name: 'group',
     component: () => import(/* webpackChunkName: "Group" */ '@/views/Group.vue'),
     meta: {
       title: '我的小组-中国科技云联邦',
@@ -52,7 +144,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/bill',
-    name: 'Bill',
+    name: 'bill',
     component: () => import(/* webpackChunkName: "Bill" */ '@/views/Bill.vue'),
     meta: {
       title: '计费中心-中国科技云联邦',
@@ -61,7 +153,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/ticket',
-    name: 'Ticket',
+    name: 'ticket',
     component: () => import(/* webpackChunkName: "Ticket" */ '@/views/Ticket.vue'),
     meta: {
       title: '工单中心-中国科技云联邦',
@@ -70,7 +162,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/manage',
-    name: 'Manage',
+    name: 'manage',
     component: () => import(/* webpackChunkName: "Manage" */ '@/views/Manage.vue'),
     meta: {
       title: '资源管理-中国科技云联邦',
@@ -79,7 +171,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/monitor',
-    name: 'Monitor',
+    name: 'monitor',
     component: () => import(/* webpackChunkName: "Monitor" */ '@/views/Monitor.vue'),
     meta: {
       title: '监测中心-中国科技云联邦',
@@ -88,7 +180,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/users',
-    name: 'Users',
+    name: 'users',
     component: () => import(/* webpackChunkName: "Users" */ '@/views/Users.vue'),
     meta: {
       title: '用户管理-中国科技云联邦',
@@ -97,7 +189,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/data',
-    name: 'Data',
+    name: 'data',
     component: () => import(/* webpackChunkName: "Data" */ '@/views/Data.vue'),
     meta: {
       title: '数据中心-中国科技云联邦',
@@ -106,7 +198,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/maintenance',
-    name: 'Maintenance',
+    name: 'maintenance',
     component: () => import(/* webpackChunkName: "Maintenance" */ '@/views/Maintenance.vue'),
     meta: {
       title: '联邦维护-中国科技云联邦',
@@ -115,7 +207,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/statistics',
-    name: 'Statistics',
+    name: 'statistics',
     component: () => import(/* webpackChunkName: "Statistics" */ '@/views/Statistics.vue'),
     meta: {
       title: '统计报表-中国科技云联邦',
@@ -124,7 +216,7 @@ const routes: Array<RouteRecordRaw> = [
   },
   {
     path: '/provide',
-    name: 'Provide',
+    name: 'provide',
     component: () => import(/* webpackChunkName: "Provide" */ '@/views/Provide.vue'),
     meta: {
       title: '已供资源-中国科技云联邦',
@@ -142,12 +234,16 @@ const router = createRouter({
 router.beforeEach((to, from, next) => {
   // if not logged in yet, jump to login page
   if (to.meta.requireLogin && !store.state.user.isLogin) {
-    next({ name: 'Login' })
+    next({ name: 'login' })
   }
   // if logged in, jump to the page before login or Home view
   if (to.meta.redirectLogged && store.state.user.isLogin) {
     const routername = from.name
-    next({ name: routername || 'Main' })
+    next({ name: routername || 'main' })
+  }
+  // update breadcrum
+  if (to.meta.breadcrum) {
+    store.commit('updateBreadcrum', to.meta.breadcrum)
   }
   // change page title with each jump
   if (to.meta.title) {

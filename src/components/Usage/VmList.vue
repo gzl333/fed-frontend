@@ -20,9 +20,9 @@
     <el-table-column prop="operation" label="操作" width="350">
       <el-button icon="" plain>VNC</el-button>
       <el-button icon="" plain>VPN</el-button>
-      <el-button type="primary" icon="el-icon-arrow-down" plain
-        >操作列表</el-button
-      >
+      <el-button type="primary" icon="el-icon-arrow-down" plain>
+        操作列表
+      </el-button>
     </el-table-column>
   </el-table>
 </template>

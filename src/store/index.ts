@@ -12,21 +12,11 @@ export interface UserProps {
 
 export interface PositionProps {
   breadcrum: string[];
-  subview: string;
 }
 
 export interface GlobalDataProps {
   user: UserProps;
   position: PositionProps;
-}
-
-export type Subview = 'vmlist'|'orgtree'|'vmadvsearch'|'vmcreate'
-
-const breadcrumList = {
-  vmlist: ['在用资源', '云服务器', '云服务器列表'],
-  orgtree: ['在用资源', '云服务器', '机构树'],
-  vmadvsearch: ['在用资源', '云服务器', '云服务器高级搜索'],
-  vmcreate: ['在用资源', '云服务器', '创建云主机']
 }
 
 // main store
@@ -36,9 +26,8 @@ export default createStore<GlobalDataProps>({
     position: testPosition
   },
   mutations: {
-    gotoSubview (state, payload: Subview) {
-      state.position.subview = payload
-      state.position.breadcrum = breadcrumList[payload]
+    updateBreadcrum (state, payload: string[]) {
+      state.position.breadcrum = payload
     }
   },
   getters: {
