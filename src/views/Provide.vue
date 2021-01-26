@@ -1,9 +1,13 @@
 <template>
   <el-container>
-    <el-aside width="200px" style="height: 100%">
-      <global-nav currentView="/provide" />
+    <el-aside width="150px">
+      <el-scrollbar>
+        <global-nav currentView="/provide" />
+      </el-scrollbar>
     </el-aside>
-    <el-main>Provide</el-main>
+    <el-main>
+      <el-scrollbar>Provide </el-scrollbar>
+    </el-main>
   </el-container>
 </template>
 

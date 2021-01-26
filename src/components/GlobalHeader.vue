@@ -1,14 +1,21 @@
 <template>
-  <el-row type="flex" class="bg-dark">
-    <el-col :span="8">
+  <el-row type="flex" justify="space-between" class="bg-dark">
+    <el-col :xs="6" :sm="8" :md="6" :lg="6" :xl="6">
       <div class="grid-content">
-        <img src="@/assets/banner.png" class="logo" />
+        <router-link :to="{ name: 'home' }">
+          <img src="@/assets/banner.png" class="logo" />
+        </router-link>
       </div>
     </el-col>
-    <el-col :span="8">
-      <div class="grid-content" />
+    <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8">
+      <div class="grid-content">
+        <router-link :to="{ name: 'main' }">
+          <el-button type="danger">dev:进入后台</el-button>
+        </router-link>
+      </div>
     </el-col>
-    <el-col :span="8">
+
+    <el-col :xs="10" :sm="10" :md="10" :lg="10" :xl="10">
       <div class="grid-content">
         <el-menu
           v-if="!user.isLogin"
@@ -131,7 +138,7 @@ export default defineComponent({
 .grid-content {
   padding-top: 10.5px;
   height: 50.5px;
-  margin-left: 30px;
+  margin-left: 10px;
   float: left;
   border-radius: 4px;
   min-height: 36px;

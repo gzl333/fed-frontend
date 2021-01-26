@@ -3,8 +3,6 @@
     router="true"
     :default-active="currentView"
     class="el-menu-vertical"
-    @open="handleOpen"
-    @close="handleClose"
     background-color="#545c64"
     text-color="#fff"
     active-text-color="#ffd04b"
@@ -54,7 +52,7 @@
       <template #title>已供资源</template>
     </el-menu-item>
     <el-menu-item index="/users">
-      <i class="el-icon-setting"></i>
+      <i class="el-icon-user-solid"></i>
       <template #title>用户管理</template>
     </el-menu-item>
   </el-menu>
@@ -82,6 +80,11 @@ export default defineComponent({
 
 <style>
 .el-menu-vertical {
-  /* min-height应该用一个计算值 */
+  top: 0;
+  height: calc(100vh - 60px);
+}
+.el-menu-item {
+  line-height: 65px;
+  height: 65px;
 }
 </style>

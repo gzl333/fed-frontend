@@ -113,6 +113,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'disk',
         component: () => import(/* webpackChunkName: "Usage/disk" */ '@/components/Usage/Disk.vue'),
         meta: {
+          breadcrum: ['在用资源', '云硬盘'],
           requireLogin: true
         }
       },
@@ -121,6 +122,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'obs',
         component: () => import(/* webpackChunkName: "Usage/obs" */ '@/components/Usage/Obs.vue'),
         meta: {
+          breadcrum: ['在用资源', '对象存储'],
           requireLogin: true
         }
       },
@@ -129,6 +131,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'discovery',
         component: () => import(/* webpackChunkName: "Usage/discovery" */ '@/components/Usage/Discovery.vue'),
         meta: {
+          breadcrum: ['在用资源', '资源智能发现'],
           requireLogin: true
         }
       }

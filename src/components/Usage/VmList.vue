@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="tableData" border stripe style="width: 95%" class="table">
+  <el-table :data="tableData" border stripe class="table">
     <el-table-column type="index" label="序号" width="50"> </el-table-column>
     <el-table-column prop="ip" label="IP地址" width="150"> </el-table-column>
     <el-table-column prop="center" label="数据中心" width="110">
@@ -34,7 +34,7 @@ const testData = [{
   ip: '159.226.100.100',
   center: 'OO_HR_204',
   type: 'openstack',
-  os: 'Windows Serer 2019',
+  os: 'Windows Server 2019',
   config: '4 / 16GB',
   countdown: '730',
   source: 'A组',
@@ -44,7 +44,7 @@ const testData = [{
   ip: '159.226.100.100',
   center: 'OO_HR_204',
   type: 'openstack',
-  os: 'Windows Serer 2019',
+  os: 'Windows Server 2019',
   config: '4 / 16GB',
   countdown: '730',
   source: 'A组',
@@ -54,7 +54,7 @@ const testData = [{
   ip: '159.226.100.100',
   center: 'OO_HR_204',
   type: 'openstack',
-  os: 'Windows Serer 2019',
+  os: 'Windows Server 2019',
   config: '4 / 16GB',
   countdown: '730',
   source: 'A组',
@@ -64,7 +64,7 @@ const testData = [{
   ip: '159.226.100.100',
   center: 'OO_HR_204',
   type: 'openstack',
-  os: 'Windows Serer 2019',
+  os: 'Windows Server 2019',
   config: '4 / 16GB',
   countdown: '730',
   source: 'A组',
@@ -74,7 +74,7 @@ const testData = [{
   ip: '159.226.100.100',
   center: 'OO_HR_204',
   type: 'openstack',
-  os: 'Windows Serer 2019',
+  os: 'Windows Server 2019',
   config: '4 / 16GB',
   countdown: '730',
   source: 'A组',
@@ -85,7 +85,7 @@ const testData = [{
   ip: '159.226.100.100',
   center: 'OO_HR_204',
   type: 'openstack',
-  os: 'Windows Serer 2019',
+  os: 'Windows Server 2019',
   config: '4 / 16GB',
   countdown: '730',
   source: 'A组',

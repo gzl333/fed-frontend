@@ -28,8 +28,7 @@
       </router-link>
     </el-col>
   </el-row>
-
-  <router-view></router-view>
+  <router-view />
 </template>
 
 <script lang="ts">

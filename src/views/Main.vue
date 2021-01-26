@@ -1,11 +1,15 @@
 <template>
   <el-container>
-    <el-aside width="200px" style="height: 100%">
-      <global-nav currentView="/main" />
+    <el-aside width="150px">
+      <el-scrollbar>
+        <global-nav currentView="/main" />
+      </el-scrollbar>
     </el-aside>
     <el-main class="main">
-      <global-breadcrum class="breadcrum" />
-      <div>您好，用户{{ user.name }}</div>
+      <el-scrollbar>
+        <global-breadcrum class="breadcrum" />
+        <div>您好，用户{{ user.name }}</div>
+      </el-scrollbar>
     </el-main>
   </el-container>
 </template>

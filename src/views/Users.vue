@@ -1,9 +1,11 @@
 <template>
   <el-container>
-    <el-aside width="200px" style="height: 100%">
-      <global-nav currentView="/users" />
+    <el-aside width="150px">
+      <el-scrollbar>
+        <global-nav currentView="/users" />
+      </el-scrollbar>
     </el-aside>
-    <el-main>Users</el-main>
+    <el-main> <el-scrollbar>Users </el-scrollbar></el-main>
   </el-container>
 </template>
 

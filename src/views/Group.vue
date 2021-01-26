@@ -1,9 +1,11 @@
 <template>
   <el-container>
-    <el-aside width="200px" style="height: 100%">
-      <global-nav currentView="/group" />
+    <el-aside width="150px">
+      <el-scrollbar>
+        <global-nav currentView="/group" />
+      </el-scrollbar>
     </el-aside>
-    <el-main>Group</el-main>
+    <el-main> <el-scrollbar>Group </el-scrollbar></el-main>
   </el-container>
 </template>
 

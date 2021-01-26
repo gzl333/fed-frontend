@@ -1,12 +1,19 @@
 <template>
   <el-container>
-    <el-aside width="200px">
-      <global-nav currentView="/usage" />
+    <el-aside width="150px">
+      <el-scrollbar>
+        <global-nav currentView="/usage" />
+      </el-scrollbar>
     </el-aside>
+
     <el-main class="main">
-      <global-breadcrum class="breadcrum" />
-      <usage-nav />
-      <router-view></router-view>
+      <el-scrollbar>
+        <global-breadcrum class="breadcrum" />
+        <usage-nav />
+        <el-scrollbar>
+          <router-view />
+        </el-scrollbar>
+      </el-scrollbar>
     </el-main>
   </el-container>
 </template>

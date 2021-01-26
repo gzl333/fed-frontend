@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <el-scrollbar>
     <div class="block">
       <el-carousel interval="2000" height="600px">
         <div></div>
@@ -18,17 +18,17 @@
         </el-carousel-item>
       </el-carousel>
     </div>
-  </div>
-  <div>
+
     <div>资源与服务</div>
     <div>
       <span>云服务器</span><span>云硬盘</span><span>对象存储桶</span
       ><span>开放虚拟镜像池</span><span>科技云盘</span>
     </div>
-  </div>
-  <div>资源提供者</div>
-  <div>开发者</div>
-  <div class="footer">©CNIC 2021</div>
+
+    <div>资源提供者</div>
+    <div>开发者</div>
+    <div class="footer">©CNIC 2021</div>
+  </el-scrollbar>
 </template>
 
 <script lang="ts">

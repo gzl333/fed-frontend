@@ -1,12 +1,14 @@
 <template>
-  <el-container>
-    <el-header style="padding: 0">
-      <global-header />
-    </el-header>
-    <el-main style="padding: 0">
-      <router-view />
-    </el-main>
-  </el-container>
+  <el-scrollbar>
+    <el-container>
+      <el-header style="padding: 0">
+        <global-header />
+      </el-header>
+      <el-main style="padding: 0">
+        <router-view />
+      </el-main>
+    </el-container>
+  </el-scrollbar>
 </template>
 
 <script lang="ts">
@@ -56,6 +58,7 @@ html {
 }
 
 .el-container {
+  height: calc(100vh - 60px);
   background-color: #e9eef3;
 }
 </style>
