@@ -39,6 +39,9 @@ html {
   padding: 0;
   height: 100%;
 }
+.el-scrollbar .el-scrollbar__wrap {
+  overflow-x: hidden;
+}
 
 .el-header {
   padding: 0;

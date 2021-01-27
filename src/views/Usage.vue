@@ -10,7 +10,7 @@
       <el-scrollbar>
         <global-breadcrum class="breadcrum" />
         <usage-nav />
-        <el-scrollbar>
+        <el-scrollbar class="scbar">
           <router-view />
         </el-scrollbar>
       </el-scrollbar>
