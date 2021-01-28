@@ -47,7 +47,7 @@ export default defineComponent({
   },
   setup () {
     const store = useStore<GlobalDataProps>()
-    const currentPosition = computed(() => store.state.position.breadcrum.slice(-1)[0])
+    const currentPosition = computed(() => store.state.position.breadcrumb.slice(-1)[0])
     return {
       currentPosition
     }

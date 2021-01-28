@@ -8,5 +8,5 @@ export const testUser: UserProps = {
 }
 
 export const testPosition: PositionProps = {
-  breadcrum: ['在用资源', '云服务器', '云服务器列表']
+  breadcrumb: ['在用资源', '云服务器', '云服务器列表']
 }

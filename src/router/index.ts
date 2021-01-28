@@ -29,7 +29,7 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import(/* webpackChunkName: "Main" */ '@/views/Main.vue'),
     meta: {
       title: '首页-中国科技云联邦',
-      breadcrum: [],
+      breadcrumb: [],
       requireLogin: true
     }
   },
@@ -75,7 +75,7 @@ const routes: Array<RouteRecordRaw> = [
             name: 'vmlist',
             component: () => import(/* webpackChunkName: "Usage/vm/list" */ '@/components/Usage/VmList.vue'),
             meta: {
-              breadcrum: ['在用资源', '云服务器', '云服务器列表'],
+              breadcrumb: ['在用资源', '云服务器', '云服务器列表'],
               requireLogin: true
             }
           },
@@ -84,7 +84,7 @@ const routes: Array<RouteRecordRaw> = [
             name: 'vmcreate',
             component: () => import(/* webpackChunkName: "Usage/vm/create" */ '@/components/Usage/VmCreate.vue'),
             meta: {
-              breadcrum: ['在用资源', '云服务器', '创建云服务器'],
+              breadcrumb: ['在用资源', '云服务器', '创建云服务器'],
               requireLogin: true
             }
           },
@@ -93,7 +93,7 @@ const routes: Array<RouteRecordRaw> = [
             name: 'vmsearch',
             component: () => import(/* webpackChunkName: "Usage/vm/search" */ '@/components/Usage/VmSearch.vue'),
             meta: {
-              breadcrum: ['在用资源', '云服务器', '云服务器搜索'],
+              breadcrumb: ['在用资源', '云服务器', '云服务器搜索'],
               requireLogin: true
             }
           },
@@ -102,7 +102,7 @@ const routes: Array<RouteRecordRaw> = [
             name: 'vmorgtree',
             component: () => import(/* webpackChunkName: "Usage/vm/org" */ '@/components/Usage/OrgTree.vue'),
             meta: {
-              breadcrum: ['在用资源', '云服务器', '机构树'],
+              breadcrumb: ['在用资源', '云服务器', '机构树'],
               requireLogin: true
             }
           }
@@ -113,7 +113,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'disk',
         component: () => import(/* webpackChunkName: "Usage/disk" */ '@/components/Usage/Disk.vue'),
         meta: {
-          breadcrum: ['在用资源', '云硬盘'],
+          breadcrumb: ['在用资源', '云硬盘'],
           requireLogin: true
         }
       },
@@ -122,7 +122,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'obs',
         component: () => import(/* webpackChunkName: "Usage/obs" */ '@/components/Usage/Obs.vue'),
         meta: {
-          breadcrum: ['在用资源', '对象存储'],
+          breadcrumb: ['在用资源', '对象存储'],
           requireLogin: true
         }
       },
@@ -131,7 +131,7 @@ const routes: Array<RouteRecordRaw> = [
         name: 'discovery',
         component: () => import(/* webpackChunkName: "Usage/discovery" */ '@/components/Usage/Discovery.vue'),
         meta: {
-          breadcrum: ['在用资源', '资源智能发现'],
+          breadcrumb: ['在用资源', '资源智能发现'],
           requireLogin: true
         }
       }
@@ -242,12 +242,12 @@ router.beforeEach((to, from, next) => {
   }
   // if logged in, jump to the page before login or Home view
   if (to.meta.redirectLogged && store.state.user.isLogin) {
-    const routername = from.name
-    next({ name: routername || 'main' })
+    const routerName = from.name
+    next({ name: routerName || 'main' })
   }
-  // update breadcrum
-  if (to.meta.breadcrum) {
-    store.commit('updateBreadcrum', to.meta.breadcrum)
+  // update breadcrumb
+  if (to.meta.breadcrumb) {
+    store.commit('updateBreadcrumb', to.meta.breadcrumb)
   }
   // change page title with each jump
   if (to.meta.title) {

@@ -11,7 +11,7 @@ export interface UserProps {
 }
 
 export interface PositionProps {
-  breadcrum: string[];
+  breadcrumb: string[];
 }
 
 export interface GlobalDataProps {
@@ -26,8 +26,8 @@ export default createStore<GlobalDataProps>({
     position: testPosition
   },
   mutations: {
-    updateBreadcrum (state, payload: string[]) {
-      state.position.breadcrum = payload
+    updateBreadcrumb (state, payload: string[]) {
+      state.position.breadcrumb = payload
     }
   },
   getters: {

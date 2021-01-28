@@ -7,7 +7,7 @@
     </el-aside>
     <el-main class="main">
       <el-scrollbar>
-        <global-breadcrum class="breadcrum" />
+        <global-breadcrumb class="breadcrumb" />
         <div>您好，用户{{ user.name }}</div>
       </el-scrollbar>
     </el-main>
@@ -19,13 +19,13 @@ import { defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { GlobalDataProps } from '@/store/index.ts'
 import GlobalNav from '@/components/GlobalNav.vue'
-import GlobalBreadcrum from '@/components/GlobalBreadcrum.vue'
+import GlobalBreadcrumb from '@/components/GlobalBreadcrumb.vue'
 
 export default defineComponent({
   name: 'Main',
   components: {
     GlobalNav,
-    GlobalBreadcrum
+    GlobalBreadcrumb
   },
   props: {
   },
@@ -45,7 +45,7 @@ export default defineComponent({
   padding: 0;
   margin: 0;
 }
-.breadcrum {
+.breadcrumb {
   padding: 15px;
   background-color: #f5f5f5;
 }

@@ -8,7 +8,7 @@
 
     <el-main class="main">
       <el-scrollbar>
-        <global-breadcrum class="breadcrum" />
+        <global-breadcrumb class="breadcrumb" />
         <usage-nav />
         <el-scrollbar class="scbar">
           <router-view />
@@ -21,14 +21,14 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import GlobalNav from '@/components/GlobalNav.vue'
-import GlobalBreadcrum from '@/components/GlobalBreadcrum.vue'
 import UsageNav from '@/components/Usage/UsageNav.vue'
+import GlobalBreadcrumb from '@/components/GlobalBreadcrumb.vue'
 
 export default defineComponent({
   name: 'Usage',
   components: {
     GlobalNav,
-    GlobalBreadcrum,
+    GlobalBreadcrumb,
     UsageNav
   },
   props: {
@@ -47,7 +47,7 @@ export default defineComponent({
   padding: 0;
   margin: 0;
 }
-.breadcrum {
+.breadcrumb {
   padding: 15px;
   background-color: #f5f5f5;
 }

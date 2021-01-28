@@ -1,7 +1,7 @@
 <template>
   <el-breadcrumb separator-class="el-icon-arrow-right">
     <el-breadcrumb-item>当前位置：首页</el-breadcrumb-item>
-    <el-breadcrumb-item v-for="(item, index) in breadcrum" :key="index">
+    <el-breadcrumb-item v-for="(item, index) in breadcrumb" :key="index">
       {{ item }}
     </el-breadcrumb-item>
   </el-breadcrumb>
@@ -13,16 +13,16 @@ import { useStore } from 'vuex'
 import { GlobalDataProps } from '@/store/index.ts'
 
 export default defineComponent({
-  name: 'GlobalBreadcrum',
+  name: 'GlobalBreadcrumb',
   components: {
   },
   props: {
   },
   setup () {
     const store = useStore<GlobalDataProps>()
-    const breadcrum = computed(() => store.state.position.breadcrum)
+    const breadcrumb = computed(() => store.state.position.breadcrumb)
     return {
-      breadcrum
+      breadcrumb: breadcrumb
     }
   }
 })
