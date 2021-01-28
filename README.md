@@ -48,23 +48,38 @@ git clone https://gitee.com/gosc-cnic/frontend.git
 cd frontend
 npm install
 ```
+### 2. 将VSCode/WebStorm配置文件排除出git监控范围
+在项目根目录的.gitignore文件中，删除所有与vscode/idea相关配置，包括但不仅限于以下配置：
+```
+.idea/*
+!.idea/codeStyles
+!.idea/fileTemplates
+!.idea/inspectionProfiles
+!.idea/jsLinters
+!.idea/vcs.xml
+```
+并添加以下配置：
+```
+.vscode
+.idea
+```
 
-### 2. 开发模式运行：会对项目进行编译及热更新
+### 3. 开发模式运行：会对项目进行编译及热更新
 ```
 npm run serve
 ```
 
-### 3. 生产模式打包：会对项目进行编译及压缩
+### 4. 生产模式打包：会对项目进行编译及压缩
 ```
 npm run build
 ```
 
-### 4. 代码自动审查修复
+### 5. 代码自动审查修复
 ```
 npm run lint
 ```
 
-## VSCode开发工具搭建
+## VSCode开发工具搭建(根据情况与WebStorm二选一)
 ### 1. 下载并安装VSCode软件
 安装过程中，在**选择附加任务**一页，将全部任务勾选，方便开发中使用。    
 如下所示：
