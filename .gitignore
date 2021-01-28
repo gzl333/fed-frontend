@@ -1,3 +1,18 @@
+### VSCode settings --> only keep in develop branch
+## after git clone the project: enable .vscode at next line
+# .vscode
+
+### WebStorm settings --> only keep in develop branch
+## after git clone the project: enable .idea at next line
+# .idea
+## and comment off next a few lines
+.idea/*
+!.idea/codeStyles
+!.idea/fileTemplates
+!.idea/inspectionProfiles
+!.idea/jsLinters
+!.idea/vcs.xml
+
 # macOS
 .DS_Store
 
@@ -21,13 +36,3 @@ pnpm-debug.log*
 *.njsproj
 *.sln
 *.sw?
-
-### VSCode: all let go
-
-### WebStorm
-.idea/*
-!.idea/codeStyles
-!.idea/fileTemplates
-!.idea/inspectionProfiles
-!.idea/jsLinters
-!.idea/vcs.xml
