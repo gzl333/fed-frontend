@@ -1,22 +1,23 @@
 <template>
-  <div>this is VmAdvSearch</div>
+  <div class="VmSearch">
+    this is VmSearch
+  </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'VmAdvSearch',
-  components: {
-  },
-  props: {
-  },
+  name: 'VmSearch',
+  components: {},
+  props: {},
   setup () {
-    return {
-    }
+    return {}
   }
 })
 </script>
 
-<style>
+<style scoped>
+.VmSearch {
+}
 </style>

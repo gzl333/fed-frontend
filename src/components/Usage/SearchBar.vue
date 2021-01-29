@@ -1,5 +1,5 @@
 <template>
-  <div style="margin-top: 15px">
+  <div class="SearchBar">
     <div v-if="caller === 'vm'">
       <el-input
         placeholder="请输入关键字进行模糊搜索"
@@ -62,7 +62,11 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
+.SearchBar {
+  margin-top: 15px
+}
+
 .el-select .el-input {
   width: 30px;
 }

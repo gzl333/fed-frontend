@@ -1,4 +1,5 @@
 <template>
+  <div class="Users">
   <el-container>
     <el-aside width="150px">
       <el-scrollbar>
@@ -7,6 +8,7 @@
     </el-aside>
     <el-main> <el-scrollbar>Users </el-scrollbar></el-main>
   </el-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -27,5 +29,7 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
+.Users {
+}
 </style>

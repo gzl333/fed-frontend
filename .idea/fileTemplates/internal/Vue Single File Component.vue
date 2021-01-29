@@ -1,5 +1,7 @@
 <template>
-  <div>this is ${COMPONENT_NAME}</div>
+  <div class="${COMPONENT_NAME}">
+    this is ${COMPONENT_NAME}
+  </div>
 </template>
 
 <script lang="ts">
@@ -19,4 +21,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.${COMPONENT_NAME} {
+}
 </style>

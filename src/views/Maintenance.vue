@@ -1,14 +1,16 @@
 <template>
-  <el-container>
-    <el-aside width="150px">
-      <el-scrollbar>
-        <global-nav currentView="/maintenance" />
-      </el-scrollbar>
-    </el-aside>
-    <el-main>
-      <el-scrollbar>Maintenance </el-scrollbar>
-    </el-main>
-  </el-container>
+  <div class="Maintenance">
+    <el-container>
+      <el-aside width="150px">
+        <el-scrollbar>
+          <global-nav currentView="/maintenance"/>
+        </el-scrollbar>
+      </el-aside>
+      <el-main>
+        <el-scrollbar>Maintenance</el-scrollbar>
+      </el-main>
+    </el-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -20,14 +22,14 @@ export default defineComponent({
   components: {
     GlobalNav
   },
-  props: {
-  },
+  props: {},
   setup () {
-    return {
-    }
+    return {}
   }
 })
 </script>
 
-<style>
+<style scoped>
+.Maintenance {
+}
 </style>

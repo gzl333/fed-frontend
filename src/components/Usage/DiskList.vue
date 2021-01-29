@@ -1,5 +1,7 @@
 <template>
-  <div>this is DiskList</div>
+  <div class="DiskList">
+    this is DiskList
+  </div>
 </template>
 
 <script lang="ts">
@@ -18,5 +20,7 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
+.DiskList {
+}
 </style>

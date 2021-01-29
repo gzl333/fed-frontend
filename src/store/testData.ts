@@ -7,6 +7,4 @@ export const testUser: UserProps = {
   role: 'user'
 }
 
-export const testPosition: PositionProps = {
-  breadcrumb: ['在用资源', '云服务器', '云服务器列表']
-}
+export const testPosition: PositionProps = ['在用资源', '云服务器', '云服务器列表']

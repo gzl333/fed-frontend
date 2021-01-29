@@ -10,9 +10,7 @@ export interface UserProps {
   role?: 'user'|'manager'|'provider'|'vo';
 }
 
-export interface PositionProps {
-  breadcrumb: string[];
-}
+export type PositionProps = string[]
 
 export interface GlobalDataProps {
   user: UserProps;
@@ -26,8 +24,8 @@ export default createStore<GlobalDataProps>({
     position: testPosition
   },
   mutations: {
-    updateBreadcrumb (state, payload: string[]) {
-      state.position.breadcrumb = payload
+    updatePosition (state, payload: string[]) {
+      state.position = payload
     }
   },
   getters: {

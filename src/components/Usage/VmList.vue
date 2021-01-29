@@ -1,30 +1,32 @@
 <template>
-  <el-table :data="tableData" border stripe class="table">
-    <el-table-column type="index" label="序号" width="50"> </el-table-column>
-    <el-table-column prop="ip" label="IP地址" width="150"> </el-table-column>
-    <el-table-column prop="center" label="数据中心" width="110">
-    </el-table-column>
-    <el-table-column prop="type" label="服务类型" width="100">
-    </el-table-column>
-    <el-table-column prop="os" label="镜像类型" width="180"> </el-table-column>
-    <el-table-column prop="config" label="CPU/内存" width="100">
-    </el-table-column>
-    <el-table-column prop="countdown" label="剩余有效期" width="100">
-    </el-table-column>
-    <el-table-column prop="source" label="资源来源" width="100">
-    </el-table-column>
-    <el-table-column prop="note" label="备注" width="200"> </el-table-column>
-    <el-table-column prop="status" label="状态" width="100">
-      <el-button type="success" icon="" plain>运行</el-button>
-    </el-table-column>
-    <el-table-column prop="operation" label="操作" width="350">
-      <el-button icon="" plain>VNC</el-button>
-      <el-button icon="" plain>VPN</el-button>
-      <el-button type="primary" icon="el-icon-arrow-down" plain>
-        操作列表
-      </el-button>
-    </el-table-column>
-  </el-table>
+  <div class="VmList">
+    <el-table :data="tableData" border stripe class="table">
+      <el-table-column type="index" label="序号" width="50"></el-table-column>
+      <el-table-column prop="ip" label="IP地址" width="150"></el-table-column>
+      <el-table-column prop="center" label="数据中心" width="110">
+      </el-table-column>
+      <el-table-column prop="type" label="服务类型" width="100">
+      </el-table-column>
+      <el-table-column prop="os" label="镜像类型" width="180"></el-table-column>
+      <el-table-column prop="config" label="CPU/内存" width="100">
+      </el-table-column>
+      <el-table-column prop="countdown" label="剩余有效期" width="100">
+      </el-table-column>
+      <el-table-column prop="source" label="资源来源" width="100">
+      </el-table-column>
+      <el-table-column prop="note" label="备注" width="200"></el-table-column>
+      <el-table-column prop="status" label="状态" width="100">
+        <el-button type="success" icon="" plain>运行</el-button>
+      </el-table-column>
+      <el-table-column prop="operation" label="操作" width="350">
+        <el-button icon="" plain>VNC</el-button>
+        <el-button icon="" plain>VPN</el-button>
+        <el-button type="primary" icon="el-icon-arrow-down" plain>
+          操作列表
+        </el-button>
+      </el-table-column>
+    </el-table>
+  </div>
 </template>
 
 <script lang="ts">
@@ -91,15 +93,12 @@ const testData = [{
   source: 'A组',
   note: '用于云联邦开发'
 }
-
 ]
 
 export default defineComponent({
   name: 'VmList',
-  components: {
-  },
-  props: {
-  },
+  components: {},
+  props: {},
   setup () {
     return {
       tableData: testData
@@ -108,7 +107,9 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
+.VmList {
+}
 .table {
   margin: 0 auto;
 }

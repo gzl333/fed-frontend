@@ -1,6 +1,6 @@
 <template>
   <el-scrollbar>
-    <div class="block">
+    <div class="Home">
       <el-carousel interval="2000" height="600px">
         <div></div>
         <el-carousel-item v-for="item in pictures" :key="item">
@@ -13,47 +13,57 @@
               src="@/assets/logo.png"
               alt=""
             /> -->
-            <!-- <div class="carousel-text">中国科技云联邦</div> -->
+            <div class="carousel-text">{{ currentPosition }}</div>
           </div>
         </el-carousel-item>
       </el-carousel>
-    </div>
-
-    <div>资源与服务</div>
-    <div>
-      <span>云服务器</span><span>云硬盘</span><span>对象存储桶</span
+      <div>资源与服务</div>
+      <div>
+        <span>云服务器</span><span>云硬盘</span><span>对象存储桶</span
       ><span>开放虚拟镜像池</span><span>科技云盘</span>
+      </div>
+      <div>资源提供者</div>
+      <div>开发者</div>
+      <div class="footer">©CNIC 2021</div>
     </div>
-
-    <div>资源提供者</div>
-    <div>开发者</div>
-    <div class="footer">©CNIC 2021</div>
   </el-scrollbar>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
+import { useStore } from 'vuex'
+import { GlobalDataProps } from '@/store'
 
 export default defineComponent({
   name: 'Home',
-  components: {
-  },
-  props: {
-  },
+  components: {},
+  props: {},
   setup () {
+    const store = useStore<GlobalDataProps>()
+    const currentPosition = computed(() => store.state.position.slice(-1)[0])
     const pictures = [
       require('@/assets/Home/1.jpg'),
       require('@/assets/Home/2.jpg'),
       require('@/assets/Home/4.jpg')
     ]
     return {
+      currentPosition,
       pictures
     }
   }
 })
 </script>
 
-<style>
+<style scoped>
+.Home {
+  background-color: #e9eef3;
+  color: #333;
+  text-align: center;
+  line-height: 160px;
+  min-height: 100%;
+  overflow: hidden;
+}
+
 .el-carousel__item h3 {
   color: #475669;
   font-size: 14px;
@@ -69,6 +79,7 @@ export default defineComponent({
 .el-carousel__item:nth-child(2n + 1) {
   background-color: #d3dce6;
 }
+
 .carousel-content {
   width: 100%;
   height: 100%;
@@ -76,9 +87,11 @@ export default defineComponent({
   color: #fff;
   font-size: 80px;
 }
+
 .carousel-text {
   margin-bottom: -100px;
 }
+
 .footer {
   background-color: #040c20;
   line-height: 60px;

@@ -1,5 +1,7 @@
 <template>
-  <div>this is Obs</div>
+  <div class="Obs">
+    this is Obs
+  </div>
 </template>
 
 <script lang="ts">
@@ -7,16 +9,15 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Obs',
-  components: {
-  },
-  props: {
-  },
+  components: {},
+  props: {},
   setup () {
-    return {
-    }
+    return {}
   }
 })
 </script>
 
-<style>
+<style scoped>
+.Obs {
+}
 </style>

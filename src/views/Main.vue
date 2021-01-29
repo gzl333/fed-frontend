@@ -1,17 +1,19 @@
 <template>
-  <el-container>
-    <el-aside width="150px">
-      <el-scrollbar>
-        <global-nav currentView="/main" />
-      </el-scrollbar>
-    </el-aside>
-    <el-main class="main">
-      <el-scrollbar>
-        <global-breadcrumb class="breadcrumb" />
-        <div>您好，用户{{ user.name }}</div>
-      </el-scrollbar>
-    </el-main>
-  </el-container>
+  <div class="Main">
+    <el-container>
+      <el-aside width="150px">
+        <el-scrollbar>
+          <global-nav currentView="/main"/>
+        </el-scrollbar>
+      </el-aside>
+      <el-main>
+        <el-scrollbar>
+          <global-breadcrumb/>
+          <div>您好，用户{{ user.name }}</div>
+        </el-scrollbar>
+      </el-main>
+    </el-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -27,8 +29,7 @@ export default defineComponent({
     GlobalNav,
     GlobalBreadcrumb
   },
-  props: {
-  },
+  props: {},
   setup () {
     const store = useStore<GlobalDataProps>()
     const user = store.state.user
@@ -39,18 +40,16 @@ export default defineComponent({
 })
 </script>
 
-<style>
-.main {
+<style scoped>
+.Main {
+}
+.el-container {
+  height: calc(100vh - 60px);
+}
+.el-main {
   background-color: #fff;
   padding: 0;
   margin: 0;
-}
-.breadcrumb {
-  padding: 15px;
-  background-color: #f5f5f5;
-}
-
-.el-main {
   line-height: 100px;
 }
 </style>
