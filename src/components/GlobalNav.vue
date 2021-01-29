@@ -6,7 +6,7 @@
       class="el-menu-vertical"
       background-color="#545c64"
       text-color="#fff"
-      active-text-color="#ffd04b"
+      active-text-color="#409eff"
     >
       <el-menu-item index="/main">
         <i class="el-icon-menu"></i>

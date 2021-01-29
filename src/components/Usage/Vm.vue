@@ -31,7 +31,9 @@
         </router-link>
       </el-col>
     </el-row>
-    <router-view/>
+    <div class="vm-router-view">
+        <router-view/>
+    </div>
   </div>
 </template>
 
@@ -61,6 +63,7 @@ export default defineComponent({
 <style scoped>
 .Vm {
 }
+
 .el-row {
   margin-bottom: 20px;
 
@@ -76,5 +79,10 @@ export default defineComponent({
 
 .searchbar {
   margin-top: -14px;
+}
+
+.vm-router-view {
+  /*height: calc(100vh - 288px);*/
+  /*width: calc(100vw - 150px);*/
 }
 </style>
