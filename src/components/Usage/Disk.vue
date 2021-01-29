@@ -1,5 +1,7 @@
 <template>
-  <div>this is Disk</div>
+  <div class="Disk">
+    this is Disk
+  </div>
 </template>
 
 <script lang="ts">
@@ -18,5 +20,7 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
+.Disk {
+}
 </style>

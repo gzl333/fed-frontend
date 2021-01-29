@@ -1,5 +1,7 @@
 <template>
-  <div>this is $TM_FILENAME_BASE</div>
+  <div class="$TM_FILENAME_BASE">
+    this is $TM_FILENAME_BASE
+  </div>
 </template>
 
 <script lang="ts">
@@ -19,4 +21,6 @@ export default defineComponent({
 </script>
 
 <style scoped>
+.$TM_FILENAME_BASE {
+}
 </style>

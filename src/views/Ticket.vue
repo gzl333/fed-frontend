@@ -1,4 +1,5 @@
 <template>
+  <div class="Ticket">
   <el-container>
     <el-aside width="150px">
       <el-scrollbar>
@@ -9,6 +10,7 @@
       <el-scrollbar>Ticket </el-scrollbar>
     </el-main>
   </el-container>
+  </div>
 </template>
 
 <script lang="ts">
@@ -29,5 +31,7 @@ export default defineComponent({
 })
 </script>
 
-<style>
+<style scoped>
+.Ticket {
+}
 </style>

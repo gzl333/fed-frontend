@@ -1,14 +1,14 @@
 <template>
-  <el-scrollbar>
+  <div class="App">
     <el-container>
-      <el-header style="padding: 0">
+      <el-header >
         <global-header />
       </el-header>
-      <el-main style="padding: 0">
-        <router-view />
+      <el-main >
+          <router-view />
       </el-main>
     </el-container>
-  </el-scrollbar>
+  </div>
 </template>
 
 <script lang="ts">
@@ -27,41 +27,26 @@ export default defineComponent({
 })
 </script>
 
-<style>
-body,
-html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
+<style scoped>
+.App{
 }
-#app {
-  margin: 0;
-  padding: 0;
-  height: 100%;
+.el-container {
+  height: 100vh;
 }
-.el-scrollbar .el-scrollbar__wrap {
-  overflow-x: hidden;
-}
-
 .el-header {
-  padding: 0;
-  background-color: #b3c0d1;
-  color: #333;
-  text-align: center;
+  padding: 0
+}
+.el-main {
+  padding: 0
 }
 
 .el-main {
-  margin-top: 0px;
-  background-color: #e9eef3;
-  color: #333;
-  text-align: center;
-  line-height: 160px;
-  min-height: 100%;
-  overflow: hidden;
-}
-
-.el-container {
-  height: calc(100vh - 60px);
-  background-color: #e9eef3;
+  /*margin-top: 0px;*/
+  /*background-color: #409eff;*/
+  /*color: #333;*/
+  /*text-align: center;*/
+  /*line-height: 160px;*/
+  /*min-height: 100%;*/
+  /*overflow: hidden;*/
 }
 </style>

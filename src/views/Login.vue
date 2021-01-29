@@ -1,5 +1,7 @@
 <template>
-  <div>this is Login</div>
+  <div class="Login">
+    this is Login
+  </div>
 </template>
 
 <script lang="ts">
@@ -7,16 +9,15 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'Login',
-  components: {
-  },
-  props: {
-  },
+  components: {},
+  props: {},
   setup () {
-    return {
-    }
+    return {}
   }
 })
 </script>
 
-<style>
+<style scoped>
+.Login {
+}
 </style>

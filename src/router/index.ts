@@ -8,7 +8,8 @@ const routes: Array<RouteRecordRaw> = [
     name: 'home',
     component: Home,
     meta: {
-      title: '中国科技云联邦'
+      title: '中国科技云联邦',
+      breadcrumb: ['Home']
     }
   },
   {
@@ -247,7 +248,7 @@ router.beforeEach((to, from, next) => {
   }
   // update breadcrumb
   if (to.meta.breadcrumb) {
-    store.commit('updateBreadcrumb', to.meta.breadcrumb)
+    store.commit('updatePosition', to.meta.breadcrumb)
   }
   // change page title with each jump
   if (to.meta.title) {

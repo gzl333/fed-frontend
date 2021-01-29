@@ -1,5 +1,7 @@
 <template>
-  <div>this is VmCreate</div>
+  <div class="VmCreate">
+    this is VmCreate
+  </div>
 </template>
 
 <script lang="ts">
@@ -7,16 +9,15 @@ import { defineComponent } from 'vue'
 
 export default defineComponent({
   name: 'VmCreate',
-  components: {
-  },
-  props: {
-  },
+  components: {},
+  props: {},
   setup () {
-    return {
-    }
+    return {}
   }
 })
 </script>
 
-<style>
+<style scoped>
+.VmCreate {
+}
 </style>
