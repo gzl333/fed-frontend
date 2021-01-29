@@ -92,6 +92,94 @@ const testData = [{
   countdown: '730',
   source: 'A组',
   note: '用于云联邦开发'
+},
+{
+
+  ip: '159.226.100.100',
+  center: 'OO_HR_204',
+  type: 'openstack',
+  os: 'Windows Server 2019',
+  config: '4 / 16GB',
+  countdown: '730',
+  source: 'A组',
+  note: '用于云联邦开发'
+},
+{
+
+  ip: '159.226.100.100',
+  center: 'OO_HR_204',
+  type: 'openstack',
+  os: 'Windows Server 2019',
+  config: '4 / 16GB',
+  countdown: '730',
+  source: 'A组',
+  note: '用于云联邦开发'
+},
+{
+
+  ip: '159.226.100.100',
+  center: 'OO_HR_204',
+  type: 'openstack',
+  os: 'Windows Server 2019',
+  config: '4 / 16GB',
+  countdown: '730',
+  source: 'A组',
+  note: '用于云联邦开发'
+},
+{
+
+  ip: '159.226.100.100',
+  center: 'OO_HR_204',
+  type: 'openstack',
+  os: 'Windows Server 2019',
+  config: '4 / 16GB',
+  countdown: '730',
+  source: 'A组',
+  note: '用于云联邦开发'
+},
+{
+
+  ip: '159.226.100.100',
+  center: 'OO_HR_204',
+  type: 'openstack',
+  os: 'Windows Server 2019',
+  config: '4 / 16GB',
+  countdown: '730',
+  source: 'A组',
+  note: '用于云联邦开发'
+},
+{
+
+  ip: '159.226.100.100',
+  center: 'OO_HR_204',
+  type: 'openstack',
+  os: 'Windows Server 2019',
+  config: '4 / 16GB',
+  countdown: '730',
+  source: 'A组',
+  note: '用于云联邦开发'
+},
+{
+
+  ip: '159.226.100.100',
+  center: 'OO_HR_204',
+  type: 'openstack',
+  os: 'Windows Server 2019',
+  config: '4 / 16GB',
+  countdown: '730',
+  source: 'A组',
+  note: '用于云联邦开发'
+},
+{
+
+  ip: '159.226.100.100',
+  center: 'OO_HR_204',
+  type: 'openstack',
+  os: 'Windows Server 2019',
+  config: '4 / 16GB',
+  countdown: '730',
+  source: 'A组',
+  note: '用于云联邦开发'
 }
 ]
 
