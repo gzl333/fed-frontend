@@ -6,10 +6,11 @@
       @select="handleSelect"
       class="usagenav"
     >
-      <el-menu-item index="vm"> 云服务器</el-menu-item>
-      <el-menu-item index="disk"> 云硬盘</el-menu-item>
-      <el-menu-item index="obs"> 对象存储</el-menu-item>
-      <el-menu-item index="discovery"> 资源智能发现</el-menu-item>
+      <el-menu-item index="vm">云服务器</el-menu-item>
+      <el-menu-item index="disk">云硬盘</el-menu-item>
+      <el-menu-item index="obs">对象存储</el-menu-item>
+      <el-menu-item index="discovery">资源智能发现</el-menu-item>
+      <el-menu-item index="vpn">VPN</el-menu-item>
     </el-menu>
   </div>
 </template>
@@ -39,8 +40,9 @@ export default defineComponent({
 }
 
 .el-menu-item {
+  font-weight: bold;
   padding: 0 40px;
-  /* border-right: solid 1px #eeeeee; */
+   /*border-right: solid 1px #eeeeee;*/
 }
 
 .el-menu-item.is-active {

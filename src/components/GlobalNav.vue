@@ -88,6 +88,9 @@ export default defineComponent({
 .GlobalNav {
   text-align: center;
 }
+.el-menu {
+  border-right: none;
+}
 .el-menu-vertical{
   height: calc(100vh - 60px);
   /*height: 100vh;*/

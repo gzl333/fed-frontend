@@ -135,6 +135,15 @@ const routes: Array<RouteRecordRaw> = [
           breadcrumb: ['在用资源', '资源智能发现'],
           requireLogin: true
         }
+      },
+      {
+        path: 'vpn',
+        name: 'vpn',
+        component: () => import(/* webpackChunkName: "Usage/vpn" */ '@/components/Usage/Vpn.vue'),
+        meta: {
+          breadcrumb: ['在用资源', 'VPN'],
+          requireLogin: true
+        }
       }
     ]
   },
