@@ -17,7 +17,7 @@
       </el-col>
 
       <el-col :xs="10" :sm="10" :md="10" :lg="10" :xl="10">
-        <div class="grid-content">
+        <div class="grid-content right-most">
           <el-menu
             v-if="!user.isLogin"
             default-active="1"
@@ -132,11 +132,9 @@ export default defineComponent({
   /*padding: 0;   ??*/
   background-color: #040c20;
 }
-
 .el-col {
   border-radius: 4px;
 }
-
 .grid-content {
   padding-top: 10.5px;
   height: 50.5px;
@@ -147,16 +145,16 @@ export default defineComponent({
   font-family: "Microsoft YaHei";
   color: #ffffff;
 }
-
 .logo {
   height: 40px;
 }
-
 .el-menu {
   top: -10px;
 }
-
 .el-dropdown-link {
   color: #ffffff;
+}
+.right-most {
+  float: right;
 }
 </style>
