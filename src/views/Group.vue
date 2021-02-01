@@ -7,7 +7,10 @@
         </el-scrollbar>
       </el-aside>
       <el-main>
-        <el-scrollbar>Group</el-scrollbar>
+        <el-scrollbar>
+          <global-breadcrumb/>
+          Group
+        </el-scrollbar>
       </el-main>
     </el-container>
   </div>
@@ -16,11 +19,13 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import GlobalNav from '@/components/GlobalNav.vue'
+import GlobalBreadcrumb from '@/components/GlobalBreadcrumb.vue'
 
 export default defineComponent({
   name: 'Group',
   components: {
-    GlobalNav
+    GlobalNav,
+    GlobalBreadcrumb
   },
   props: {},
   setup () {
@@ -31,5 +36,16 @@ export default defineComponent({
 
 <style scoped>
 .Group {
+}
+
+.el-container {
+  height: calc(100vh - 60px);
+}
+
+.el-main {
+  background-color: #fff;
+  padding: 0;
+  margin: 0;
+  line-height: 100px;
 }
 </style>

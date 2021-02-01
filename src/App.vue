@@ -34,19 +34,11 @@ export default defineComponent({
   height: 100vh;
 }
 .el-header {
-  padding: 0
+  padding: 0;
+  margin: 0
 }
 .el-main {
-  padding: 0
-}
-
-.el-main {
-  /*margin-top: 0px;*/
-  /*background-color: #409eff;*/
-  /*color: #333;*/
-  /*text-align: center;*/
-  /*line-height: 160px;*/
-  /*min-height: 100%;*/
-  /*overflow: hidden;*/
+  padding: 0;
+  margin: 0
 }
 </style>

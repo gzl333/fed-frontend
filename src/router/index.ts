@@ -143,6 +143,7 @@ const routes: Array<RouteRecordRaw> = [
     name: 'group',
     component: () => import(/* webpackChunkName: "Group" */ '@/views/Group.vue'),
     meta: {
+      breadcrumb: ['我的小组'], // temp
       title: '我的小组-中国科技云联邦',
       requireLogin: true
     }
