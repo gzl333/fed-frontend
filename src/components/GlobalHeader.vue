@@ -82,10 +82,12 @@ export default defineComponent({
   components: {},
   props: {},
   setup () {
+    const notificationValue = 2
     const store = useStore<GlobalDataProps>()
     const user = computed(() => store.state.user)
     return {
-      user
+      user,
+      notificationValue
     }
   }
 })
@@ -94,26 +96,32 @@ export default defineComponent({
 <style scoped>
 .GlobalHeader {
 }
+
 .el-row {
   z-index: 10;
   padding-left: 10px;
   padding-top: 10px;
   background-color: #040c20;
 }
+
 .grid-content {
   height: 50px;
   float: left;
   color: #ffffff;
 }
+
 .logo {
   height: 40px;
 }
+
 .el-menu {
   top: -10px;
 }
-.el-menu--horizontal {
+
+.el-menu.el-menu--horizontal {
   border-bottom: none;
 }
+
 .right-most {
   float: right;
 }
