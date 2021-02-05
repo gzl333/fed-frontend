@@ -47,19 +47,19 @@
             text-color="#fff"
             active-text-color="#409eff">
 
-            <el-submenu index="1">
+            <el-submenu index="1" :popper-append-to-body="false">
               <template #title>帮助</template>
               <el-menu-item index="1-1">操作手册</el-menu-item>
               <el-menu-item index="1-2">API</el-menu-item>
             </el-submenu>
 
-            <el-submenu index="2">
+            <el-submenu index="2" :popper-append-to-body="false">
               <template #title>消息通知</template>
               <el-menu-item index="2-1">系统通知：您的资源已经超期。</el-menu-item>
               <el-menu-item index="2-2">管理员通知：系统将在如下日期进行升级。。。</el-menu-item>
             </el-submenu>
 
-            <el-submenu index="3">
+            <el-submenu index="3" :popper-append-to-body="false">
               <template #title>{{ user.name }}的信息</template>
               <el-menu-item index="3-1">个人设置</el-menu-item>
               <el-menu-item index="3-2">退出登录</el-menu-item>
@@ -96,33 +96,31 @@ export default defineComponent({
 <style scoped>
 .GlobalHeader {
 }
-
 .el-row {
   z-index: 10;
   padding-left: 10px;
   padding-top: 10px;
   background-color: #040c20;
 }
-
 .grid-content {
   height: 50px;
   float: left;
   color: #ffffff;
 }
-
 .logo {
   height: 40px;
 }
-
 .el-menu {
   top: -10px;
 }
-
 .el-menu.el-menu--horizontal {
   border-bottom: none;
 }
-
 .right-most {
   float: right;
+}
+.el-submenu >>> .el-popper.is-light {
+  border: none;
+  background-color: transparent;
 }
 </style>
