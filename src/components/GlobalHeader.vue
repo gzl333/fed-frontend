@@ -1,24 +1,19 @@
 <template>
   <div class="GlobalHeader">
     <el-row type="flex" justify="space-between">
-      <el-col :xs="6" :sm="8" :md="6" :lg="6" :xl="6">
+      <el-col :xs="12" :sm="8" :md="6" :lg="10" :xl="12">
         <div class="grid-content">
           <router-link :to="{ name: 'home' }">
             <img src="@/assets/banner.png" class="logo"/>
           </router-link>
-        </div>
-      </el-col>
-
-      <el-col :xs="8" :sm="8" :md="8" :lg="8" :xl="8">
-        <div class="grid-content">
           <router-link :to="{ name: 'main' }">
-            <el-button type="danger">dev:进入后台</el-button>
+            <button>dev进入后台</button>
           </router-link>
         </div>
       </el-col>
 
-      <el-col :xs="10" :sm="10" :md="10" :lg="10" :xl="10">
-        <div class="grid-content right-most">
+      <el-col :xs="0" :sm="10" :md="12" :lg="8" :xl="8">
+        <div class="grid-content float-to-right">
           <el-menu
             v-if="!user.isLogin"
             :default-active="1"
@@ -26,20 +21,33 @@
             background-color="transparent"
             text-color="#fff"
             active-text-color="#409eff"
-            @select="handleSelect"
+            router="true"
           >
-            <el-menu-item index="1"> 首页</el-menu-item>
-            <el-menu-item index="2"> 资源&服务</el-menu-item>
-            <el-menu-item index="3"> 资源提供者</el-menu-item>
-
-            <el-button>登 录</el-button>
-            <el-button type="primary">注 册</el-button>
-
-            <el-button type="text"> English</el-button>
+            <el-menu-item index="1" class="item-on-show" :route="{ name: 'home' }">首页</el-menu-item>
+            <el-menu-item index="2" class="item-on-show" :route="{ name: 'home' }">资源&服务</el-menu-item>
+            <el-menu-item index="3" class="item-on-show" :route="{ name: 'home' }">资源提供者</el-menu-item>
+            <el-menu-item index="4" class="item-on-show" :route="{ name: 'home' }">开发者</el-menu-item>
           </el-menu>
+        </div>
+      </el-col>
+
+      <el-col :xs="12" :sm="6" :md="6" :lg="6" :xl="4">
+        <div class="grid-content float-to-right">
+          <div v-if="!user.isLogin">
+            <router-link :to="{ name: 'login' }">
+              <el-button class="button-login" type="primary">登 录</el-button>
+            </router-link>
+            <router-link :to="{ name: 'login' }">
+              <el-button :route="{ name: 'login' }" class="button-login">注 册</el-button>
+            </router-link>
+            <router-link :to="{ name: 'home' }">
+              <el-button type="text"> ENG</el-button>
+            </router-link>
+          </div>
 
           <el-menu
-            :default-active="1"
+            v-if="user.isLogin"
+            :default-active="3"
             class="el-menu-demo"
             mode="horizontal"
             @select="handleSelect"
@@ -48,20 +56,22 @@
             active-text-color="#409eff">
 
             <el-submenu index="1" :popper-append-to-body="false">
-              <template #title>帮助</template>
+              <template #title><i class="el-icon-question"></i></template>
               <el-menu-item index="1-1">操作手册</el-menu-item>
               <el-menu-item index="1-2">API</el-menu-item>
             </el-submenu>
 
             <el-submenu index="2" :popper-append-to-body="false">
-              <template #title>消息通知</template>
+              <template #title><i class="el-icon-message-solid"></i></template>
               <el-menu-item index="2-1">系统通知：您的资源已经超期。</el-menu-item>
               <el-menu-item index="2-2">管理员通知：系统将在如下日期进行升级。。。</el-menu-item>
             </el-submenu>
 
             <el-submenu index="3" :popper-append-to-body="false">
-              <template #title>{{ user.name }}的信息</template>
-              <el-menu-item index="3-1">个人设置</el-menu-item>
+              <template #title>
+                <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
+              </template>
+              <el-menu-item index="3-1">{{ user.name }}的个人设置</el-menu-item>
               <el-menu-item index="3-2">退出登录</el-menu-item>
             </el-submenu>
 
@@ -96,31 +106,47 @@ export default defineComponent({
 <style scoped>
 .GlobalHeader {
 }
+
 .el-row {
   z-index: 10;
   padding-left: 10px;
   padding-top: 10px;
   background-color: #040c20;
 }
+
 .grid-content {
   height: 50px;
   float: left;
   color: #ffffff;
 }
+
 .logo {
   height: 40px;
 }
+
 .el-menu {
   top: -10px;
 }
+
+.middle-col {
+  float: right;
+}
+
 .el-menu.el-menu--horizontal {
   border-bottom: none;
 }
-.right-most {
+
+.float-to-right {
   float: right;
 }
+
 .el-submenu >>> .el-popper.is-light {
   border: none;
   background-color: transparent;
+}
+
+.button-login {
+  padding: 5px 25px;
+  margin: 0px 5px;
 }
 </style>

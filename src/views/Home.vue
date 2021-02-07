@@ -13,7 +13,7 @@
               src="@/assets/logo.png"
               alt=""
             /> -->
-            <div class="carousel-text">{{ currentPosition }}</div>
+            <div class="carousel-text">Welcome</div>
           </div>
         </el-carousel-item>
       </el-carousel>

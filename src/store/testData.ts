@@ -1,9 +1,16 @@
 import { UserProps, PositionProps } from '@/store/index.ts'
 
-export const testUser: UserProps = {
+export const testUserLogged: UserProps = {
   isLogin: true,
   name: 'TestUser@user',
   id: 1,
+  role: 'user'
+}
+
+export const testUserNotLogged: UserProps = {
+  isLogin: false,
+  name: 'TestUser@user',
+  id: 2,
   role: 'user'
 }
 

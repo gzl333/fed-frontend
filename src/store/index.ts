@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
 
-import { testUser, testPosition } from '@/store/testData.ts'
+import { testUserLogged, testUserNotLogged, testPosition } from '@/store/testData.ts'
 
 // data interfaces
 export interface UserProps {
@@ -20,7 +20,7 @@ export interface GlobalDataProps {
 // main store
 export default createStore<GlobalDataProps>({
   state: {
-    user: testUser,
+    user: testUserNotLogged,
     position: testPosition
   },
   mutations: {
