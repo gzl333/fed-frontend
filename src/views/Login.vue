@@ -2,7 +2,7 @@
   <el-scrollbar>
     <div class="Login">
         <el-row >
-          <el-col :xs="4" :sm="6" :md="8" :lg="9" :xl="11">
+          <el-col :xs="12" :sm="12" :md="12" :lg="12" :xl="12">
             <div class="login-main">
               <div>科技云通行证登录</div>
               <el-input v-model="inputAccount" placeholder="账号"></el-input>
