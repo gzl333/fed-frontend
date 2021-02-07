@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
 
-import { testUserLogged, testUserNotLogged, testPosition } from '@/store/testData.ts'
+import { testPosition } from '@/store/testData.ts'
 
 // data interfaces
 export interface UserProps {
@@ -17,15 +17,29 @@ export interface GlobalDataProps {
   position: PositionProps;
 }
 
+// default user not logged
+const defaultUser: UserProps = {
+  isLogin: false,
+  id: 0
+}
+
 // main store
 export default createStore<GlobalDataProps>({
   state: {
-    user: testUserNotLogged,
-    position: testPosition
+    user: defaultUser,
+    position: []
   },
   mutations: {
     updatePosition (state, payload: string[]) {
       state.position = payload
+    },
+    loginUser (state, payload: UserProps) {
+      state.user = payload
+      // save to localStorage
+    },
+    logoutUser (state) {
+      state.user = defaultUser
+      // clear localStorage
     }
   },
   getters: {

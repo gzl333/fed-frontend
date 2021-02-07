@@ -6,16 +6,16 @@
           <router-link :to="{ name: 'home' }">
             <img src="@/assets/banner.png" class="logo"/>
           </router-link>
-          <router-link :to="{ name: 'main' }">
-            <button>dev进入后台</button>
-          </router-link>
+          <!--          <router-link :to="{ name: 'main' }">-->
+          <!--            <button>dev进入后台</button>-->
+          <!--          </router-link>-->
         </div>
       </el-col>
 
       <el-col :xs="0" :sm="10" :md="12" :lg="8" :xl="8">
         <div class="grid-content float-to-right">
           <el-menu
-            v-if="!user.isLogin"
+            v-if="currentPosition === 'Home'"
             :default-active="1"
             mode="horizontal"
             background-color="transparent"
@@ -23,10 +23,21 @@
             active-text-color="#409eff"
             router="true"
           >
-            <el-menu-item index="1" class="item-on-show" :route="{ name: 'home' }">首页</el-menu-item>
-            <el-menu-item index="2" class="item-on-show" :route="{ name: 'home' }">资源&服务</el-menu-item>
-            <el-menu-item index="3" class="item-on-show" :route="{ name: 'home' }">资源提供者</el-menu-item>
-            <el-menu-item index="4" class="item-on-show" :route="{ name: 'home' }">开发者</el-menu-item>
+            <el-menu-item index="1" v-if="!user.isLogin" class="item-on-show" :route="{ name: 'home' }">
+              首页
+            </el-menu-item>
+            <el-menu-item index="2" v-if="!user.isLogin" class="item-on-show" :route="{ name: 'home' }">
+              资源&服务
+            </el-menu-item>
+            <el-menu-item index="3" v-if="!user.isLogin" class="item-on-show" :route="{ name: 'home' }">
+              资源提供者
+            </el-menu-item>
+            <el-menu-item index="4" v-if="!user.isLogin" class="item-on-show" :route="{ name: 'home' }">
+              开发者
+            </el-menu-item>
+            <div v-else>
+              <el-menu-item index="5" class="item-on-show" :route="{ name: 'main' }">使用资源</el-menu-item>
+            </div>
           </el-menu>
         </div>
       </el-col>
@@ -72,7 +83,7 @@
                 <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"></el-avatar>
               </template>
               <el-menu-item index="3-1">{{ user.name }}的个人设置</el-menu-item>
-              <el-menu-item index="3-2">退出登录</el-menu-item>
+              <el-menu-item index="3-2" @click="handleLogout">退出登录</el-menu-item>
             </el-submenu>
 
           </el-menu>
@@ -85,6 +96,7 @@
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import { GlobalDataProps } from '@/store/index.ts'
 
 export default defineComponent({
@@ -92,12 +104,18 @@ export default defineComponent({
   components: {},
   props: {},
   setup () {
-    const notificationValue = 2
     const store = useStore<GlobalDataProps>()
+    const router = useRouter()
+    const currentPosition = computed(() => store.state.position.slice(-1)[0])
     const user = computed(() => store.state.user)
+    const handleLogout = () => {
+      store.commit('logoutUser')
+      router.push({ name: 'home' })
+    }
     return {
       user,
-      notificationValue
+      currentPosition,
+      handleLogout
     }
   }
 })
