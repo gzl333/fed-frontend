@@ -6,9 +6,6 @@
           <router-link :to="{ name: 'home' }">
             <img src="@/assets/banner.png" class="logo"/>
           </router-link>
-          <!--          <router-link :to="{ name: 'main' }">-->
-          <!--            <button>dev进入后台</button>-->
-          <!--          </router-link>-->
         </div>
       </el-col>
 
@@ -106,6 +103,7 @@ export default defineComponent({
   setup () {
     const store = useStore<GlobalDataProps>()
     const router = useRouter()
+    store.commit('loadLoggedUser')
     const currentPosition = computed(() => store.state.position.slice(-1)[0])
     const user = computed(() => store.state.user)
     const handleLogout = () => {
