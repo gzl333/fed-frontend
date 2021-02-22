@@ -16,7 +16,7 @@ https://github.com/coreybutler/nvm-windows/releases/download/1.1.7/nvm-setup.zip
 ```
 3. 进入PowerShell命令行，并执行以下命令：
 ```
-nvm node_mirror https://npm.taobao.org/mirrors/node/    
+nvm node_mirror https://npm.taobao.org/mirrors/node/
                          //使用taobao的nodejs源，在国内网速较快
 nvm install 14.15.3      //安装14.15.3版本的nodejs，也可根据个人需求额外安装其它版本
 nvm list                 //查看已经安装的nodejs版本
@@ -66,12 +66,16 @@ npm install
 
 ### 3. 开发模式运行：会对项目进行编译及热更新
 ```
-npm run serve
+npm run dev
+或
+quasar dev
 ```
 
 ### 4. 生产模式打包：会对项目进行编译及压缩
 ```
 npm run build
+或
+quasar build
 ```
 
 ### 5. 代码自动审查修复
@@ -81,7 +85,7 @@ npm run lint
 
 ## VSCode开发工具搭建(根据情况与WebStorm二选一)
 ### 1. 下载并安装VSCode软件
-安装过程中，在**选择附加任务**一页，将全部任务勾选，方便开发中使用。    
+安装过程中，在**选择附加任务**一页，将全部任务勾选，方便开发中使用。
 如下所示：
 ```
  附加任务:
@@ -95,13 +99,13 @@ npm run lint
 ```
 
 ### 2. 在VSCode中安装ESLint插件，版本在v2.1以上
-这里使用其代码审查、代码格式化功能。  
-ESlint安装后，会请求调用本地项目中ESLint模块的权限，点击Allow Everywhere。  
+这里使用其代码审查、代码格式化功能。
+ESlint安装后，会请求调用本地项目中ESLint模块的权限，点击Allow Everywhere。
 
 ### 3. 在VSCode中安装Vetur插件，版本在v0.31以上
-这里使用其Vue3代码高亮及提示功能。  
+这里使用其Vue3代码高亮及提示功能。
 
 ## DEBUG
 ### 1. git pull最新代码后，执行npm run serve显示缺少module或其它问题，导致无法运行
-可能原因：项目仍在初期阶段，package.json中的配置随时可能修改，导致新配置的包需要手动安装。  
-解决方案：在项目根目录下，执行：npm install   
+可能原因：项目仍在初期阶段，package.json中的配置随时可能修改，导致新配置的包需要手动安装。
+解决方案：在项目根目录下，执行：npm install

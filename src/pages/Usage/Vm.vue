@@ -1,24 +1,24 @@
 <template>
-  <div class="$TM_FILENAME_BASE">this is $TM_FILENAME_BASE</div>
+  <div class="Vm">this is Vm</div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: '$TM_FILENAME_BASE',
+  name: 'Vm',
   components: {
   },
   props: {
   },
   setup () {
-    return{
+    return {
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.$TM_FILENAME_BASE {
+.Vm {
 }
 </style>

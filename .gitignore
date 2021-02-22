@@ -16,6 +16,9 @@
 # macOS
 .DS_Store
 
+# Quasar
+.quasar
+
 # Vue.js
 node_modules
 /dist

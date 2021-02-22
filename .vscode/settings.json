@@ -6,6 +6,7 @@
     "editor.codeActionsOnSave": {
         "source.fixAll.eslint": true //lint and fix on save
     },
+    "editor.mouseWheelZoom": true,
     "[html]": {
         "editor.defaultFormatter": "dbaeumer.vscode-eslint"
     },

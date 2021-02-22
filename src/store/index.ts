@@ -1,52 +1,35 @@
+import { store } from 'quasar/wrappers'
 import { createStore } from 'vuex'
 
-// data interfaces
-export interface UserProps {
-  isLogin: boolean;
-  id?: number;
-  name: string;
-  role?: 'user'|'manager'|'provider'|'vo';
+// import example from './module-example'
+// import { ExampleStateInterface } from './module-example/state';
+
+/*
+ * If not building with SSR mode, you can
+ * directly export the Store instantiation;
+ *
+ * The function below can be async too; either use
+ * async/await or return a Promise which resolves
+ * with the Store instance.
+ */
+
+export interface StateInterface {
+  // Define your own store structure, using submodules if needed
+  // example: ExampleStateInterface;
+  // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
+  example: unknown;
 }
 
-export type PositionProps = string[]
+export default store(function (/* { ssrContext } */) {
+  const Store = createStore<StateInterface>({
+    modules: {
+      // example
+    },
 
-export interface GlobalDataProps {
-  token: string;
-  user: UserProps;
-  position: PositionProps;
-}
+    // enable strict mode (adds overhead!)
+    // for dev mode and --debug builds only
+    strict: !!process.env.DEBUGGING
+  })
 
-// main store
-export default createStore<GlobalDataProps>({
-  state: {
-    token: localStorage.getItem('token') || '',
-    user: { isLogin: false, name: 'default' },
-    position: []
-  },
-  mutations: {
-    updatePosition (state, payload: string[]) {
-      state.position = payload
-    },
-    loadLoggedUser (state) {
-      if (state.token === 'testAdmin') {
-        state.user = { isLogin: true, name: state.token }
-      }
-    },
-    loginUser (state, payload: UserProps) {
-      state.user = payload
-      state.token = state.user.name
-      localStorage.setItem('token', state.user.name)
-    },
-    logoutUser (state) {
-      state.user = { isLogin: false, name: 'default' }
-      state.token = ''
-      localStorage.clear()
-    }
-  },
-  getters: {
-  },
-  actions: {
-  },
-  modules: {
-  }
+  return Store
 })
