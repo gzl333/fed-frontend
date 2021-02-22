@@ -1,10 +1,19 @@
-export interface ExampleStateInterface {
-  prop: boolean;
+export interface UserInterface {
+  isLogin: boolean;
+  token?: {
+    access: string;
+    refresh: string;
+  }
+  email?: string
+}
+export interface ApiJwtInterface {
+  access: string;
+  refresh: string;
 }
 
-function state (): ExampleStateInterface {
+function state (): UserInterface {
   return {
-    prop: false
+    isLogin: false
   }
 }
 
