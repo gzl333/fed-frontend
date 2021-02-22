@@ -10,10 +10,10 @@
 
         <q-space/>
         <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn round dense flat color="grey-5" icon="library_books" v-if="$q.screen.gt.sm" @click="toggleRightDrawer">
+          <q-btn round dense flat color="grey-5" icon="library_books" v-if="$q.screen.gt.sm">
             <q-tooltip>使用手册</q-tooltip>
           </q-btn>
-          <q-btn round dense flat color="grey-5" icon="notifications" @click="toggleRightDrawer">
+          <q-btn round dense flat color="grey-5" icon="notifications" >
             <q-badge color="red" text-color="white" floating>
               2
             </q-badge>

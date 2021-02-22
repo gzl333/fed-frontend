@@ -52,6 +52,8 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
+import { useStore } from 'vuex'
+import { StateInterface } from '../store'
 import axios, { AxiosError, AxiosResponse } from 'axios'
 
 export default defineComponent({
@@ -59,12 +61,14 @@ export default defineComponent({
   components: {},
   props: {},
   setup () {
+    const $store = useStore<StateInterface>()
+
     const username = ref('zlguo@cnic.cn')
     const password = ref('gosc2020')
     const isPwd = ref(true)
     const isShowWarning = ref(false)
 
-    const router = useRouter()
+    const $router = useRouter()
     const apiBaseDev = 'api_dev'
     const apiBaseProd = 'http://gosc.cstcloud.cn/api'
     const apiBase = process.env.NODE_ENV === 'production' ? apiBaseProd : apiBaseDev
@@ -81,12 +85,12 @@ export default defineComponent({
       axios.post(api, data)
         .then((response: AxiosResponse) => {
           if (response.status === 200) {
+            console.log(response.data)
             isLogging.value = false
             // save jwt in vuex
-            console.log(response.data.access!)
-            console.log(response.data.refresh!)
+            $store.commit('user/login', { ...response.data })
             // redirect to /my
-            router.push('/my')
+            $router.push('/my')
           }
         })
         .catch((error: AxiosError) => {
