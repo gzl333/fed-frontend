@@ -18,6 +18,7 @@
 
 # Quasar
 .quasar
+.src/store.store-flag.d.ts
 
 # Vue.js
 node_modules
