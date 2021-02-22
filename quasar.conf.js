@@ -86,7 +86,6 @@ module.exports = configure(function (/* ctx */) {
       port: 8080,
       open: true, // opens browser window automatically
       proxy: {
-        // in dev env, proxy all requests starting with /api_dev to real API
         '/api_dev': {
           target: 'http://gosc.cstcloud.cn/api',
           changeOrigin: true,
