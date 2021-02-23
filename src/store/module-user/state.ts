@@ -11,7 +11,7 @@ export interface ApiJwtInterface {
   refresh: string;
 }
 
-function state (): UserInterface {
+function state () {
   return {
     isLogin: false
   }

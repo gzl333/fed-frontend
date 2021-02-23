@@ -7,7 +7,7 @@
             <img src="logo.png" class="logo"/>
           </q-btn>
         </q-toolbar-title>
-
+        <router-link :to="{path: '/'}" class="text-nord7">DEV: goto HOME</router-link>
         <q-space/>
         <div class="q-gutter-sm row items-center no-wrap">
           <q-btn round dense flat color="grey-5" icon="library_books" v-if="$q.screen.gt.sm">
@@ -19,7 +19,7 @@
             </q-badge>
             <q-tooltip>系统消息</q-tooltip>
           </q-btn>
-          <q-btn round flat @click="toggleRightDrawer">
+          <q-btn round flat @click="toggleUserDrawer">
             <q-avatar size="26px">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png">
             </q-avatar>
@@ -137,9 +137,9 @@
         </q-list>
       </q-scroll-area>
     </q-drawer>
-    <q-drawer v-model="rightDrawerOpen" side="right" bordered :width="300">
-      <!-- drawer content -->
-      右侧工具栏
+
+    <q-drawer v-model="userDrawerOpen" side="right" bordered :width="300">
+     <user-drawer/>
     </q-drawer>
 
     <q-page-container>
@@ -150,21 +150,27 @@
 
 <script>
 import { ref } from 'vue'
+import UserDrawer from '../components/UserDrawer'
 
 export default {
+  name: 'MyLayout.vue',
+  components: {
+    UserDrawer
+  },
+  props: {},
   setup () {
     const leftDrawerOpen = ref(false)
-    const rightDrawerOpen = ref(false)
+    const userDrawerOpen = ref(false)
     const miniState = ref(true)
-    const toggleRightDrawer = () => {
-      rightDrawerOpen.value = !rightDrawerOpen.value
+    const toggleUserDrawer = () => {
+      userDrawerOpen.value = !userDrawerOpen.value
     }
     const activeItem = ref('main')
     return {
       miniState,
       leftDrawerOpen,
-      rightDrawerOpen,
-      toggleRightDrawer,
+      userDrawerOpen,
+      toggleUserDrawer,
       activeItem
     }
   }

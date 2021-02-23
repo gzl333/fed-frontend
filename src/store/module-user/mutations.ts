@@ -1,21 +1,29 @@
 import { MutationTree } from 'vuex'
 import { ApiJwtInterface, UserInterface } from './state'
+// import axios from 'axios'
 
 const mutation: MutationTree<UserInterface> = {
-  login (user: UserInterface, payload:ApiJwtInterface) {
-    // 注意此时第一个参数是store.user，而不是store
-    user.isLogin = true
-    user.token = payload
-    // save token to localStorage
-    localStorage.setItem('tokenAccess', user.token.access)
-    localStorage.setItem('tokenRefresh', user.token.refresh)
+  storeToken (context:UserInterface, payload:ApiJwtInterface) {
+    // 注意此时context是store.state.user，而不是store.state
+    // vuex
+    context.isLogin = true
+    context.token = payload
+    // localStorage
+    localStorage.setItem('tokenAccess', context.token.access)
+    localStorage.setItem('tokenRefresh', context.token.refresh)
+    // axios header
+    // axios.defaults.headers.common.Authorization = `Bearer ${context.token.access}`
+    console.log(context)
   },
-  logout (user: UserInterface) {
-    user.isLogin = false
-    delete user.token
-    // remove token in localStorage
-    // localStorage.remove('tokenAccess')
-    // localStorage.remove('tokenRefresh')
+  deleteToken (context: UserInterface) {
+    // vuex
+    context.isLogin = false
+    delete context.token
+    // localStorage
+    localStorage.removeItem('tokenAccess')
+    localStorage.removeItem('tokenRefresh')
+    // axios header
+    // delete axios.defaults.headers.common.Authorization
   }
 }
 
