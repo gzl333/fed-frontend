@@ -3,7 +3,7 @@ import { ExampleStateInterface } from './state'
 
 const mutation: MutationTree<ExampleStateInterface> = {
   someMutation (/* state: ExampleStateInterface */) {
-    // your code
+    // this.$router.push
   }
 }
 

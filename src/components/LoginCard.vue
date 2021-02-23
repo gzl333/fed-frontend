@@ -51,7 +51,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { StateInterface } from '../store'
 import axios, { AxiosError, AxiosResponse } from 'axios'
@@ -62,7 +62,7 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const $router = useRouter()
+    // const $router = useRouter()
 
     const username = ref('zlguo@cnic.cn')
     const password = ref('gosc2020')
@@ -83,19 +83,19 @@ export default defineComponent({
         password: password.value
       }
       axios.post(api, data)
-        .then((response: AxiosResponse) => {
+        .then((response) => {
           if (response.status === 200) {
             // console.log(response.data)
             isLogging.value = false
             // save jwt in vuex
             $store.commit('user/storeToken', { ...response.data })
             // redirect to /my
-            void $router.push({ path: '/my' })
+            // void $router.push({ path: '/my' })
           }
         })
-        .catch((error: AxiosError) => {
+        .catch((error) => {
           isLogging.value = false
-          if (error.response!.status === 401) {
+          if (error.response && error.response.status === 401) {
             warningContent.value = '电子邮箱地址或密码错误'
             isShowWarning.value = true
             isLogging.value = false

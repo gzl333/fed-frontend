@@ -8,8 +8,6 @@ import {
 import { StateInterface } from '../store'
 import routes from './routes'
 
-// import { useStore } from 'vuex'
-// const $store = useStore<StateInterface>()
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;
@@ -38,12 +36,12 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
       process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE
     )
   })
+
   Router.beforeEach((to, from, next) => {
     // console.log('in router: logging store...', store)
     // console.log('in router: logging isLogin', store.state.user.isLogin)
     // console.log('in router: logging meta', to.meta.myPages)
-
-    // void $store.dispatch('user/reloadToken') // todo can I put reloadToken here???
+    // todo can I put reloadToken here??? No,dont reload token on every route!
 
     if (to.meta.myPages && !store.state.user.isLogin) {
       alert('need login but not, goto home')

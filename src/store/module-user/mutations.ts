@@ -5,6 +5,7 @@ import { ApiJwtInterface, UserInterface } from './state'
 const mutation: MutationTree<UserInterface> = {
   storeToken (context:UserInterface, payload:ApiJwtInterface) {
     // 注意此时context是store.state.user，而不是store.state
+
     // vuex
     context.isLogin = true
     context.token = payload
@@ -13,7 +14,11 @@ const mutation: MutationTree<UserInterface> = {
     localStorage.setItem('tokenRefresh', context.token.refresh)
     // axios header
     // axios.defaults.headers.common.Authorization = `Bearer ${context.token.access}`
-    console.log(context)
+
+    // redirect should be added here!!!
+    alert('before router push of storeToken')
+    console.log('this', this)
+    console.log('context', context)
   },
   deleteToken (context: UserInterface) {
     // vuex
