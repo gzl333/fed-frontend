@@ -7,6 +7,7 @@
             <img src="logo.png" class="logo">
           </q-btn>
         </q-toolbar-title>
+        <q-btn label="log store" @click="logStore"/>
         <!--        <pre class="q-ma-none container">{{ scrollTop }}, {{scrollRatio}}</pre>-->
         <q-space/>
         <!--        <q-separator vertical v-if="scrollRatio===0.6"/>-->
@@ -70,11 +71,13 @@ import { computed, defineComponent, ref } from 'vue'
 import { scroll } from 'quasar'
 import LoginCard from 'components/LoginCard.vue'
 
+import { useStore } from 'vuex'
+import { StateInterface } from 'src/store'
+
 const {
   getScrollTarget,
   setVerticalScrollPosition
 } = scroll
-
 export default defineComponent({
   name: 'HomeLayout.vue',
   components: {
@@ -82,6 +85,11 @@ export default defineComponent({
   },
   props: {},
   setup () {
+    const $store = useStore<StateInterface>()
+    const logStore = () => {
+      console.log($store.state.user.isLogin)
+    }
+
     // jump within the page
     function scrollToElement (el: any) {
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -109,7 +117,8 @@ export default defineComponent({
       onScroll,
       scrollRatio,
       dynamicBackground,
-      scrollToElement
+      scrollToElement,
+      logStore
     }
   }
 })

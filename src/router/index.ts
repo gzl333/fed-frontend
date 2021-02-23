@@ -8,6 +8,8 @@ import {
 import { StateInterface } from '../store'
 import routes from './routes'
 
+// import { useStore } from 'vuex'
+// const $store = useStore<StateInterface>()
 /*
  * If not building with SSR mode, you can
  * directly export the Router instantiation;
@@ -17,7 +19,7 @@ import routes from './routes'
  * with the Router instance.
  */
 
-export default route<StateInterface>(function (/* { store, ssrContext } */) {
+export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
   const createHistory =
     process.env.SERVER
       ? createMemoryHistory
@@ -35,6 +37,26 @@ export default route<StateInterface>(function (/* { store, ssrContext } */) {
     history: createHistory(
       process.env.MODE === 'ssr' ? void 0 : process.env.VUE_ROUTER_BASE
     )
+  })
+  Router.beforeEach((to, from, next) => {
+    // console.log('in router: logging store...', store)
+    // console.log('in router: logging isLogin', store.state.user.isLogin)
+    // console.log('in router: logging meta', to.meta.myPages)
+
+    // void $store.dispatch('user/reloadToken') // todo can I put reloadToken here???
+
+    if (to.meta.myPages && !store.state.user.isLogin) {
+      alert('need login but not, goto home')
+      next({ path: '/' })
+    }
+    if (!to.meta.myPages && store.state.user.isLogin) {
+      alert('already login, goto my')
+      next({ path: '/my' })
+    }
+    if (to.meta.title) {
+      document.title = to.meta.title
+    }
+    next()
   })
 
   return Router

@@ -62,13 +62,13 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
+    const $router = useRouter()
 
     const username = ref('zlguo@cnic.cn')
     const password = ref('gosc2020')
     const isPwd = ref(true)
     const isShowWarning = ref(false)
 
-    const $router = useRouter()
     const apiBaseDev = 'api_dev'
     const apiBaseProd = 'http://gosc.cstcloud.cn/api'
     const apiBase = process.env.NODE_ENV === 'production' ? apiBaseProd : apiBaseDev
@@ -85,12 +85,12 @@ export default defineComponent({
       axios.post(api, data)
         .then((response: AxiosResponse) => {
           if (response.status === 200) {
-            console.log(response.data)
+            // console.log(response.data)
             isLogging.value = false
             // save jwt in vuex
-            $store.commit('user/login', { ...response.data })
+            $store.commit('user/storeToken', { ...response.data })
             // redirect to /my
-            $router.push('/my')
+            void $router.push({ path: '/my' })
           }
         })
         .catch((error: AxiosError) => {
