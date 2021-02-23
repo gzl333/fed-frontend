@@ -3,9 +3,6 @@ import { StateInterface } from '../index'
 import { ApiJwtInterface, UserInterface } from './state'
 import axios from 'axios'
 
-import { useRouter } from 'vue-router'
-const $router = useRouter()
-
 const actions: ActionTree<UserInterface, StateInterface> = {
   reloadToken (context) {
     console.log('$$$$$ store reloading token...')
@@ -16,10 +13,10 @@ const actions: ActionTree<UserInterface, StateInterface> = {
       }
       void context.dispatch('verifyToken', localToken)
         .then(() => {
+          alert('before storeToken in reloadToken')
           context.commit('storeToken', localToken)
-          alert('before router.push')
-          void $router.push({ path: '/my' }) // todo why not working??? this is the only problem now!!
         }).catch(() => {
+          alert('before remove in reloadToken')
           localStorage.removeItem('tokenAccess')
           localStorage.removeItem('tokenRefresh')
         })

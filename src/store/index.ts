@@ -1,7 +1,8 @@
 import { createStore } from 'vuex'
 
 // import example from './module-example'
-// import { ExampleStateInterface } from './module-example/state';
+// import { ExampleStateInterface } from './module-example/state'
+
 import user from './module-user'
 import { UserInterface } from 'src/store/module-user/state'
 /*
@@ -15,11 +16,13 @@ import { UserInterface } from 'src/store/module-user/state'
 
 export interface StateInterface {
   user: UserInterface
+  // example: ExampleStateInterface
 }
 
 const store = createStore<StateInterface>({
   modules: {
     user
+    // example
   },
 
   // enable strict mode (adds overhead!)
