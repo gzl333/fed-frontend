@@ -7,7 +7,7 @@
             <img src="logo.png" class="logo">
           </q-btn>
         </q-toolbar-title>
-        <q-btn label="log store" @click="logStore"/>
+<!--        <q-btn label="LOG" @click="logJWT"/>-->
         <!--        <pre class="q-ma-none container">{{ scrollTop }}, {{scrollRatio}}</pre>-->
         <q-space/>
         <!--        <q-separator vertical v-if="scrollRatio===0.6"/>-->
@@ -71,8 +71,8 @@ import { computed, defineComponent, ref } from 'vue'
 import { scroll } from 'quasar'
 import LoginCard from 'components/LoginCard.vue'
 
-import { useStore } from 'vuex'
-import { StateInterface } from 'src/store'
+// import { useStore } from 'vuex'
+// import { StateInterface } from 'src/store'
 
 const {
   getScrollTarget,
@@ -85,10 +85,10 @@ export default defineComponent({
   },
   props: {},
   setup () {
-    const $store = useStore<StateInterface>()
-    const logStore = () => {
-      console.log($store.state.user.isLogin)
-    }
+    // const $store = useStore<StateInterface>()
+    // const logJWT = () => {
+    //   void $store.dispatch('retainToken')
+    // }
 
     // jump within the page
     function scrollToElement (el: any) {
@@ -117,8 +117,7 @@ export default defineComponent({
       onScroll,
       scrollRatio,
       dynamicBackground,
-      scrollToElement,
-      logStore
+      scrollToElement
     }
   }
 })

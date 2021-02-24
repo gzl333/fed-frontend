@@ -1,19 +1,21 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated class="bg-nord0 text-white">
+    <q-header elevated class="bg-nord0 text-white q-pa-xs">
       <q-toolbar>
         <q-toolbar-title>
           <q-btn :ripple="false" to="/my" dense>
             <img src="logo.png" class="logo"/>
           </q-btn>
         </q-toolbar-title>
-        <router-link :to="{path: '/'}" class="text-nord7">DEV: goto HOME</router-link>
+<!--        <q-btn label="LOG" @click="logJWT"/>-->
+
+        <!--        <router-link :to="{path: '/'}" class="text-nord7">DEV: goto HOME</router-link>-->
         <q-space/>
-        <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn round dense flat color="grey-5" icon="library_books" v-if="$q.screen.gt.sm">
+        <div class="q-gutter-md row items-center no-wrap">
+          <q-btn round  flat color="grey-5" icon="library_books" v-if="$q.screen.gt.sm">
             <q-tooltip>使用手册</q-tooltip>
           </q-btn>
-          <q-btn round dense flat color="grey-5" icon="notifications" >
+          <q-btn round flat color="grey-5" icon="notifications" @click="toggleMsgDrawer" >
             <q-badge color="red" text-color="white" floating>
               2
             </q-badge>
@@ -32,13 +34,9 @@
     <q-drawer
       v-model="leftDrawerOpen"
       show-if-above
-      :mini="miniState"
-      @mouseover="miniState = false"
-      @mouseout="miniState = true"
-      mini-to-overlay
       :width="165"
       :breakpoint="500"
-      class="bg-nord1 text-white"
+      class="bg-nord3 text-white"
     >
       <q-scroll-area class="fit">
         <q-list >
@@ -70,65 +68,63 @@
 
           <q-separator/>
 
-          <q-item clickable>
+          <q-item clickable disable >
             <q-item-section avatar>
               <q-icon name="group"/>
             </q-item-section>
             <q-item-section> 我的小组</q-item-section>
           </q-item>
 
-          <q-item clickable>
+          <q-item clickable disable>
             <q-item-section avatar>
               <q-icon name="paid"/>
             </q-item-section>
             <q-item-section> 结算计费</q-item-section>
           </q-item>
 
-          <q-item clickable>
+          <q-item clickable disable>
             <q-item-section avatar>
               <q-icon name="cloud_upload"/>
             </q-item-section>
             <q-item-section> 已供资源</q-item-section>
           </q-item>
 
-          <q-separator/>
-
-          <q-item clickable>
+          <q-item clickable disable>
             <q-item-section avatar>
               <q-icon name="help_center"/>
             </q-item-section>
             <q-item-section> 工单服务</q-item-section>
           </q-item>
 
-          <q-item clickable>
+          <q-item clickable disable>
             <q-item-section avatar>
               <q-icon name="build_circle"/>
             </q-item-section>
             <q-item-section> 资源管理</q-item-section>
           </q-item>
 
-          <q-item clickable>
+          <q-item clickable disable>
             <q-item-section avatar>
               <q-icon name="visibility"/>
             </q-item-section>
             <q-item-section> 计量监测</q-item-section>
           </q-item>
 
-          <q-item clickable>
+          <q-item clickable disable>
             <q-item-section avatar>
               <q-icon name="analytics"/>
             </q-item-section>
             <q-item-section> 统计报表</q-item-section>
           </q-item>
 
-          <q-item clickable>
+          <q-item clickable disable>
             <q-item-section avatar>
               <q-icon name="construction"/>
             </q-item-section>
             <q-item-section> 联邦维护</q-item-section>
           </q-item>
 
-          <q-item clickable>
+          <q-item clickable disable>
             <q-item-section avatar>
               <q-icon name="switch_account"/>
             </q-item-section>
@@ -143,7 +139,7 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view/>
+        <router-view/>
     </q-page-container>
   </q-layout>
 </template>
@@ -161,16 +157,22 @@ export default {
   setup () {
     const leftDrawerOpen = ref(false)
     const userDrawerOpen = ref(false)
-    const miniState = ref(true)
     const toggleUserDrawer = () => {
       userDrawerOpen.value = !userDrawerOpen.value
     }
+
+    const msgDrawerOpen = ref(false)
+    const toggleMsgDrawer = () => {
+      msgDrawerOpen.value = !msgDrawerOpen.value
+    }
     const activeItem = ref('main')
+
     return {
-      miniState,
       leftDrawerOpen,
       userDrawerOpen,
+      msgDrawerOpen,
       toggleUserDrawer,
+      toggleMsgDrawer,
       activeItem
     }
   }
@@ -185,4 +187,5 @@ export default {
   color: white;
   background: $nord7;
 }
+
 </style>

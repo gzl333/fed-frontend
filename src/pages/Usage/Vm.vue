@@ -1,6 +1,8 @@
 <template>
   <div class="Vm">this is Vm
-  <pre>{{currentUser}}</pre></div>
+    <q-btn label="logJWT" @click="logJWT"/>
+<!--  <pre>{{currentUser}}</pre>-->
+  </div>
 </template>
 
 <script lang="ts">
@@ -17,8 +19,10 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
     const currentUser = $store.state.user
+    const logJWT = () => $store.dispatch('user/retainToken')
     return {
-      currentUser
+      currentUser,
+      logJWT
     }
   }
 })
