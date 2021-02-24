@@ -17,6 +17,8 @@ import routes from './routes'
  * with the Router instance.
  */
 
+let Router
+
 export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
   const createHistory =
     process.env.SERVER
@@ -25,7 +27,7 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
         ? createWebHistory
         : createWebHashHistory
 
-  const Router = createRouter({
+  Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
 
@@ -38,17 +40,10 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
   })
 
   Router.beforeEach((to, from, next) => {
-    // console.log('in router: logging store...', store)
-    // console.log('in router: logging isLogin', store.state.user.isLogin)
-    // console.log('in router: logging meta', to.meta.myPages)
-    // todo can I put reloadToken here??? No,dont reload token on every route!
-
     if (to.meta.myPages && !store.state.user.isLogin) {
-      alert('need login but not, goto home')
       next({ path: '/' })
     }
     if (!to.meta.myPages && store.state.user.isLogin) {
-      alert('already login, goto my')
       next({ path: '/my' })
     }
     if (to.meta.title) {
@@ -59,3 +54,5 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
 
   return Router
 })
+
+export { Router }

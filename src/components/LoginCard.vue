@@ -54,7 +54,6 @@ import { defineComponent, ref } from 'vue'
 // import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { StateInterface } from '../store'
-import axios, { AxiosError, AxiosResponse } from 'axios'
 
 export default defineComponent({
   name: 'LoginCard',
@@ -62,47 +61,34 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    // const $router = useRouter()
 
     const username = ref('zlguo@cnic.cn')
     const password = ref('gosc2020')
     const isPwd = ref(true)
     const isShowWarning = ref(false)
 
-    const apiBaseDev = 'api_dev'
-    const apiBaseProd = 'http://gosc.cstcloud.cn/api'
-    const apiBase = process.env.NODE_ENV === 'production' ? apiBaseProd : apiBaseDev
-    const api = apiBase + '/jwt/'
     const warningContent = ref('')
     const isLogging = ref(false)
 
     const toLogin = () => {
       isLogging.value = true
-      const data = {
+      const payload = {
         username: username.value,
         password: password.value
       }
-      axios.post(api, data)
-        .then((response) => {
-          if (response.status === 200) {
-            // console.log(response.data)
-            isLogging.value = false
-            // save jwt in vuex
-            $store.commit('user/storeToken', { ...response.data })
-            // redirect to /my
-            // void $router.push({ path: '/my' })
-          }
-        })
-        .catch((error) => {
+      $store.dispatch('user/fetchToken', payload).then(response => {
+        isLogging.value = false
+        $store.commit('user/storeToken', { ...response.data })
+      }).catch(error => {
+        isLogging.value = false
+        if (error.response && error.response.status === 401) {
+          warningContent.value = '电子邮箱地址或密码错误'
+          isShowWarning.value = true
           isLogging.value = false
-          if (error.response && error.response.status === 401) {
-            warningContent.value = '电子邮箱地址或密码错误'
-            isShowWarning.value = true
-            isLogging.value = false
-          } else {
-            warningContent.value = error.message
-          }
-        })
+        } else {
+          warningContent.value = error.message
+        }
+      })
     }
     return {
       username,

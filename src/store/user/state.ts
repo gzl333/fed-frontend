@@ -10,6 +10,13 @@ export interface ApiJwtInterface {
   access: string;
   refresh: string;
 }
+export interface LoginReqInterface {
+  username: string;
+  password: string;
+}
+export interface RefreshTokenInterface {
+  refresh: string
+}
 
 function state () {
   return {

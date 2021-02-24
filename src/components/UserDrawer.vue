@@ -1,9 +1,19 @@
 <template>
   <div class="UserDrawer">
     this is UserDrawer
-    <q-btn label="退出登录" @click="logout"/>
-    <q-btn label="verifyToken" @click="reloadToken"/>
-    <q-btn label="log store" @click="logStore"/>
+    <q-img class="absolute-top" src="https://cdn.quasar.dev/img/material.png" style="height: 30vh">
+      <div class="bg-transparent absolute-center">
+        <q-avatar size="100px" class="q-mb-sm">
+          <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+        </q-avatar>
+        <div class="text-weight-bold">测试用户</div>
+        <div>@testusername</div>
+      </div>
+    </q-img>
+    <div class="absolute-center">
+      <q-btn label="退出登录" @click="logout" color="nord11"/>
+    </div>
+
   </div>
 </template>
 
@@ -26,18 +36,8 @@ export default defineComponent({
       $store.commit('user/deleteToken')
       void $router.push('/')
     }
-
-    const reloadToken = () => {
-      void $store.dispatch('user/reloadToken')
-    }
-
-    const logStore = () => {
-      console.log($store.state.user.isLogin)
-    }
     return {
-      logout,
-      reloadToken,
-      logStore
+      logout
     }
   }
 })
