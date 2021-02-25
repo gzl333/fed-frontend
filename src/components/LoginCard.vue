@@ -12,39 +12,41 @@
       <q-card-section class="">
         <q-form
           class="column items-center q-gutter-x-md q-gutter-y-lg q-mt-md "
+          @submit="toLogin"
         >
-        <q-input outlined v-model="username" placeholder="电子邮箱" lazy-rules class="login-input col" color="nord10"
-                 :rules="[ val => val.trim().length > 0 || '电子邮箱地址不可为空']">
-          <template v-slot:prepend>
-            <q-icon name="email" color="nord10"/>
-          </template>
-        </q-input>
+          <q-input outlined v-model="username" placeholder="电子邮箱" lazy-rules class="login-input col" color="nord10"
+                   :rules="[ val => val.trim().length > 0 || '电子邮箱地址不可为空']">
+            <template v-slot:prepend>
+              <q-icon name="email" color="nord10"/>
+            </template>
+          </q-input>
 
-        <q-input v-model="password" outlined :type="isPwd ? 'password' : 'text'" placeholder="密码" lazy-rules
-                 class="login-input col " color="nord10" :rules="[ val => val.trim().length > 0 || '密码不可为空']">
-          <template v-slot:prepend>
-            <q-icon name="enhanced_encryption" color="nord10"/>
-          </template>
-          <template v-slot:append>
-            <q-icon
-              :name="isPwd ? 'visibility_off' : 'visibility'"
-              class="cursor-pointer"
-              @click="isPwd = !isPwd"
-            />
-          </template>
-        </q-input>
-        <q-btn flat :ripple="false" type="a" label="忘记密码" color="nord10"
-               href="https://passport.escience.cn/findPsw.do?act=stepOne" target="_blank"
-               class="login-forget q-my-none q-mr-xl q-pa-none col self-end"/>
-        <div v-if="isShowWarning" class="login-input col text-nord11">{{warningContent}}</div>
-        <q-btn @click="toLogin" label="登 录" type="submit" color="nord10" :ripple="false"
-               class="login-btn col text-nord6" :loading="isLogging"
-        />
-        <div class="q-pa-md q-my-none">
-          没有科技云通行证账户？
-          <q-btn flat :ripple="false" type="a" label="注册" color="nord10" href="https://passport.escience.cn/regist.jsp"
-                 target="_blank" class="q-ma-none q-pa-none"/>
-        </div>
+          <q-input v-model="password" outlined :type="isPwd ? 'password' : 'text'" placeholder="密码" lazy-rules
+                   class="login-input col " color="nord10" :rules="[ val => val.trim().length > 0 || '密码不可为空']">
+            <template v-slot:prepend>
+              <q-icon name="enhanced_encryption" color="nord10"/>
+            </template>
+            <template v-slot:append>
+              <q-icon
+                :name="isPwd ? 'visibility_off' : 'visibility'"
+                class="cursor-pointer"
+                @click="isPwd = !isPwd"
+              />
+            </template>
+          </q-input>
+          <q-btn flat :ripple="false" type="a" label="忘记密码" color="nord10"
+                 href="https://passport.escience.cn/findPsw.do?act=stepOne" target="_blank"
+                 class="login-forget q-my-none q-mr-xl q-pa-none col self-end"/>
+          <div v-if="isShowWarning" class="login-input col text-nord11">{{ warningContent }}</div>
+          <q-btn  label="登 录" type="submit" color="nord10" :ripple="false"
+                 class="login-btn col text-nord6" :loading="isLogging"
+          />
+          <div class="q-pa-md q-my-none">
+            没有科技云通行证账户？
+            <q-btn flat :ripple="false" type="a" label="注册" color="nord10"
+                   href="https://passport.escience.cn/regist.jsp"
+                   target="_blank" class="q-ma-none q-pa-none"/>
+          </div>
         </q-form>
       </q-card-section>
     </q-card>
@@ -108,16 +110,19 @@ export default defineComponent({
 <style lang="scss" scoped>
 .LoginCard {
 }
+
 .login-card {
   text-align: center;
   min-width: 400px;
   min-height: 450px;
   background: transparentize($nord6, .1);
 }
+
 .login-btn {
   width: 300px;
   line-height: 45px;
 }
+
 .login-input {
   width: 300px;
 }

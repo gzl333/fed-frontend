@@ -85,16 +85,16 @@ module.exports = configure(function (/* ctx */) {
     devServer: {
       https: false,
       port: 8080,
-      open: true, // opens browser window automatically
-      proxy: {
-        '/api_dev': {
-          target: 'http://gosc.cstcloud.cn/api',
-          changeOrigin: true,
-          pathRewrite: {
-            '^/api_dev': ''
-          }
-        }
-      }
+      open: true // opens browser window automatically
+      // proxy: {
+      //   '/api_dev': {
+      //     target: 'http://gosc.cstcloud.cn/api',
+      //     changeOrigin: true,
+      //     pathRewrite: {
+      //       '^/api_dev': ''
+      //     }
+      //   }
+      // }
     },
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework

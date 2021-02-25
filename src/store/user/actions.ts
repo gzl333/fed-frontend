@@ -3,7 +3,7 @@ import { StateInterface } from '../index'
 import { ApiJwtInterface, UserInterface, LoginReqInterface, RefreshTokenInterface } from './state'
 import axios from 'axios'
 
-const apiBaseDev = 'api_dev'
+const apiBaseDev = 'http://gosc.cstcloud.cn/api' // 'api_dev'
 const apiBaseProd = 'http://gosc.cstcloud.cn/api'
 const apiBase = process.env.NODE_ENV === 'production' ? apiBaseProd : apiBaseDev
 
