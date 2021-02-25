@@ -17,7 +17,7 @@ import routes from './routes'
  * with the Router instance.
  */
 
-let Router
+let routerInstance
 
 export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
   const createHistory =
@@ -27,7 +27,7 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
         ? createWebHistory
         : createWebHashHistory
 
-  Router = createRouter({
+  const Router = createRouter({
     scrollBehavior: () => ({ left: 0, top: 0 }),
     routes,
 
@@ -55,4 +55,5 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
   return Router
 })
 
-export { Router }
+// exporting router instance
+export { routerInstance }

@@ -91,10 +91,8 @@ export default defineComponent({
     // }
 
     // jump within the page
-    function scrollToElement (el: any) {
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+    function scrollToElement (el: HTMLElement) {
       const target = getScrollTarget(el)
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment,@typescript-eslint/no-unsafe-member-access
       const offset = el.offsetTop
       const duration = 700
       setVerticalScrollPosition(target, offset, duration)
