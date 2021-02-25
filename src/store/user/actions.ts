@@ -65,7 +65,7 @@ const actions: ActionTree<UserInterface, StateInterface> = {
     })
     return resultRefresh
   },
-  retainToken (context) {
+  retainToken () {
     //
   }
 }

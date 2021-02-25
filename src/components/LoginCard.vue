@@ -9,8 +9,10 @@
 
       <q-separator color="#333" inset/>
 
-      <q-card-section class="column items-center q-gutter-x-md q-gutter-y-lg q-mt-md">
-
+      <q-card-section class="">
+        <q-form
+          class="column items-center q-gutter-x-md q-gutter-y-lg q-mt-md "
+        >
         <q-input outlined v-model="username" placeholder="电子邮箱" lazy-rules class="login-input col" color="nord10"
                  :rules="[ val => val.trim().length > 0 || '电子邮箱地址不可为空']">
           <template v-slot:prepend>
@@ -43,7 +45,7 @@
           <q-btn flat :ripple="false" type="a" label="注册" color="nord10" href="https://passport.escience.cn/regist.jsp"
                  target="_blank" class="q-ma-none q-pa-none"/>
         </div>
-
+        </q-form>
       </q-card-section>
     </q-card>
   </div>
