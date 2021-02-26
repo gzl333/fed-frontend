@@ -16,11 +16,7 @@ const actions: ActionTree<UserInterface, StateInterface> = {
         refresh: localStorage.getItem('tokenRefresh')
       }
       context.dispatch('verifyToken', localToken)
-        .then(() => {
-          context.commit('storeToken', localToken)
-        }).catch(() => {
-          context.commit('deleteToken')
-        })
+        .then(() => context.commit('storeToken', localToken), () => context.commit('deleteToken'))
     }
   },
   fetchToken (context, payload: LoginReqInterface) {
@@ -37,7 +33,7 @@ const actions: ActionTree<UserInterface, StateInterface> = {
     return resultFetch
   },
   // verify token passed in
-  verifyToken (context, payload:ApiJwtInterface) {
+  verifyToken (context, payload: ApiJwtInterface) {
     // 注意此时context.state是store.state.user，而不是store.state
     const tokenAccess = payload.access
 
@@ -53,7 +49,7 @@ const actions: ActionTree<UserInterface, StateInterface> = {
     })
     return resultVerified
   },
-  refreshToken (context, payload:RefreshTokenInterface) {
+  refreshToken (context, payload: RefreshTokenInterface) {
     const api = apiBase + '/jwt-refresh/'
     const data = payload
     const resultRefresh = axios.post(api, data).then(response => {

@@ -16,8 +16,8 @@
             <q-tooltip>使用手册</q-tooltip>
           </q-btn>
           <q-btn round flat color="grey-5" icon="notifications" @click="toggleMsgDrawer" >
-            <q-badge color="red" text-color="white" floating>
-              2
+            <q-badge color="nord11" text-color="white" floating>
+              0
             </q-badge>
             <q-tooltip>系统消息</q-tooltip>
           </q-btn>
