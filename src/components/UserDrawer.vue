@@ -34,6 +34,7 @@ export default defineComponent({
     const $router = useRouter()
     const logout = () => {
       $store.commit('user/deleteToken')
+      console.log($store.state.user.token)
       void $router.push('/')
     }
     return {

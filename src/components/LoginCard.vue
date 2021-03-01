@@ -84,7 +84,8 @@ export default defineComponent({
       try {
         const response = await $store.dispatch('user/fetchToken', payload)
         isLogging.value = false
-        $store.commit('user/storeToken', { ...response.data })
+        await $store.dispatch('user/storeUser', { token: { ...response.data }, email: payload.username })
+        await $store.dispatch('user/retainToken')
       } catch (error) {
         isShowWarning.value = true
         isLogging.value = false
