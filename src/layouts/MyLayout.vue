@@ -23,7 +23,7 @@
             <q-tooltip>系统消息</q-tooltip>
           </q-btn>
 
-          <q-btn-dropdown rounded flat>
+          <q-btn-dropdown rounded flat class="q-pa-sm">
             <template v-slot:label>
               <q-avatar size="26px">
                 <img src="https://cdn.quasar.dev/img/boy-avatar.png">
