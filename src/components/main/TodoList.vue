@@ -51,7 +51,8 @@ export default defineComponent({
   },
   props: {
     todo: {
-      type: Array as PropType<ToDoProp[]>
+      type: Object as PropType<ToDoProp>,
+      default: ''
     }
   },
   emits: [
