@@ -30,8 +30,8 @@
       </q-toolbar>
     </q-header>
 
-    <q-page-container>
-      <q-page>
+    <q-page-container >
+      <q-page class="non-selectable">
         <q-scroll-area class="home-scroll-area">
           <q-scroll-observer @scroll="onScroll"/>
 
