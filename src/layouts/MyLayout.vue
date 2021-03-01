@@ -7,185 +7,116 @@
             <img src="logo.png" class="logo"/>
           </q-btn>
         </q-toolbar-title>
-<!--        <q-btn label="LOG" @click="logJWT"/>-->
+        <!--        <q-btn label="LOG" @click="logJWT"/>-->
 
         <!--        <router-link :to="{path: '/'}" class="text-nord7">DEV: goto HOME</router-link>-->
         <q-space/>
         <div class="q-gutter-md row items-center no-wrap">
-          <q-btn round  flat color="grey-5" icon="library_books" v-if="$q.screen.gt.sm">
+
+          <q-btn round flat color="grey-5" icon="library_books" v-if="$q.screen.gt.sm" @click="toggleRightDrawer">
             <q-tooltip>使用手册</q-tooltip>
           </q-btn>
-          <q-btn round flat color="grey-5" icon="notifications" @click="toggleMsgDrawer" >
+          <q-btn disable round flat color="grey-5" icon="notifications">
             <q-badge color="nord11" text-color="white" floating>
               0
             </q-badge>
             <q-tooltip>系统消息</q-tooltip>
           </q-btn>
-          <q-btn round flat @click="toggleUserDrawer">
-            <q-avatar size="26px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png">
-            </q-avatar>
-            <q-tooltip>我的账户</q-tooltip>
-          </q-btn>
+
+          <q-btn-dropdown rounded flat>
+            <template v-slot:label>
+              <q-avatar size="26px">
+                <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+              </q-avatar>
+            </template>
+
+            <div class="row justify-center no-wrap q-pa-md dropdown-content non-selectable">
+              <div class="column items-center">
+                <q-avatar size="72px" class="q-mt-lg">
+                  <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+                </q-avatar>
+                <div class="text-subtitle1 q-mt-md q-mb-md text-nord6">{{ currentUser }}</div>
+              </div>
+            </div>
+
+            <q-list separator class="dropdown-items bg-nord6 non-selectable">
+              <q-item clickable disable>
+                <q-item-section>账户设置</q-item-section>
+              </q-item>
+              <q-item clickable disable>
+                <q-item-section>修改密码</q-item-section>
+              </q-item>
+              <q-item clickable @click="toLogout" class="bg-nord11 text-nord6">
+                <q-item-section>退出登录</q-item-section>
+              </q-item>
+            </q-list>
+          </q-btn-dropdown>
         </div>
       </q-toolbar>
     </q-header>
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      :width="165"
-      :breakpoint="500"
-      class="bg-nord3 text-white"
-    >
-      <q-scroll-area class="fit">
-        <q-list >
-          <q-item
-            clickable
-            :active="activeItem === 'main'"
-            @click="activeItem = 'main'"
-            active-class="active-item"
-            to='/my/main'
-          >
-            <q-item-section avatar>
-              <q-icon name="home"/>
-            </q-item-section>
-            <q-item-section> 我的首页</q-item-section>
-          </q-item>
+    <global-leftdrawer/>
 
-          <q-item
-            clickable
-            :active="activeItem === 'usage'"
-            @click="activeItem = 'usage'"
-            active-class="active-item"
-            to='/my/usage'
-          >
-            <q-item-section avatar>
-              <q-icon name="cloud_done"/>
-            </q-item-section>
-            <q-item-section> 在用资源</q-item-section>
-          </q-item>
-
-          <q-separator/>
-
-          <q-item clickable disable >
-            <q-item-section avatar>
-              <q-icon name="group"/>
-            </q-item-section>
-            <q-item-section> 我的小组</q-item-section>
-          </q-item>
-
-          <q-item clickable disable>
-            <q-item-section avatar>
-              <q-icon name="paid"/>
-            </q-item-section>
-            <q-item-section> 结算计费</q-item-section>
-          </q-item>
-
-          <q-item clickable disable>
-            <q-item-section avatar>
-              <q-icon name="cloud_upload"/>
-            </q-item-section>
-            <q-item-section> 已供资源</q-item-section>
-          </q-item>
-
-          <q-item clickable disable>
-            <q-item-section avatar>
-              <q-icon name="help_center"/>
-            </q-item-section>
-            <q-item-section> 工单服务</q-item-section>
-          </q-item>
-
-          <q-item clickable disable>
-            <q-item-section avatar>
-              <q-icon name="build_circle"/>
-            </q-item-section>
-            <q-item-section> 资源管理</q-item-section>
-          </q-item>
-
-          <q-item clickable disable>
-            <q-item-section avatar>
-              <q-icon name="visibility"/>
-            </q-item-section>
-            <q-item-section> 计量监测</q-item-section>
-          </q-item>
-
-          <q-item clickable disable>
-            <q-item-section avatar>
-              <q-icon name="analytics"/>
-            </q-item-section>
-            <q-item-section> 统计报表</q-item-section>
-          </q-item>
-
-          <q-item clickable disable>
-            <q-item-section avatar>
-              <q-icon name="construction"/>
-            </q-item-section>
-            <q-item-section> 联邦维护</q-item-section>
-          </q-item>
-
-          <q-item clickable disable>
-            <q-item-section avatar>
-              <q-icon name="switch_account"/>
-            </q-item-section>
-            <q-item-section> 用户管理</q-item-section>
-          </q-item>
-        </q-list>
-      </q-scroll-area>
-    </q-drawer>
-
-    <q-drawer v-model="userDrawerOpen" side="right" bordered :width="300">
-     <user-drawer/>
+    <q-drawer v-model="rightDrawerOpen" side="right" bordered :width="300">
+      <global-rightdrawer/>
     </q-drawer>
 
     <q-page-container>
-        <router-view/>
+      <router-view/>
     </q-page-container>
   </q-layout>
 </template>
 
-<script>
-import { ref } from 'vue'
-import UserDrawer from '../components/UserDrawer'
+<script lang="ts">
+import { defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
+import { StateInterface } from '../store'
+import GlobalRightdrawer from 'components/GlobalRightdrawer.vue'
+import GlobalLeftdrawer from 'components/GlobalLeftdrawer.vue'
 
-export default {
+export default defineComponent({
   name: 'MyLayout.vue',
   components: {
-    UserDrawer
+    GlobalLeftdrawer,
+    GlobalRightdrawer
   },
   props: {},
   setup () {
-    const leftDrawerOpen = ref(false)
-    const userDrawerOpen = ref(false)
-    const toggleUserDrawer = () => {
-      userDrawerOpen.value = !userDrawerOpen.value
+    const $store = useStore<StateInterface>()
+    const currentUser = $store.state.user.email
+
+    const rightDrawerOpen = ref(false)
+    const toggleRightDrawer = () => {
+      rightDrawerOpen.value = !rightDrawerOpen.value
     }
 
-    const msgDrawerOpen = ref(false)
-    const toggleMsgDrawer = () => {
-      msgDrawerOpen.value = !msgDrawerOpen.value
+    const toLogout = () => {
+      $store.commit('user/deleteToken')
     }
-    const activeItem = ref('main')
-
     return {
-      leftDrawerOpen,
-      userDrawerOpen,
-      msgDrawerOpen,
-      toggleUserDrawer,
-      toggleMsgDrawer,
-      activeItem
+
+      rightDrawerOpen,
+      toggleRightDrawer,
+
+      currentUser,
+      toLogout
     }
   }
-}
+})
 </script>
 
 <style lang="scss" scoped>
 .logo {
   height: 50px;
 }
-.active-item {
-  color: white;
-  background: $nord7;
+
+.dropdown-content {
+  min-width: 200px;
+  background-image: url(https://cdn.quasar.dev/img/material.png);
+  background-size: 120% auto;
 }
 
+.dropdown-items {
+  text-align: center;
+}
 </style>
