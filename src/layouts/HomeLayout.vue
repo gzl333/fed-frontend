@@ -19,7 +19,8 @@
         <!--        <q-separator vertical v-if="scrollRatio===0.6"/>-->
         <div class="q-px-xl q-gutter-sm">
           <q-btn unelevated :ripple="false" color="nord10" label="登 录" @click="isShowLogin = true"/>
-          <q-btn outline :ripple="false" color="nord6" label="注 册" @click="isShowLogin = true"/>
+          <q-btn outline :ripple="false" color="nord6" label="注 册" type="a" href="https://passport.escience.cn/regist.jsp"
+                 target="_blank"/>
 
           <q-dialog v-model="isShowLogin">
             <login-card/>
