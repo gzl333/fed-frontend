@@ -13,7 +13,7 @@
               standout
               v-model="text"
               input-class="text-right"
-              class="q-ml-md"
+              class="q-ml-sm"
             >
               <template v-slot:append>
                 <q-icon v-if="text === ''" name="search" />
@@ -27,7 +27,9 @@
             </q-input>
           </div>
           <div class="col-auto">
-            <q-btn flat label="全部云主机"> </q-btn>
+            <router-link :to="`/my/usage/vm`" class="flat text-white q-ml-md"
+              >全部云主机</router-link
+            >
           </div>
         </div>
       </q-card-section>
@@ -73,9 +75,8 @@
                 {{ props.row.ip }}
               </q-td>
               <q-td key="status" :props="props">
-                <q-badge color="green">
-                  {{ props.row.status }}
-                </q-badge>
+                <q-badge v-if="props.row.status" color="green"> 正常 </q-badge>
+                <q-badge v-else color="red"> 异常 </q-badge>
               </q-td>
               <q-td key="center" :props="props">
                 <q-badge color="orange">
@@ -101,6 +102,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
+import { useRoute } from 'vue-router'
 const columns = [
   {
     name: 'index',
@@ -149,7 +151,7 @@ const serverData = [
     index: 1,
     type: 'main/ev5-01.png',
     ip: '11.11.1.1',
-    status: 'ok',
+    status: true,
     center: 'e_HR_204',
     remark: '用于前端开发'
   },
@@ -157,7 +159,7 @@ const serverData = [
     index: 2,
     type: 'main/ev5-01.png',
     ip: '11.11.1.1',
-    status: 'ok',
+    status: true,
     center: 'e_HR_204',
     remark: '用于前端开发'
   },
@@ -165,7 +167,7 @@ const serverData = [
     index: 3,
     type: 'main/ev5-01.png',
     ip: '11.11.1.1',
-    status: 'ok',
+    status: true,
     center: 'e_HR_204',
     remark: '用于前端开发'
   },
@@ -173,7 +175,7 @@ const serverData = [
     index: 4,
     type: 'main/ev5-01.png',
     ip: '11.11.1.1',
-    status: 'ok',
+    status: true,
     center: 'e_HR_204',
     remark: '用于前端开发'
   },
@@ -181,7 +183,7 @@ const serverData = [
     index: 5,
     type: 'main/ev5-01.png',
     ip: '11.11.1.1',
-    status: 'ok',
+    status: false,
     center: 'e_HR_204',
     remark: '用于前端开发'
   },
@@ -189,7 +191,7 @@ const serverData = [
     index: 6,
     type: 'main/ev5-01.png',
     ip: '11.11.1.1',
-    status: 'ok',
+    status: false,
     center: 'e_HR_204',
     remark: '用于前端开发'
   },
@@ -197,7 +199,7 @@ const serverData = [
     index: 7,
     type: 'main/ev5-01.png',
     ip: '11.11.1.1',
-    status: 'ok',
+    status: true,
     center: 'e_HR_204',
     remark: '用于前端开发'
   }
@@ -211,6 +213,7 @@ export default defineComponent({
   props: {
   },
   setup () {
+    const route = useRoute()
     return {
       filter: ref(''),
       text: ref(''),
@@ -218,7 +221,8 @@ export default defineComponent({
       serverData,
       pagination: ref({
         rowsPerPage: 0
-      })
+      }),
+      route
     }
   }
 })

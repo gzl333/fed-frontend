@@ -6,7 +6,8 @@
     <div class="q-pt-lg q-pb-lg q-pl-xl q-pr-xl doc-container">
       <div class="row items-center q-gutter-lg">
         <q-responsive :ratio="8 / 3" class="col">
-          <todo-list :todo="todo" @update-unpaid="updateUnpaid" />
+          <!-- <todo-list :todo="todo" @update-unpaid="updateUnpaid" /> -->
+          <todo-list :todo="todo" />
         </q-responsive>
         <q-responsive :ratio="8 / 3" class="col">
           <warning-list :warning="warning" @update-month="updateMonth" />
@@ -23,7 +24,7 @@
           <obs-list />
         </q-responsive>
       </div>
-      <div class="row items-center q-gutter-lg q-pt-lg">
+      <div class="row items-center q-gutter-lg q-pt-xl">
         <q-responsive :ratio="8 / 3.5" class="col">
           <usage-list />
         </q-responsive>
@@ -71,9 +72,9 @@ export default defineComponent({
       toconfirmed: 1
     })
     const todo = toRefs(todoList)
-    const updateUnpaid = (unpaid: number) => {
-      todoList.unpaid = unpaid
-    }
+    // const updateUnpaid = (unpaid: number) => {
+    //   todoList.unpaid = unpaid
+    // }
 
     // MainWarning
     const warningList: WarningProp = reactive({
@@ -83,14 +84,14 @@ export default defineComponent({
       unpaidWhenDue: 4
     })
     const warning = toRefs(warningList)
-    const updateMonth = (month: number) => {
-      warningList.month = month
-    }
+    // const updateMonth = (month: number) => {
+    //   warningList.month = month
+    // }
     return {
       todo,
-      updateUnpaid,
-      warning,
-      updateMonth
+      // updateUnpaid,
+      warning
+      // updateMonth
 
     }
   }
