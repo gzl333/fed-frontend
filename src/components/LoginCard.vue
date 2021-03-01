@@ -75,25 +75,25 @@ export default defineComponent({
     const warningContent = ref('')
     const isLogging = ref(false)
 
-    const toLogin = () => {
+    const toLogin = async () => {
       isLogging.value = true
       const payload = {
         username: username.value,
         password: password.value
       }
-      $store.dispatch('user/fetchToken', payload).then(response => {
+      try {
+        const response = await $store.dispatch('user/fetchToken', payload)
         isLogging.value = false
         $store.commit('user/storeToken', { ...response.data })
-      }).catch(error => {
+      } catch (error) {
+        isShowWarning.value = true
         isLogging.value = false
         if (error.response && error.response.status === 401) {
           warningContent.value = '电子邮箱地址或密码错误'
-          isShowWarning.value = true
-          isLogging.value = false
         } else {
           warningContent.value = error.message
         }
-      })
+      }
     }
     return {
       username,
