@@ -56,24 +56,26 @@ const actions: ActionTree<UserInterface, StateInterface> = {
       const tokenRefresh = context.state.token.refresh
       const tokenAccess = context.state.token.access
       const decoded = jwtDecode<JwtPayload>(tokenAccess)
-      const exp = decoded.exp! * 1000
-      const timeOut = exp - Date.now() - 10000
-      console.log(timeOut / 100)
-      setTimeout(() => {
-        void (async () => {
-          try {
-            // only fetch new token when logged in
-            if (context.state.token) {
-              const response = await context.dispatch('fetchNewToken', { refresh: tokenRefresh })
-              context.commit('storeToken', { access: response.data.access, refresh: tokenRefresh })
-              console.log('new token', context.state.token.access)
-              await context.dispatch('retainToken')
+      if (decoded.exp) {
+        const exp = decoded.exp * 1000
+        const timeOut = exp - Date.now() - 10000
+        console.log(timeOut)
+        setTimeout(() => {
+          void (async () => {
+            try {
+              // only fetch new token when logged in
+              if (context.state.token) {
+                const response = await context.dispatch('fetchNewToken', { refresh: tokenRefresh })
+                context.commit('storeToken', { access: response.data.access, refresh: tokenRefresh })
+                console.log('new token', context.state.token.access)
+                await context.dispatch('retainToken')
+              }
+            } catch {
+              context.commit('deleteToken')
             }
-          } catch {
-            context.commit('deleteToken')
-          }
-        })()
-      }, timeOut / 100)
+          })()
+        }, timeOut)
+      }
     }
   }
 }
