@@ -43,7 +43,7 @@
               <q-item clickable disable>
                 <q-item-section>账户设置</q-item-section>
               </q-item>
-              <q-item clickable disable>
+              <q-item clickable tag="a"  href="https://passport.escience.cn/user/password.do?act=showChangePassword" target="_blank">
                 <q-item-section>修改密码</q-item-section>
               </q-item>
               <q-item clickable @click="toLogout" class="bg-nord11 text-nord6">
