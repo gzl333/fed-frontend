@@ -1,7 +1,6 @@
 <template>
-  <div class="Vm">this is Vm
-    <q-btn label="logJWT" @click="logJWT"/>
-<!--  <pre>{{currentUser}}</pre>-->
+  <div class="Vm">
+    this is Vm
   </div>
 </template>
 

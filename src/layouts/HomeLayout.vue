@@ -122,7 +122,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.HomeLayout.vue {
+.HomeLayout {
   background-color: $nord6;
 }
 

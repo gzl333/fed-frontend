@@ -67,8 +67,8 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
-    const username = ref('zlguo@cnic.cn')
-    const password = ref('gosc2020')
+    const username = ref('')
+    const password = ref('')
     const isPwd = ref(true)
     const isShowWarning = ref(false)
 
