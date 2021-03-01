@@ -4,9 +4,9 @@ export interface UserInterface {
     access: string;
     refresh: string;
   }
-  email?: string
+  email?: string;
 }
-export interface ApiJwtInterface {
+export interface TokenInterface {
   access: string;
   refresh: string;
 }
@@ -16,6 +16,18 @@ export interface LoginReqInterface {
 }
 export interface RefreshTokenInterface {
   refresh: string
+}
+export interface JwtPayload {
+  iss?: string;
+  sub?: string;
+  aud?: string[] | string;
+  exp?: number;
+  nbf?: number;
+  iat?: number;
+  jti?: string;
+  username?: string;
+  // eslint-disable-next-line camelcase
+  token_type?: string;
 }
 
 function state () {
