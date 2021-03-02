@@ -1,38 +1,38 @@
 <template>
   <div class="Main">
     <div class="title row items-center text-h6 q-pl-xl q-pt-lg">
-      您好，testAdmin！
+      您好，{{ currentUser }}！
     </div>
     <div class="q-pt-lg q-pb-lg q-pl-xl q-pr-xl doc-container">
       <div class="row items-center q-gutter-lg">
         <q-responsive :ratio="8 / 3" class="col">
-          <!-- <todo-list :todo="todo" @update-unpaid="updateUnpaid" /> -->
-          <todo-list :todo="todo" />
+          <!--       <todo-list :todo="todo" @update-unpaid="updateUnpaid" />-->
+          <todo-list :todo="todo"/>
         </q-responsive>
         <q-responsive :ratio="8 / 3" class="col">
-          <warning-list :warning="warning" @update-month="updateMonth" />
+          <warning-list :warning="warning" @update-month="updateMonth"/>
         </q-responsive>
         <q-responsive :ratio="8 / 3" class="col">
-          <quick-entry />
+          <quick-entry/>
         </q-responsive>
       </div>
       <div class="row items-center q-gutter-lg q-pt-lg">
         <q-responsive :ratio="8 / 5" class="col">
-          <vm-list />
+          <vm-list/>
         </q-responsive>
         <q-responsive :ratio="8 / 5" class="col">
-          <obs-list />
+          <obs-list/>
         </q-responsive>
       </div>
       <div class="row items-center q-gutter-lg q-pt-xl">
         <q-responsive :ratio="8 / 3.5" class="col">
-          <usage-list />
+          <usage-list/>
         </q-responsive>
         <q-responsive :ratio="8 / 3.5" class="col">
-          <cost-details />
+          <cost-details/>
         </q-responsive>
         <q-responsive :ratio="8 / 3.5" class="col">
-          <group-list />
+          <group-list/>
         </q-responsive>
       </div>
     </div>
@@ -49,6 +49,10 @@ import ObsList from 'src/components/main/ObsList.vue'
 import UsageList from 'src/components/main/UsageList.vue'
 import CostDetails from 'src/components/main/CostDetails.vue'
 import GroupList from 'src/components/main/GroupList.vue'
+
+import { useStore } from 'vuex'
+import { StateInterface } from '../store'
+
 export default defineComponent({
   name: 'Main',
   components: {
@@ -61,9 +65,10 @@ export default defineComponent({
     CostDetails,
     GroupList
   },
-  props: {
-  },
+  props: {},
   setup () {
+    const $store = useStore<StateInterface>()
+    const currentUser = $store.state.user.email
     // MainTodo
     const todoList: ToDoProp = reactive({
       unpaid: 1,
@@ -90,8 +95,9 @@ export default defineComponent({
     return {
       todo,
       // updateUnpaid,
-      warning
-      // updateMonth
+      warning,
+      // updateMonth,
+      currentUser
 
     }
   }
@@ -101,6 +107,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .Main {
 }
+
 .title {
   height: 100%;
   max-height: 200px;
