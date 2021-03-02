@@ -13,22 +13,23 @@
         <q-space/>
         <div class="q-gutter-md row items-center no-wrap">
 
-          <q-btn round flat color="grey-5" icon="library_books" v-if="$q.screen.gt.sm" @click="toggleRightDrawer">
+          <q-btn disable :ripple="false" round flat color="grey-5" icon="library_books" v-if="$q.screen.gt.sm" @click="toggleRightDrawer">
             <q-tooltip>使用手册</q-tooltip>
           </q-btn>
-          <q-btn disable round flat color="grey-5" icon="notifications">
+          <q-btn disable :ripple="false" round flat color="grey-5" icon="notifications">
             <q-badge color="nord11" text-color="white" floating>
               0
             </q-badge>
             <q-tooltip>系统消息</q-tooltip>
           </q-btn>
 
-          <q-btn-dropdown rounded flat class="q-pa-sm">
-            <template v-slot:label>
-              <q-avatar size="26px">
-                <img src="https://cdn.quasar.dev/img/boy-avatar.png">
-              </q-avatar>
-            </template>
+          <q-btn-dropdown :ripple="false" rounded flat class="q-pa-sm" :label="currentUser">
+<!--            <template v-slot:label>-->
+<!--              <q-avatar size="26px">-->
+<!--                <img src="https://cdn.quasar.dev/img/boy-avatar.png">-->
+<!--              </q-avatar>-->
+<!--              {{ currentUser }}-->
+<!--            </template>-->
 
             <div class="row justify-center no-wrap q-pa-md dropdown-content non-selectable">
               <div class="column items-center">
@@ -39,14 +40,14 @@
               </div>
             </div>
 
-            <q-list separator class="dropdown-items bg-nord6 non-selectable">
+            <q-list class="dropdown-items non-selectable">
               <q-item clickable disable>
                 <q-item-section>账户设置</q-item-section>
               </q-item>
               <q-item clickable tag="a"  href="https://passport.escience.cn/user/password.do?act=showChangePassword" target="_blank">
                 <q-item-section>修改密码</q-item-section>
               </q-item>
-              <q-item clickable @click="toLogout" class="bg-nord11 text-nord6">
+              <q-item clickable @click="toLogout" class="bg-nord6">
                 <q-item-section>退出登录</q-item-section>
               </q-item>
             </q-list>

@@ -1,6 +1,6 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
-import { TokenInterface, UserInterface, LoginReqInterface, RefreshTokenInterface, JwtPayload } from './state'
+import { TokenInterface, UserInterface, LoginReqInterface, RefreshTokenInterface, JwtPayloadInterface } from './state'
 import axios from 'axios'
 import jwtDecode from 'jwt-decode'
 
@@ -24,7 +24,7 @@ const actions: ActionTree<UserInterface, StateInterface> = {
         await context.dispatch('verifyToken', localToken)
         context.commit('storeToken', localToken)
         if (localToken.access) {
-          const email = jwtDecode<JwtPayload>(localToken.access).username
+          const email = jwtDecode<JwtPayloadInterface>(localToken.access).username
           context.commit('storeEmail', email)
         }
       } catch {
@@ -55,16 +55,15 @@ const actions: ActionTree<UserInterface, StateInterface> = {
     if (context.state.token) {
       const tokenRefresh = context.state.token.refresh
       const tokenAccess = context.state.token.access
-      const decoded = jwtDecode<JwtPayload>(tokenAccess)
+      const decoded = jwtDecode<JwtPayloadInterface>(tokenAccess)
       if (decoded.exp) {
         const exp = decoded.exp * 1000
-        const timeOut = exp - Date.now() - 10000
+        const timeOut = exp - Date.now() - 10000 || 1000 // 到期时间前10秒钟更新token,到期时间小于10秒时，1秒后立即尝试更新token
         console.log(timeOut)
         setTimeout(() => {
-          void (async () => {
+          void (async () => { // https://stackoverflow.com/questions/63488141/promise-returned-in-function-argument-where-a-void-return-was-expected/63488201
             try {
-              // only fetch new token when logged in
-              if (context.state.token) {
+              if (context.state.token) { // 定时器注册后，仅在用户保持登录时更新token，登出则不再更新
                 const response = await context.dispatch('fetchNewToken', { refresh: tokenRefresh })
                 context.commit('storeToken', { access: response.data.access, refresh: tokenRefresh })
                 console.log('new token', context.state.token.access)

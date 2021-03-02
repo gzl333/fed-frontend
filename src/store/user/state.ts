@@ -17,7 +17,7 @@ export interface LoginReqInterface {
 export interface RefreshTokenInterface {
   refresh: string
 }
-export interface JwtPayload {
+export interface JwtPayloadInterface {
   iss?: string;
   sub?: string;
   aud?: string[] | string;
