@@ -88,7 +88,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref, computed, onBeforeMount } from 'vue'
+import { useStore } from 'vuex'
+import { StateInterface } from 'src/store'
+import { QuotaInterface } from 'src/store/quota/state'
 
 export default defineComponent({
   name: 'UsageList',
@@ -97,10 +100,31 @@ export default defineComponent({
   props: {
   },
   setup () {
-    const vCPUusage = ref(0.2)
-    const vCPULabel = computed(() =>
-      ((vCPUusage.value * 100).toFixed(2) + '%')
-    )
+    onBeforeMount(() => {
+      const $store = useStore<StateInterface>()
+      try {
+        void (async () => {
+          void await $store.dispatch('quota/fetchQuota')
+        })()
+      } catch (error) {
+        console.log(error)
+      }
+    })
+    const $store = useStore<StateInterface>()
+    const currentQuota: QuotaInterface = $store.state.quota
+    console.log(currentQuota)
+    let vCPUusage
+    let vCPULabel
+    if (currentQuota.userQuota.providers) {
+      const providerQuota = currentQuota.userQuota.providers[0]
+      vCPUusage = computed(() => providerQuota.vCpuUsed / providerQuota.vCpuTotal)
+      vCPULabel = computed(() => ((providerQuota.vCpuUsed / providerQuota.vCpuTotal * 100).toFixed(2) + '%'))
+    }
+
+    // const vCPUusage = ref(0.2)
+    // const vCPULabel = computed(() =>
+    //   ((vCPUusage.value * 100).toFixed(2) + '%')
+    // )
     const RAMusage = ref(0.3)
     const RAMLabel = computed(() =>
       ((RAMusage.value * 100).toFixed(2) + '%')
