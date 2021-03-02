@@ -56,7 +56,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-// import { useRouter } from 'vue-router'
+import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
 import { StateInterface } from '../store'
 
@@ -66,6 +66,7 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
+    const $router = useRouter()
 
     const username = ref('')
     const password = ref('')
@@ -86,6 +87,7 @@ export default defineComponent({
         isLogging.value = false
         await $store.dispatch('user/storeUser', { token: { ...response.data }, email: payload.username })
         await $store.dispatch('user/retainToken')
+        await $router.push('/my')
       } catch (error) {
         isShowWarning.value = true
         isLogging.value = false
