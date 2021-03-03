@@ -99,7 +99,12 @@ module.exports = configure(function (/* ctx */) {
 
     // https://quasar.dev/quasar-cli/quasar-conf-js#Property%3A-framework
     framework: {
-      config: {},
+      config: {
+        loading: {
+          delay: 500,
+          spinnerSize: 100
+        }
+      },
 
       // iconSet: 'material-icons', // Quasar icon set
       lang: 'zh-CN', // en-US', // Quasar language pack
@@ -112,7 +117,10 @@ module.exports = configure(function (/* ctx */) {
       // directives: [],
 
       // Quasar plugins
-      plugins: []
+      plugins: [
+        'Loading',
+        'Dialog'
+      ]
     },
 
     // animations: 'all', // --- includes all animations

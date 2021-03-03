@@ -26,6 +26,9 @@ const mutation: MutationTree<UserInterface> = {
     localStorage.removeItem('tokenRefresh')
     // axios header
     delete axios.defaults.headers.common.Authorization
+    // @ts-ignore
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+    this.$router.push('/')
   }
 }
 
