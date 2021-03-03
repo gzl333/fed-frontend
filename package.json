@@ -1,8 +1,8 @@
 {
   "name": "GOSC-frontend",
   "version": "0.0.2",
-  "description": "Front-End of GOSC",
-  "productName": "Front-End of GOSC",
+  "description": "GOSC",
+  "productName": "中国科技云联邦",
   "author": "CNIC",
   "private": true,
   "scripts": {

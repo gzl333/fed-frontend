@@ -28,7 +28,7 @@ const mutation: MutationTree<UserInterface> = {
     delete axios.defaults.headers.common.Authorization
     // @ts-ignore
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    this.$router.push('/')
+    this.$router.push('/') // 登出后的路由目标均为首页，其跳转写在这里
   }
 }
 

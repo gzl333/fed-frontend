@@ -103,6 +103,12 @@ module.exports = configure(function (/* ctx */) {
         loading: {
           delay: 500,
           spinnerSize: 100
+        },
+        notify: {
+          position: 'center',
+          badgePosition: 'top-right',
+          closeBtn: '关闭',
+          multiLine: true
         }
       },
 
@@ -119,7 +125,7 @@ module.exports = configure(function (/* ctx */) {
       // Quasar plugins
       plugins: [
         'Loading',
-        'Dialog'
+        'Notify'
       ]
     },
 

@@ -38,9 +38,9 @@
           <q-btn flat :ripple="false" type="a" label="忘记密码" color="nord10"
                  href="https://passport.escience.cn/findPsw.do?act=stepOne" target="_blank"
                  class="login-forget q-my-none q-mr-xl q-pa-none col self-end"/>
-          <div v-if="isShowWarning" class="login-input login-warning col text-nord11 q-my-none">{{ warningContent }}</div>
-          <q-btn  label="登 录" type="submit" color="nord10" :ripple="false"
-                 class="login-btn col text-nord6 q-my-none" :loading="isLogging"
+
+          <q-btn label="登 录" type="submit" color="nord10" :ripple="false"
+                 class="login-btn col text-nord6 q-my-none"
           />
           <div class="q-pa-md q-my-none">
             没有科技云通行证账户？
@@ -73,39 +73,25 @@ export default defineComponent({
     const isPwd = ref(true)
     const isShowWarning = ref(false)
 
-    const warningContent = ref('')
-    const isLogging = ref(false)
-
     const toLogin = async () => {
-      isLogging.value = true
       const payload = {
         username: username.value,
         password: password.value
       }
-      try {
-        const response = await $store.dispatch('user/fetchToken', payload)
-        isLogging.value = false
-        await $store.dispatch('user/storeUser', { token: { ...response.data }, email: payload.username })
-        await $store.dispatch('user/retainToken')
-        await $router.push('/my')
-      } catch (error) {
-        isShowWarning.value = true
-        isLogging.value = false
-        if (error.response && error.response.status === 401) {
-          warningContent.value = '电子邮箱地址或密码错误'
-        } else {
-          warningContent.value = error.message
-        }
-      }
+      const response = await $store.dispatch('user/fetchToken', payload)
+      await $store.dispatch('user/storeUser', {
+        token: { ...response.data },
+        email: payload.username
+      })
+      await $store.dispatch('user/retainToken')
+      await $router.push('/my')
     }
     return {
       username,
       password,
       isPwd,
       toLogin,
-      isShowWarning,
-      warningContent,
-      isLogging
+      isShowWarning
     }
   }
 })
@@ -114,22 +100,27 @@ export default defineComponent({
 <style lang="scss" scoped>
 .LoginCard {
 }
+
 .login-card {
   text-align: center;
   min-width: 400px;
   min-height: 450px;
   background: transparentize($nord6, .1);
 }
+
 .login-btn {
   width: 300px;
   line-height: 45px;
 }
+
 .login-input {
   width: 300px;
 }
+
 .login-forget {
   top: -17px;
 }
+
 .login-warning {
   //line-height: 0;
   //top: -20px;
