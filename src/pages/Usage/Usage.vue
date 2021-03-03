@@ -1,30 +1,11 @@
 <template>
   <q-page>
-  <div class="Usage">
-
-    <q-splitter
-      v-model="splitterModel"
-      style="height: calc(100vh - 66px);"
-      :limits="[0, 20]"
-    >
-
-      <template v-slot:before>
-        <div class="usage-left">
-          tree
-        </div>
-      </template>
-
-      <template v-slot:separator >
-        <q-btn label="toggle" @click="alert()" />
-<!--        <q-avatar color="primary" text-color="white" size="40px" icon="drag_indicator" />-->
-      </template>
-
-      <template v-slot:after>
+    <div class="Usage">
         <q-tabs
           v-model="activeTab"
-          class="text-nord1 bg-nord6"
-          active-color="nord7"
-          indicator-color="nord0"
+          class="text-nord1 bg-nord4"
+          active-color="nord10"
+          indicator-color="nord10"
           align="left"
           inline-label
         >
@@ -47,6 +28,7 @@
             exact
           />
           <q-route-tab
+            disable
             name="obs"
             icon="sd_card"
             label="对象存储"
@@ -65,13 +47,11 @@
             exact
           />
         </q-tabs>
-        <router-view/>
 
-      </template>
-
-    </q-splitter>
-
-  </div>
+        <q-scroll-area class="scroll-area">
+          <router-view/>
+        </q-scroll-area>
+    </div>
   </q-page>
 </template>
 
@@ -94,8 +74,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .Usage {
 }
-.usage-left {
-  min-width: 200px;
-  background-color: $nord9;
+
+.scroll-area {
+  width: calc(100vw - 165px);
+  height: calc(100vh - 114px);
 }
 </style>

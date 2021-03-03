@@ -59,7 +59,7 @@ declare module '@vue/runtime-core' {
   }
 }
 
-const api = axios.create({ timeout: 10000 /*, baseURL: 'https://api.example.com' */ })
+const api = axios.create(/* { timeout: 1000 , baseURL: 'https://api.example.com'} */)
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
