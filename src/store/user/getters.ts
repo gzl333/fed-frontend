@@ -3,7 +3,7 @@ import { StateInterface } from '../index'
 import { UserInterface } from './state'
 
 const getters: GetterTree<UserInterface, StateInterface> = {
-  someAction (/* context */) {
+  someAction (/* state */) {
     // your code
   }
 }

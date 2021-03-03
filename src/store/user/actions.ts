@@ -58,7 +58,7 @@ const actions: ActionTree<UserInterface, StateInterface> = {
       const decoded = jwtDecode<JwtPayloadInterface>(tokenAccess)
       if (decoded.exp) {
         const exp = decoded.exp * 1000
-        const timeOut = exp - Date.now() - 10000 || 1000 // 到期时间前10秒钟更新token,到期时间小于10秒时，1秒后立即尝试更新token
+        const timeOut = exp - Date.now() - 5000 || 0 // 到期时间前5秒钟更新token,到期时间小于5秒时立即尝试更新token
         console.log(timeOut)
         setTimeout(() => {
           void (async () => { // https://stackoverflow.com/questions/63488141/promise-returned-in-function-argument-where-a-void-return-was-expected/63488201
