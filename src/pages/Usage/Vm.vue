@@ -1,18 +1,37 @@
 <template>
-
   <div class="Vm">
-    <div class="row">
-      <div class="col-2 items-center bg-nord6 q-pa-sm routerview-height" v-if="isTreeOpen">
-        <div class="items-center">机构与数据中心</div>
-        <q-tree
-          :nodes="simple"
-          node-key="label"
-          default-expand-all
-          control-color="nord11"
+    <div class="row no-wrap min-routerview-height min-routerview-width">
+
+      <div class="col-1.5 items-center bg-nord5 q-py-sm q-pl-sm q-pr-none non-selectable " v-if="isTreeOpen">
+        <div class="tree-title q-px-xs">
+          机构与数据中心
+        </div>
+        <q-tree class="col-12 col-sm-6"
+                tick-strategy="leaf-filtered"
+                default-expand-all
+                :nodes="dataPointTree"
+                label-key="name"
+                node-key="id"
+                children-key="dataPoints"
+                v-model:ticked="tickedKeys"
+                color="nord9"
+                selected-color="nord11"
         />
+        <pre>{{tickedKeys}}</pre>
       </div>
-      <div class="col routerview-height bg-nord7">
-        <q-btn label="toggleTree" @click="toggleTree"/>
+
+      <div class="col-shrink bg-nord5 btn-area">
+        <q-btn v-if="isTreeOpen" class="btn-tree" unelevated color="nord9"
+               icon="arrow_back_ios_new" size="xs" padding="30px 0px" @click="toggleTree">
+          <q-tooltip>折叠机构树</q-tooltip>
+        </q-btn>
+        <q-btn v-if="!isTreeOpen" class="btn-tree" unelevated color="nord9"
+               icon="arrow_forward_ios" size="xs" padding="30px 0px" @click="toggleTree">
+          <q-tooltip>展开机构树</q-tooltip>
+        </q-btn>
+      </div>
+
+      <div class="col bg-nord6">
       </div>
     </div>
 
@@ -21,57 +40,32 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, onMounted, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from '../../store'
 
 export default defineComponent({
   name: 'Vm',
-  components: {
-  },
-  props: {
-  },
+  components: {},
+  props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const currentUser = $store.state.user
+    onMounted(() => { void $store.dispatch('usage/updateDataPointTree') })
+    const dataPointTree = computed(() => $store.state.usage.dataPointTree)
+    const tickedKeys = ref([])
+    watch(tickedKeys, () => {
+      $store.commit('usage/storeDataCenterOnShow', tickedKeys.value)
+      console.log($store.state.usage.dataCenterOnSow)
+    })
     const isTreeOpen = ref(true)
-    const toggleTree = () => { isTreeOpen.value = !isTreeOpen.value }
+    const toggleTree = () => {
+      isTreeOpen.value = !isTreeOpen.value
+    }
     return {
-      currentUser,
       isTreeOpen,
       toggleTree,
-      simple: [
-        {
-          label: '中国科学院计算机网络信息中心',
-          children: [
-            {
-              label: '怀柔机房',
-              icon: 'restaurant_menu'
-            },
-            {
-              label: 'Good service (disabled node with icon)',
-              icon: 'room_service',
-              disabled: true,
-              children: [
-                { label: 'Prompt attention' },
-                { label: 'Professional waiter' }
-              ]
-            },
-            {
-              label: 'Pleasant surroundings (with icon)',
-              icon: 'photo',
-              children: [
-                {
-                  label: 'Happy atmosphere (with image)',
-                  img: 'https://cdn.quasar.dev/img/logo_calendar_128px.png'
-                },
-                { label: 'Good table presentation' },
-                { label: 'Pleasing decor' }
-              ]
-            }
-          ]
-        }
-      ]
+      tickedKeys,
+      dataPointTree
     }
   }
 })
@@ -80,10 +74,23 @@ export default defineComponent({
 <style lang="scss" scoped>
 .Vm {
 }
-.routerview-height {
-  height: calc(100vh - 114px);
+.min-routerview-height {
+  min-height: calc(100vh - 114px);
 }
-.routerview-width {
-  width: calc(100vw - 165px);
+.min-routerview-width {
+  min-width: calc(100vw - 165px);
+}
+.tree-title {
+  border-radius: 3px;
+  background-color: $nord9;
+  text-align: center;
+  color: white;
+  line-height: 30px;
+}
+.btn-area {
+  //border-right: 0.5px solid $nord9;
+}
+.btn-tree {
+  top: calc((100vh - 114px) / 2 - 30px);
 }
 </style>

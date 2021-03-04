@@ -5,6 +5,8 @@ import { createStore } from 'vuex'
 
 import user from './user'
 import { UserInterface } from 'src/store/user/state'
+import usage from './usage'
+import { UsageInterface } from 'src/store/usage/state'
 
 /*
  * If not building with SSR mode, you can
@@ -20,12 +22,14 @@ export interface StateInterface {
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   user: UserInterface
+  usage: UsageInterface
   // example: ExampleStateInterface
 }
 
 const store = createStore<StateInterface>({
   modules: {
-    user
+    user,
+    usage
     // example
   },
 

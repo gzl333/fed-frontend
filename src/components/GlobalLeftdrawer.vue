@@ -40,7 +40,7 @@
           <q-item-section avatar>
             <q-icon name="group"/>
           </q-item-section>
-          <q-item-section> 我的小组</q-item-section>
+          <q-item-section> 我的群组</q-item-section>
         </q-item>
 
         <q-item clickable disable>
