@@ -117,7 +117,7 @@ export default defineComponent({
   setup () {
     return {
       tab: ref('a'),
-      splitterModel: ref(20)
+      splitterModel: ref(15)
     }
   }
 })

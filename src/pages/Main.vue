@@ -4,35 +4,35 @@
       您好，{{ currentUser }}！
     </div>
     <div class="q-pt-lg q-pb-lg q-pl-xl q-pr-xl doc-container">
-      <div class="row items-center q-gutter-lg">
-        <q-responsive :ratio="8 / 3" class="col">
-          <!--       <todo-list :todo="todo" @update-unpaid="updateUnpaid" />-->
-          <todo-list :todo="todo"/>
+      <!-- <div class="row items-center q-gutter-lg">
+        <q-responsive :ratio="8 / 3" class="col"> -->
+      <!--       <todo-list :todo="todo" @update-unpaid="updateUnpaid" />-->
+      <!-- <todo-list :todo="todo" />
         </q-responsive>
         <q-responsive :ratio="8 / 3" class="col">
-          <warning-list :warning="warning" @update-month="updateMonth"/>
+          <warning-list :warning="warning" @update-month="updateMonth" />
         </q-responsive>
         <q-responsive :ratio="8 / 3" class="col">
-          <quick-entry/>
+          <quick-entry />
         </q-responsive>
-      </div>
-      <div class="row items-center q-gutter-lg q-pt-lg">
+      </div> -->
+      <!-- <div class="row items-center q-gutter-lg q-pt-lg">
         <q-responsive :ratio="8 / 5" class="col">
-          <vm-list/>
+          <vm-list />
         </q-responsive>
         <q-responsive :ratio="8 / 5" class="col">
-          <obs-list/>
+          <obs-list />
         </q-responsive>
-      </div>
-      <div class="row items-center q-gutter-lg q-pt-xl">
+      </div> -->
+      <div class="row items-center q-gutter-lg q-pt-xs">
         <q-responsive :ratio="8 / 3.5" class="col">
-          <usage-list/>
-        </q-responsive>
-        <q-responsive :ratio="8 / 3.5" class="col">
-          <cost-details/>
+          <quota-list />
         </q-responsive>
         <q-responsive :ratio="8 / 3.5" class="col">
-          <group-list/>
+          <!-- <cost-details /> -->
+        </q-responsive>
+        <q-responsive :ratio="8 / 3.5" class="col">
+          <!-- <group-list /> -->
         </q-responsive>
       </div>
     </div>
@@ -46,7 +46,7 @@ import TodoList, { ToDoProp } from 'src/components/main/TodoList.vue'
 import WarningList, { WarningProp } from 'src/components/main/WarningList.vue'
 import QuickEntry from 'src/components/main/QuickEntry.vue'
 import ObsList from 'src/components/main/ObsList.vue'
-import UsageList from 'src/components/main/UsageList.vue'
+import QuotaList from 'components/main/QuotaList.vue'
 import CostDetails from 'src/components/main/CostDetails.vue'
 import GroupList from 'src/components/main/GroupList.vue'
 
@@ -56,12 +56,12 @@ import { StateInterface } from '../store'
 export default defineComponent({
   name: 'Main',
   components: {
-    VmList,
-    TodoList,
-    WarningList,
-    QuickEntry,
-    ObsList,
-    UsageList,
+    // VmList,
+    // TodoList,
+    // WarningList,
+    // QuickEntry,
+    // ObsList,
+    QuotaList,
     CostDetails,
     GroupList
   },
@@ -70,32 +70,32 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const currentUser = $store.state.user.email
     // MainTodo
-    const todoList: ToDoProp = reactive({
-      unpaid: 1,
-      tosolved: 2,
-      quota: 1,
-      toconfirmed: 1
-    })
-    const todo = toRefs(todoList)
+    // const todoList: ToDoProp = reactive({
+    //   unpaid: 1,
+    //   tosolved: 2,
+    //   quota: 1,
+    //   toconfirmed: 1
+    // })
+    // const todo = toRefs(todoList)
     // const updateUnpaid = (unpaid: number) => {
     //   todoList.unpaid = unpaid
     // }
 
     // MainWarning
-    const warningList: WarningProp = reactive({
-      week: 1,
-      month: 2,
-      sixMonth: 3,
-      unpaidWhenDue: 4
-    })
-    const warning = toRefs(warningList)
+    // const warningList: WarningProp = reactive({
+    //   week: 1,
+    //   month: 2,
+    //   sixMonth: 3,
+    //   unpaidWhenDue: 4
+    // })
+    // const warning = toRefs(warningList)
     // const updateMonth = (month: number) => {
     //   warningList.month = month
     // }
     return {
-      todo,
+      // todo,
       // updateUnpaid,
-      warning,
+      // warning,
       // updateMonth,
       currentUser
 
