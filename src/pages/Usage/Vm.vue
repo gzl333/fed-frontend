@@ -54,8 +54,7 @@ export default defineComponent({
     const dataPointTree = computed(() => $store.state.usage.dataPointTree)
     const tickedKeys = ref([])
     watch(tickedKeys, () => {
-      $store.commit('usage/storeDataCenterOnShow', tickedKeys.value)
-      console.log($store.state.usage.dataCenterOnSow)
+      void $store.dispatch('usage/fetchServerList', { service_id: '1' })
     })
     const isTreeOpen = ref(true)
     const toggleTree = () => {

@@ -1,6 +1,6 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
-import { UsageInterface, DataCenterInterface, ApiServiceResResultInterface } from './state'
+import { UsageInterface, DataCenterInterface, ApiServiceResResultInterface, ApiServerListReqInterface } from './state'
 import axios from 'axios'
 
 const apiBase = 'http://gosc.cstcloud.cn/api'
@@ -48,7 +48,18 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
       })
     })
     context.commit('storeDataPointTree', dataPointTree)
-    console.log(context.state.dataPointTree)
+    // console.log(context.state.dataPointTree)
+  },
+  async fetchServerList (context, payload:ApiServerListReqInterface) {
+    const api = apiBase + '/server/'
+    const config = {
+      params: { ...payload }
+    }
+    const response = await axios.get(api, config)
+    console.log(response)
+  },
+  async fetchMultiServerList (context, payload) {
+    // 多个
   }
 }
 

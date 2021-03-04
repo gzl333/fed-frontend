@@ -25,6 +25,32 @@ export interface ApiServiceResInterface {
   previous: number | null,
   results: ApiServiceResResultInterface[]
 }
+export interface ApiServerListResServersInterface{
+  id: string;
+  name: string;
+  vcpus: number;
+  ram: number;
+  ipv4: string;
+  // eslint-disable-next-line camelcase
+  public_ip: boolean;
+  image: string;
+  // eslint-disable-next-line camelcase
+  creation_time: string;
+  remarks: string;
+  // eslint-disable-next-line camelcase
+  endpoint_url: string;
+}
+export interface ApiServerListResInterface {
+  next: number;
+  previous: number;
+  servers: ApiServerListResServersInterface[];
+}
+export interface ApiServerListReqInterface {
+  cursor?: string;
+  'page-size'?: number;
+  // eslint-disable-next-line camelcase
+  service_id?: string;
+}
 
 // 机构树组件所需数据接口
 export interface DataPointInterface{
