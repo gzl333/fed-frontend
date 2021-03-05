@@ -1,6 +1,13 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
-import { UsageInterface, DataRootInterface, ApiServiceResResultInterface, ApiServerListReqInterface } from './state'
+import {
+  UsageInterface,
+  DataRootInterface,
+  ResServiceResultInterface,
+  ReqServerListInterface,
+  ResServerInterface,
+  ServerInterface
+} from './state'
 import axios from 'axios'
 
 const apiBase = 'http://gosc.cstcloud.cn/api'
@@ -13,7 +20,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
   },
   async updateDataPointTree (context) {
     const response = await context.dispatch('fetchService')
-    const results: ApiServiceResResultInterface[] = response.data.results
+    const results: ResServiceResultInterface[] = response.data.results
     // translate response to dataPointTree
     const dataPointTree: DataRootInterface[] = [{
       key: '0',
@@ -30,7 +37,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
       })
       if (!hasCenter) {
         dataPointTree[0].children.unshift({
-          key: resPoint.data_center.name, // 因为datacenter和datapoint的key都是数值，这里避免与datapointkey重复
+          key: resPoint.data_center.name, // 因为datacenter和datapoint的key都是数值，这里避免与datapoint key重复
           label: resPoint.data_center.name,
           selectable: false,
           children: []
@@ -38,12 +45,13 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
       }
     })
     // second iteration to add dataPoints to dataCenters
-    results.forEach((resPoint: ApiServiceResResultInterface) => {
+    results.forEach((resPoint: ResServiceResultInterface) => {
       dataPointTree[0].children.forEach((treeCenter) => {
         if (treeCenter.label === resPoint.data_center.name) {
           treeCenter.children.unshift({
             key: resPoint.id,
             label: resPoint.name,
+            serviceType: resPoint.service_type,
             icon: 'storage'
           })
         }
@@ -52,16 +60,37 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     context.commit('storeDataPointTree', dataPointTree)
     // console.log(context.state.dataPointTree)
   },
-  async fetchServerList (context, payload:ApiServerListReqInterface) {
+  async fetchServerList (context, payload?:ReqServerListInterface) {
     const api = apiBase + '/server/'
     const config = {
       params: { ...payload }
     }
     const response = await axios.get(api, config)
-    console.log(response)
+    return response
   },
-  async fetchMultiServerList (context, payload) {
-    // 多个
+  async updateServerList (context, payload?: ReqServerListInterface) {
+    const res = await context.dispatch('fetchServerList', payload)
+    const resServers: ResServerInterface[] = res.data.servers
+    console.log(res)
+    const serverList: ServerInterface[] = []
+    resServers.forEach((resServer) => {
+      serverList.push({
+        ip: resServer.ipv4,
+        // dataCenter: // todo 需求：server list响应中增加该server所在dataCenter/serviceType信息
+        // serviceType:
+        image: resServer.image,
+        cpu: resServer.vcpus,
+        ram: resServer.ram,
+        endPoint: resServer.endpoint_url,
+        note: resServer.remarks,
+        id: resServer.id,
+        name: resServer.name,
+        isIpPublic: resServer.public_ip,
+        timeCreate: resServer.creation_time
+      })
+    })
+    context.commit('storeServerList', serverList)
+    // console.log(context.state.serverList)
   }
 }
 

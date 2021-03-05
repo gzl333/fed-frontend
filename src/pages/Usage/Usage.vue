@@ -3,11 +3,12 @@
     <div class="Usage">
           <q-tabs
             v-model="activeTab"
-            class="text-nord1 bg-nord4"
-            active-color="nord10"
-            indicator-color="nord10"
+            class="bg-nord4"
+            active-color="primary"
+            indicator-color="primary"
             align="left"
             inline-label
+            switch-indicator
           >
             <q-route-tab
               name="vm"

@@ -1,12 +1,12 @@
 import { MutationTree } from 'vuex'
-import { UsageInterface, DataCenterOnShowInterface, DataRootInterface } from './state'
+import { UsageInterface, DataRootInterface, ServerInterface } from './state'
 
 const mutation: MutationTree<UsageInterface> = {
   storeDataPointTree (state, payload: DataRootInterface[]) {
     state.dataPointTree = payload
   },
-  storeDataCenterOnShow (state, payload: DataCenterOnShowInterface) {
-    state.dataCenterOnSow = payload
+  storeServerList (state, payload: ServerInterface[]) {
+    state.serverList = payload
   }
 }
 
