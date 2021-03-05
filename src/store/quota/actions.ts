@@ -24,7 +24,9 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
         ramTotal: responseResult.ram_total,
         ramUsed: responseResult.ram_used,
         diskTotal: responseResult.disk_size_total,
-        diskUsed: responseResult.disk_size_used
+        diskUsed: responseResult.disk_size_used,
+        expirationTime: responseResult.expiration_time,
+        deleted: responseResult.deleted
       }
       providers.push(provider)
     })

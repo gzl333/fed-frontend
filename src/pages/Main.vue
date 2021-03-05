@@ -40,15 +40,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, toRefs, reactive } from 'vue'
-import VmList from 'src/components/main/VmList.vue'
-import TodoList, { ToDoProp } from 'src/components/main/TodoList.vue'
-import WarningList, { WarningProp } from 'src/components/main/WarningList.vue'
-import QuickEntry from 'src/components/main/QuickEntry.vue'
-import ObsList from 'src/components/main/ObsList.vue'
+import { defineComponent } from 'vue'
+// import VmList from 'src/components/main/VmList.vue'
+// import TodoList, { ToDoProp } from 'src/components/main/TodoList.vue'
+// import WarningList, { WarningProp } from 'src/components/main/WarningList.vue'
+// import QuickEntry from 'src/components/main/QuickEntry.vue'
+// import ObsList from 'src/components/main/ObsList.vue'
 import QuotaList from 'components/main/QuotaList.vue'
-import CostDetails from 'src/components/main/CostDetails.vue'
-import GroupList from 'src/components/main/GroupList.vue'
+// import CostDetails from 'src/components/main/CostDetails.vue'
+// import GroupList from 'src/components/main/GroupList.vue'
 
 import { useStore } from 'vuex'
 import { StateInterface } from '../store'
@@ -61,9 +61,9 @@ export default defineComponent({
     // WarningList,
     // QuickEntry,
     // ObsList,
-    QuotaList,
-    CostDetails,
-    GroupList
+    QuotaList
+    // CostDetails,
+    // GroupList
   },
   props: {},
   setup () {

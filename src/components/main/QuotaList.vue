@@ -21,7 +21,7 @@
               v-model="tab"
               vertical
               class="text-teal"
-              v-for="(item, index) in centerName"
+              v-for="(item, index) in serviceName"
               :key="index"
             >
               <q-tab :name="index" :label="item" icon="img:main/ev5-01.png" />
@@ -35,7 +35,7 @@
               vertical
               transition-prev="jump-up"
               transition-next="jump-up"
-              v-for="(name, index) in centerName"
+              v-for="(name, index) in serviceName"
               :key="index"
             >
               <q-tab-panel :name="index">
@@ -44,15 +44,30 @@
                   <q-badge color="orange" class="text-caption">{{
                     type[index]
                   }}</q-badge>
+
+                  <q-spinner-ball
+                    color="primary"
+                    size="1.5em"
+                    class="float-right"
+                  />
+                  <q-tooltip :offset="[5, 8]">QSpinnerBall</q-tooltip>
+
+                  <div v-if="expirationTime[index] != null">
+                    <span class="text-subtitle2 text-red"
+                      >于{{ expirationTime[index] }}到期
+                    </span>
+                  </div>
                 </div>
                 <div class="row items-center wrap q-gutter-sm q-mt-sm">
                   <div v-if="vCpuTotal[index] != 0">
                     <span class="text-weight-bold">vCPU </span>总额{{
                       vCpuTotal[index]
-                    }}，剩余{{ vCpuTotal[index] - vCpuUsed[index] }}
+                    }}，剩余{{ vCpuTotal[index] - vCpuUsed[index] }}，已用{{
+                      vCpuUsed[index]
+                    }}
                   </div>
                   <q-linear-progress
-                    class="q-mt-sm q-ml-xl q-mr-md"
+                    class="q-mt-sm q-ml-xl q-mr-xs"
                     size="25px"
                     :value="vCpuPercentage[index]"
                     color="teal"
@@ -62,7 +77,7 @@
                       <q-badge
                         color="white"
                         text-color="teal"
-                        :label="`已用${vCpuLabel[index]}%`"
+                        :label="`${vCpuLabel[index]}%`"
                       />
                     </div>
                   </q-linear-progress>
@@ -70,40 +85,44 @@
                   <div class="q-mt-md" v-if="ramTotal[index] != 0">
                     <span class="text-weight-bold">RAM</span> 总额{{
                       ramTotal[index]
-                    }}，剩余{{ ramTotal[index] - ramUsed[index] }}
+                    }}MB，剩余{{ ramTotal[index] - ramUsed[index] }}MB，已用{{
+                      ramUsed[index]
+                    }}MB
                   </div>
                   <q-linear-progress
                     size="25px"
                     :value="ramPercentage[index]"
                     color="teal"
-                    class="q-mt-sm q-ml-xl q-mr-md"
+                    class="q-mt-sm q-ml-xl q-mr-xs"
                     v-if="ramTotal[index] != 0"
                   >
                     <div class="absolute-full flex flex-center">
                       <q-badge
                         color="white"
                         text-color="teal"
-                        :label="`已用${ramLabel[index]}%`"
+                        :label="`${ramLabel[index]}%`"
                       />
                     </div>
                   </q-linear-progress>
                   <div class="q-mt-md" v-if="diskTotal[index] != 0">
                     <span class="text-weight-bold">vDISK</span> 总额{{
                       diskTotal[index]
-                    }}，剩余{{ diskTotal[index] - diskUsed[index] }}
+                    }}GB，剩余{{ diskTotal[index] - diskUsed[index] }}GB，已用{{
+                      diskUsed[index]
+                    }}GB
                   </div>
                   <q-linear-progress
                     size="25px"
                     :value="diskPercentage[index]"
                     color="teal"
-                    class="q-mt-sm q-ml-xl q-mr-md"
+                    class="q-mt-sm q-ml-xl q-mr-xs"
                     v-if="diskTotal[index] != 0"
                   >
                     <div class="absolute-full flex flex-center">
                       <q-badge
                         color="white"
                         text-color="teal"
-                        :label="`已用${diskLabel[index]}%`"
+                        :label="`${diskLabel[index]}%`"
                       />
                     </div>
                   </q-linear-progress>
@@ -111,40 +130,45 @@
                   <div class="q-mt-md" v-if="publicIpTotal[index] != 0">
                     <span class="text-weight-bold">Public-IP</span> 总额{{
                       publicIpTotal[index]
-                    }}，剩余{{ publicIpTotal[index] - publicIpUsed[index] }}
+                    }}，剩余{{
+                      publicIpTotal[index] - publicIpUsed[index]
+                    }}，已用{{ publicIpUsed[index] }}
                   </div>
                   <q-linear-progress
                     size="25px"
                     :value="publicIpPercentage[index]"
                     color="teal"
-                    class="q-mt-sm q-ml-xl q-mr-md"
+                    class="q-mt-sm q-ml-xl q-mr-xs"
                     v-if="publicIpTotal[index] != 0"
                   >
                     <div class="absolute-full flex flex-center">
                       <q-badge
                         color="white"
                         text-color="teal"
-                        :label="`已用${publicIpLabel[index]}%`"
+                        :label="`${publicIpLabel[index]}%`"
                       />
                     </div>
                   </q-linear-progress>
                   <div class="q-mt-md" v-if="privateIpTotal[index] != 0">
                     <span class="text-weight-bold">Private-IP</span> 总额{{
                       privateIpTotal[index]
-                    }}，剩余{{ privateIpTotal[index] - privateIpUsed[index] }}
+                    }}，剩余{{
+                      privateIpTotal[index] - privateIpUsed[index]
+                    }}
+                    ，已用{{ privateIpUsed[index] }}
                   </div>
                   <q-linear-progress
                     size="25px"
                     :value="privateIpPercentage[index]"
                     color="teal"
-                    class="q-mt-sm q-ml-xl q-mr-md"
+                    class="q-mt-sm q-ml-xl q-mr-xs"
                     v-if="privateIpTotal[index] != 0"
                   >
                     <div class="absolute-full flex flex-center">
                       <q-badge
                         color="white"
                         text-color="teal"
-                        :label="`已用${privateIpLabel[index]}%`"
+                        :label="`${privateIpLabel[index]}%`"
                       />
                     </div>
                   </q-linear-progress>
@@ -176,8 +200,8 @@ export default defineComponent({
       void $store.dispatch('quota/fetchQuota')
     })
 
-    const centerName = computed(() => $store.getters['quota/centerName'])
-    const type = computed(() => $store.getters['quota/centertype'])
+    const serviceName = computed(() => $store.getters['quota/serviceName'])
+    const type = computed(() => $store.getters['quota/servicetype'])
 
     const vCpuUsed = computed(() => $store.getters['quota/vCpuUsed'])
     const vCpuTotal = computed(() => $store.getters['quota/vCpuTotal'])
@@ -204,8 +228,10 @@ export default defineComponent({
     const privateIpPercentage = computed(() => $store.getters['quota/privateIpPercentage'])
     const privateIpLabel = computed(() => $store.getters['quota/privateIpLabel'])
 
+    const expirationTime = computed(() => $store.getters['quota/expirationTime'])
+
     return {
-      centerName,
+      serviceName,
       type,
       vCpuUsed,
       vCpuTotal,
@@ -227,7 +253,8 @@ export default defineComponent({
       privateIpTotal,
       privateIpPercentage,
       privateIpLabel,
-      tab: ref(1),
+      expirationTime,
+      tab: ref(0),
       splitterModel: ref(25)
     }
   }
