@@ -54,33 +54,36 @@ export interface ApiServerListReqInterface {
 
 // 机构树组件所需数据接口
 export interface DataPointInterface{
-  id: string;
-  name: string;
+  key: string;
+  label: string;
+  icon?: string;
 }
 export interface DataCenterInterface {
-  id: string; // 应该与name值相同，避免tree组件中与dataPoint的id重合
-  name: string;
-  dataPoints: DataPointInterface[];
+  key: string; // 应该与label值相同，避免tree组件中与dataPoint的id重合
+  label: string;
+  selectable: false;
+  children: DataPointInterface[];
 }
-export interface UsageInterface {
-  dataPointTree: DataCenterInterface[];
-  dataCenterOnSow: DataCenterOnShowInterface;
+export interface DataRootInterface{
+  key: '0';
+  label: '全部节点';
+  icon?: string;
+  children: DataCenterInterface[]
 }
 
+// Usage总接口
+export interface UsageInterface {
+  dataPointTree: DataRootInterface[];
+  dataCenterOnSow: DataCenterOnShowInterface;
+}
 function state (): UsageInterface {
   return {
-    dataPointTree: [
-      {
-        id: '',
-        name: '',
-        dataPoints: [
-          {
-            id: '',
-            name: ''
-          }
-        ]
-      }
-    ],
+    dataPointTree: [{
+      key: '0',
+      label: '全部节点',
+      icon: 'storage',
+      children: []
+    }],
     dataCenterOnSow: {
       centers: []
     }

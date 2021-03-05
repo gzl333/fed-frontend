@@ -1,6 +1,6 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
-import { UsageInterface, DataCenterInterface, ApiServiceResResultInterface, ApiServerListReqInterface } from './state'
+import { UsageInterface, DataRootInterface, ApiServiceResResultInterface, ApiServerListReqInterface } from './state'
 import axios from 'axios'
 
 const apiBase = 'http://gosc.cstcloud.cn/api'
@@ -13,36 +13,38 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
   },
   async updateDataPointTree (context) {
     const response = await context.dispatch('fetchService')
-    // console.log(response)
     const results: ApiServiceResResultInterface[] = response.data.results
     // translate response to dataPointTree
-    const dataPointTree: DataCenterInterface[] = []
-    // first iteration to build dataCenters
-    results.forEach((apiDataPoint: ApiServiceResResultInterface) => {
-      // console.log('in first iteration')
+    const dataPointTree: DataRootInterface[] = [{
+      key: '0',
+      label: '全部节点',
+      icon: 'storage',
+      children: []
+    }]
+    results.forEach((resPoint) => {
       let hasCenter = false
-      dataPointTree.forEach((treeDataCenter) => {
-        if (treeDataCenter.name === apiDataPoint.data_center.name) {
+      dataPointTree[0].children.forEach((treeCenter) => {
+        if (treeCenter.label === resPoint.data_center.name) {
           hasCenter = true
         }
       })
       if (!hasCenter) {
-        dataPointTree.push({
-          id: apiDataPoint.data_center.name,
-          name: apiDataPoint.data_center.name,
-          dataPoints: []
+        dataPointTree[0].children.unshift({
+          key: resPoint.data_center.name, // 因为datacenter和datapoint的key都是数值，这里避免与datapointkey重复
+          label: resPoint.data_center.name,
+          selectable: false,
+          children: []
         })
       }
     })
-    // console.log(dataPointTree)
     // second iteration to add dataPoints to dataCenters
-    results.forEach((apiDataPoint: ApiServiceResResultInterface) => {
-      // console.log('in second iteration')
-      dataPointTree.forEach((treeDataCenter) => {
-        if (treeDataCenter.name === apiDataPoint.data_center.name) {
-          treeDataCenter.dataPoints.push({
-            id: apiDataPoint.id,
-            name: apiDataPoint.name
+    results.forEach((resPoint: ApiServiceResResultInterface) => {
+      dataPointTree[0].children.forEach((treeCenter) => {
+        if (treeCenter.label === resPoint.data_center.name) {
+          treeCenter.children.unshift({
+            key: resPoint.id,
+            label: resPoint.name,
+            icon: 'storage'
           })
         }
       })
