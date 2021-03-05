@@ -61,7 +61,7 @@ export interface UquotaResponseResultsInterface {
   // eslint-disable-next-line camelcase
   disk_size_used: number;
   // eslint-disable-next-line camelcase
-  expiration_time: unknown;
+  expiration_time: string;
   deleted: boolean;
   display: string;
 }

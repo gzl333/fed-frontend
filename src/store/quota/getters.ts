@@ -3,32 +3,38 @@ import { StateInterface } from '../index'
 import { QuotaInterface } from './state'
 
 const getters: GetterTree<QuotaInterface, StateInterface> = {
-  centerName (state) {
-    const centername: string[] = []
+  serviceName (state) {
+    const serviceName: string[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const name = item.name
-        centername.push(name)
+        if (item.deleted === false) {
+          const name = item.name
+          serviceName.push(name)
+        }
       })
     }
-    return centername
+    return serviceName
   },
-  centertype (state) {
-    const centertype: string[] = []
+  servicetype (state) {
+    const serviceType: string[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const type = item.type
-        centertype.push(type)
+        if (item.deleted === false) {
+          const type = item.type
+          serviceType.push(type)
+        }
       })
     }
-    return centertype
+    return serviceType
   },
   vCpuUsed (state) {
     const vCpuUsed: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Used = item.vCpuUsed
-        vCpuUsed.push(Used)
+        if (item.deleted === false) {
+          const Used = item.vCpuUsed
+          vCpuUsed.push(Used)
+        }
       })
     }
     return vCpuUsed
@@ -37,8 +43,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const vCpuTotal: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Total = item.vCpuTotal
-        vCpuTotal.push(Total)
+        if (item.deleted === false) {
+          const Total = item.vCpuTotal
+          vCpuTotal.push(Total)
+        }
       })
     }
     return vCpuTotal
@@ -47,8 +55,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const vCpuPercentage: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Percentage = item.vCpuUsed / item.vCpuTotal
-        vCpuPercentage.push(Percentage)
+        if (item.deleted === false) {
+          const Percentage = item.vCpuUsed / item.vCpuTotal
+          vCpuPercentage.push(Percentage)
+        }
       })
     }
     return vCpuPercentage
@@ -57,9 +67,11 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const vCpuLabel: string[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Percentage = item.vCpuUsed / item.vCpuTotal
-        const label = (Percentage * 100).toFixed(2)
-        vCpuLabel.push(label)
+        if (item.deleted === false) {
+          const Percentage = item.vCpuUsed / item.vCpuTotal
+          const label = (Percentage * 100).toFixed(2)
+          vCpuLabel.push(label)
+        }
       })
     }
     return vCpuLabel
@@ -68,8 +80,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const ramUsed: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Used = item.ramUsed
-        ramUsed.push(Used)
+        if (item.deleted === false) {
+          const Used = item.ramUsed
+          ramUsed.push(Used)
+        }
       })
     }
     return ramUsed
@@ -78,8 +92,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const ramTotal: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Total = item.ramTotal
-        ramTotal.push(Total)
+        if (item.deleted === false) {
+          const Total = item.ramTotal
+          ramTotal.push(Total)
+        }
       })
     }
     return ramTotal
@@ -88,8 +104,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const ramPercentage: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Percentage = item.ramUsed / item.ramTotal
-        ramPercentage.push(Percentage)
+        if (item.deleted === false) {
+          const Percentage = item.ramUsed / item.ramTotal
+          ramPercentage.push(Percentage)
+        }
       })
     }
     return ramPercentage
@@ -98,9 +116,11 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const ramLabel: string[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Percentage = item.ramUsed / item.ramTotal
-        const label = (Percentage * 100).toFixed(2)
-        ramLabel.push(label)
+        if (item.deleted === false) {
+          const Percentage = item.ramUsed / item.ramTotal
+          const label = (Percentage * 100).toFixed(2)
+          ramLabel.push(label)
+        }
       })
     }
     return ramLabel
@@ -109,8 +129,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const diskUsed: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Used = item.diskUsed
-        diskUsed.push(Used)
+        if (item.deleted === false) {
+          const Used = item.diskUsed
+          diskUsed.push(Used)
+        }
       })
     }
     return diskUsed
@@ -119,8 +141,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const diskTotal: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Total = item.diskTotal
-        diskTotal.push(Total)
+        if (item.deleted === false) {
+          const Total = item.diskTotal
+          diskTotal.push(Total)
+        }
       })
     }
     return diskTotal
@@ -129,8 +153,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const diskPercentage: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Percentage = item.diskUsed / item.diskTotal
-        diskPercentage.push(Percentage)
+        if (item.deleted === false) {
+          const Percentage = item.diskUsed / item.diskTotal
+          diskPercentage.push(Percentage)
+        }
       })
     }
     return diskPercentage
@@ -139,9 +165,11 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const diskLabel: string[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Percentage = item.diskUsed / item.diskTotal
-        const label = (Percentage * 100).toFixed(2)
-        diskLabel.push(label)
+        if (item.deleted === false) {
+          const Percentage = item.diskUsed / item.diskTotal
+          const label = (Percentage * 100).toFixed(2)
+          diskLabel.push(label)
+        }
       })
     }
     return diskLabel
@@ -150,8 +178,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const publicIpUsed: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Used = item.publicIpUsed
-        publicIpUsed.push(Used)
+        if (item.deleted === false) {
+          const Used = item.publicIpUsed
+          publicIpUsed.push(Used)
+        }
       })
     }
     return publicIpUsed
@@ -160,8 +190,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const publicIpTotal: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Total = item.publicIpTotal
-        publicIpTotal.push(Total)
+        if (item.deleted === false) {
+          const Total = item.publicIpTotal
+          publicIpTotal.push(Total)
+        }
       })
     }
     return publicIpTotal
@@ -170,8 +202,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const publicIpPercentage: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Percentage = item.publicIpUsed / item.publicIpTotal
-        publicIpPercentage.push(Percentage)
+        if (item.deleted === false) {
+          const Percentage = item.publicIpUsed / item.publicIpTotal
+          publicIpPercentage.push(Percentage)
+        }
       })
     }
     return publicIpPercentage
@@ -180,9 +214,11 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const publicIpLabel: string[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Percentage = item.publicIpUsed / item.publicIpTotal
-        const label = (Percentage * 100).toFixed(2)
-        publicIpLabel.push(label)
+        if (item.deleted === false) {
+          const Percentage = item.publicIpUsed / item.publicIpTotal
+          const label = (Percentage * 100).toFixed(2)
+          publicIpLabel.push(label)
+        }
       })
     }
     return publicIpLabel
@@ -191,8 +227,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const privateIpUsed: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Used = item.privateIpUsed
-        privateIpUsed.push(Used)
+        if (item.deleted === false) {
+          const Used = item.privateIpUsed
+          privateIpUsed.push(Used)
+        }
       })
     }
     return privateIpUsed
@@ -201,8 +239,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const privateIpTotal: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Total = item.privateIpTotal
-        privateIpTotal.push(Total)
+        if (item.deleted === false) {
+          const Total = item.privateIpTotal
+          privateIpTotal.push(Total)
+        }
       })
     }
     return privateIpTotal
@@ -211,8 +251,10 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const privateIpPercentage: number[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Percentage = item.privateIpUsed / item.privateIpTotal
-        privateIpPercentage.push(Percentage)
+        if (item.deleted === false) {
+          const Percentage = item.privateIpUsed / item.privateIpTotal
+          privateIpPercentage.push(Percentage)
+        }
       })
     }
     return privateIpPercentage
@@ -221,12 +263,36 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     const privateIpLabel: string[] = []
     if (state.userQuota.providers) {
       state.userQuota.providers.forEach((item) => {
-        const Percentage = item.privateIpUsed / item.privateIpTotal
-        const label = (Percentage * 100).toFixed(2)
-        privateIpLabel.push(label)
+        if (item.deleted === false) {
+          const Percentage = item.privateIpUsed / item.privateIpTotal
+          const label = (Percentage * 100).toFixed(2)
+          privateIpLabel.push(label)
+        }
       })
     }
     return privateIpLabel
+  },
+  expirationTime (state) {
+    const expirationTime: string[] = []
+    if (state.userQuota.providers) {
+      state.userQuota.providers.forEach((item) => {
+        if (item.deleted === false) {
+          const time = item.expirationTime as string
+          if (time != null) {
+            const time1 = time.slice(0, 10)
+            const time2 = time.slice(11, 19)
+            // console.log('in getters time:', time)
+            const timeJoin = time1 + ' ' + time2
+            // console.log('in getters timeJoin :', timeJoin)
+            expirationTime.push(timeJoin)
+          } else {
+            expirationTime.push(time)
+          }
+        }
+      })
+    }
+    // console.log('in getters expirationTime :', expirationTime)
+    return expirationTime
   }
 }
 
