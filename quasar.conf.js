@@ -101,7 +101,7 @@ module.exports = configure(function (/* ctx */) {
     framework: {
       config: {
         loading: {
-          delay: 500,
+          delay: 800,
           spinnerSize: 100
         },
         notify: {

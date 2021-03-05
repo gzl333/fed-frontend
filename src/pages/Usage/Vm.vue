@@ -35,16 +35,17 @@
 
       <div class="col bg-nord6 q-py-sm q-pr-sm">
         <q-table
+          class="q-px-lg"
           flat
-          bordered
           card-class="bg-nord6"
           table-class="text-nord0"
           table-header-class="server-table-header bg-nord5"
-          :title="selectedTree"
+          :title="selectedTree || '全部节点'"
           :rows="rows"
           :columns="columns"
           row-key="name"
         />
+<!--        <pre>{{rows}}</pre>-->
       </div>
     </div>
 
@@ -63,7 +64,10 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    onMounted(() => { void $store.dispatch('usage/updateDataPointTree') })
+    onMounted(() => {
+      void $store.dispatch('usage/updateDataPointTree')
+      void $store.dispatch('usage/updateServerList')
+    })
     const dataPointTree = computed(() => $store.state.usage.dataPointTree)
 
     // const dataPointTree = [
@@ -110,126 +114,30 @@ export default defineComponent({
       isTreeOpen.value = !isTreeOpen.value
     }
     const columns = [
-      {
-        name: 'ip',
-        required: true,
-        label: 'IP地址',
-        align: 'left',
-        sortable: true
-      },
-      { name: 'dataCenter', align: 'center', label: '数据中心', field: 'calories', sortable: true },
-      { name: 'serviceType', label: '服务种类', field: 'fat', sortable: true },
-      { name: 'image', label: '镜像', field: 'carbs' },
-      { name: 'config', label: 'CPU/MEM', field: 'protein' },
-      { name: 'daysRemain', label: '到期预警', field: 'sodium' },
-      { name: 'source', label: '资源来源', field: 'calcium', sortable: true },
-      { name: 'note', label: '备注', field: 'iron', sortable: true },
-      { name: 'state', label: '状态', field: 'iron', sortable: true },
-      { name: 'operations', label: '操作', field: 'iron', sortable: true }
+      { name: 'ip', label: 'IP地址', field: 'ip', align: 'center', sortable: true },
+      { name: 'dataCenter', label: '数据中心', field: 'dataCenter', align: 'center', sortable: true },
+      { name: 'serviceType', label: '服务种类', field: 'serviceType', align: 'center', sortable: true },
+      { name: 'image', label: '镜像', field: 'image', align: 'center', sortable: true },
+      { name: 'cpu', label: 'CPU', field: 'cpu', align: 'center', sortable: true },
+      { name: 'mem', label: '内存', field: 'ram', align: 'center', sortable: true },
+      // { name: 'daysRemain', label: '到期预警', field: 'daysRemain' ,align: 'center'},
+      // { name: 'source', label: '资源来源', field: 'source', sortable: true,align: 'center' },
+      { name: 'note', label: '备注', field: 'note', align: 'center', sortable: true },
+      { name: 'status', label: '状态', field: 'status', align: 'center', sortable: true },
+      { name: 'operations', label: '操作', field: 'operations' }
     ]
-
-    const rows = [
-      {
-        name: 'Frozen Yogurt',
-        calories: 159,
-        fat: 6.0,
-        carbs: 24,
-        protein: 4.0,
-        sodium: 87,
-        calcium: '14%',
-        iron: '1%'
-      },
-      {
-        name: 'Ice cream sandwich',
-        calories: 237,
-        fat: 9.0,
-        carbs: 37,
-        protein: 4.3,
-        sodium: 129,
-        calcium: '8%',
-        iron: '1%'
-      },
-      {
-        name: 'Eclair',
-        calories: 262,
-        fat: 16.0,
-        carbs: 23,
-        protein: 6.0,
-        sodium: 337,
-        calcium: '6%',
-        iron: '7%'
-      },
-      {
-        name: 'Cupcake',
-        calories: 305,
-        fat: 3.7,
-        carbs: 67,
-        protein: 4.3,
-        sodium: 413,
-        calcium: '3%',
-        iron: '8%'
-      },
-      {
-        name: 'Gingerbread',
-        calories: 356,
-        fat: 16.0,
-        carbs: 49,
-        protein: 3.9,
-        sodium: 327,
-        calcium: '7%',
-        iron: '16%'
-      },
-      {
-        name: 'Jelly bean',
-        calories: 375,
-        fat: 0.0,
-        carbs: 94,
-        protein: 0.0,
-        sodium: 50,
-        calcium: '0%',
-        iron: '0%'
-      },
-      {
-        name: 'Lollipop',
-        calories: 392,
-        fat: 0.2,
-        carbs: 98,
-        protein: 0,
-        sodium: 38,
-        calcium: '0%',
-        iron: '2%'
-      },
-      {
-        name: 'Honeycomb',
-        calories: 408,
-        fat: 3.2,
-        carbs: 87,
-        protein: 6.5,
-        sodium: 562,
-        calcium: '0%',
-        iron: '45%'
-      },
-      {
-        name: 'Donut',
-        calories: 452,
-        fat: 25.0,
-        carbs: 51,
-        protein: 4.9,
-        sodium: 326,
-        calcium: '2%',
-        iron: '22%'
-      },
-      {
-        name: 'KitKat',
-        calories: 518,
-        fat: 26.0,
-        carbs: 65,
-        protein: 7,
-        sodium: 54,
-        calcium: '12%',
-        iron: '6%'
-      }
-    ]
+    const rows = computed(() => $store.state.usage.serverList)
+    // const rows = [
+    //   {
+    //     name: 'Frozen Yogurt',
+    //     calories: 159,
+    //     fat: 6.0,
+    //     carbs: 24,
+    //     protein: 4.0,
+    //     sodium: 87,
+    //     calcium: '14%',
+    //     iron: '1%'
+    //   }]
 
     return {
       isTreeOpen,

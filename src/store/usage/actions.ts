@@ -60,7 +60,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     context.commit('storeDataPointTree', dataPointTree)
     // console.log(context.state.dataPointTree)
   },
-  async fetchServerList (context, payload?:ReqServerListInterface) {
+  async fetchServerList (context, payload?: ReqServerListInterface) {
     const api = apiBase + '/server/'
     const config = {
       params: { ...payload }
@@ -68,10 +68,15 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     const response = await axios.get(api, config)
     return response
   },
+  async fetchServerStatus (context, payload: string) {
+    const api = apiBase + '/server/' + payload + '/status/'
+    const response = await axios.get(api)
+    return response
+  },
   async updateServerList (context, payload?: ReqServerListInterface) {
-    const res = await context.dispatch('fetchServerList', payload)
-    const resServers: ResServerInterface[] = res.data.servers
-    console.log(res)
+    const resServerList = await context.dispatch('fetchServerList', payload)
+    const resServers: ResServerInterface[] = resServerList.data.servers
+    // console.log(res)
     const serverList: ServerInterface[] = []
     resServers.forEach((resServer) => {
       serverList.push({
@@ -90,7 +95,30 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
       })
     })
     context.commit('storeServerList', serverList)
-    // console.log(context.state.serverList)
+    console.log(context.state.serverList)
+
+    // 更新每个server的status
+    for (const server of context.state.serverList) {
+      const resServerStatus = await context.dispatch('fetchServerStatus', server.id)
+      // console.log(resServerStatus.data.status)
+      const codeMap = new Map<number, string>(
+        [
+          [1, 'one'],
+          [2, 'two'],
+          [3, 'three'],
+          [4, 'four'],
+          [5, 'five'],
+          [6, 'six']
+        ]
+      )
+      const payload = {
+        id: server.id,
+        status: codeMap.get(resServerStatus.data.status.status_code)
+      }
+
+      context.commit('storeServerStatus', payload)
+      // console.log(server.status)
+    }
   }
 }
 

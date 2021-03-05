@@ -1,4 +1,13 @@
 // 当前展示的云主机数据接口
+export interface ResServerStatusInterface {
+  status: {
+    // eslint-disable-next-line camelcase
+    status_code: number;
+    // eslint-disable-next-line camelcase
+    status_text: string;
+  }
+}
+
 export interface ServerInterface {
   id: string;
   name: string;
@@ -13,11 +22,12 @@ export interface ServerInterface {
   daysRemain?: number; // 到期时间
   source?: string; // 资源来源
   note?: string; // 备注
-  state?: string; // 设备状态
+  status?: string; // 设备状态
   timeCreate?: string; // 创建时间
   charge?: string; // 计费
 }
-export interface ResServerInterface{
+
+export interface ResServerInterface {
   id: string;
   name: string;
   vcpus: number;
@@ -32,6 +42,7 @@ export interface ResServerInterface{
   // eslint-disable-next-line camelcase
   endpoint_url: string;
 }
+
 export interface ResServerListInterface {
   next: number | null;
   previous: number | null,
@@ -60,7 +71,9 @@ export interface ResServiceResultInterface {
   data_center: {
     id: string;
     name: string;
-}}
+  }
+}
+
 export interface ResServiceInterface {
   count: number | null;
   next: number | null;
@@ -69,19 +82,21 @@ export interface ResServiceInterface {
 }
 
 // 机构树组件所需数据接口
-export interface DataPointInterface{
+export interface DataPointInterface {
   key: string;
   label: string;
   icon?: string;
   serviceType: string;
 }
+
 export interface DataCenterInterface {
   key: string; // 应该与label值相同，避免tree组件中与dataPoint的id重合
   label: string;
   selectable: false;
   children: DataPointInterface[];
 }
-export interface DataRootInterface{
+
+export interface DataRootInterface {
   key: '0';
   label: '全部节点';
   icon?: string;
@@ -93,6 +108,7 @@ export interface UsageInterface {
   dataPointTree: DataRootInterface[];
   serverList: ServerInterface[];
 }
+
 function state (): UsageInterface {
   return {
     dataPointTree: [{

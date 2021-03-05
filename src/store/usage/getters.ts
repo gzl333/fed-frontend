@@ -3,8 +3,10 @@ import { StateInterface } from '../index'
 import { UsageInterface } from './state'
 
 const getters: GetterTree<UsageInterface, StateInterface> = {
-  someAction (/* state */) {
-    // your code
+  getRows (state) {
+    // state.serverList.map((server) => {
+    //   server.status
+    // })
   }
 }
 
