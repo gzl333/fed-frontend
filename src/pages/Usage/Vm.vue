@@ -171,11 +171,14 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
+    // 云主机状态
     const isStatusLoading = ref(true)
+    // 获取机构树，获取云主机列表
     onMounted(() => {
       void $store.dispatch('usage/updateDataPointTree')
       void $store.dispatch('usage/updateServerList')
     })
+    // 得到机构树信息
     const dataPointTree = computed(() => {
       return $store.state.usage.dataPointTree
     })
@@ -211,8 +214,11 @@ export default defineComponent({
     //   }
     // ]
 
+    // 机构树上所选择节点的id
     const selectedTree = ref('0')
+    // 云主机列表title
     const tableTitle = ref('全部节点')
+    // 监控机构树节点选择
     watch(selectedTree, () => {
       console.log(selectedTree.value)
       if (selectedTree.value === '0' || selectedTree.value === null) {
@@ -240,10 +246,12 @@ export default defineComponent({
       }
       // console.log(tableTitle.value)
     })
+    // 机构树折叠
     const isTreeOpen = ref(true)
     const toggleTree = () => {
       isTreeOpen.value = !isTreeOpen.value
     }
+    // 云主机列表分栏定义
     const columns = [
       {
         name: 'ip',
@@ -309,6 +317,7 @@ export default defineComponent({
         field: 'operation'
       }
     ]
+    // 获取云主机列表数据
     const rows = computed(() => $store.state.usage.serverList)
     // const rows = [
     //   {
