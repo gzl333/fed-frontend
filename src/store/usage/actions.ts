@@ -6,7 +6,7 @@ import {
   ResServiceResultInterface,
   ReqServerListInterface,
   ResServerInterface,
-  ServerInterface
+  ServerInterface, PaginationInterface
 } from './state'
 import axios from 'axios'
 
@@ -130,9 +130,25 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     return response
   },
   async updateServerList (context, payload?: ReqServerListInterface) {
+    // 每次获取serverList之前先取得当前分页信息
+    payload = {
+      ...payload,
+      'page-size': context.state.pagination.pageSize
+    }
+    console.log(payload?.
+      ['page-size'])
     const resServerList = await context.dispatch('fetchServerList', payload)
+    // console.log(resServerList)
+    // 保存分页信息
+    const pagination: PaginationInterface = {
+      pageSize: context.state.pagination.pageSize,
+      next: resServerList.data.next,
+      previous: resServerList.data.previous
+    }
+    context.commit('storePagination', pagination)
+    console.log(context.state.pagination)
     const resServers: ResServerInterface[] = resServerList.data.servers
-    // console.log(resServers)
+    console.log(resServers)
     const serverList: ServerInterface[] = []
     for (const resServer of resServers) {
       const currentServer = {

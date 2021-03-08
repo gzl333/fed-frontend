@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex'
-import { UsageInterface, DataRootInterface, ServerInterface, DataPointOnShowInterface } from './state'
+import { UsageInterface, DataRootInterface, ServerInterface, DataPointOnShowInterface, PaginationInterface } from './state'
 
 const mutation: MutationTree<UsageInterface> = {
   storeDataPointTree (state, payload: DataRootInterface[]) {
@@ -18,7 +18,11 @@ const mutation: MutationTree<UsageInterface> = {
   },
   storeDataPointOnShow (state, payload: DataPointOnShowInterface) {
     state.dataPointOnShow = payload
+  },
+  storePagination (state, payload: PaginationInterface) {
+    state.pagination = payload
   }
+
 }
 
 export default mutation

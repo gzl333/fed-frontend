@@ -34,6 +34,7 @@
       </div>
 
       <div class="col bg-nord6 q-py-sm q-pr-sm">
+
         <q-table
           class="q-px-lg"
           flat
@@ -45,6 +46,8 @@
           :columns="columns"
           row-key="name"
           no-data-label="所选择节点中无可供使用的云主机"
+          :pagination="pagination"
+          hide-pagination
         >
           <template v-slot:body-cell-status="props">
             <q-td :props="props" class="non-selectable">
@@ -131,10 +134,26 @@
                   </q-list>
                 </q-btn-dropdown>
               </q-btn-group>
-              <!--              {{ props.row.cpu }}-->
             </q-td>
           </template>
+
+<!--          <template v-slot:bottom>-->
+<!--            <div class="column items-center">-->
+<!--              <q-pagination-->
+<!--                class="col  q-pa-md"-->
+<!--                v-model="current"-->
+<!--                :max="5"-->
+<!--                :direction-links="true"-->
+<!--                icon-prev="fast_rewind"-->
+<!--                icon-next="fast_forward"-->
+<!--                color="nord10"-->
+<!--              >-->
+<!--              </q-pagination>-->
+<!--            </div>-->
+<!--          </template>-->
+
         </q-table>
+
         <!--        <pre>{{rows}}</pre>-->
       </div>
 
@@ -148,7 +167,7 @@
           </q-card-section>
 
           <q-card-actions align="right">
-            <q-btn flat label="删除" color="nord11" v-close-popup @click="vmOperation(vmToDel)" />
+            <q-btn flat label="删除" color="nord11" v-close-popup @click="vmOperation(vmToDel)"/>
             <q-btn flat label="取消" color="nord10" v-close-popup/>
           </q-card-actions>
         </q-card>
@@ -171,7 +190,14 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    // 云主机状态
+    // todo 通过屏幕尺寸动态计算最佳rows， 并同步至store的pageSize watch(....)
+    const computedPageSize = 13
+    $store.commit('usage/storePagination', { pageSize: computedPageSize })
+    // 供tabel获取分页信息，与table通信用
+    const pagination = ref({
+      rowsPerPage: $store.state.usage.pagination.pageSize
+    })
+    // 云主机状态按钮
     const isStatusLoading = ref(true)
     // 获取机构树，获取云主机列表
     onMounted(() => {
@@ -358,6 +384,7 @@ export default defineComponent({
       endPoint: '',
       action: ''
     })
+
     return {
       isTreeOpen,
       toggleTree,
@@ -370,7 +397,8 @@ export default defineComponent({
       tableTitle,
       gotoVNC,
       isShowDelConfirm,
-      vmToDel
+      vmToDel,
+      pagination
     }
   }
 })
@@ -429,4 +457,5 @@ export default defineComponent({
 .dropdown-items {
   text-align: center;
 }
+
 </style>

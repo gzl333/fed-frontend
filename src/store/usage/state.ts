@@ -8,6 +8,15 @@ export interface ResServerStatusInterface {
   }
 }
 
+export interface PaginationInterface {
+  pageSize: number;
+  serviceId?: string;
+  next?: string | null;
+  previous?: string | null;
+  currentPage?: string | number;
+  totalPage?: string | number;
+}
+
 export interface ServerInterface {
   id: string;
   name: string;
@@ -52,8 +61,10 @@ export interface ResServerInterface {
 }
 
 export interface ResServerListInterface {
-  next: number | null;
-  previous: number | null,
+  currentPage?: number | string; // todo 需要后端加
+  totalPage?: number | string; // todo 需要后端加
+  next?: number | null;
+  previous?: number | null,
   servers: ResServerInterface[]
 }
 
@@ -121,6 +132,7 @@ export interface UsageInterface {
   dataPointTree: DataRootInterface[];
   serverList: ServerInterface[];
   dataPointOnShow: DataPointOnShowInterface;
+  pagination: PaginationInterface;
 }
 
 function state (): UsageInterface {
@@ -135,7 +147,13 @@ function state (): UsageInterface {
       key: '0',
       label: '全部节点'
     },
-    serverList: []
+    serverList: [],
+    pagination: {
+      serviceId: '',
+      next: '',
+      previous: '',
+      pageSize: 0
+    }
   }
 }
 
