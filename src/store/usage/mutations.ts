@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex'
-import { UsageInterface, DataRootInterface, ServerInterface } from './state'
+import { UsageInterface, DataRootInterface, ServerInterface, DataPointOnShowInterface } from './state'
 
 const mutation: MutationTree<UsageInterface> = {
   storeDataPointTree (state, payload: DataRootInterface[]) {
@@ -15,6 +15,9 @@ const mutation: MutationTree<UsageInterface> = {
     if (currentServer) {
       currentServer.status = payload.status
     }
+  },
+  storeDataPointOnShow (state, payload: DataPointOnShowInterface) {
+    state.dataPointOnShow = payload
   }
 }
 

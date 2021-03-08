@@ -37,6 +37,9 @@ const errorNotifier = (error: AxiosError) => {
 }
 
 axios.interceptors.request.use(config => {
+  if (config.url?.indexOf('/status/')) { // 使用server status的api时延时较长，关闭全局loading bar，使用组件自己的loading状态
+    return config
+  }
   Loading.show()
   return config
 }, error => {

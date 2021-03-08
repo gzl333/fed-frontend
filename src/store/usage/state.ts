@@ -16,8 +16,8 @@ export interface ServerInterface {
   dataCenter?: string;
   serviceType?: string;
   image: string;
-  cpu: number;
-  ram: number;
+  cpu: string;
+  ram: string;
   endPoint: string;
   daysRemain?: number; // 到期时间
   source?: string; // 资源来源
@@ -103,10 +103,16 @@ export interface DataRootInterface {
   children: DataCenterInterface[]
 }
 
+export interface DataPointOnShowInterface {
+  key: string;
+  label: string;
+}
+
 // Usage总接口
 export interface UsageInterface {
   dataPointTree: DataRootInterface[];
   serverList: ServerInterface[];
+  dataPointOnShow: DataPointOnShowInterface;
 }
 
 function state (): UsageInterface {
@@ -117,6 +123,10 @@ function state (): UsageInterface {
       icon: 'storage',
       children: []
     }],
+    dataPointOnShow: {
+      key: '0',
+      label: '全部节点'
+    },
     serverList: []
   }
 }
