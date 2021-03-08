@@ -47,7 +47,7 @@
           no-data-label="所选择节点中无可供使用的云主机"
         >
           <template v-slot:body-cell-status="props">
-            <q-td :props="props">
+            <q-td :props="props" class="non-selectable">
               <q-inner-loading v-if="!props.row.status" showing class="inner-loading">
                 <q-spinner size="30px" color="nord9"/>
               </q-inner-loading>
@@ -98,15 +98,15 @@
                       </q-item-section>
                     </q-item>
                     <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
-                            @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'shutdown'})">
+                            @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'reboot'})">
                       <q-item-section>
-                        <q-item-label>关机</q-item-label>
+                        <q-item-label>重启</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
-                            @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'reboot'})">
+                            @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'shutdown'})">
                       <q-item-section>
-                        <q-item-label>软重启</q-item-label>
+                        <q-item-label>关机</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
@@ -115,18 +115,19 @@
                         <q-item-label>强制断电</q-item-label>
                       </q-item-section>
                     </q-item>
-                    <q-item clickable v-close-popup class="bg-nord11"
-                            @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'delete'})">
+                    <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-nord11"
+                            @click="isShowDelConfirm = true; vmToDel.id=props.row.id; vmToDel.ip=props.row.ip; vmToDel.endPoint=props.row.endPoint; vmToDel.action='delete'">
                       <q-item-section>
                         <q-item-label>删除</q-item-label>
                       </q-item-section>
                     </q-item>
                     <q-item clickable v-close-popup class="bg-nord11"
-                            @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'delete_force'})">
+                            @click="isShowDelConfirm = true; vmToDel.id=props.row.id; vmToDel.ip=props.row.ip; vmToDel.endPoint=props.row.endPoint; vmToDel.action='delete_force'">
                       <q-item-section>
                         <q-item-label>强制删除</q-item-label>
                       </q-item-section>
                     </q-item>
+
                   </q-list>
                 </q-btn-dropdown>
               </q-btn-group>
@@ -136,6 +137,22 @@
         </q-table>
         <!--        <pre>{{rows}}</pre>-->
       </div>
+
+      <q-dialog v-model="isShowDelConfirm">
+        <q-card>
+          <q-card-section class="row items-center">
+            <q-avatar icon="warning" color="nord11" text-color="white"/>
+            <span v-if="vmToDel.action==='delete'" class="q-ml-sm">正在删除云主机: {{ vmToDel.ip }}</span>
+            <span v-if="vmToDel.action==='delete_force'" class="q-ml-sm">正在强制删除云主机: {{ vmToDel.ip }}</span>
+            <div class="q-ml-sm">被删除的云主机将无法自行恢复，如需恢复请联系云联邦管理员</div>
+          </q-card-section>
+
+          <q-card-actions align="right">
+            <q-btn flat label="删除" color="nord11" v-close-popup @click="vmOperation(vmToDel)" />
+            <q-btn flat label="取消" color="nord10" v-close-popup/>
+          </q-card-actions>
+        </q-card>
+      </q-dialog>
     </div>
 
   </div>
@@ -146,6 +163,7 @@
 import { defineComponent, ref, onMounted, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from '../../store'
+import { Notify } from 'quasar'
 
 export default defineComponent({
   name: 'Vm',
@@ -305,8 +323,17 @@ export default defineComponent({
     //   }]
 
     // 云主机操作
-    const vmOperation = (payload: { endPoint: string; id: string; action: string }) => {
+    const vmOperation = (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
       void $store.dispatch('usage/vmOperation', payload)
+      // console.log('in vmops', payload)
+      if (payload.action === 'delete' || payload.action === 'delete_force') {
+        Notify.create({
+          spinner: true,
+          timeout: 4000,
+          color: 'nord9',
+          message: `正在删除IP地址为：${payload.ip || ''} 的云主机，请稍候`
+        })
+      }
     }
     // VNC
     const gotoVNC = async (payload: string) => {
@@ -314,7 +341,14 @@ export default defineComponent({
       const url = response.data.vnc.url
       window.open(url)
     }
-
+    // 删除提示
+    const isShowDelConfirm = ref(false)
+    const vmToDel = ref({
+      id: '',
+      ip: '',
+      endPoint: '',
+      action: ''
+    })
     return {
       isTreeOpen,
       toggleTree,
@@ -325,7 +359,9 @@ export default defineComponent({
       vmOperation,
       isStatusLoading,
       tableTitle,
-      gotoVNC
+      gotoVNC,
+      isShowDelConfirm,
+      vmToDel
     }
   }
 })
