@@ -13,12 +13,14 @@ export interface ServerInterface {
   name: string;
   isIpPublic: boolean;
   ip: string;
-  dataCenter?: string;
+  dataCenterId?: string;
+  dataCenterName?: string;
   serviceType?: string;
   image: string;
   cpu: string;
   ram: string;
   endPoint: string;
+  vnc?: string;
   daysRemain?: number; // 到期时间
   source?: string; // 资源来源
   note?: string; // 备注
@@ -41,6 +43,12 @@ export interface ResServerInterface {
   remarks: string;
   // eslint-disable-next-line camelcase
   endpoint_url: string;
+  service: {
+    id: string;
+    name: string;
+    // eslint-disable-next-line camelcase
+    service_type: string;
+  }
 }
 
 export interface ResServerListInterface {

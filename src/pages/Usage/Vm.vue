@@ -81,7 +81,14 @@
           <template v-slot:body-cell-operation="props">
             <q-td :props="props" class="non-selectable">
               <q-btn-group unelevated>
-                <q-btn color="nord7" label="VNC"/>
+                <q-btn v-if="props.row.status=='运行中'" color="nord14" label="VNC" @click="gotoVNC(props.row.id)">
+                </q-btn>
+                <q-btn v-else color="nord11" label="VNC">
+                  <q-tooltip>
+                    请将云主机开机以使用VNC
+                  </q-tooltip>
+                </q-btn>
+
                 <q-btn-dropdown color="nord10" label="操作">
                   <q-list separator dense class="dropdown-items">
                     <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-nord14"
@@ -228,9 +235,9 @@ export default defineComponent({
         sortable: true
       },
       {
-        name: 'dataCenter',
+        name: 'dataCenterName',
         label: '数据中心',
-        field: 'dataCenter',
+        field: 'dataCenterName',
         align: 'center',
         sortable: true
       },
@@ -301,6 +308,12 @@ export default defineComponent({
     const vmOperation = (payload: { endPoint: string; id: string; action: string }) => {
       void $store.dispatch('usage/vmOperation', payload)
     }
+    // VNC
+    const gotoVNC = async (payload: string) => {
+      const response = await $store.dispatch('usage/fetchServerVNC', payload)
+      const url = response.data.vnc.url
+      window.open(url)
+    }
 
     return {
       isTreeOpen,
@@ -311,7 +324,8 @@ export default defineComponent({
       rows,
       vmOperation,
       isStatusLoading,
-      tableTitle
+      tableTitle,
+      gotoVNC
     }
   }
 })
@@ -366,6 +380,7 @@ export default defineComponent({
 .inner-loading {
   background-color: transparent;
 }
+
 .dropdown-items {
   text-align: center;
 }

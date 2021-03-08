@@ -4,11 +4,10 @@
           <q-tabs
             v-model="activeTab"
             class="bg-nord4"
-            active-color="primary"
-            indicator-color="primary"
+            active-color="nord10"
+            indicator-color="nord10"
             align="left"
             inline-label
-            switch-indicator
           >
             <q-route-tab
               name="vm"

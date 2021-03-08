@@ -59,14 +59,14 @@ const actions: ActionTree<UserInterface, StateInterface> = {
       if (decoded.exp) {
         const exp = decoded.exp * 1000
         const timeOut = exp - Date.now() - 5000 || 0 // 到期时间前5秒钟更新token,到期时间小于5秒时立即尝试更新token
-        console.log(timeOut)
+        // console.log(timeOut)
         setTimeout(() => {
           void (async () => { // https://stackoverflow.com/questions/63488141/promise-returned-in-function-argument-where-a-void-return-was-expected/63488201
             try {
               if (context.state.token) { // 定时器注册后，仅在用户保持登录时更新token，登出则不再更新
                 const response = await context.dispatch('fetchNewToken', { refresh: tokenRefresh })
                 context.commit('storeToken', { access: response.data.access, refresh: tokenRefresh })
-                console.log('new token', context.state.token.access)
+                // console.log('new token', context.state.token.access)
                 await context.dispatch('retainToken')
               }
             } catch {

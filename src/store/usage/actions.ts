@@ -124,16 +124,22 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     const response = await axios.get(api)
     return response
   },
+  async fetchServerVNC (context, payload: string) {
+    const api = apiBase + '/server/' + payload + '/vnc/'
+    const response = await axios.get(api)
+    return response
+  },
   async updateServerList (context, payload?: ReqServerListInterface) {
     const resServerList = await context.dispatch('fetchServerList', payload)
     const resServers: ResServerInterface[] = resServerList.data.servers
-    // console.log(res)
+    // console.log(resServers)
     const serverList: ServerInterface[] = []
-    resServers.forEach((resServer) => {
-      serverList.push({
+    for (const resServer of resServers) {
+      const currentServer = {
         ip: resServer.ipv4,
-        // dataCenter: // todo 需求：server list响应中增加该server所在dataCenter/serviceType信息
-        // serviceType:
+        dataCenterId: resServer.service.id,
+        dataCenterName: resServer.service.name,
+        serviceType: resServer.service.service_type,
         image: resServer.image,
         cpu: `${resServer.vcpus}核`,
         ram: `${resServer.ram}MB`,
@@ -143,21 +149,22 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
         name: resServer.name,
         isIpPublic: resServer.public_ip,
         timeCreate: resServer.creation_time
-      })
-    })
+      }
+      serverList.push(currentServer)
+    }
     context.commit('storeServerList', serverList)
     // console.log(context.state.serverList)
 
     // 更新每个server的status
     for (const server of context.state.serverList) {
-      const resServerStatus = await context.dispatch('fetchServerStatus', server.id)
-      // console.log(resServerStatus.data.status, codeMap.get(resServerStatus.data.status.status_code))
-      const payload = {
-        id: server.id,
-        status: codeMap.get(resServerStatus.data.status.status_code)
-      }
-      context.commit('storeServerStatus', payload)
-      // console.log(server.status)
+      void context.dispatch('fetchServerStatus', server.id).then((value) => {
+        const payload = {
+          id: server.id,
+          status: codeMap.get(value.data.status.status_code)
+        }
+        context.commit('storeServerStatus', payload)
+        // console.log(server.status)
+      })
     }
   }
 }
