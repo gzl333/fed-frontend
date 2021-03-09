@@ -214,7 +214,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from 'vue'
+import { defineComponent, ref, onMounted, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from '../../store'
 import { Notify } from 'quasar'
@@ -229,13 +229,16 @@ export default defineComponent({
     const computedPageSize = 13 // todo 通过屏幕尺寸动态计算最佳rows， 并同步至store的pageSize watch(....)
     $store.commit('usage/storePagination', {
       page: 1,
-      pageSize: computedPageSize
+      pageSize: computedPageSize,
+      serviceId: '0'
     })
     // 云主机状态按钮
     const isStatusLoading = ref(true)
     // 获取机构树，获取云主机列表
-    void $store.dispatch('usage/updateDataPointTree')
-    void $store.dispatch('usage/updateServerList')
+    onMounted(() => {
+      void $store.dispatch('usage/updateDataPointTree')
+      void $store.dispatch('usage/updateServerList')
+    })
 
     // 得到机构树信息
     const dataPointTree = computed(() => {
