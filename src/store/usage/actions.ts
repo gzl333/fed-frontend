@@ -118,6 +118,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
       params: { ...payload }
     }
     const response = await axios.get(api, config)
+    console.log(config)
     return response
   },
   async fetchServerStatus (context, payload: string) {

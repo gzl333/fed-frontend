@@ -71,6 +71,7 @@
                   v-model="paginationSelected"
                   color="nord9"
                   :max="paginationMax"
+                  :max-pages="7"
                   size="md"
                   @click="clickPagination"
                 />
@@ -189,7 +190,9 @@
               </q-btn-group>
             </q-td>
           </template>
-
+          <template v-slot:bottom>
+            <!--            blank bottom just to show the bottom border of table-->
+          </template>
         </q-table>
 
       </div>
@@ -219,7 +222,7 @@
 import { defineComponent, ref, onMounted, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from '../../store'
-import { Notify } from 'quasar'
+import { useQuasar, Notify } from 'quasar'
 
 export default defineComponent({
   name: 'Vm',
@@ -227,8 +230,16 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
+    const $q = useQuasar()
+    console.log($q.screen.height)
     // 分页部分基础信息
-    const computedPageSize = 13 // todo 通过屏幕尺寸动态计算最佳rows， 并同步至store的pageSize watch(....)
+    const computedPageSize = computed(() => (Math.ceil(($q.screen.height - 350) / 50)))// 通过屏幕尺寸动态计算最佳rows， 并同步至store的pageSize
+    // console.log(computedPageSize)
+    // 计算尺寸变化后更新server list
+    watch(computedPageSize, () => {
+      // 更新serverList
+      void $store.dispatch('usage/updateServerList')
+    })
     $store.commit('usage/storePagination', {
       page: 1,
       pageSize: computedPageSize,
