@@ -65,14 +65,16 @@
                 正在展示：{{ tableTitle }}
               </div>
 
-              <q-pagination
-                class="col-shrink bg-nord5"
-                v-model="paginationSelected"
-                color="nord9"
-                :max="paginationMax"
-                size="md"
-                @click="clickPagination"
-              />
+              <div class="col-shrink bg-nord5">
+                <q-pagination
+                  v-if="paginationMax!==1"
+                  v-model="paginationSelected"
+                  color="nord9"
+                  :max="paginationMax"
+                  size="md"
+                  @click="clickPagination"
+                />
+              </div>
 
             </div>
           </template>
