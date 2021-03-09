@@ -1,6 +1,6 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
-import { QuotaInterface, UquotaResponseInterface, ProviderInterface } from './state'
+import { QuotaInterface, UquotaResponseInterface, ProviderInterface, TypeInterface } from './state'
 import axios from 'axios'
 
 const baseAPI = 'http://gosc.cstcloud.cn/api/'
@@ -10,35 +10,50 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
     // console.log('in fetchQuota')
     const response: UquotaResponseInterface = await (await axios.get(baseAPI + 'u-quota/')).data
     // console.log(response)
-    const providers: ProviderInterface[] = []
+    const providersTemp: ProviderInterface[] = []
+
     response.results.forEach((responseResult) => {
+      const serviceTypes : TypeInterface[] = []
+      response.results.forEach((item) => {
+        if (item.service.name === responseResult.service.name) {
+          const type = {
+            type: item.tag.display,
+            privateIpTotal: item.private_ip_total,
+            privateIpUsed: item.private_ip_used,
+            publicIpTotal: item.public_ip_total,
+            publicIpUsed: item.public_ip_used,
+            vCpuTotal: item.vcpu_total,
+            vCpuUsed: item.vcpu_used,
+            ramTotal: item.ram_total,
+            ramUsed: item.ram_used,
+            diskTotal: item.disk_size_total,
+            diskUsed: item.disk_size_used,
+            expirationTime: item.expiration_time,
+            deleted: item.deleted
+          }
+          serviceTypes.push(type)
+        }
+      })
       const provider = {
         name: responseResult.service.name,
-        type: responseResult.tag.display,
-        privateIpTotal: responseResult.private_ip_total,
-        privateIpUsed: responseResult.private_ip_used,
-        publicIpTotal: responseResult.public_ip_total,
-        publicIpUsed: responseResult.public_ip_used,
-        vCpuTotal: responseResult.vcpu_total,
-        vCpuUsed: responseResult.vcpu_used,
-        ramTotal: responseResult.ram_total,
-        ramUsed: responseResult.ram_used,
-        diskTotal: responseResult.disk_size_total,
-        diskUsed: responseResult.disk_size_used,
-        expirationTime: responseResult.expiration_time,
-        deleted: responseResult.deleted
+        serviceTypes: serviceTypes
       }
-      providers.push(provider)
+      providersTemp.push(provider)
     })
+
+    // providersTemp数组按照机构去重
+    const res = new Map()
+    const providers = providersTemp.filter((providersTemp) => !res.has(providersTemp.name) && res.set(providersTemp.name, 1))
+
     const payload:QuotaInterface = {
       userQuota: {
         userEmail: response.results[0].user.username,
         providers: providers
       }
     }
-    // console.log('before storeQuota', payload)
+    console.log('before storeQuota', payload)
     context.commit('storeQuota', payload)
-    // console.log('back in fetch', context.state)
+    console.log('back in fetch', context.state)
   }
 }
 
