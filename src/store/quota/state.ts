@@ -1,5 +1,4 @@
-export interface ProviderInterface {
-  name: string; // 机构名称
+export interface TypeInterface {
   type: string; // 配额类型
   privateIpTotal: number;
   privateIpUsed: number;
@@ -13,6 +12,11 @@ export interface ProviderInterface {
   diskUsed: number;
   expirationTime?: string;
   deleted?: boolean;
+}
+
+export interface ProviderInterface {
+  name: string; // 机构名称
+  serviceTypes : TypeInterface[]; // 多个服务类型
 }
 
 export interface UserQuotaInterface {
@@ -79,17 +83,20 @@ function state (): QuotaInterface {
       userEmail: '',
       providers: [{
         name: '',
-        type: '',
-        privateIpTotal: 1,
-        privateIpUsed: 0,
-        publicIpTotal: 1,
-        publicIpUsed: 0,
-        vCpuTotal: 1,
-        vCpuUsed: 0,
-        ramTotal: 1,
-        ramUsed: 0,
-        diskTotal: 1,
-        diskUsed: 0
+        serviceTypes: [
+          {
+            type: '',
+            privateIpTotal: 1,
+            privateIpUsed: 0,
+            publicIpTotal: 1,
+            publicIpUsed: 0,
+            vCpuTotal: 1,
+            vCpuUsed: 0,
+            ramTotal: 1,
+            ramUsed: 0,
+            diskTotal: 1,
+            diskUsed: 0
+          }]
       }]
     }
   }
