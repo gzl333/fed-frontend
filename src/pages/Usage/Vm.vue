@@ -38,6 +38,7 @@
         <q-table
           class="q-px-lg"
           flat
+
           card-class="bg-nord6"
           table-class="text-nord0"
           table-header-class="server-table-header bg-nord5"
@@ -129,13 +130,13 @@
                     远程执行中，请稍候
                   </q-tooltip>
                 </q-btn>
-                <q-btn v-if="props.row.status=='已关机'" color="nord4" icon="play_arrow" text-color="nord14"
+                <q-btn v-if="props.row.status=='已关机'" color="nord4" icon="play_arrow" text-color="nord10"
                        @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'start'})">
                   <q-tooltip>
                     开机
                   </q-tooltip>
                 </q-btn>
-                <q-btn v-if="props.row.status=='运行中'" color="nord4" icon="stop" text-color="nord13"
+                <q-btn v-if="props.row.status=='运行中'" color="nord4" icon="stop" text-color="nord10"
                        @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'shutdown'})">
                   <q-tooltip>
                     关机
