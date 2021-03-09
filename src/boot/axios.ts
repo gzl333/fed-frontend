@@ -37,7 +37,10 @@ const errorNotifier = (error: AxiosError) => {
 }
 
 axios.interceptors.request.use(config => {
-  if (config.url?.indexOf('/status/')) { // 使用server status的api时延时较长，关闭全局loading bar，使用组件自己的loading状态
+  // todo /server/相关请求节流：记录请求及时间，固定秒数内对同一id的操作请求被拦截并提示：  errorNotifier('msg') throw error
+
+  // 使用server status的api时延时较长，关闭全局loading bar，使用组件自己的loading状态
+  if (config.url?.indexOf('/status/')) {
     return config
   }
   Loading.show()

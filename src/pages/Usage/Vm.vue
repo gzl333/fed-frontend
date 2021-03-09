@@ -41,14 +41,53 @@
           card-class="bg-nord6"
           table-class="text-nord0"
           table-header-class="server-table-header bg-nord5"
-          :title="`云主机位置：${tableTitle}`"
+          :title="`云主机所在节点：${tableTitle}`"
           :rows="rows"
           :columns="columns"
           row-key="name"
           no-data-label="所选择节点中无可供使用的云主机"
-          :pagination="pagination"
           hide-pagination
+          :pagination="paginationTable"
         >
+          <template v-slot:top>
+            <div class="col row items-center justify-between q-pa-none">
+
+              <div class="col-shrink text-nord9 text-h7">
+                <q-btn icon="add" color="nord14" size="lg">
+                  <q-tooltip>
+                    添加云主机
+                  </q-tooltip>
+                </q-btn>
+              </div>
+
+              <div class="col text-nord10 text-h6 table-title">
+                正在展示：{{ tableTitle }}
+              </div>
+
+              <q-pagination
+                class="col-shrink bg-nord5"
+                v-model="paginationSelected"
+                color="nord9"
+                :max="paginationMax"
+                size="md"
+                @click="clickPagination"
+              />
+
+            </div>
+          </template>
+
+          <template v-slot:body-cell-vnc="props">
+            <q-td :props="props" class="non-selectable">
+              <q-btn v-if="props.row.status=='运行中'" unelevated color="nord14" icon="computer"
+                     @click="gotoVNC(props.row.id)">
+              </q-btn>
+              <q-btn v-else unelevated color="nord3" icon="computer">
+                <q-tooltip>
+                  请将云主机开机以使用VNC
+                </q-tooltip>
+              </q-btn>
+            </q-td>
+          </template>
           <template v-slot:body-cell-status="props">
             <q-td :props="props" class="non-selectable">
               <q-inner-loading v-if="!props.row.status" showing class="inner-loading">
@@ -84,11 +123,22 @@
           <template v-slot:body-cell-operation="props">
             <q-td :props="props" class="non-selectable">
               <q-btn-group unelevated>
-                <q-btn v-if="props.row.status=='运行中'" color="nord14" label="VNC" @click="gotoVNC(props.row.id)">
-                </q-btn>
-                <q-btn v-else color="nord11" label="VNC">
+
+                <q-btn v-if="props.row.status==''" color="nord4" loading label="......">
                   <q-tooltip>
-                    请将云主机开机以使用VNC
+                    远程执行中，请稍候
+                  </q-tooltip>
+                </q-btn>
+                <q-btn v-if="props.row.status=='已关机'" color="nord4" icon="play_arrow" text-color="nord14"
+                       @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'start'})">
+                  <q-tooltip>
+                    开机
+                  </q-tooltip>
+                </q-btn>
+                <q-btn v-if="props.row.status=='运行中'" color="nord4" icon="stop" text-color="nord13"
+                       @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'shutdown'})">
+                  <q-tooltip>
+                    关机
                   </q-tooltip>
                 </q-btn>
 
@@ -137,24 +187,8 @@
             </q-td>
           </template>
 
-<!--          <template v-slot:bottom>-->
-<!--            <div class="column items-center">-->
-<!--              <q-pagination-->
-<!--                class="col  q-pa-md"-->
-<!--                v-model="current"-->
-<!--                :max="5"-->
-<!--                :direction-links="true"-->
-<!--                icon-prev="fast_rewind"-->
-<!--                icon-next="fast_forward"-->
-<!--                color="nord10"-->
-<!--              >-->
-<!--              </q-pagination>-->
-<!--            </div>-->
-<!--          </template>-->
-
         </q-table>
 
-        <!--        <pre>{{rows}}</pre>-->
       </div>
 
       <q-dialog v-model="isShowDelConfirm">
@@ -179,7 +213,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, watch } from 'vue'
+import { defineComponent, ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from '../../store'
 import { Notify } from 'quasar'
@@ -190,20 +224,18 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    // todo 通过屏幕尺寸动态计算最佳rows， 并同步至store的pageSize watch(....)
-    const computedPageSize = 13
-    $store.commit('usage/storePagination', { pageSize: computedPageSize })
-    // 供tabel获取分页信息，与table通信用
-    const pagination = ref({
-      rowsPerPage: $store.state.usage.pagination.pageSize
+    // 分页部分基础信息
+    const computedPageSize = 13 // todo 通过屏幕尺寸动态计算最佳rows， 并同步至store的pageSize watch(....)
+    $store.commit('usage/storePagination', {
+      page: 1,
+      pageSize: computedPageSize
     })
     // 云主机状态按钮
     const isStatusLoading = ref(true)
     // 获取机构树，获取云主机列表
-    onMounted(() => {
-      void $store.dispatch('usage/updateDataPointTree')
-      void $store.dispatch('usage/updateServerList')
-    })
+    void $store.dispatch('usage/updateDataPointTree')
+    void $store.dispatch('usage/updateServerList')
+
     // 得到机构树信息
     const dataPointTree = computed(() => {
       return $store.state.usage.dataPointTree
@@ -249,14 +281,29 @@ export default defineComponent({
       console.log(selectedTree.value)
       if (selectedTree.value === '0' || selectedTree.value === null) {
         console.log('in null', selectedTree.value)
+        // 分页store中serviceId的来源
+        $store.commit('usage/storePagination', {
+          serviceId: '0',
+          page: '1'
+        })
+        // 更新serverList
         void $store.dispatch('usage/updateServerList')
+        // // 更新count后要updatePagination
+        // updatePagination()
+        // 存储dataPointTree
         $store.commit('usage/storeDataPointOnShow', {
           key: '0',
           label: '全部节点'
         })
         tableTitle.value = $store.state.usage.dataPointOnShow.label
       } else {
-        void $store.dispatch('usage/updateServerList', { service_id: selectedTree.value })
+        // 分页store中serviceId的来源
+        $store.commit('usage/storePagination', {
+          serviceId: selectedTree.value,
+          page: '1'
+        })
+        // 更新serverList
+        void $store.dispatch('usage/updateServerList') //, { service_id: selectedTree.value }
         dataPointTree.value[0].children.forEach((dataCenterSelected) => {
           dataCenterSelected.children.forEach((dataPointSelected) => {
             // console.log(dataPoint.key, selectedTree.value)
@@ -283,43 +330,37 @@ export default defineComponent({
         name: 'ip',
         label: 'IP地址',
         field: 'ip',
-        align: 'center',
-        sortable: true
+        align: 'center'
       },
       {
         name: 'dataCenterName',
         label: '数据中心',
         field: 'dataCenterName',
-        align: 'center',
-        sortable: true
+        align: 'center'
       },
       {
         name: 'serviceType',
         label: '服务种类',
         field: 'serviceType',
-        align: 'center',
-        sortable: true
+        align: 'center'
       },
       {
         name: 'image',
         label: '镜像',
         field: 'image',
-        align: 'center',
-        sortable: true
+        align: 'center'
       },
       {
         name: 'cpu',
         label: 'CPU',
         field: 'cpu',
-        align: 'center',
-        sortable: true
+        align: 'center'
       },
       {
         name: 'mem',
         label: '内存',
         field: 'ram',
-        align: 'center',
-        sortable: true
+        align: 'center'
       },
       // { name: 'daysRemain', label: '到期预警', field: 'daysRemain' ,align: 'center'},
       // { name: 'source', label: '资源来源', field: 'source', sortable: true,align: 'center' },
@@ -327,35 +368,49 @@ export default defineComponent({
         name: 'note',
         label: '备注',
         field: 'note',
-        align: 'center',
-        sortable: true
+        align: 'center'
+      },
+      {
+        name: 'vnc',
+        label: 'VNC',
+        field: 'vnc',
+        align: 'center'
       },
       {
         name: 'status',
         label: '状态',
         field: 'status',
-        align: 'center',
-        sortable: true
+        align: 'center'
       },
       {
         name: 'operation',
         label: '操作',
-        field: 'operation'
+        field: 'operation',
+        align: 'center'
       }
     ]
     // 获取云主机列表数据
     const rows = computed(() => $store.state.usage.serverList)
-    // const rows = [
-    //   {
-    //     name: 'Frozen Yogurt',
-    //     calories: 159,
-    //     fat: 6.0,
-    //     carbs: 24,
-    //     protein: 4.0,
-    //     sodium: 87,
-    //     calcium: '14%',
-    //     iron: '1%'
-    //   }]
+
+    // 供table获取分页信息，单向从store -> pagination -> UI
+    const paginationTable = ref({
+      // sortBy: 'desc',
+      // descending: false,
+      page: 1,
+      rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
+    })
+    const paginationSelected = ref(1)
+    const paginationMax = computed(() => {
+      if ($store.state.usage.pagination.count && $store.state.usage.pagination.pageSize) {
+        return Math.ceil($store.state.usage.pagination.count / $store.state.usage.pagination.pageSize)
+      } else {
+        return 1
+      }
+    })
+    const clickPagination = () => {
+      $store.commit('usage/storePagination', { page: paginationSelected.value })
+      void $store.dispatch('usage/updateServerList')
+    }
 
     // 云主机操作
     const vmOperation = (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
@@ -398,7 +453,10 @@ export default defineComponent({
       gotoVNC,
       isShowDelConfirm,
       vmToDel,
-      pagination
+      paginationTable,
+      paginationSelected,
+      clickPagination,
+      paginationMax
     }
   }
 })
@@ -444,6 +502,10 @@ export default defineComponent({
 
 .btn-open {
   top: calc((100vh - 114px) / 2 - 50px);
+}
+
+.table-title {
+  text-align: center;
 }
 
 .server-table-header {

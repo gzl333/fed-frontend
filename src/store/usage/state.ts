@@ -9,12 +9,12 @@ export interface ResServerStatusInterface {
 }
 
 export interface PaginationInterface {
-  pageSize: number;
+  count?: number;
+  page?: number;
+  pageSize?: number;
   serviceId?: string;
   next?: string | null;
   previous?: string | null;
-  currentPage?: string | number;
-  totalPage?: string | number;
 }
 
 export interface ServerInterface {
@@ -61,16 +61,16 @@ export interface ResServerInterface {
 }
 
 export interface ResServerListInterface {
-  currentPage?: number | string; // todo 需要后端加
-  totalPage?: number | string; // todo 需要后端加
-  next?: number | null;
-  previous?: number | null,
+  count?: number;
+  next?: string | null;
+  previous?: string | null,
   servers: ResServerInterface[]
 }
 
 export interface ReqServerListInterface {
-  cursor?: string;
-  'page-size'?: number;
+  page?: number;
+  // eslint-disable-next-line camelcase
+  page_size?: number;
   // eslint-disable-next-line camelcase
   service_id?: string;
 }
@@ -149,10 +149,9 @@ function state (): UsageInterface {
     },
     serverList: [],
     pagination: {
-      serviceId: '',
-      next: '',
-      previous: '',
-      pageSize: 0
+      count: 1,
+      page: 1,
+      pageSize: 1
     }
   }
 }

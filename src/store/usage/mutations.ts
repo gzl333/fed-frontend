@@ -1,5 +1,11 @@
 import { MutationTree } from 'vuex'
-import { UsageInterface, DataRootInterface, ServerInterface, DataPointOnShowInterface, PaginationInterface } from './state'
+import {
+  UsageInterface,
+  DataRootInterface,
+  ServerInterface,
+  DataPointOnShowInterface,
+  PaginationInterface
+} from './state'
 
 const mutation: MutationTree<UsageInterface> = {
   storeDataPointTree (state, payload: DataRootInterface[]) {
@@ -8,7 +14,7 @@ const mutation: MutationTree<UsageInterface> = {
   storeServerList (state, payload: ServerInterface[]) {
     state.serverList = payload
   },
-  storeServerStatus (state, payload: {id: string; status:string}) {
+  storeServerStatus (state, payload: { id: string; status: string }) {
     const currentServer = state.serverList.find((server) => {
       return server.id === payload.id
     })
@@ -20,7 +26,15 @@ const mutation: MutationTree<UsageInterface> = {
     state.dataPointOnShow = payload
   },
   storePagination (state, payload: PaginationInterface) {
-    state.pagination = payload
+    // console.log('storePayload', payload)
+    for (const key in payload) {
+      // @ts-ignore
+      state.pagination[key] = payload[key]
+    }
+    if (state.pagination.serviceId === '0') {
+      delete state.pagination.serviceId
+    }
+    // console.log('current store', state.pagination)
   }
 
 }

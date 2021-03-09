@@ -6,7 +6,8 @@ import {
   ResServiceResultInterface,
   ReqServerListInterface,
   ResServerInterface,
-  ServerInterface, PaginationInterface
+  ServerInterface
+  // , PaginationInterface
 } from './state'
 import axios from 'axios'
 
@@ -129,26 +130,26 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     const response = await axios.get(api)
     return response
   },
-  async updateServerList (context, payload?: ReqServerListInterface) {
-    // 每次获取serverList之前先取得当前分页信息
-    payload = {
-      ...payload,
-      'page-size': context.state.pagination.pageSize
+  async updateServerList (context) {
+    // 每次获取serverList之前先从pagination取得当前分页信息
+    const payload: ReqServerListInterface = {
+      page: context.state.pagination.page,
+      page_size: context.state.pagination.pageSize
     }
-    console.log(payload?.
-      ['page-size'])
+    if (context.state.pagination.serviceId) {
+      payload.service_id = context.state.pagination.serviceId
+    }
+    // console.log('ajax req', payload)
+    // 根据payload发送请求
     const resServerList = await context.dispatch('fetchServerList', payload)
-    // console.log(resServerList)
-    // 保存分页信息
-    const pagination: PaginationInterface = {
-      pageSize: context.state.pagination.pageSize,
-      next: resServerList.data.next,
-      previous: resServerList.data.previous
-    }
-    context.commit('storePagination', pagination)
-    console.log(context.state.pagination)
+
+    // console.log('res', resServerList)
+    // 保存resp中分页信息，分页store中count的来源
+    context.commit('storePagination', { count: resServerList.data.count })
+
+    // 保存resp中server信息
     const resServers: ResServerInterface[] = resServerList.data.servers
-    console.log(resServers)
+    // console.log(resServers)
     const serverList: ServerInterface[] = []
     for (const resServer of resServers) {
       const currentServer = {
@@ -171,6 +172,14 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     context.commit('storeServerList', serverList)
     // console.log(context.state.serverList)
 
+    // 给每个server一个初始空status，启动loading按钮进行占位，防止页面抖动
+    for (const server of context.state.serverList) {
+      context.commit('storeServerStatus', {
+        id: server.id,
+        status: ''
+      })
+    }
+
     // 更新每个server的status
     for (const server of context.state.serverList) {
       void context.dispatch('fetchServerStatus', server.id).then((value) => {
@@ -182,6 +191,9 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
         // console.log(server.status)
       })
     }
+
+    // console.log(context.state.serverList)
+    // console.log('end update list')
   }
 }
 
