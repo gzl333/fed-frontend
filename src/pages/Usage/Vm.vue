@@ -231,7 +231,7 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
     const $q = useQuasar()
-    console.log($q.screen.height)
+    // console.log($q.screen.height)
     // 分页部分基础信息
     const computedPageSize = computed(() => (Math.ceil(($q.screen.height - 350) / 50)))// 通过屏幕尺寸动态计算最佳rows， 并同步至store的pageSize
     // console.log(computedPageSize)
