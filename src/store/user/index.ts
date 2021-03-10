@@ -5,7 +5,7 @@ import actions from './actions'
 import getters from './getters'
 import mutations from './mutations'
 
-const loginModule: Module<UserInterface, StateInterface> = {
+const user: Module<UserInterface, StateInterface> = {
   namespaced: true,
   actions,
   getters,
@@ -13,4 +13,4 @@ const loginModule: Module<UserInterface, StateInterface> = {
   state
 }
 
-export default loginModule
+export default user

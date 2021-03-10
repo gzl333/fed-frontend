@@ -5,7 +5,7 @@ import actions from './actions'
 import getters from './getters'
 import mutations from './mutations'
 
-const exampleModule: Module<UsageInterface, StateInterface> = {
+const usage: Module<UsageInterface, StateInterface> = {
   namespaced: true,
   actions,
   getters,
@@ -13,4 +13,4 @@ const exampleModule: Module<UsageInterface, StateInterface> = {
   state
 }
 
-export default exampleModule
+export default usage
