@@ -38,7 +38,6 @@
         <q-table
           class="q-px-lg"
           flat
-
           card-class="bg-nord6"
           table-class="text-nord0"
           table-header-class="server-table-header bg-nord5"
@@ -53,31 +52,50 @@
           <template v-slot:top>
             <div class="col row items-center justify-between q-pa-none">
 
-              <div class="col-shrink text-nord9 text-h7">
-                <q-btn icon="add" color="nord14" size="lg" :to="{ path: '/my/usage/vmcreate' }">
+              <div class="col-shrink">
+                <q-btn icon="add" color="nord14" size="md" unelevated label="新建" :to="{ path: '/my/usage/vmcreate' }">
                   <q-tooltip>
-                    添加云主机
+                    新建云主机
                   </q-tooltip>
                 </q-btn>
               </div>
 
-              <div class="col text-nord10 text-h6 table-title">
+              <div class="col text-nord10 text-h7 table-title">
                 正在展示：{{ tableTitle }}
               </div>
 
-              <div class="col-shrink bg-nord5">
+              <div class="col-shrink">
                 <q-pagination
+                  unelevated
                   v-if="paginationMax!==1"
                   v-model="paginationSelected"
                   color="nord9"
                   :max="paginationMax"
                   :max-pages="7"
                   size="md"
+                  :direction-links="true"
                   @click="clickPagination"
                 />
               </div>
 
             </div>
+          </template>
+
+          <template v-slot:body-cell-note="props">
+            <q-td :props="props">
+              <div class="row">
+                <div class="col">
+                  {{ props.row.note }}
+                </div>
+                <q-btn class="col-shrink q-px-xs text-nord9" flat icon="edit" size="xs"
+                       @click="popEdit(props.row.ip, props.row.id, props.row.note)">
+                  <q-tooltip>
+                    编辑备注信息
+                  </q-tooltip>
+                </q-btn>
+              </div>
+
+            </q-td>
           </template>
 
           <template v-slot:body-cell-vnc="props">
@@ -94,9 +112,13 @@
           </template>
           <template v-slot:body-cell-status="props">
             <q-td :props="props" class="non-selectable">
-              <q-inner-loading v-if="!props.row.status" showing class="inner-loading">
-                <q-spinner size="30px" color="nord9"/>
-              </q-inner-loading>
+
+              <q-chip v-if="!props.row.status" label="读取中" square color="nord4">
+                <q-inner-loading showing class="inner-loading">
+                  <q-spinner size="30px" color="nord9"/>
+                </q-inner-loading>
+              </q-chip>
+
               <q-chip v-if="props.row.status === '无法获取状态'" square color="nord11" text-color="white"
                       label="无法获取状态"/>
               <q-chip v-if="props.row.status === '运行中'" square color="nord14" text-color="white"
@@ -223,6 +245,7 @@ import { defineComponent, ref, onMounted, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from '../../store'
 import { useQuasar, Notify } from 'quasar'
+import { ReqServerNote } from 'src/store/usage/state'
 
 export default defineComponent({
   name: 'Vm',
@@ -407,7 +430,10 @@ export default defineComponent({
       }
     ]
     // 获取云主机列表数据
-    const rows = computed(() => $store.state.usage.serverList)
+    const rows = computed(() => {
+      // console.log('serverlist changed')
+      return $store.state.usage.serverList
+    })
 
     // 供table获取分页信息，单向从store -> pagination -> UI
     const paginationTable = ref({
@@ -456,6 +482,32 @@ export default defineComponent({
       endPoint: '',
       action: ''
     })
+    // 编辑备注
+    let idEdited = ''// $q.dialog只能传递string给data，此处间接传递值
+    const popEdit = (ip: string, id: string, note: string) => {
+      idEdited = id
+      $q.dialog({
+        title: `编辑${ip}的备注信息`,
+        message: '长度限制为15字以内',
+        prompt: {
+          model: `${note}`,
+          counter: true,
+          maxlength: 15,
+          type: 'text' // optional
+        },
+        color: 'nord10',
+        cancel: true
+      }).onOk((data: string) => {
+        const payload: ReqServerNote = {
+          id: idEdited,
+          remark: data
+        }
+        void $store.dispatch('usage/patchNote', payload).then(() =>
+          $store.commit('usage/storeNote', payload)
+        )
+        idEdited = ''
+      })
+    }
 
     return {
       isTreeOpen,
@@ -473,7 +525,8 @@ export default defineComponent({
       paginationTable,
       paginationSelected,
       clickPagination,
-      paginationMax
+      paginationMax,
+      popEdit
     }
   }
 })

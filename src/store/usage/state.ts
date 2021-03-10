@@ -1,3 +1,8 @@
+export interface ReqServerNote {
+  id: string;
+  remark: string;
+}
+
 // 当前展示的云主机数据接口
 export interface ResServerStatusInterface {
   status: {

@@ -6,7 +6,7 @@ import {
   ResServiceResultInterface,
   ReqServerListInterface,
   ResServerInterface,
-  ServerInterface
+  ServerInterface, ReqServerNote
   // , PaginationInterface
 } from './state'
 import axios from 'axios'
@@ -30,6 +30,13 @@ const codeMap = new Map<number, string>(
 )
 
 const actions: ActionTree<UsageInterface, StateInterface> = {
+  async patchNote (context, payload: ReqServerNote) {
+    // const api = apiBase + '/server/' + payload.id + '/remark/'
+    const api = `${apiBase}/server/${payload.id}/remark/`
+    const config = { params: { remark: payload.remark } }
+    const response = await axios.patch(api, null, config)
+    return response
+  },
   async vmOperation (context, payload: { endPoint: string; id: string; action: string }) {
     // 将主机状态清空，界面将显示loading
     context.commit('storeServerStatus', {
@@ -37,8 +44,8 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
       status: ''
     })
     const api = payload.endPoint.endsWith('/') ? payload.endPoint + 'api/server/' + payload.id + '/action/' : payload.endPoint + '/api/server/' + payload.id + '/action/'
-    const config = { action: payload.action }
-    const response = await axios.post(api, config)
+    const data = { action: payload.action }
+    const response = await axios.post(api, data)
 
     // 如果删除主机，重新获取serverList
     if (payload.action === 'delete' || payload.action === 'delete_force') {

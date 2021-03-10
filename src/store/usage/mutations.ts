@@ -4,7 +4,7 @@ import {
   DataRootInterface,
   ServerInterface,
   DataPointOnShowInterface,
-  PaginationInterface
+  PaginationInterface, ReqServerNote
 } from './state'
 
 const mutation: MutationTree<UsageInterface> = {
@@ -35,8 +35,14 @@ const mutation: MutationTree<UsageInterface> = {
       delete state.pagination.serviceId
     }
     // console.log('current store', state.pagination)
+  },
+  storeNote (state, payload: ReqServerNote) {
+    state.serverList.forEach((server) => {
+      if (server.id && server.id === payload.id) {
+        server.note = payload.remark
+      }
+    })
   }
-
 }
 
 export default mutation
