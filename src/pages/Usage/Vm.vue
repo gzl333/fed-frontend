@@ -49,6 +49,7 @@
           hide-pagination
           :pagination="paginationTable"
         >
+
           <template v-slot:top>
             <div class="col row items-center justify-between q-pa-none">
 
@@ -81,6 +82,22 @@
             </div>
           </template>
 
+          <template v-slot:body-cell-ip="props">
+            <q-td :props="props">
+              <div class="row">
+                <div class="col">
+                  {{ props.row.ip }}
+                </div>
+                <q-btn class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
+                       @click="clickToCopy(props.row.ip)">
+                  <q-tooltip>
+                    复制到剪切板
+                  </q-tooltip>
+                </q-btn>
+              </div>
+            </q-td>
+          </template>
+
           <template v-slot:body-cell-note="props">
             <q-td :props="props">
               <div class="row">
@@ -94,7 +111,6 @@
                   </q-tooltip>
                 </q-btn>
               </div>
-
             </q-td>
           </template>
 
@@ -244,8 +260,9 @@
 import { defineComponent, ref, onMounted, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from '../../store'
-import { useQuasar, Notify } from 'quasar'
+import { useQuasar, Notify, copyToClipboard } from 'quasar'
 import { ReqServerNote } from 'src/store/usage/state'
+import { evaAward } from '@quasar/extras/eva-icons'
 
 export default defineComponent({
   name: 'Vm',
@@ -508,7 +525,19 @@ export default defineComponent({
         idEdited = ''
       })
     }
-
+    // 复制信息到剪切板
+    let ipToCopy = ''
+    const clickToCopy = async (text: string) => {
+      ipToCopy = text
+      void await copyToClipboard(text).then(() => {
+        $q.notify({
+          color: 'nord9',
+          message: `${ipToCopy} 已经复制到剪切板`,
+          position: 'top'
+        })
+      })
+      ipToCopy = ''
+    }
     return {
       isTreeOpen,
       toggleTree,
@@ -526,7 +555,8 @@ export default defineComponent({
       paginationSelected,
       clickPagination,
       paginationMax,
-      popEdit
+      popEdit,
+      clickToCopy
     }
   }
 })
