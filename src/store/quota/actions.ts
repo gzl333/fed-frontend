@@ -41,7 +41,7 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
       providersTemp.push(provider)
     })
 
-    // providersTemp数组按照机构去重
+    // providersTemp:按照机构去重
     const res = new Map()
     const providers = providersTemp.filter((providersTemp) => !res.has(providersTemp.name) && res.set(providersTemp.name, 1))
 
@@ -51,9 +51,9 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
         providers: providers
       }
     }
-    console.log('before storeQuota', payload)
+    // console.log('before storeQuota', payload)
     context.commit('storeQuota', payload)
-    console.log('back in fetch', context.state)
+    // console.log('back in fetch', context.state)
   }
 }
 
