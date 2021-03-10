@@ -15,7 +15,7 @@ const mutation: MutationTree<UserInterface> = {
     localStorage.setItem('tokenAccess', context.token.access)
     localStorage.setItem('tokenRefresh', context.token.refresh)
     // axios header
-    axios.defaults.headers.common.Authorization = `Bearer ${context.token.access}`
+    axios.defaults.headers.common.Authorization = `JWT ${context.token.access}`
 
     // redirect should be added here!!!
     // console.log('this', this)
