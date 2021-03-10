@@ -8,181 +8,235 @@
           </div>
           <div class="col-auto">
             <router-link :to="`/my/usage/vm`" class="flat text-white q-ml-md"
-              >全部资源</router-link
+              >全部在用资源</router-link
             >
           </div>
         </div>
       </q-card-section>
       <q-separator />
       <q-card-section>
-        <q-splitter v-model="splitterModel">
-          <template v-slot:before>
-            <q-tabs
-              v-model="innertab"
-              inline-label
-              vertical
-              class="text-teal"
-              v-for="(itemName, index) in serviceName"
-              :key="index"
+        <div class="row items-center q-gutter-md q-pt-xs">
+          <!-- this is top title, use servicName to classify -->
+          <q-tabs
+            v-model="toptab"
+            narrow-indicator
+            inline-label
+            class="text-teal"
+            align="justify"
+            v-for="service in serviceName"
+            :key="service.name"
+          >
+            <q-tab
+              :name="service.name"
+              :label="service.name"
+              :ripple="{ color: 'orange' }"
+              icon="img:main/ev5-01.png"
+              style="align-self: stretch; position: relative"
             >
-              <q-tab
-                :name="index"
-                :label="itemName"
-                icon="img:main/ev5-01.png"
-              />
-            </q-tabs>
-          </template>
-          <template v-slot:after>
-            <q-tab-panels
-              v-model="innertab"
-              animated
-              swipeable
-              vertical
-              transition-prev="jump-up"
-              transition-next="jump-up"
-              v-for="(name, index) in serviceName"
-              :key="index"
+              <q-badge color="red" text-color="white" floating>{{
+                service.number
+              }}</q-badge>
+            </q-tab>
+          </q-tabs>
+        </div>
+        <q-tab-panels
+          v-model="toptab"
+          animated
+          swipeable
+          vertical
+          transition-prev="jump-up"
+          transition-next="jump-up"
+          v-for="service in serviceName"
+          :key="service.name"
+        >
+          <q-tab-panel :name="service.name">
+            <q-splitter
+              v-model="splitterModel"
+              style="height: 100%; max-height: 500px"
             >
-              <q-tab-panel :name="index">
-                <div>
-                  <q-badge color="orange" class="text-caption">{{
-                    type[index]
-                  }}</q-badge>
+              <!-- this is left title, use servicType to classify -->
+              <template v-slot:before>
+                <div v-for="(item, index) in type" :key="index">
+                  <div v-if="service.name === item.name">
+                    <div v-for="(it, i) in item.serviceTypes" :key="i">
+                      <div class="row items-center q-gutter-md q-pt-xs">
+                        <q-tabs
+                          v-model="innertab"
+                          narrow-indicator
+                          inline-label
+                          class="text-teal"
+                          align="justify"
+                        >
+                          <q-tab
+                            :name="i"
+                            :label="`${it.type}`"
+                            :ripple="{ color: 'orange' }"
+                            style="align-self: stretch; position: relative"
+                          />
+                        </q-tabs>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-                <div class="text-weight-bold text-h6">
-                  {{ name }}
-                  <q-spinner-ball
-                    color="primary"
-                    size="1.5em"
-                    class="float-right"
-                  />
-                  <q-tooltip :offset="[5, 8]">QSpinnerBall</q-tooltip>
+              </template>
+              <!-- this is content -->
+              <template v-slot:after>
+                <div v-for="(item, index) in type" :key="index">
+                  <div v-if="service.name === item.name">
+                    <div v-for="(it, i) in item.serviceTypes" :key="i">
+                      <q-tab-panels
+                        v-model="innertab"
+                        animated
+                        swipeable
+                        vertical
+                        transition-prev="jump-up"
+                        transition-next="jump-up"
+                      >
+                        <q-tab-panel :name="i">
+                          <div v-if="it.expirationTime != null">
+                            <span class="text-subtitle2 text-red"
+                              >于{{ it.expirationTime }}到期
+                            </span>
+                          </div>
+                          <div
+                            class="row items-center wrap q-gutter-sm q-mt-sm"
+                          >
+                            <div v-if="it.vCpuTotal != 0">
+                              <span class="text-weight-bold">vCPU </span>总额{{
+                                it.vCpuTotal
+                              }}，剩余{{ it.vCpuTotal - it.vCpuUsed }}，已用{{
+                                it.vCpuUsed
+                              }}
+                            </div>
+                            <q-linear-progress
+                              class="q-mt-sm q-ml-xl q-mr-xs"
+                              size="25px"
+                              :value="it.vCpuUsed / it.vCpuTotal"
+                              color="teal"
+                              v-if="it.vCpuTotal != 0"
+                            >
+                              <div class="absolute-full flex flex-center">
+                                <q-badge
+                                  color="white"
+                                  text-color="teal"
+                                  :label="`${(
+                                    (it.vCpuUsed / it.vCpuTotal) *
+                                    100
+                                  ).toFixed(2)}%`"
+                                />
+                              </div>
+                            </q-linear-progress>
 
-                  <div v-if="expirationTime[index] != null">
-                    <span class="text-subtitle2 text-red"
-                      >于{{ expirationTime[index] }}到期
-                    </span>
+                            <div class="q-mt-md" v-if="it.ramTotal != 0">
+                              <span class="text-weight-bold">RAM</span> 总额{{
+                                it.ramTotal
+                              }}MB，剩余{{ it.ramTotal - it.ramUsed }}MB，已用{{
+                                it.ramUsed
+                              }}MB
+                            </div>
+                            <q-linear-progress
+                              size="25px"
+                              :value="it.ramUsed / it.ramTotal"
+                              color="teal"
+                              class="q-mt-sm q-ml-xl q-mr-xs"
+                              v-if="it.ramTotal != 0"
+                            >
+                              <div class="absolute-full flex flex-center">
+                                <q-badge
+                                  color="white"
+                                  text-color="teal"
+                                  :label="`${(
+                                    (it.ramUsed / it.ramTotal) *
+                                    100
+                                  ).toFixed(2)}%`"
+                                />
+                              </div>
+                            </q-linear-progress>
+                            <div class="q-mt-md" v-if="it.diskTotal != 0">
+                              <span class="text-weight-bold">vDISK</span> 总额{{
+                                it.diskTotal
+                              }}GB，剩余{{
+                                it.diskTotal - it.diskUsed
+                              }}GB，已用{{ it.diskUsed }}GB
+                            </div>
+                            <q-linear-progress
+                              size="25px"
+                              :value="it.diskUsed / it.diskTotal"
+                              color="teal"
+                              class="q-mt-sm q-ml-xl q-mr-xs"
+                              v-if="it.diskTotal != 0"
+                            >
+                              <div class="absolute-full flex flex-center">
+                                <q-badge
+                                  color="white"
+                                  text-color="teal"
+                                  :label="`${(
+                                    (it.diskUsed / it.diskTotal) *
+                                    100
+                                  ).toFixed(2)}%`"
+                                />
+                              </div>
+                            </q-linear-progress>
+
+                            <div class="q-mt-md" v-if="it.publicIpTotal != 0">
+                              <span class="text-weight-bold">Public-IP</span>
+                              总额{{ it.publicIpTotal }}，剩余{{
+                                it.publicIpTotal - it.publicIpUsed
+                              }}，已用{{ it.publicIpUsed }}
+                            </div>
+                            <q-linear-progress
+                              size="25px"
+                              :value="it.publicIpUsed / it.publicIpTotal"
+                              color="teal"
+                              class="q-mt-sm q-ml-xl q-mr-xs"
+                              v-if="it.publicIpTotal != 0"
+                            >
+                              <div class="absolute-full flex flex-center">
+                                <q-badge
+                                  color="white"
+                                  text-color="teal"
+                                  :label="`${(
+                                    (it.publicIpUsed / it.publicIpTotal) *
+                                    100
+                                  ).toFixed(2)}%`"
+                                />
+                              </div>
+                            </q-linear-progress>
+                            <div class="q-mt-md" v-if="it.privateIpTotal != 0">
+                              <span class="text-weight-bold">Private-IP</span>
+                              总额{{ it.privateIpTotal }}，剩余{{
+                                it.privateIpTotal - it.privateIpUsed
+                              }}
+                              ，已用{{ it.privateIpUsed }}
+                            </div>
+                            <q-linear-progress
+                              size="25px"
+                              :value="it.privateIpUsed / it.privateIpTotal"
+                              color="teal"
+                              class="q-mt-sm q-ml-xl q-mr-xs"
+                              v-if="it.privateIpTotal != 0"
+                            >
+                              <div class="absolute-full flex flex-center">
+                                <q-badge
+                                  color="white"
+                                  text-color="teal"
+                                  :label="`${(
+                                    (it.privateIpUsed / it.privateIpTotal) *
+                                    100
+                                  ).toFixed(2)}%`"
+                                />
+                              </div>
+                            </q-linear-progress>
+                          </div>
+                        </q-tab-panel>
+                      </q-tab-panels>
+                    </div>
                   </div>
                 </div>
-                <div class="row items-center wrap q-gutter-sm q-mt-sm">
-                  <div v-if="vCpuTotal[index] != 0">
-                    <span class="text-weight-bold">vCPU </span>总额{{
-                      vCpuTotal[index]
-                    }}，剩余{{ vCpuTotal[index] - vCpuUsed[index] }}，已用{{
-                      vCpuUsed[index]
-                    }}
-                  </div>
-                  <q-linear-progress
-                    class="q-mt-sm q-ml-xl q-mr-xs"
-                    size="25px"
-                    :value="vCpuPercentage[index]"
-                    color="teal"
-                    v-if="vCpuTotal[index] != 0"
-                  >
-                    <div class="absolute-full flex flex-center">
-                      <q-badge
-                        color="white"
-                        text-color="teal"
-                        :label="`${vCpuLabel[index]}%`"
-                      />
-                    </div>
-                  </q-linear-progress>
-
-                  <div class="q-mt-md" v-if="ramTotal[index] != 0">
-                    <span class="text-weight-bold">RAM</span> 总额{{
-                      ramTotal[index]
-                    }}MB，剩余{{ ramTotal[index] - ramUsed[index] }}MB，已用{{
-                      ramUsed[index]
-                    }}MB
-                  </div>
-                  <q-linear-progress
-                    size="25px"
-                    :value="ramPercentage[index]"
-                    color="teal"
-                    class="q-mt-sm q-ml-xl q-mr-xs"
-                    v-if="ramTotal[index] != 0"
-                  >
-                    <div class="absolute-full flex flex-center">
-                      <q-badge
-                        color="white"
-                        text-color="teal"
-                        :label="`${ramLabel[index]}%`"
-                      />
-                    </div>
-                  </q-linear-progress>
-                  <div class="q-mt-md" v-if="diskTotal[index] != 0">
-                    <span class="text-weight-bold">vDISK</span> 总额{{
-                      diskTotal[index]
-                    }}GB，剩余{{ diskTotal[index] - diskUsed[index] }}GB，已用{{
-                      diskUsed[index]
-                    }}GB
-                  </div>
-                  <q-linear-progress
-                    size="25px"
-                    :value="diskPercentage[index]"
-                    color="teal"
-                    class="q-mt-sm q-ml-xl q-mr-xs"
-                    v-if="diskTotal[index] != 0"
-                  >
-                    <div class="absolute-full flex flex-center">
-                      <q-badge
-                        color="white"
-                        text-color="teal"
-                        :label="`${diskLabel[index]}%`"
-                      />
-                    </div>
-                  </q-linear-progress>
-
-                  <div class="q-mt-md" v-if="publicIpTotal[index] != 0">
-                    <span class="text-weight-bold">Public-IP</span> 总额{{
-                      publicIpTotal[index]
-                    }}，剩余{{
-                      publicIpTotal[index] - publicIpUsed[index]
-                    }}，已用{{ publicIpUsed[index] }}
-                  </div>
-                  <q-linear-progress
-                    size="25px"
-                    :value="publicIpPercentage[index]"
-                    color="teal"
-                    class="q-mt-sm q-ml-xl q-mr-xs"
-                    v-if="publicIpTotal[index] != 0"
-                  >
-                    <div class="absolute-full flex flex-center">
-                      <q-badge
-                        color="white"
-                        text-color="teal"
-                        :label="`${publicIpLabel[index]}%`"
-                      />
-                    </div>
-                  </q-linear-progress>
-                  <div class="q-mt-md" v-if="privateIpTotal[index] != 0">
-                    <span class="text-weight-bold">Private-IP</span> 总额{{
-                      privateIpTotal[index]
-                    }}，剩余{{
-                      privateIpTotal[index] - privateIpUsed[index]
-                    }}
-                    ，已用{{ privateIpUsed[index] }}
-                  </div>
-                  <q-linear-progress
-                    size="25px"
-                    :value="privateIpPercentage[index]"
-                    color="teal"
-                    class="q-mt-sm q-ml-xl q-mr-xs"
-                    v-if="privateIpTotal[index] != 0"
-                  >
-                    <div class="absolute-full flex flex-center">
-                      <q-badge
-                        color="white"
-                        text-color="teal"
-                        :label="`${privateIpLabel[index]}%`"
-                      />
-                    </div>
-                  </q-linear-progress>
-                </div>
-              </q-tab-panel>
-            </q-tab-panels>
-          </template>
-        </q-splitter>
+              </template>
+            </q-splitter>
+          </q-tab-panel>
+        </q-tab-panels>
       </q-card-section>
     </q-card>
   </div>
@@ -201,72 +255,27 @@ export default defineComponent({
   },
   setup () {
     const $store = useStore<StateInterface>()
-
+    const toptab = ref('')
     onMounted(() => {
-      void $store.dispatch('quota/fetchQuota')
+      void $store.dispatch('quota/fetchQuota').then(() => {
+        // console.log('before ref', $store.getters['quota/toptab'])
+        toptab.value = $store.getters['quota/toptab']
+      })
     })
 
     const serviceName = computed(() => $store.getters['quota/serviceName'])
-    const tabServiceName = computed(() => $store.getters['quota/tabServiceName'])
     const type = computed(() => $store.getters['quota/servicetype'])
-    console.log('type:', type)
 
-    const vCpuUsed = computed(() => $store.getters['quota/vCpuUsed'])
-    const vCpuTotal = computed(() => $store.getters['quota/vCpuTotal'])
-    const vCpuPercentage = computed(() => $store.getters['quota/vCpuPercentage'])
-    const vCpuLabel = computed(() => $store.getters['quota/vCpuLabel'])
+    const innertab = ref(0)
+    const splitterModel = ref(20)
 
-    const ramUsed = computed(() => $store.getters['quota/ramUsed'])
-    const ramTotal = computed(() => $store.getters['quota/ramTotal'])
-    const ramPercentage = computed(() => $store.getters['quota/ramPercentage'])
-    const ramLabel = computed(() => $store.getters['quota/ramLabel'])
-
-    const diskUsed = computed(() => $store.getters['quota/diskUsed'])
-    const diskTotal = computed(() => $store.getters['quota/diskTotal'])
-    const diskPercentage = computed(() => $store.getters['quota/diskPercentage'])
-    const diskLabel = computed(() => $store.getters['quota/diskLabel'])
-
-    const publicIpUsed = computed(() => $store.getters['quota/publicIpUsed'])
-    const publicIpTotal = computed(() => $store.getters['quota/publicIpTotal'])
-    const publicIpPercentage = computed(() => $store.getters['quota/publicIpPercentage'])
-    const publicIpLabel = computed(() => $store.getters['quota/publicIpLabel'])
-
-    const privateIpUsed = computed(() => $store.getters['quota/privateIpUsed'])
-    const privateIpTotal = computed(() => $store.getters['quota/privateIpTotal'])
-    const privateIpPercentage = computed(() => $store.getters['quota/privateIpPercentage'])
-    const privateIpLabel = computed(() => $store.getters['quota/privateIpLabel'])
-
-    const expirationTime = computed(() => $store.getters['quota/expirationTime'])
-
+    // console.log('toptab:', toptab)
     return {
       serviceName,
-      tabServiceName,
       type,
-      vCpuUsed,
-      vCpuTotal,
-      vCpuPercentage,
-      vCpuLabel,
-      ramUsed,
-      ramTotal,
-      ramPercentage,
-      ramLabel,
-      diskUsed,
-      diskTotal,
-      diskPercentage,
-      diskLabel,
-      publicIpUsed,
-      publicIpTotal,
-      publicIpPercentage,
-      publicIpLabel,
-      privateIpUsed,
-      privateIpTotal,
-      privateIpPercentage,
-      privateIpLabel,
-      expirationTime,
-      leftTab: ref(0),
-      innertab: ref(0),
-      tab: ref('HR_204机房'),
-      splitterModel: ref(25)
+      innertab,
+      toptab,
+      splitterModel
     }
   }
 }
