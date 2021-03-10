@@ -262,7 +262,6 @@ import { useStore } from 'vuex'
 import { StateInterface } from '../../store'
 import { useQuasar, Notify, copyToClipboard } from 'quasar'
 import { ReqServerNote } from 'src/store/usage/state'
-import { evaAward } from '@quasar/extras/eva-icons'
 
 export default defineComponent({
   name: 'Vm',
