@@ -3,7 +3,7 @@
     v-model="leftDrawerOpen"
     show-if-above
     :width="165"
-    :breakpoint="500"
+    :breakpoint="0"
     class="bg-nord3 text-white"
   >
     <q-scroll-area class="fit non-selectable">
@@ -40,7 +40,7 @@
           <q-item-section avatar>
             <q-icon name="group"/>
           </q-item-section>
-          <q-item-section> 我的小组</q-item-section>
+          <q-item-section> 我的群组</q-item-section>
         </q-item>
 
         <q-item clickable disable>
@@ -124,6 +124,6 @@ export default defineComponent({
 <style lang="scss" scoped>
 .active-item {
   color: white;
-  background: $nord7;
+  background: $nord10;
 }
 </style>

@@ -39,6 +39,13 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/Usage/Vm.vue')
           },
           {
+            path: 'vmcreate',
+            meta: {
+              myPages: true
+            },
+            component: () => import('pages/Usage/VmCreate.vue')
+          },
+          {
             path: 'vd',
             meta: {
               myPages: true
