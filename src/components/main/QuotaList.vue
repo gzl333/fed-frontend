@@ -1,13 +1,15 @@
 <template>
   <div class="QuotaList">
     <q-card flat bordered class="my-card">
-      <q-card-section class="bg-teal text-white">
+      <q-card-section class="bg-secondary">
         <div class="row items-center no-wrap">
           <div class="col">
-            <div class="text-h6 text-weight-bold">资源配额使用情况</div>
+            <div class="text-h6 text-weight-bold text-nord6">
+              资源配额使用情况
+            </div>
           </div>
           <div class="col-auto">
-            <router-link :to="`/my/usage/vm`" class="flat text-white q-ml-md"
+            <router-link :to="`/my/usage/vm`" class="flat q-ml-md text-nord6"
               >全部在用资源</router-link
             >
           </div>
@@ -21,7 +23,7 @@
             v-model="toptab"
             narrow-indicator
             inline-label
-            class="text-teal"
+            class="text-secondary"
             align="justify"
             v-for="service in serviceName"
             :key="service.name"
@@ -33,7 +35,7 @@
               icon="img:main/ev5-01.png"
               style="align-self: stretch; position: relative"
             >
-              <q-badge color="red" text-color="white" floating>{{
+              <q-badge color="nord11" text-color="nord6" floating>{{
                 service.number
               }}</q-badge>
             </q-tab>
@@ -64,13 +66,13 @@
                           v-model="innertab"
                           narrow-indicator
                           inline-label
-                          class="text-teal"
+                          class="text-secondary"
                           align="justify"
                         >
                           <q-tab
                             :name="i"
                             :label="`${it.type}`"
-                            :ripple="{ color: 'orange' }"
+                            :ripple="{ color: 'nord15' }"
                             style="align-self: stretch; position: relative"
                           />
                         </q-tabs>
@@ -94,7 +96,7 @@
                       >
                         <q-tab-panel :name="i">
                           <div v-if="it.expirationTime != null">
-                            <span class="text-subtitle2 text-red"
+                            <span class="text-subtitle2 text-nord11"
                               >于{{ it.expirationTime }}到期
                             </span>
                           </div>
@@ -112,13 +114,13 @@
                               class="q-mt-sm q-ml-xl q-mr-xs"
                               size="25px"
                               :value="it.vCpuUsed / it.vCpuTotal"
-                              color="teal"
+                              color="secondary"
                               v-if="it.vCpuTotal != 0"
                             >
                               <div class="absolute-full flex flex-center">
                                 <q-badge
-                                  color="white"
-                                  text-color="teal"
+                                  color="nord6"
+                                  text-color="secondary"
                                   :label="`${(
                                     (it.vCpuUsed / it.vCpuTotal) *
                                     100
@@ -137,14 +139,14 @@
                             <q-linear-progress
                               size="25px"
                               :value="it.ramUsed / it.ramTotal"
-                              color="teal"
+                              color="secondary"
                               class="q-mt-sm q-ml-xl q-mr-xs"
                               v-if="it.ramTotal != 0"
                             >
                               <div class="absolute-full flex flex-center">
                                 <q-badge
-                                  color="white"
-                                  text-color="teal"
+                                  color="nord6"
+                                  text-color="secondary"
                                   :label="`${(
                                     (it.ramUsed / it.ramTotal) *
                                     100
@@ -162,14 +164,14 @@
                             <q-linear-progress
                               size="25px"
                               :value="it.diskUsed / it.diskTotal"
-                              color="teal"
+                              color="secondary"
                               class="q-mt-sm q-ml-xl q-mr-xs"
                               v-if="it.diskTotal != 0"
                             >
                               <div class="absolute-full flex flex-center">
                                 <q-badge
-                                  color="white"
-                                  text-color="teal"
+                                  color="nord6"
+                                  text-color="secondary"
                                   :label="`${(
                                     (it.diskUsed / it.diskTotal) *
                                     100
@@ -187,14 +189,14 @@
                             <q-linear-progress
                               size="25px"
                               :value="it.publicIpUsed / it.publicIpTotal"
-                              color="teal"
+                              color="secondary"
                               class="q-mt-sm q-ml-xl q-mr-xs"
                               v-if="it.publicIpTotal != 0"
                             >
                               <div class="absolute-full flex flex-center">
                                 <q-badge
-                                  color="white"
-                                  text-color="teal"
+                                  color="nord6"
+                                  text-color="secondary"
                                   :label="`${(
                                     (it.publicIpUsed / it.publicIpTotal) *
                                     100
@@ -212,14 +214,14 @@
                             <q-linear-progress
                               size="25px"
                               :value="it.privateIpUsed / it.privateIpTotal"
-                              color="teal"
+                              color="secondary"
                               class="q-mt-sm q-ml-xl q-mr-xs"
                               v-if="it.privateIpTotal != 0"
                             >
                               <div class="absolute-full flex flex-center">
                                 <q-badge
-                                  color="white"
-                                  text-color="teal"
+                                  color="nord6"
+                                  text-color="secondary"
                                   :label="`${(
                                     (it.privateIpUsed / it.privateIpTotal) *
                                     100

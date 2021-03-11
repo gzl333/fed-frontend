@@ -10,7 +10,7 @@ export interface TypeInterface {
   ramUsed: number;
   diskTotal: number;
   diskUsed: number;
-  expirationTime?: string;
+  expirationTime: string;
   deleted?: boolean;
 }
 
@@ -95,8 +95,10 @@ function state (): QuotaInterface {
             ramTotal: 1,
             ramUsed: 0,
             diskTotal: 1,
-            diskUsed: 0
-          }]
+            diskUsed: 0,
+            expirationTime: ''
+          }
+        ]
       }]
     }
   }

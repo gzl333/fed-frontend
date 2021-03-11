@@ -3,19 +3,19 @@
     <div class="title row items-center text-h6 q-pl-xl q-pt-lg">
       您好，{{ currentUser }}！
     </div>
-    <div class="q-pt-lg q-pb-lg q-pl-xl q-pr-xl doc-container">
-      <!-- <div class="row items-center q-gutter-lg">
-        <q-responsive :ratio="8 / 3" class="col"> -->
-      <!--       <todo-list :todo="todo" @update-unpaid="updateUnpaid" />-->
-      <!-- <todo-list :todo="todo" />
-        </q-responsive>
+    <div class="q-pt-lg q-pb-md q-pl-xl q-pr-xl doc-container">
+      <div class="row items-center q-gutter-lg">
+        <!--   <q-responsive :ratio="8 / 3" class="col"> -->
+        <!--       <todo-list :todo="todo" @update-unpaid="updateUnpaid" />-->
+        <!-- <todo-list :todo="todo" />
+        </q-responsive>-->
         <q-responsive :ratio="8 / 3" class="col">
-          <warning-list :warning="warning" @update-month="updateMonth" />
+          <warning-list />
         </q-responsive>
         <q-responsive :ratio="8 / 3" class="col">
           <quick-entry />
         </q-responsive>
-      </div> -->
+      </div>
       <!-- <div class="row items-center q-gutter-lg q-pt-lg">
         <q-responsive :ratio="8 / 5" class="col">
           <vm-list />
@@ -43,8 +43,8 @@
 import { defineComponent } from 'vue'
 // import VmList from 'src/components/main/VmList.vue'
 // import TodoList, { ToDoProp } from 'src/components/main/TodoList.vue'
-// import WarningList, { WarningProp } from 'src/components/main/WarningList.vue'
-// import QuickEntry from 'src/components/main/QuickEntry.vue'
+import WarningList from 'src/components/main/WarningList.vue'
+import QuickEntry from 'src/components/main/QuickEntry.vue'
 // import ObsList from 'src/components/main/ObsList.vue'
 import QuotaList from 'components/main/QuotaList.vue'
 // import CostDetails from 'src/components/main/CostDetails.vue'
@@ -58,8 +58,8 @@ export default defineComponent({
   components: {
     // VmList,
     // TodoList,
-    // WarningList,
-    // QuickEntry,
+    WarningList,
+    QuickEntry,
     // ObsList,
     QuotaList
     // CostDetails,
@@ -80,22 +80,9 @@ export default defineComponent({
     // const updateUnpaid = (unpaid: number) => {
     //   todoList.unpaid = unpaid
     // }
-
-    // MainWarning
-    // const warningList: WarningProp = reactive({
-    //   week: 1,
-    //   month: 2,
-    //   sixMonth: 3,
-    //   unpaidWhenDue: 4
-    // })
-    // const warning = toRefs(warningList)
-    // const updateMonth = (month: number) => {
-    //   warningList.month = month
-    // }
     return {
       // todo,
       // updateUnpaid,
-      // warning,
       // updateMonth,
       currentUser
 
