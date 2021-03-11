@@ -2,7 +2,7 @@
   <div class="Vm">
     <div class="row no-wrap min-routerview-height min-routerview-width">
 
-      <div v-if="isTreeOpen" class="col-1.5 items-center bg-nord5 q-py-sm q-px-sm min-tree-width">
+      <div v-if="isTreeOpen" class="col-1.5 items-center bg-nord6 q-py-sm q-px-sm min-tree-width">
         <div class="tree-title q-px-xs">
           机构与数据中心
           <q-tooltip>
@@ -22,7 +22,7 @@
         <!--        </q-scroll-area>-->
       </div>
 
-      <div class="col-shrink bg-nord6 btn-area">
+      <div class="col-shrink btn-area">
         <q-btn v-if="isTreeOpen" class="btn-close" unelevated color="nord9"
                icon="arrow_back_ios_new" size="xs" padding="30px 0px" @click="toggleTree">
           <q-tooltip>折叠机构树</q-tooltip>
@@ -33,14 +33,14 @@
         </q-btn>
       </div>
 
-      <div class="col bg-nord6 q-py-sm q-pr-sm">
+      <div class="col  q-py-sm q-pr-sm">
 
         <q-table
           class="q-px-lg"
           flat
-          card-class="bg-nord6"
+          card-class=""
           table-class="text-nord0"
-          table-header-class="server-table-header bg-nord5"
+          table-header-class="server-table-header bg-nord6"
           :title="`云主机所在节点：${tableTitle}`"
           :rows="rows"
           :columns="columns"
@@ -82,155 +82,176 @@
             </div>
           </template>
 
-          <template v-slot:body-cell-ip="props">
-            <q-td :props="props">
-              <div class="row">
-                <div class="col">
-                  {{ props.row.ip }}
+          <template v-slot:body="props">
+            <q-tr :props="props"
+                  @mouseenter="onMouseEnterRow(props.row.name)"
+                  @mouseleave="onMouseLeaveRow"
+            >
+              <q-td key="ip" :props="props">
+                <div class="row">
+                  <div class="col">
+                    {{ props.row.ip }}
+                  </div>
+                  <q-btn v-show="hoverRow === props.row.name"
+                         class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
+                         @click="clickToCopy(props.row.ip)">
+                    <q-tooltip>
+                      复制到剪切板
+                    </q-tooltip>
+                  </q-btn>
+                  <q-btn v-show="hoverRow !== props.row.name"
+                         class="col-shrink q-px-xs invisible" flat icon="content_copy" size="xs"
+                  >
+                  </q-btn>
                 </div>
-                <q-btn class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
-                       @click="clickToCopy(props.row.ip)">
-                  <q-tooltip>
-                    复制到剪切板
-                  </q-tooltip>
-                </q-btn>
-              </div>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-note="props">
-            <q-td :props="props">
-              <div class="row">
-                <div class="col">
-                  {{ props.row.note }}
+              </q-td>
+              <q-td key="dataCenterName" :props="props">
+                {{ props.row.dataCenterName }}
+              </q-td>
+              <q-td key="serviceType" :props="props">
+                {{ props.row.serviceType }}
+              </q-td>
+              <q-td key="image" :props="props">
+                {{ props.row.image }}
+              </q-td>
+              <q-td key="cpu" :props="props">
+                {{ props.row.cpu }}
+              </q-td>
+              <q-td key="ram" :props="props">
+                {{ props.row.ram }}
+              </q-td>
+              <q-td key="note" :props="props">
+                <div class="row">
+                  <div class="col">
+                    {{ props.row.note }}
+                  </div>
+                  <q-btn v-show="hoverRow === props.row.name"
+                         class="col-shrink q-px-xs text-nord9" flat icon="edit" size="xs"
+                         @click="popEdit(props.row.ip, props.row.id, props.row.note)">
+                    <q-tooltip>
+                      编辑备注信息
+                    </q-tooltip>
+                  </q-btn>
+                  <q-btn v-show="hoverRow !== props.row.name"
+                         class="col-shrink q-px-xs invisible" flat icon="edit" size="xs"
+                  >
+                  </q-btn>
                 </div>
-                <q-btn class="col-shrink q-px-xs text-nord9" flat icon="edit" size="xs"
-                       @click="popEdit(props.row.ip, props.row.id, props.row.note)">
+              </q-td>
+              <q-td key="vnc" :props="props" class="non-selectable">
+                <q-btn v-if="props.row.status=='运行中'" unelevated color="nord14" icon="computer"
+                       @click="gotoVNC(props.row.id)">
+                </q-btn>
+                <q-btn v-else unelevated color="nord3" icon="computer">
                   <q-tooltip>
-                    编辑备注信息
+                    请将云主机开机以使用VNC
                   </q-tooltip>
                 </q-btn>
-              </div>
-            </q-td>
+              </q-td>
+              <q-td key="status" :props="props" class="non-selectable">
+
+                <q-chip v-if="!props.row.status" label="读取中" square color="nord4">
+                  <q-inner-loading showing class="inner-loading">
+                    <q-spinner size="30px" color="nord9"/>
+                  </q-inner-loading>
+                </q-chip>
+
+                <q-chip v-if="props.row.status === '无法获取状态'" square color="nord11" text-color="white"
+                        label="无法获取状态"/>
+                <q-chip v-if="props.row.status === '运行中'" square color="nord14" text-color="white"
+                        label="运行中"/>
+                <q-chip v-if="props.row.status === '已屏蔽'" square color="nord3" text-color="white"
+                        label="已屏蔽"/>
+                <q-chip v-if="props.row.status === '已暂停'" square color="nord3" text-color="white"
+                        label="已暂停"/>
+                <q-chip v-if="props.row.status === '正在关机'" square color="nord9" text-color="white"
+                        label="正在关机"/>
+                <q-chip v-if="props.row.status === '已关机'" square color="nord3" text-color="white"
+                        label="已关机"/>
+                <q-chip v-if="props.row.status === '已崩溃'" square color="nord11" text-color="white"
+                        label="已崩溃"/>
+                <q-chip v-if="props.row.status === '被电源管理器挂起'" square color="nord3" text-color="white"
+                        label="被电源管理器挂起"/>
+                <q-chip v-if="props.row.status === '与宿主机通讯失败'" square color="nord11" text-color="white"
+                        label="与宿主机通讯失败"/>
+                <q-chip v-if="props.row.status === '已丢失'" square color="nord11" text-color="white"
+                        label="已丢失"/>
+                <q-chip v-if="props.row.status === '正在创建'" square color="nord9" text-color="white"
+                        label="正在创建"/>
+                <q-chip v-if="props.row.status === '创建失败'" square color="nord11" text-color="white"
+                        label="创建失败"/>
+              </q-td>
+              <q-td key="operation" :props="props" class="non-selectable">
+                <q-btn-group unelevated>
+
+                  <q-btn v-if="props.row.status==''" color="nord4" loading label="......">
+                    <q-tooltip>
+                      远程执行中，请稍候
+                    </q-tooltip>
+                  </q-btn>
+                  <q-btn v-if="props.row.status=='已关机'" color="nord4" icon="play_arrow" text-color="nord10"
+                         @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'start'})">
+                    <q-tooltip>
+                      开机
+                    </q-tooltip>
+                  </q-btn>
+                  <q-btn v-if="props.row.status=='运行中'" color="nord4" icon="stop" text-color="nord10"
+                         @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'shutdown'})">
+                    <q-tooltip>
+                      关机
+                    </q-tooltip>
+                  </q-btn>
+
+                  <q-btn-dropdown color="nord10" label="操作">
+                    <q-list separator dense class="dropdown-items">
+                      <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-nord14"
+                              @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'start'})">
+                        <q-item-section>
+                          <q-item-label>开机</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
+                              @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'reboot'})">
+                        <q-item-section>
+                          <q-item-label>重启</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
+                              @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'shutdown'})">
+                        <q-item-section>
+                          <q-item-label>关机</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
+                              @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'poweroff'})">
+                        <q-item-section>
+                          <q-item-label>强制断电</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-nord11"
+                              @click="isShowDelConfirm = true; vmToDel.id=props.row.id; vmToDel.ip=props.row.ip; vmToDel.endPoint=props.row.endPoint; vmToDel.action='delete'">
+                        <q-item-section>
+                          <q-item-label>删除</q-item-label>
+                        </q-item-section>
+                      </q-item>
+                      <q-item clickable v-close-popup class="bg-nord11"
+                              @click="isShowDelConfirm = true; vmToDel.id=props.row.id; vmToDel.ip=props.row.ip; vmToDel.endPoint=props.row.endPoint; vmToDel.action='delete_force'">
+                        <q-item-section>
+                          <q-item-label>强制删除</q-item-label>
+                        </q-item-section>
+                      </q-item>
+
+                    </q-list>
+                  </q-btn-dropdown>
+                </q-btn-group>
+              </q-td>
+            </q-tr>
           </template>
 
-          <template v-slot:body-cell-vnc="props">
-            <q-td :props="props" class="non-selectable">
-              <q-btn v-if="props.row.status=='运行中'" unelevated color="nord14" icon="computer"
-                     @click="gotoVNC(props.row.id)">
-              </q-btn>
-              <q-btn v-else unelevated color="nord3" icon="computer">
-                <q-tooltip>
-                  请将云主机开机以使用VNC
-                </q-tooltip>
-              </q-btn>
-            </q-td>
-          </template>
-          <template v-slot:body-cell-status="props">
-            <q-td :props="props" class="non-selectable">
-
-              <q-chip v-if="!props.row.status" label="读取中" square color="nord4">
-                <q-inner-loading showing class="inner-loading">
-                  <q-spinner size="30px" color="nord9"/>
-                </q-inner-loading>
-              </q-chip>
-
-              <q-chip v-if="props.row.status === '无法获取状态'" square color="nord11" text-color="white"
-                      label="无法获取状态"/>
-              <q-chip v-if="props.row.status === '运行中'" square color="nord14" text-color="white"
-                      label="运行中"/>
-              <q-chip v-if="props.row.status === '已屏蔽'" square color="nord3" text-color="white"
-                      label="已屏蔽"/>
-              <q-chip v-if="props.row.status === '已暂停'" square color="nord3" text-color="white"
-                      label="已暂停"/>
-              <q-chip v-if="props.row.status === '正在关机'" square color="nord9" text-color="white"
-                      label="正在关机"/>
-              <q-chip v-if="props.row.status === '已关机'" square color="nord3" text-color="white"
-                      label="已关机"/>
-              <q-chip v-if="props.row.status === '已崩溃'" square color="nord11" text-color="white"
-                      label="已崩溃"/>
-              <q-chip v-if="props.row.status === '被电源管理器挂起'" square color="nord3" text-color="white"
-                      label="被电源管理器挂起"/>
-              <q-chip v-if="props.row.status === '与宿主机通讯失败'" square color="nord11" text-color="white"
-                      label="与宿主机通讯失败"/>
-              <q-chip v-if="props.row.status === '已丢失'" square color="nord11" text-color="white"
-                      label="已丢失"/>
-              <q-chip v-if="props.row.status === '正在创建'" square color="nord9" text-color="white"
-                      label="正在创建"/>
-              <q-chip v-if="props.row.status === '创建失败'" square color="nord11" text-color="white"
-                      label="创建失败"/>
-            </q-td>
-          </template>
-
-          <template v-slot:body-cell-operation="props">
-            <q-td :props="props" class="non-selectable">
-              <q-btn-group unelevated>
-
-                <q-btn v-if="props.row.status==''" color="nord4" loading label="......">
-                  <q-tooltip>
-                    远程执行中，请稍候
-                  </q-tooltip>
-                </q-btn>
-                <q-btn v-if="props.row.status=='已关机'" color="nord4" icon="play_arrow" text-color="nord10"
-                       @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'start'})">
-                  <q-tooltip>
-                    开机
-                  </q-tooltip>
-                </q-btn>
-                <q-btn v-if="props.row.status=='运行中'" color="nord4" icon="stop" text-color="nord10"
-                       @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'shutdown'})">
-                  <q-tooltip>
-                    关机
-                  </q-tooltip>
-                </q-btn>
-
-                <q-btn-dropdown color="nord10" label="操作">
-                  <q-list separator dense class="dropdown-items">
-                    <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-nord14"
-                            @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'start'})">
-                      <q-item-section>
-                        <q-item-label>开机</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
-                            @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'reboot'})">
-                      <q-item-section>
-                        <q-item-label>重启</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
-                            @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'shutdown'})">
-                      <q-item-section>
-                        <q-item-label>关机</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
-                            @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'poweroff'})">
-                      <q-item-section>
-                        <q-item-label>强制断电</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-nord11"
-                            @click="isShowDelConfirm = true; vmToDel.id=props.row.id; vmToDel.ip=props.row.ip; vmToDel.endPoint=props.row.endPoint; vmToDel.action='delete'">
-                      <q-item-section>
-                        <q-item-label>删除</q-item-label>
-                      </q-item-section>
-                    </q-item>
-                    <q-item clickable v-close-popup class="bg-nord11"
-                            @click="isShowDelConfirm = true; vmToDel.id=props.row.id; vmToDel.ip=props.row.ip; vmToDel.endPoint=props.row.endPoint; vmToDel.action='delete_force'">
-                      <q-item-section>
-                        <q-item-label>强制删除</q-item-label>
-                      </q-item-section>
-                    </q-item>
-
-                  </q-list>
-                </q-btn-dropdown>
-              </q-btn-group>
-            </q-td>
-          </template>
           <template v-slot:bottom>
             <!--            blank bottom just to show the bottom border of table-->
           </template>
+
         </q-table>
 
       </div>
@@ -272,7 +293,7 @@ export default defineComponent({
     const $q = useQuasar()
     // console.log($q.screen.height)
     // 分页部分基础信息
-    const computedPageSize = computed(() => (Math.ceil(($q.screen.height - 350) / 50)))// 通过屏幕尺寸动态计算最佳rows， 并同步至store的pageSize
+    const computedPageSize = computed(() => (Math.max(5, Math.ceil(($q.screen.height - 350) / 50))))// 通过屏幕尺寸动态计算最佳rows， 并同步至store的pageSize
     // console.log(computedPageSize)
     // 计算尺寸变化后更新server list
     watch(computedPageSize, () => {
@@ -413,7 +434,7 @@ export default defineComponent({
         align: 'center'
       },
       {
-        name: 'mem',
+        name: 'ram',
         label: '内存',
         field: 'ram',
         align: 'center'
@@ -537,6 +558,14 @@ export default defineComponent({
       })
       ipToCopy = ''
     }
+    // tabel row hover
+    const hoverRow = ref('')
+    const onMouseEnterRow = (rowName: string) => {
+      hoverRow.value = rowName
+    }
+    const onMouseLeaveRow = () => {
+      hoverRow.value = ''
+    }
     return {
       isTreeOpen,
       toggleTree,
@@ -555,7 +584,10 @@ export default defineComponent({
       clickPagination,
       paginationMax,
       popEdit,
-      clickToCopy
+      clickToCopy,
+      hoverRow,
+      onMouseEnterRow,
+      onMouseLeaveRow
     }
   }
 })
