@@ -44,7 +44,7 @@
                     公网IP
                   </div>
                   <div class="col item-radios">
-                    <q-radio v-for="network in networksPublic" dense v-model="radioNetwork" :val="network.id"
+                    <q-radio v-for="network in networks.public" dense v-model="radioNetwork" :val="network.id"
                              :label="network.name" :key="network.id" class="radio"/>
                   </div>
                 </div>
@@ -53,7 +53,7 @@
                     私网IP
                   </div>
                   <div class="col item-radios">
-                    <q-radio v-for="network in networksPrivate" dense v-model="radioNetwork" :val="network.id"
+                    <q-radio v-for="network in networks.private" dense v-model="radioNetwork" :val="network.id"
                              :label="network.name" :key="network.id" class="radio"/>
                   </div>
                 </div>
@@ -100,17 +100,17 @@
       <div class="col-3 summary-area">
         current selection
         <pre>{{ selection }}</pre>
-        <pre>{{ networksPublic }}</pre>
-        <pre>{{ networksPrivate }}</pre>
+        <pre>{{ networks }}</pre>
       </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from 'vue'
+import { computed, defineComponent, onMounted, ref, watch, reactive } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
+import { DataPointNetworkInterface } from 'src/store/usage/state'
 
 export default defineComponent({
   name: 'VmCreate',
@@ -123,8 +123,10 @@ export default defineComponent({
     })
     // 选项数据
     const dataPointTree = computed(() => $store.state.usage.dataPointTree)
-    const networksPublic = ref([])
-    const networksPrivate = ref([])
+    const networks: { public: DataPointNetworkInterface[]; private: DataPointNetworkInterface[] } = reactive({
+      public: [],
+      private: []
+    })
     // 页面选项的状态
     const radioDataPoint = ref('')
     const radioNetwork = ref('')
@@ -132,21 +134,15 @@ export default defineComponent({
     watch(radioDataPoint, () => {
       radioNetwork.value = ''
       // console.log($store.state.usage.serviceList) todo fix: networks not working in tags
-      $store.state.usage.serviceList.forEach((service) => {
-        // console.log(service.serviceId)
+      for (const service of $store.state.usage.serviceList) {
         if (service.serviceId === radioDataPoint.value) {
-          service.networks.public.forEach((network) => {
-            networksPublic.value.unshift(network)
-          })
-          service.networks.private.forEach((network) => {
-            networksPrivate.value.unshift(network)
-          })
+          networks.public = service.networks.public
+          networks.private = service.networks.private
         }
-      })
+      }
     })
-
     const log = () => {
-      console.log(networksPublic, networksPrivate)
+      console.log(networks)
     }
 
     // 选择结果
@@ -183,8 +179,7 @@ export default defineComponent({
       radioDataPoint,
       radioNetwork,
       dataPointTree,
-      networksPublic,
-      networksPrivate,
+      networks,
       log
     }
   }
