@@ -36,14 +36,14 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
         const arrType: TypeInterface[] = []
         item.serviceTypes.forEach((it) => {
           if (it.deleted === false) {
-            const time = it.expirationTime as string
+            const time = it.expirationTime
             let timeJoin = ''
             if (time != null) {
               const time1 = time.slice(0, 10)
               const time2 = time.slice(11, 19)
               timeJoin = time1 + ' ' + time2
             } else {
-              timeJoin = it.expirationTime as string
+              timeJoin = it.expirationTime
             }
             const type:TypeInterface = {
               type: it.type, // 配额类型
@@ -78,6 +78,62 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
       // console.log('in getter if', state.userQuota.providers)
       // console.log('name:', state.userQuota.providers[0].name)
       return state.userQuota.providers[0].name
+    }
+  },
+  lessOneWeek (state) {
+    let lessOneWeekNum = 0
+    const quotaName : string[] = []
+    const lessOneWeek : {quotaName:string[];lessOneWeekNum:number}[] = []
+    if (state.userQuota.providers) {
+      state.userQuota.providers.forEach((item) => {
+        let name = ''
+        item.serviceTypes.forEach((it) => {
+          if (it.expirationTime) {
+            const diff = Math.abs(new Date(it.expirationTime).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
+            const days = Math.ceil(diff / (1000 * 3600 * 24)) // 差换算成天数
+            if (days < 7 || days === 7) {
+              lessOneWeekNum += 1
+            }
+          }
+          name = `${item.name}：${it.type}`
+        })
+        quotaName.push(name)
+      })
+      const quotaWarning = {
+        quotaName: quotaName,
+        lessOneWeekNum: lessOneWeekNum
+      }
+      lessOneWeek.push(quotaWarning)
+      console.log('in getters lessOneWeek:', lessOneWeek)
+      return lessOneWeek
+    }
+  },
+  lessOneMonth (state) {
+    let lessOneMonthNum = 0
+    const quotaName : string[] = []
+    const lessOneMonth : {quotaName:string[];lessOneMonthNum:number}[] = []
+    if (state.userQuota.providers) {
+      state.userQuota.providers.forEach((item) => {
+        let name = ''
+        item.serviceTypes.forEach((it) => {
+          if (it.expirationTime) {
+            const diff = Math.abs(new Date(it.expirationTime).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
+            const days = Math.ceil(diff / (1000 * 3600 * 24)) // 差换算成天数
+            if ((days < 30 || days === 30) && (days > 7)) {
+              lessOneMonthNum += 1
+            }
+          }
+          name = `${item.name}：${it.type}`
+        })
+        quotaName.push(name)
+      })
+      const quotaWarning = {
+        quotaName: quotaName,
+        lessOneMonthNum: lessOneMonthNum
+      }
+      lessOneMonth.push(quotaWarning)
+      console.log('in getters lessOneMonth:', lessOneMonth)
+      return lessOneMonth
     }
   }
 }
