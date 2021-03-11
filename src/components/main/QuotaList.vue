@@ -265,7 +265,9 @@ export default defineComponent({
       })
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const serviceName = computed(() => $store.getters['quota/serviceName'])
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const type = computed(() => $store.getters['quota/servicetype'])
 
     const innertab = ref(0)
