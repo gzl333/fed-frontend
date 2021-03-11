@@ -40,6 +40,8 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
   })
 
   Router.beforeEach((to, from, next) => {
+    // todo /login为科技云通行证返回回调code的路由，应截取localhost:8080/login/callback?code=1111中的code，并取回token
+
     if (to.meta.myPages && !store.state.user.isLogin) {
       next({ path: '/' })
     }

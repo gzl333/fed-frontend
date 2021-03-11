@@ -4,10 +4,13 @@ import {
   DataRootInterface,
   ServerInterface,
   DataPointOnShowInterface,
-  PaginationInterface, ReqServerNote
+  PaginationInterface, ReqServerNote, ServiceInterface
 } from './state'
 
 const mutation: MutationTree<UsageInterface> = {
+  storeService (state, payload: ServiceInterface) {
+    state.serviceList.push(payload)
+  },
   storeDataPointTree (state, payload: DataRootInterface[]) {
     state.dataPointTree = payload
   },

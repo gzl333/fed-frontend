@@ -1,8 +1,8 @@
 <template>
   <div class="Vm">
-    <div class="row no-wrap min-routerview-height min-routerview-width">
+    <div class="row no-wrap routerview-area">
 
-      <div v-if="isTreeOpen" class="col-1.5 items-center bg-nord6 q-py-sm q-px-sm min-tree-width">
+      <div v-if="isTreeOpen" class="col-1.5 items-center bg-nord6 q-py-sm q-px-sm tree-area">
         <div class="tree-title q-px-xs">
           机构与数据中心
           <q-tooltip>
@@ -66,17 +66,7 @@
               </div>
 
               <div class="col-shrink">
-                <q-pagination
-                  unelevated
-                  v-if="paginationMax!==1"
-                  v-model="paginationSelected"
-                  color="nord9"
-                  :max="paginationMax"
-                  :max-pages="7"
-                  size="md"
-                  :direction-links="true"
-                  @click="clickPagination"
-                />
+<!--                搜索框-->
               </div>
 
             </div>
@@ -87,7 +77,7 @@
                   @mouseenter="onMouseEnterRow(props.row.name)"
                   @mouseleave="onMouseLeaveRow"
             >
-              <q-td key="ip" :props="props">
+              <q-td key="ip" :props="props" class="table-td-ip">
                 <div class="row">
                   <div class="col">
                     {{ props.row.ip }}
@@ -120,7 +110,7 @@
               <q-td key="ram" :props="props">
                 {{ props.row.ram }}
               </q-td>
-              <q-td key="note" :props="props">
+              <q-td key="note" :props="props" class="table-td-note">
                 <div class="row">
                   <div class="col">
                     {{ props.row.note }}
@@ -250,6 +240,17 @@
 
           <template v-slot:bottom>
             <!--            blank bottom just to show the bottom border of table-->
+            <q-pagination
+              unelevated
+              v-if="paginationMax!==1"
+              v-model="paginationSelected"
+              color="nord9"
+              :max="paginationMax"
+              :max-pages="7"
+              size="md"
+              :direction-links="true"
+              @click="clickPagination"
+            />
           </template>
 
         </q-table>
@@ -537,7 +538,7 @@ export default defineComponent({
       }).onOk((data: string) => {
         const payload: ReqServerNote = {
           id: idEdited,
-          remark: data
+          remark: data.trim()
         }
         void $store.dispatch('usage/patchNote', payload).then(() =>
           $store.commit('usage/storeNote', payload)
@@ -596,20 +597,12 @@ export default defineComponent({
 <style lang="scss" scoped>
 .Vm {
 }
-
-.min-routerview-height {
-  min-height: calc(100vh - 114px);
+.routerview-area {
+  height: calc(100vh - 114px);
+  width: calc(100vw - 165px);
 }
-
-.min-routerview-width {
-  min-width: calc(100vw - 165px);
-}
-
-.min-tree-height {
-  min-height: calc(100vh - 180px);
-}
-
-.min-tree-width {
+.tree-area {
+  //height: calc(100vh - 180px);
   min-width: calc(100vw / 9);
 }
 
@@ -641,6 +634,12 @@ export default defineComponent({
 
 .server-table-header {
   background-color: #999;
+}
+.table-td-ip {
+  min-width: 150px;
+}
+.table-td-note {
+  min-width: 240px;
 }
 
 .inner-loading {

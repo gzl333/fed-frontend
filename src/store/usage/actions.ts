@@ -6,10 +6,10 @@ import {
   ResServiceResultInterface,
   ReqServerListInterface,
   ResServerInterface,
-  ServerInterface, ReqServerNote
+  ServerInterface, ReqServerNote, DataPointNetworkInterface, ServiceInterface
   // , PaginationInterface
 } from './state'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 const apiBase = 'http://gosc.cstcloud.cn/api'
 const codeMap = new Map<number, string>(
@@ -30,6 +30,54 @@ const codeMap = new Map<number, string>(
 )
 
 const actions: ActionTree<UsageInterface, StateInterface> = {
+  async buildServiceList (context) {
+    if (context.state.dataPointTree[0].children.length === 0) {
+      void await context.dispatch('updateDataPointTree')
+    }
+    for (const dataCenter of context.state.dataPointTree[0].children) {
+      for (const dataPoint of dataCenter.children) {
+        const service: ServiceInterface = {
+          serviceId: dataPoint.key,
+          networks: {
+            public: [],
+            private: []
+          },
+          images: []
+        }
+        dataPoint.networks.forEach((network) => {
+          if (network.public) {
+            service.networks.public.unshift(network)
+          } else {
+            service.networks.private.unshift(network)
+          }
+        })
+        const resImage = await context.dispatch('fetchImage', dataPoint.key)
+        service.images = resImage.data
+        context.commit('storeService', service)
+      }
+    }
+    // console.log(context.state.serviceList)
+  },
+  async fetchImage (context, payload: string) {
+    const api = apiBase + '/image/'
+    const config = {
+      params: {
+        service_id: payload
+      }
+    }
+    const response = await axios.get(api, config)
+    return response
+  },
+  async fetchNetwork (context, payload: string) {
+    const api = apiBase + '/network/'
+    const config = {
+      params: {
+        service_id: payload
+      }
+    }
+    const response = await axios.get(api, config)
+    return response
+  },
   async patchNote (context, payload: ReqServerNote) {
     // const api = apiBase + '/server/' + payload.id + '/remark/'
     const api = `${apiBase}/server/${payload.id}/remark/`
@@ -72,7 +120,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     }
     return response
   },
-  async fetchService () {
+  async fetchService () { // todo 按照分页修改
     const api = apiBase + '/service/'
     const response = await axios.get(api)
     return response
@@ -104,18 +152,25 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
       }
     })
     // second iteration to add dataPoints to dataCenters
-    results.forEach((resPoint: ResServiceResultInterface) => {
-      dataPointTree[0].children.forEach((treeCenter) => {
+    for (const resPoint of results) {
+      for (const treeCenter of dataPointTree[0].children) {
         if (treeCenter.label === resPoint.data_center.name) {
+          const resNetwork: AxiosResponse = await context.dispatch('fetchNetwork', resPoint.id)
+          const networks: DataPointNetworkInterface[] = []
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          resNetwork.data.forEach((network: DataPointNetworkInterface) => {
+            networks.unshift(network)
+          })
           treeCenter.children.unshift({
             key: resPoint.id,
             label: resPoint.name,
             serviceType: resPoint.service_type,
-            icon: 'storage'
+            icon: 'storage',
+            networks: networks
           })
         }
-      })
-    })
+      }
+    }
     context.commit('storeDataPointTree', dataPointTree)
     // console.log(context.state.dataPointTree)
   },

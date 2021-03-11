@@ -106,11 +106,19 @@ export interface ResServiceInterface {
 }
 
 // 机构树组件所需数据接口
+export interface DataPointNetworkInterface {
+  id: string; // network id
+  name: string;
+  public: boolean;
+  segment: string;
+}
+
 export interface DataPointInterface {
   key: string;
   label: string;
   icon?: string;
   serviceType: string;
+  networks: DataPointNetworkInterface[]
 }
 
 export interface DataCenterInterface {
@@ -132,12 +140,32 @@ export interface DataPointOnShowInterface {
   label: string;
 }
 
+// service_id对应各种服务
+export interface ImageInterface {
+  id: string;
+  name: string;
+  system: string;
+  systemType: string;
+  creationTime: string;
+  desc: string;
+}
+
+export interface ServiceInterface {
+  serviceId: string;
+  networks: {
+    public: DataPointNetworkInterface[];
+    private: DataPointNetworkInterface[];
+  };
+  images: ImageInterface[];
+}
+
 // Usage总接口
 export interface UsageInterface {
   dataPointTree: DataRootInterface[];
   serverList: ServerInterface[];
   dataPointOnShow: DataPointOnShowInterface;
   pagination: PaginationInterface;
+  serviceList: ServiceInterface[];
 }
 
 function state (): UsageInterface {
@@ -157,7 +185,8 @@ function state (): UsageInterface {
       count: 1,
       page: 1,
       pageSize: 1
-    }
+    },
+    serviceList: []
   }
 }
 
