@@ -6,14 +6,18 @@ import axios from 'axios'
 const baseAPI = 'http://gosc.cstcloud.cn/api/'
 // context.state -> store.state.quota
 const actions: ActionTree<QuotaInterface, StateInterface> = {
-  async fetchQuota (context) {
+  async fetchQuota () {
+    const response = await axios.get(baseAPI + 'u-quota/')
+    return response
+  },
+  async updateQuota (context) {
     // console.log('in fetchQuota')
-    const response: UquotaResponseInterface = await (await axios.get(baseAPI + 'u-quota/')).data
+    const response: UquotaResponseInterface = (await context.dispatch('fetchQuota')).data
     // console.log(response)
     const providersTemp: ProviderInterface[] = []
 
     response.results.forEach((responseResult) => {
-      const serviceTypes : TypeInterface[] = []
+      const serviceTypes: TypeInterface[] = []
       response.results.forEach((item) => {
         if (item.service.name === responseResult.service.name) {
           const type = {
@@ -45,7 +49,7 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
     const res = new Map()
     const providers = providersTemp.filter((providersTemp) => !res.has(providersTemp.name) && res.set(providersTemp.name, 1))
 
-    const payload:QuotaInterface = {
+    const payload: QuotaInterface = {
       userQuota: {
         userEmail: response.results[0].user.username,
         providers: providers

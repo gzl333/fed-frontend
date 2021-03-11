@@ -257,7 +257,7 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const toptab = ref('')
     onMounted(() => {
-      void $store.dispatch('quota/fetchQuota').then(() => {
+      void $store.dispatch('quota/updateQuota').then(() => {
         // console.log('before ref', $store.getters['quota/toptab'])
         toptab.value = $store.getters['quota/toptab']
       })
