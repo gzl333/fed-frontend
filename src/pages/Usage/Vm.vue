@@ -54,7 +54,7 @@
             <div class="col row items-center justify-between q-pa-none">
 
               <div class="col-shrink">
-                <q-btn icon="add" color="nord14" size="md" unelevated label="新建" :to="{ path: '/my/usage/vmcreate' }">
+                <q-btn icon="add" color="primary" size="md" unelevated label="新建" :to="{ path: '/my/usage/vmcreate' }">
                   <q-tooltip>
                     新建云主机
                   </q-tooltip>

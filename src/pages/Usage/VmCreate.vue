@@ -1,13 +1,15 @@
 <template>
   <div class="VmCreate">
-    <div class="vmcreate-title">
-      创建云主机
-      <q-btn @click="quickJump" label="quickjump"/>
-    </div>
+
     <div class="row items-center justify-center routerview-area">
-      <div class="col-9 select-area ">
+
+      <div  v-if="!isShowJumper" class="col-shrink vmcreate-title">
+        <div>创建云主机</div>
+<!--        <q-btn @click="quickJump" label="quickjump"/>-->
+      </div>
+
+      <div v-if="!isShowJumper" class="col-10 select-area ">
         <q-stepper
-          v-if="!isShowJumper"
           class="stepper"
           v-model="step"
           header-nav
@@ -124,7 +126,7 @@
                 <div class="col item-radios">
                   <q-radio v-for="uquota in options.uquota" dense v-model="radioUquota" :val="uquota.id"
                            :key="uquota.id" class="radio">
-                    {{ uquota }}
+                    {{ uquota.display }}
                   </q-radio>
                 </div>
               </div>
@@ -180,18 +182,22 @@
             </div>
 
             <q-stepper-navigation>
-              <q-btn color="primary" @click="createVM" label="创建云主机"/>
+              <q-btn color="primary" @click="createVM" label="创建云主机" unelevated/>
               <q-btn flat @click="step = 2" color="primary" label="返回" class="q-ml-sm"/>
             </q-stepper-navigation>
           </q-step>
         </q-stepper>
 
-        <div v-else class="jumper">
-          <div>
-            5秒后跳转至云主机列表页面...
-          </div>
-          <q-btn label="继续创建云主机" @click="refresh" color="primary" unelevated/>
+      </div>
+
+      <div v-else class="jumper">
+        <div>
+          已成功创建id为{{newId}}的云主机
         </div>
+        <div>
+          5秒后跳转至云主机列表页面...
+        </div>
+        <q-btn label="继续创建云主机" @click="refresh" color="primary" unelevated/>
       </div>
 <!--      <div class="col-3 summary-area">-->
 <!--        current selection-->
@@ -302,24 +308,28 @@ export default defineComponent({
     }
     // jumper 创建后跳转
     const isShowJumper = ref(false)
+    const newId = ref('')
 
     // 创建云主机
     const createVM = async () => {
       done3.value = true
       const respCreateVM = await $store.dispatch('usage/createServer', selection.value)
-      const newId: string = respCreateVM.data.id
+      newId.value = respCreateVM.data.id
       $q.notify({
         color: 'nord14',
-        message: `已成功创建id为${newId}的云主机 `,
+        message: `已成功创建id为${newId.value}的云主机`,
         position: 'bottom-right'
       })
       isShowJumper.value = true
+      setTimeout(() => {
+        void $router.push('/my/usage')
+      }, 5000)
     }
     // 刷新本页
     const refresh = () => {
       $router.go(0)
     }
-
+    // dev
     const quickJump = () => {
       isShowJumper.value = true
     }
@@ -341,7 +351,8 @@ export default defineComponent({
       createVM,
       isShowJumper,
       refresh,
-      quickJump
+      quickJump,
+      newId
     }
   }
 })
@@ -351,9 +362,12 @@ export default defineComponent({
 .VmCreate {
 }
 .vmcreate-title {
+  padding-right: 30px;
   text-align: center;
   color: $primary;
   font-size: medium;
+  border-right: $primary 2px solid;
+  line-height: 600px;
 }
 .routerview-area {
   height: calc(100vh - 114px);
