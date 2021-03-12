@@ -141,6 +141,12 @@ export interface DataPointOnShowInterface {
 }
 
 // service_id对应各种服务
+export interface FlavorInterface {
+  id: string;
+  vcpus: number;
+  ram: number;
+}
+
 export interface ImageInterface {
   id: string;
   name: string;
@@ -157,6 +163,7 @@ export interface ServiceInterface {
     private: DataPointNetworkInterface[];
   };
   images: ImageInterface[];
+  flavors: FlavorInterface[]
 }
 
 // Usage总接口
@@ -165,7 +172,7 @@ export interface UsageInterface {
   serverList: ServerInterface[];
   dataPointOnShow: DataPointOnShowInterface;
   pagination: PaginationInterface;
-  serviceList: ServiceInterface[];
+  serviceList: ServiceInterface[]; // 当前用户全部可用service
 }
 
 function state (): UsageInterface {

@@ -30,6 +30,11 @@ const codeMap = new Map<number, string>(
 )
 
 const actions: ActionTree<UsageInterface, StateInterface> = {
+  async fetchFlavor (context) {
+    const api = apiBase + '/flavor/'
+    const response = await axios.get(api)
+    return response
+  },
   async buildServiceList (context) {
     if (context.state.dataPointTree[0].children.length === 0) {
       void await context.dispatch('updateDataPointTree')
@@ -42,7 +47,8 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
             public: [],
             private: []
           },
-          images: []
+          images: [],
+          flavors: []
         }
         dataPoint.networks.forEach((network) => {
           if (network.public) {
@@ -53,6 +59,8 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
         })
         const resImage = await context.dispatch('fetchImage', dataPoint.key)
         service.images = resImage.data
+        const resFlavor = await context.dispatch('fetchFlavor')
+        service.flavors = resFlavor.data.flavors
         context.commit('storeService', service)
       }
     }
