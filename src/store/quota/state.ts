@@ -1,5 +1,6 @@
 export interface TypeInterface {
   type: string; // 配额类型
+  id: string; // quota id
   privateIpTotal: number;
   privateIpUsed: number;
   publicIpTotal: number;
@@ -14,14 +15,15 @@ export interface TypeInterface {
   deleted?: boolean;
 }
 
-export interface ProviderInterface {
-  name: string; // 机构名称
+export interface ServiceInterface {
+  name: string; // service名称
+  id: string; // serviceid
   serviceTypes : TypeInterface[]; // 多个服务类型
 }
 
 export interface UserQuotaInterface {
   userEmail: string;
-  providers?: ProviderInterface[]; // 数据提供机构
+  services?: ServiceInterface[]; // 数据提供机构
 }
 
 export interface QuotaInterface {
@@ -30,18 +32,17 @@ export interface QuotaInterface {
 }
 
 export interface UquotaResponseResultsInterface {
-  id: number;
+  id: string;
   tag: {
     value: number;
     display: string;
   };
-
   user: {
-    id: number;
+    id: string;
     username: string;
   };
   service: {
-    id: number;
+    id: string;
     name: string;
   };
   // eslint-disable-next-line camelcase
@@ -81,11 +82,13 @@ function state (): QuotaInterface {
   return {
     userQuota: {
       userEmail: '',
-      providers: [{
+      services: [{
         name: '',
+        id: '',
         serviceTypes: [
-          {
+          { // todo add quotaId
             type: '',
+            id: '',
             privateIpTotal: 1,
             privateIpUsed: 0,
             publicIpTotal: 1,
