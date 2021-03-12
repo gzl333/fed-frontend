@@ -58,7 +58,8 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
               diskTotal: it.diskTotal,
               diskUsed: it.diskUsed,
               expirationTime: timeJoin,
-              deleted: it.deleted
+              deleted: it.deleted,
+              display: it.display
             }
             arrType.push(type)
           }

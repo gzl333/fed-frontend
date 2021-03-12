@@ -233,7 +233,7 @@ export default defineComponent({
 }
 .my-card {
   width: 100%;
-  height: 600px;
+  height: 570px;
 }
 .my-sticky-header-table {
   height: 310px;

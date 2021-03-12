@@ -13,6 +13,7 @@ export interface TypeInterface {
   diskUsed: number;
   expirationTime: string;
   deleted?: boolean;
+  display:string;
 }
 
 export interface ServiceInterface {
@@ -86,7 +87,7 @@ function state (): QuotaInterface {
         name: '',
         id: '',
         serviceTypes: [
-          { // todo add quotaId
+          {
             type: '',
             id: '',
             privateIpTotal: 1,
@@ -99,7 +100,8 @@ function state (): QuotaInterface {
             ramUsed: 0,
             diskTotal: 1,
             diskUsed: 0,
-            expirationTime: ''
+            expirationTime: '',
+            display: ''
           }
         ]
       }]
