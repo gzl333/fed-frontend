@@ -1,12 +1,12 @@
 import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
-import { ProviderInterface, QuotaInterface, TypeInterface } from './state'
+import { ServiceInterface, QuotaInterface, TypeInterface } from './state'
 
 const getters: GetterTree<QuotaInterface, StateInterface> = {
   serviceName (state) {
     const serviceName: {name: string; number: string}[] = []
-    if (state.userQuota.providers) {
-      state.userQuota.providers.forEach((item) => {
+    if (state.userQuota.services) {
+      state.userQuota.services.forEach((item) => {
         const name = item.name
         const num = item.serviceTypes.length.toString()
         let flag = true
@@ -29,10 +29,9 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
     return serviceName
   },
   servicetype (state) {
-    const serviceType: ProviderInterface[] = []
-    if (state.userQuota.providers) {
-      state.userQuota.providers.forEach((item) => {
-        const name = item.name
+    const serviceType: ServiceInterface[] = []
+    if (state.userQuota.services) {
+      state.userQuota.services.forEach((item) => {
         const arrType: TypeInterface[] = []
         item.serviceTypes.forEach((it) => {
           if (it.deleted === false) {
@@ -47,6 +46,7 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
             }
             const type:TypeInterface = {
               type: it.type, // 配额类型
+              id: it.id,
               privateIpTotal: it.privateIpTotal,
               privateIpUsed: it.privateIpUsed,
               publicIpTotal: it.publicIpTotal,
@@ -63,8 +63,9 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
             arrType.push(type)
           }
         })
-        const temp:ProviderInterface = {
-          name: name,
+        const temp:ServiceInterface = {
+          name: item.name,
+          id: item.id,
           serviceTypes: arrType
         }
         serviceType.push(temp)
@@ -74,18 +75,19 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
   },
   toptab (state) {
     // console.log('in toptab getter')
-    if (state.userQuota.providers) {
+    if (state.userQuota.services) {
       // console.log('in getter if', state.userQuota.providers)
       // console.log('name:', state.userQuota.providers[0].name)
-      return state.userQuota.providers[0].name
+      return state.userQuota.services[0].name
     }
   },
   lessOneWeek (state) {
     let lessOneWeekNum = 0
-    const quotaName : string[] = []
-    const lessOneWeek : {quotaName:string[];lessOneWeekNum:number}[] = []
-    if (state.userQuota.providers) {
-      state.userQuota.providers.forEach((item) => {
+    let quotaName = ''
+    const lessOneWeek : {quotaName:string;lessOneWeekNum:number}[] = []
+    if (state.userQuota.services) {
+      let index = 1
+      state.userQuota.services.forEach((item) => {
         let name = ''
         item.serviceTypes.forEach((it) => {
           if (it.expirationTime) {
@@ -95,9 +97,12 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
               lessOneWeekNum += 1
             }
           }
-          name = `${item.name}：${it.type}`
+          if (it.expirationTime) {
+            name = `${index}、${item.name}：${it.type}。`
+          }
         })
-        quotaName.push(name)
+        index += 1
+        quotaName += name
       })
       const quotaWarning = {
         quotaName: quotaName,
@@ -110,10 +115,11 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
   },
   lessOneMonth (state) {
     let lessOneMonthNum = 0
-    const quotaName : string[] = []
-    const lessOneMonth : {quotaName:string[];lessOneMonthNum:number}[] = []
-    if (state.userQuota.providers) {
-      state.userQuota.providers.forEach((item) => {
+    let quotaName = ''
+    const lessOneMonth : {quotaName:string;lessOneMonthNum:number}[] = []
+    if (state.userQuota.services) {
+      let index = 1
+      state.userQuota.services.forEach((item) => {
         let name = ''
         item.serviceTypes.forEach((it) => {
           if (it.expirationTime) {
@@ -123,9 +129,12 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
               lessOneMonthNum += 1
             }
           }
-          name = `${item.name}：${it.type}`
+          if (it.expirationTime) {
+            name = `${index}、${item.name}：${it.type}。`
+          }
         })
-        quotaName.push(name)
+        index += 1
+        quotaName += name
       })
       const quotaWarning = {
         quotaName: quotaName,

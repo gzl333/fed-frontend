@@ -54,7 +54,7 @@
           <q-tab-panel :name="service.name">
             <q-splitter
               v-model="splitterModel"
-              style="height: 100%; max-height: 500px"
+              style="height: 100%; max-height: 480px"
             >
               <!-- this is left title, use servicType to classify -->
               <template v-slot:before>
@@ -289,5 +289,6 @@ export default defineComponent({
 }
 .my-card {
   width: 100%;
+  height: 600px;
 }
 </style>
