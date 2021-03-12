@@ -13,17 +13,18 @@ export interface TypeInterface {
   diskUsed: number;
   expirationTime: string;
   deleted?: boolean;
+  display:string;
 }
 
 export interface ServiceInterface {
   name: string; // service名称
   id: string; // serviceid
-  serviceTypes: TypeInterface[]; // 多个服务类型
+  serviceTypes : TypeInterface[]; // 多个服务类型
 }
 
 export interface UserQuotaInterface {
   userEmail: string;
-  services: ServiceInterface[]; // 数据提供机构
+  services?: ServiceInterface[]; // 数据提供机构
 }
 
 export interface QuotaInterface {
@@ -85,7 +86,7 @@ function state (): QuotaInterface {
       services: [{
         name: '',
         id: '',
-        serviceTypes: [ // 配额
+        serviceTypes: [
           {
             type: '',
             id: '',
@@ -99,7 +100,8 @@ function state (): QuotaInterface {
             ramUsed: 0,
             diskTotal: 1,
             diskUsed: 0,
-            expirationTime: ''
+            expirationTime: '',
+            display: ''
           }
         ]
       }]

@@ -35,7 +35,8 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
             diskTotal: item.disk_size_total,
             diskUsed: item.disk_size_used,
             expirationTime: item.expiration_time,
-            deleted: item.deleted
+            deleted: item.deleted,
+            display: item.display
           }
           serviceTypes.push(type)
         }
