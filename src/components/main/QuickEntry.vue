@@ -1,7 +1,7 @@
 <template>
   <div class="QuickEntry">
     <q-card flat bordered class="my-card">
-      <q-card-section class="bg-teal text-white">
+      <q-card-section class="bg-secondary text-nord6">
         <div class="text-h6 text-weight-bold">快捷入口</div>
       </q-card-section>
       <q-separator />
@@ -14,7 +14,7 @@
           >
             <q-img
               src="https://cdn.quasar.dev/img/parallax2.jpg"
-              style="height: 90px; max-width: 150px"
+              style="height: 108px; max-width: 150px"
             >
               <div
                 class="absolute-full text-subtitle2 flex flex-center text-weight-bold"
