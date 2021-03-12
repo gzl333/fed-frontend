@@ -554,7 +554,7 @@ export default defineComponent({
         $q.notify({
           color: 'nord9',
           message: `${ipToCopy} 已经复制到剪切板`,
-          position: 'top'
+          position: 'bottom-right'
         })
       })
       ipToCopy = ''

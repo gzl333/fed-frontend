@@ -18,12 +18,12 @@ export interface TypeInterface {
 export interface ServiceInterface {
   name: string; // service名称
   id: string; // serviceid
-  serviceTypes : TypeInterface[]; // 多个服务类型
+  serviceTypes: TypeInterface[]; // 多个服务类型
 }
 
 export interface UserQuotaInterface {
   userEmail: string;
-  services?: ServiceInterface[]; // 数据提供机构
+  services: ServiceInterface[]; // 数据提供机构
 }
 
 export interface QuotaInterface {
@@ -85,8 +85,8 @@ function state (): QuotaInterface {
       services: [{
         name: '',
         id: '',
-        serviceTypes: [
-          { // todo add quotaId
+        serviceTypes: [ // 配额
+          {
             type: '',
             id: '',
             privateIpTotal: 1,

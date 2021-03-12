@@ -99,12 +99,12 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
-import CostDetails from './CostDetails.vue'
+// import CostDetails from './CostDetails.vue'
 
 export default defineComponent({
   name: 'WarningList',
   components: {
-    CostDetails
+    // CostDetails
   },
   props: {
   },

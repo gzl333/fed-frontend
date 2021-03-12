@@ -6,7 +6,7 @@ import {
   ResServiceResultInterface,
   ReqServerListInterface,
   ResServerInterface,
-  ServerInterface, ReqServerNote, DataPointNetworkInterface, ServiceInterface
+  ServerInterface, ReqServerNote, DataPointNetworkInterface, ServiceInterface, ReqServerCreate
   // , PaginationInterface
 } from './state'
 import axios, { AxiosResponse } from 'axios'
@@ -30,7 +30,13 @@ const codeMap = new Map<number, string>(
 )
 
 const actions: ActionTree<UsageInterface, StateInterface> = {
-  async fetchFlavor (context) {
+  async createServer (context, payload:ReqServerCreate) {
+    const api = apiBase + '/server/'
+    const data = payload
+    const response = axios.post(api, data)
+    return response
+  },
+  async fetchFlavor (/* context */) {
     const api = apiBase + '/flavor/'
     const response = await axios.get(api)
     return response

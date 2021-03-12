@@ -1,3 +1,12 @@
+export interface ReqServerCreate {
+  service_id: string;
+  network_id: string;
+  image_id: string;
+  flavor_id: string;
+  quota_id: string;
+  remarks?: string;
+}
+
 export interface ReqServerNote {
   id: string;
   remark: string;

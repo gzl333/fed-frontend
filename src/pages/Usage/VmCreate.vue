@@ -1,8 +1,13 @@
 <template>
   <div class="VmCreate">
-    <div class="row items-center routerview-area">
+    <div class="vmcreate-title">
+      创建云主机
+      <q-btn @click="quickJump" label="quickjump"/>
+    </div>
+    <div class="row items-center justify-center routerview-area">
       <div class="col-9 select-area ">
         <q-stepper
+          v-if="!isShowJumper"
           class="stepper"
           v-model="step"
           header-nav
@@ -110,29 +115,31 @@
 
             <div class="col section">
               <div class="text-h7 text-primary section-title">
-                5 - 使用配额
+                5 - 配额
               </div>
-              <div v-if="options.public.length > 0" class="row item-row">
+              <div v-if="options.uquota.length > 0" class="row item-row">
                 <div class="col-shrink item-title text-bold">
-                  使用用户所属数据中心的公有配额
+                  通用配额
                 </div>
                 <div class="col item-radios">
-                  <q-radio v-for="network in options.public" dense v-model="radioNetwork" :val="network.id"
-                           :label="network.name" :key="network.id" class="radio"/>
+                  <q-radio v-for="uquota in options.uquota" dense v-model="radioUquota" :val="uquota.id"
+                           :key="uquota.id" class="radio">
+                    {{ uquota }}
+                  </q-radio>
                 </div>
               </div>
-              <div v-if="options.private.length > 0" class="row item-row">
-                <div class="col-shrink item-title text-bold">
-                  私网IP
-                </div>
-                <div class="col item-radios">
-                  <q-radio v-for="network in options.private" dense v-model="radioNetwork" :val="network.id"
-                           :label="network.name" :key="network.id" class="radio"/>
-                </div>
-              </div>
+<!--              <div v-if="options.pquota.length > 0" class="row item-row">-->
+<!--                <div class="col-shrink item-title text-bold">-->
+<!--                  指定配额-->
+<!--                </div>-->
+<!--                <div class="col item-radios">-->
+<!--                  <q-radio v-for="pquota in options.pquota" dense v-model="radioPquota" :val="pquota.id"-->
+<!--                           :label="pquota.name" :key="pquota.id" class="radio"/>-->
+<!--                </div>-->
+<!--              </div>-->
               <div v-if="options.public.length==0 && options.private.length === 0" class="row item-row">
                 <div class="col-shrink item-title">
-                  该数据中心暂无可用网络类型，请选择其它数据中心
+                  该数据中心暂无可用资源配额，请选择其它数据中心
                 </div>
               </div>
             </div>
@@ -149,6 +156,18 @@
             icon="add_comment"
             :done="done3"
           >
+
+            <div class="col section">
+              <div class="text-h7 text-primary section-title">
+                备注(可选)
+              </div>
+              <div class="row item-row">
+                <div class="col">
+                  <q-input class="input-remarks" v-model="inputRemarks" maxlength="15" dense counter></q-input>
+                </div>
+              </div>
+            </div>
+
             <div class="col section">
               <div class="text-h7 text-primary section-title">
                 当前所选配置
@@ -159,28 +178,26 @@
                 </div>
               </div>
             </div>
-            <div class="col section">
-              <div class="text-h7 text-primary section-title">
-                备注(可选)
-              </div>
-              <div class="row item-row">
-                <div class="col">
-                  <q-input></q-input>
-                </div>
-              </div>
-            </div>
+
             <q-stepper-navigation>
-              <q-btn color="primary" @click="done3 = true" label="Finish"/>
-              <q-btn flat @click="step = 2" color="primary" label="Back" class="q-ml-sm"/>
+              <q-btn color="primary" @click="createVM" label="创建云主机"/>
+              <q-btn flat @click="step = 2" color="primary" label="返回" class="q-ml-sm"/>
             </q-stepper-navigation>
           </q-step>
         </q-stepper>
+
+        <div v-else class="jumper">
+          <div>
+            5秒后跳转至云主机列表页面...
+          </div>
+          <q-btn label="继续创建云主机" @click="refresh" color="primary" unelevated/>
+        </div>
       </div>
-      <div class="col-3 summary-area">
-        current selection
-        <pre>{{ selection }}</pre>
-        <pre>{{ userQuota }}</pre>
-      </div>
+<!--      <div class="col-3 summary-area">-->
+<!--        current selection-->
+<!--        <pre>{{ selection }}</pre>-->
+<!--        <pre>{{ options.uquota }}</pre>-->
+<!--      </div>-->
     </div>
   </div>
 </template>
@@ -188,8 +205,10 @@
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch, reactive } from 'vue'
 import { useStore } from 'vuex'
+import { useRouter } from 'vue-router'
 import { StateInterface } from 'src/store'
 import { DataPointNetworkInterface, ImageInterface, FlavorInterface } from 'src/store/usage/state'
+import { useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'VmCreate',
@@ -197,6 +216,8 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
+    const $router = useRouter()
+    const $q = useQuasar()
     onMounted(async () => {
       // 当前加载策略：挂载页面后建立全部dataPoint(service)的serviceList，以后可以改成根据serviceId的逐步选择，逐步建立serviceList
       void await $store.dispatch('usage/buildServiceList')
@@ -207,22 +228,33 @@ export default defineComponent({
       radioNetwork.value = firstService.networks.public[0].id || firstService.networks.private[0].id
       radioImage.value = firstService.images[0].id
       radioFlavor.value = firstService.flavors[0].id
+
+      for (const service of $store.state.quota.userQuota.services) {
+        if (service.id === firstService.serviceId) {
+          radioUquota.value = service.serviceTypes[0].id
+        } else {
+          radioUquota.value = ''
+        }
+      }
     })
     // 选项数据，其中options根据所选择serviceId建立
     const dataPointTree = computed(() => $store.state.usage.dataPointTree)
-    const options: { public: DataPointNetworkInterface[]; private: DataPointNetworkInterface[]; images: ImageInterface[]; flavors: FlavorInterface[] } = reactive({
+    const options: { public: DataPointNetworkInterface[]; private: DataPointNetworkInterface[]; images: ImageInterface[]; flavors: FlavorInterface[]; uquota: Record<string, any>[]; pquota?: Record<string, any>[] } = reactive({
       public: [],
       private: [],
       images: [],
-      flavors: []
+      flavors: [],
+      uquota: [] // 通用配额
+      /*      , pquota: [] // 专有配额，预留数据结构 */
     })
-    // quota
-    const userQuota = computed(() => $store.state.quota.userQuota)
     // 页面选项的状态
     const radioDataPoint = ref('')
     const radioNetwork = ref('')
     const radioImage = ref('')
     const radioFlavor = ref('')
+    const radioUquota = ref('')
+    // const radioPquota = ref('')
+    const inputRemarks = ref('')
 
     watch(radioDataPoint, () => {
       // 数据中心选择变化时，重新建立options对象
@@ -234,10 +266,16 @@ export default defineComponent({
           options.flavors = service.flavors
         }
       }
+      for (const service of $store.state.quota.userQuota.services) {
+        if (service.id === radioDataPoint.value) {
+          options.uquota = service.serviceTypes
+        }
+      }
       // 页面各项均重新选择为新options中的
       radioNetwork.value = options.public[0] ? options.public[0].id : options.private[0] ? options.private[0].id : ''
       radioImage.value = options.images[0] ? options.images[0].id : ''
       radioFlavor.value = options.flavors[0] ? options.flavors[0].id : ''
+      radioUquota.value = options.uquota[0] ? options.uquota[0].id : ''
     })
     // 选择结果
     const selection = computed(() => {
@@ -246,9 +284,9 @@ export default defineComponent({
         network_id: radioNetwork.value,
         image_id: radioImage.value,
         flavor_id: radioFlavor.value,
-        quota_id: '',
-        privateQuota_id: '',
-        remarks: ''
+        quota_id: radioUquota.value,
+        // private_quota_id: '',
+        remarks: inputRemarks.value
       }
     })
     // stepper
@@ -262,7 +300,29 @@ export default defineComponent({
       done3.value = false
       step.value = 1
     }
+    // jumper 创建后跳转
+    const isShowJumper = ref(false)
 
+    // 创建云主机
+    const createVM = async () => {
+      done3.value = true
+      const respCreateVM = await $store.dispatch('usage/createServer', selection.value)
+      const newId: string = respCreateVM.data.id
+      $q.notify({
+        color: 'nord14',
+        message: `已成功创建id为${newId}的云主机 `,
+        position: 'bottom-right'
+      })
+      isShowJumper.value = true
+    }
+    // 刷新本页
+    const refresh = () => {
+      $router.go(0)
+    }
+
+    const quickJump = () => {
+      isShowJumper.value = true
+    }
     return {
       step,
       done1,
@@ -274,9 +334,14 @@ export default defineComponent({
       radioNetwork,
       radioImage,
       radioFlavor,
+      radioUquota,
+      inputRemarks,
       dataPointTree,
       options,
-      userQuota
+      createVM,
+      isShowJumper,
+      refresh,
+      quickJump
     }
   }
 })
@@ -285,7 +350,11 @@ export default defineComponent({
 <style lang="scss" scoped>
 .VmCreate {
 }
-
+.vmcreate-title {
+  text-align: center;
+  color: $primary;
+  font-size: medium;
+}
 .routerview-area {
   height: calc(100vh - 114px);
   width: calc(100vw - 165px);
@@ -300,7 +369,7 @@ export default defineComponent({
 
 .stepper {
   padding: 0 100px;
-  min-height: 600px;
+  min-height: 500px;
 }
 
 .section {
@@ -325,5 +394,11 @@ export default defineComponent({
 
 .radio {
   padding: 0 10px;
+}
+.input-remarks {
+  width: 500px;
+}
+.jumper {
+  text-align: center;
 }
 </style>
