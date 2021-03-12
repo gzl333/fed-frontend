@@ -265,9 +265,7 @@ export default defineComponent({
       })
     })
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const serviceName = computed(() => $store.getters['quota/serviceName'])
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     const type = computed(() => $store.getters['quota/servicetype'])
 
     const innertab = ref(0)
@@ -291,6 +289,6 @@ export default defineComponent({
 }
 .my-card {
   width: 100%;
-  height: 570px;
+  height: 600px;
 }
 </style>
