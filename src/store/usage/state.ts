@@ -27,6 +27,7 @@ export interface PaginationInterface {
   page?: number;
   pageSize?: number;
   serviceId?: string;
+  serviceName?: string;
   next?: string | null;
   previous?: string | null;
 }
@@ -144,10 +145,10 @@ export interface DataRootInterface {
   children: DataCenterInterface[]
 }
 
-export interface DataPointOnShowInterface {
-  key: string;
-  label: string;
-}
+// export interface DataPointOnShowInterface {
+//   key: string;
+//   label: string;
+// }
 
 // service_id对应各种服务
 export interface FlavorInterface {
@@ -167,6 +168,7 @@ export interface ImageInterface {
 
 export interface ServiceInterface {
   serviceId: string;
+  serviceName: string;
   networks: {
     public: DataPointNetworkInterface[];
     private: DataPointNetworkInterface[];
@@ -175,13 +177,41 @@ export interface ServiceInterface {
   flavors: FlavorInterface[]
 }
 
+export interface ServerDetailInterface {
+  id: string;
+  name?: string;
+  vcpus?: number;
+  ram?: number;
+  ipv4?: string;
+  public_ip?: boolean;
+  image?: string;
+  creation_time?: string;
+  remarks?: string;
+  endpoint_url?: string;
+  service?: {
+    id: string;
+    name: string;
+    service_type: string;
+  }
+}
+
+export interface VpnInterface {
+  username: string;
+  password: string;
+  active: boolean;
+  create_time: string;
+  modified_time: string;
+}
+
 // Usage总接口
 export interface UsageInterface {
   dataPointTree: DataRootInterface[];
   serverList: ServerInterface[];
-  dataPointOnShow: DataPointOnShowInterface;
+  // dataPointOnShow: DataPointOnShowInterface;
   pagination: PaginationInterface;
   serviceList: ServiceInterface[]; // 当前用户全部可用service
+  serverDetail: ServerDetailInterface;
+  vpn: Map<string, VpnInterface>;
 }
 
 function state (): UsageInterface {
@@ -192,17 +222,23 @@ function state (): UsageInterface {
       icon: 'storage',
       children: []
     }],
-    dataPointOnShow: {
-      key: '0',
-      label: '全部节点'
-    },
+    // dataPointOnShow: {
+    //   key: '0',
+    //   label: '全部节点'
+    // },
     serverList: [],
     pagination: {
       count: 1,
       page: 1,
-      pageSize: 1
+      pageSize: 1,
+      serviceId: '0',
+      serviceName: '全部节点'
     },
-    serviceList: []
+    serviceList: [],
+    serverDetail: {
+      id: '0' // serverDetail中： id='0'是直接进入页面，应重定向；id=''是在读取中，应loading，其它状态则显示信息
+    },
+    vpn: new Map()
   }
 }
 

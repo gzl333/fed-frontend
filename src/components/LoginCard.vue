@@ -2,7 +2,7 @@
   <div class="LoginCard">
     <q-card class="login-card text-nord1">
       <q-card-section class="row justify-center items-center">
-        <div class="col text-h6">科技云通行证账户登录</div>
+        <div class="col text-h6">云联邦账户登录</div>
         <q-space/>
         <q-btn icon="close" size="xs" flat dense v-close-popup/>
       </q-card-section>
@@ -43,10 +43,9 @@
                  class="login-btn col text-nord6 q-my-none"
           />
           <div class="q-pa-md q-my-none">
-            没有科技云通行证账户？
-            <q-btn flat :ripple="false" type="a" label="注册" color="nord10"
-                   href="https://passport.escience.cn/regist.jsp"
-                   target="_blank" class="q-ma-none q-pa-none"/>
+            <q-btn flat :ripple="false" type="a" label="科技云通行证账户登录" color="nord10"
+                   href="https://passport.escience.cn/login.jsp"
+                   class="q-ma-none q-pa-none"/>
           </div>
         </q-form>
       </q-card-section>

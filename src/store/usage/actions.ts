@@ -30,7 +30,32 @@ const codeMap = new Map<number, string>(
 )
 
 const actions: ActionTree<UsageInterface, StateInterface> = {
-  async createServer (context, payload:ReqServerCreate) {
+  async updateVpn (context, serviceId: string) {
+    const respFetchVpn = await context.dispatch('fetchVpn', serviceId)
+    context.commit('storeVpn', {
+      serviceId: serviceId,
+      vpn: respFetchVpn.data.vpn
+    })
+  },
+  async fetchVpn (context, serviceId: string) {
+    const api = apiBase + '/vpn/' + serviceId
+    const response = await axios.get(api)
+    return response
+  },
+  async updateServerInfo (context, id: string) {
+    // serverDetail中： id='0'是直接进入页面，应重定向；id=''是在读取中，应loading，其它状态则显示信息
+    // 先清空已有的server detail
+    void context.commit('clearServerDetail')
+    // 获取新的server detail
+    const respFetchServerInto = await context.dispatch('fetchServerInfo', id)
+    context.commit('storeServerDetail', respFetchServerInto.data.server)
+  },
+  async fetchServerInfo (context, id: string) {
+    const api = apiBase + '/server/' + id
+    const response = axios.get(api)
+    return response
+  },
+  async createServer (context, payload: ReqServerCreate) {
     const api = apiBase + '/server/'
     const data = payload
     const response = axios.post(api, data)
@@ -49,6 +74,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
       for (const dataPoint of dataCenter.children) {
         const service: ServiceInterface = {
           serviceId: dataPoint.key,
+          serviceName: dataPoint.label,
           networks: {
             public: [],
             private: []
@@ -116,9 +142,8 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
         setTimeout(resolve, 3000)
       ))
       // 重新获取serverList
-      const config = context.state.dataPointOnShow.key === '0' ? {} : { service_id: context.state.dataPointOnShow.key }
+      const config = context.state.pagination.serviceId === '0' ? {} : { service_id: context.state.pagination.serviceId }
       void await context.dispatch('updateServerList', config)
-      console.log('in deleting vm', context.state.dataPointOnShow.key)
     } else {
       // 其它操作只更新该主机状态
       // 状态更新应延时获取
@@ -208,12 +233,13 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     return response
   },
   async updateServerList (context) {
-    // 每次获取serverList之前先从pagination取得当前分页信息
+    // 每次获取serverList之前先从store.pagination取得当前分页信息
     const payload: ReqServerListInterface = {
       page: context.state.pagination.page,
       page_size: context.state.pagination.pageSize
     }
-    if (context.state.pagination.serviceId) {
+    // serviceId 不为0时才有config发出，为0就是获取全部list，没有config发出
+    if (context.state.pagination.serviceId !== '0') {
       payload.service_id = context.state.pagination.serviceId
     }
     // console.log('ajax req', payload)
@@ -223,7 +249,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     // console.log('res', resServerList)
     // 保存resp中分页信息，分页store中count的来源
     context.commit('storePagination', { count: resServerList.data.count })
-
+    // console.log(resServerList.data)
     // 保存resp中server信息
     const resServers: ResServerInterface[] = resServerList.data.servers
     // console.log(resServers)
