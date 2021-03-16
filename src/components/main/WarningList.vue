@@ -54,7 +54,7 @@
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
                   <q-icon style="font-size: 2em" class="text-white"
-                    ><i class="fas fa-server"></i
+                    ><i class="fas fa-desktop"></i
                   ></q-icon>
                 </q-card-section>
                 <q-card-section class="q-pt-md q-pb-xs q-px-xs text-white">
@@ -74,7 +74,7 @@
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
                   <q-icon style="font-size: 2em" class="text-white"
-                    ><i class="fas fa-server"></i
+                    ><i class="fas fa-desktop"></i
                   ></q-icon>
                 </q-card-section>
                 <q-card-section class="q-pt-md q-pb-xs q-px-xs text-white">
@@ -99,12 +99,10 @@
 import { defineComponent, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
-// import CostDetails from './CostDetails.vue'
 
 export default defineComponent({
   name: 'WarningList',
   components: {
-    // CostDetails
   },
   props: {
   },
