@@ -21,15 +21,15 @@
         </div>
       </div>
       <!-- <div class="row items-center q-gutter-lg q-pt-lg">
-        <q-responsive :ratio="8 / 5" class="col">
+        <div class="col">
           <obs-list />
-        </q-responsive>
-        <q-responsive :ratio="8 / 3.5" class="col">
+        </div>
+        <div :ratio="8 / 3.5" class="col">
           <cost-details />
-        </q-responsive>
-        <q-responsive :ratio="8 / 3.5" class="col">
+        </div>
+        <div :ratio="8 / 3.5" class="col">
            <group-list />
-        </q-responsive>
+        </div>
       </div> -->
     </div>
   </div>
