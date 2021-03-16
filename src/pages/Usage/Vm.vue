@@ -18,7 +18,7 @@
           selected-color="primary"
           v-model:selected="selectedTree"
         />
-<!--        <pre>{{ pagination }}</pre>-->
+        <pre>{{ pagination }}</pre>
         <!--        </q-scroll-area>-->
       </div>
 
@@ -370,13 +370,13 @@ export default defineComponent({
             $store.commit('usage/storePagination', {
               serviceId: '0',
               serviceName: '全部节点',
-              page: '1'
+              page: 1
             })
           } else if (dataPointSelected.key === selectedTree.value) {
             $store.commit('usage/storePagination', {
               serviceId: dataPointSelected.key,
               serviceName: dataPointSelected.label,
-              page: '1'
+              page: 1
             })
           }
         })
@@ -496,7 +496,7 @@ export default defineComponent({
         return 1
       }
     })
-    // pagination当前选择的值应与store.pagination.pagesize同步
+    // pagination当前选择的值应与store.pagination.page同步
     const paginationSelected = computed({
       get: () => $store.state.usage.pagination.page,
       set: val => $store.commit('usage/storePagination', { page: val })

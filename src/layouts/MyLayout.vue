@@ -7,13 +7,14 @@
             <img src="logo.png" class="logo"/>
           </q-btn>
         </q-toolbar-title>
-        <!--        <q-btn label="LOG" @click="logJWT"/>-->
+        <q-btn label="LOG" @click="log"/>
 
         <!--        <router-link :to="{path: '/'}" class="text-nord7">DEV: goto HOME</router-link>-->
         <q-space/>
         <div class="q-gutter-md row items-center no-wrap">
 
-          <q-btn disable :ripple="false" round flat color="grey-5" icon="library_books" v-if="$q.screen.gt.sm" @click="toggleRightDrawer">
+          <q-btn disable :ripple="false" round flat color="grey-5" icon="library_books" v-if="$q.screen.gt.sm"
+                 @click="toggleRightDrawer">
             <q-tooltip>使用手册</q-tooltip>
           </q-btn>
           <q-btn disable :ripple="false" round flat color="grey-5" icon="notifications">
@@ -24,12 +25,12 @@
           </q-btn>
 
           <q-btn-dropdown :ripple="false" rounded flat class="q-pa-sm" :label="currentUser">
-<!--            <template v-slot:label>-->
-<!--              <q-avatar size="26px">-->
-<!--                <img src="https://cdn.quasar.dev/img/boy-avatar.png">-->
-<!--              </q-avatar>-->
-<!--              {{ currentUser }}-->
-<!--            </template>-->
+            <!--            <template v-slot:label>-->
+            <!--              <q-avatar size="26px">-->
+            <!--                <img src="https://cdn.quasar.dev/img/boy-avatar.png">-->
+            <!--              </q-avatar>-->
+            <!--              {{ currentUser }}-->
+            <!--            </template>-->
 
             <div class="row justify-center no-wrap q-pa-md dropdown-content non-selectable">
               <div class="column items-center">
@@ -44,7 +45,8 @@
               <q-item clickable disable>
                 <q-item-section>账户设置</q-item-section>
               </q-item>
-              <q-item clickable tag="a"  href="https://passport.escience.cn/user/password.do?act=showChangePassword" target="_blank">
+              <q-item clickable tag="a" href="https://passport.escience.cn/user/password.do?act=showChangePassword"
+                      target="_blank">
                 <q-item-section>修改密码</q-item-section>
               </q-item>
               <q-item clickable @click="toLogout" class="bg-nord6">
@@ -84,23 +86,25 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const currentUser = $store.state.user.email
+    const currentUser = $store.state.user.cstTrueName
 
     const rightDrawerOpen = ref(false)
     const toggleRightDrawer = () => {
       rightDrawerOpen.value = !rightDrawerOpen.value
     }
-
     const toLogout = () => {
-      $store.commit('user/deleteToken')
+      void $store.dispatch('user/logoutCstUser')
+    }
+    const log = async () => {
+      const result = await $store.dispatch('user/fetchCstNewToken', $store.state.user.token!.refresh)
+      console.log(result)
     }
     return {
-
       rightDrawerOpen,
       toggleRightDrawer,
-
       currentUser,
-      toLogout
+      toLogout,
+      log
     }
   }
 })

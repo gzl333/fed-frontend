@@ -18,13 +18,13 @@
         </div>
         <!--        <q-separator vertical v-if="scrollRatio===0.6"/>-->
         <div class="q-px-xl q-gutter-sm">
-          <q-btn unelevated :ripple="false" color="nord10" label="登 录" @click="isShowLogin = true"/>
+          <q-btn unelevated :ripple="false" color="nord10" label="登 录" @click="cstLogin"/>
           <q-btn outline :ripple="false" color="nord6" label="注 册" type="a" href="https://passport.escience.cn/regist.jsp"
                  target="_blank"/>
 
-          <q-dialog v-model="isShowLogin">
-            <login-card/>
-          </q-dialog>
+<!--          <q-dialog v-model="isShowLogin">-->
+<!--            <login-card/>-->
+<!--          </q-dialog>-->
         </div>
 
       </q-toolbar>
@@ -70,10 +70,10 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
 import { scroll } from 'quasar'
-import LoginCard from 'components/LoginCard.vue'
+// import LoginCard from 'components/LoginCard.vue'
 
-// import { useStore } from 'vuex'
-// import { StateInterface } from 'src/store'
+import { useStore } from 'vuex'
+import { StateInterface } from 'src/store'
 
 const {
   getScrollTarget,
@@ -82,11 +82,11 @@ const {
 export default defineComponent({
   name: 'HomeLayout.vue',
   components: {
-    LoginCard
+    // LoginCard
   },
   props: {},
   setup () {
-    // const $store = useStore<StateInterface>()
+    const $store = useStore<StateInterface>()
     // const logJWT = () => {
     //   void $store.dispatch('retainToken')
     // }
@@ -110,13 +110,21 @@ export default defineComponent({
         background: `rgb(0,0,0, ${scrollRatio.value})`
       }
     })
+    // 科技云通行证用户登录
+    const cstLogin = async () => {
+      // loginCard 只负责获取科技云通行证登录页面地址，并跳转。 code及token处理、/login路由跳转逻辑处理，均放在router.beforeEach中
+      const respUrl = await $store.dispatch('user/fetchCstLoginUrl')
+      window.location.href = respUrl.data.data
+      console.log(respUrl.data.data)
+    }
     return {
       isShowLogin: ref('false'),
       scrollTop,
       onScroll,
       scrollRatio,
       dynamicBackground,
-      scrollToElement
+      scrollToElement,
+      cstLogin
     }
   }
 })

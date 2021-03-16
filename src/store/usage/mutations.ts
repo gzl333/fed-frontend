@@ -12,7 +12,7 @@ const mutation: MutationTree<UsageInterface> = {
     state.vpn.set(payload.serviceId, payload.vpn)
   },
   // 清除当前展示的云主机详情信息
-  clearServerDetail (state, payload: ServerDetailInterface) {
+  clearServerDetail (state) {
     state.serverDetail = { id: '' }
   },
   // 保存当前展示的云主机详情信息
@@ -40,14 +40,10 @@ const mutation: MutationTree<UsageInterface> = {
   //   state.dataPointOnShow = payload
   // },
   storePagination (state, payload: PaginationInterface) {
-    // console.log('storePayload', payload)
     for (const key in payload) {
       // @ts-ignore
       state.pagination[key] = payload[key]
     }
-    // if (state.pagination.serviceId === '0') {
-    //   delete state.pagination.serviceId
-    // }
     // console.log('current store', state.pagination)
   },
   storeNote (state, payload: ReqServerNote) {

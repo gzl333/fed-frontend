@@ -1,11 +1,4 @@
-export interface UserInterface {
-  isLogin: boolean;
-  token?: {
-    access: string;
-    refresh: string;
-  }
-  email?: string;
-}
+
 export interface TokenInterface {
   access: string;
   refresh: string;
@@ -28,6 +21,28 @@ export interface JwtPayloadInterface {
   username?: string;
   // eslint-disable-next-line camelcase
   token_type?: string;
+}
+export interface CstJwtInterface {
+  trueName: string;
+  type: string;
+  umtId: string;
+  securityEmail: string;
+  cstnetIdStatus: string;
+  cstnetId: string;
+  expiration:number;
+  iss: string;
+  iat: number;
+}
+
+export interface UserInterface {
+  isLogin: boolean;
+  cstTrueName?: string;
+  cstEmail?: string;
+  cstId?: string;
+  token?: {
+    access: string;
+    refresh: string;
+  }
 }
 
 function state () {

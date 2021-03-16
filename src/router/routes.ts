@@ -9,18 +9,18 @@ const routes: RouteRecordRaw[] = [
       myPages: false
     }
   },
-  {
-    path: '/login',
-    redirect: '/my/',
-    meta: {
-      title: '中国科技云联邦',
-      myPages: false
-    },
-    beforeEnter: (to, from) => {
-      // todo /login为科技云通行证返回回调code的路由，应截取localhost:8080/login/callback?code=1111中的code，并取回token
-      console.log(to, from)
-    }
-  },
+  // {
+  //   path: '/login',
+  //   component: () => import('layouts/HomeLayout.vue'),
+  //   meta: {
+  //     title: '中国科技云联邦',
+  //     myPages: false
+  //   },
+  //   beforeEnter: (to/*, from */) => {
+  //     const code = to.fullPath.slice(12)
+  //     console.log(code)
+  //   }
+  // },
   {
     path: '/my',
     component: () => import('layouts/MyLayout.vue'),
