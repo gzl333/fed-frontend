@@ -32,27 +32,59 @@ export interface PaginationInterface {
   previous?: string | null;
 }
 
+// export interface ServerInterface {
+//   id: string;
+//   name: string;
+//   isIpPublic: boolean;
+//   ip: string;
+//   // dataCenterId?: string;
+//   // dataCenterName?: string;
+//   serviceId?: string;
+//   serviceName?: string;
+//   serviceType?: string;
+//   image: string;
+//   cpu: string;
+//   ram: string;
+//   endPoint: string;
+//   vnc?: string;
+//   daysRemain?: number; // 到期时间
+//   source?: string; // 资源来源
+//   note?: string; // 备注
+//   status?: string; // 设备状态
+//   timeCreate?: string; // 创建时间
+//   charge?: string; // 计费
+// }
 export interface ServerInterface {
+  // 以下结构来自api response
   id: string;
-  name: string;
-  isIpPublic: boolean;
-  ip: string;
-  // dataCenterId?: string;
-  // dataCenterName?: string;
-  serviceId?: string;
-  serviceName?: string;
-  serviceType?: string;
-  image: string;
-  cpu: string;
-  ram: string;
-  endPoint: string;
-  vnc?: string;
-  daysRemain?: number; // 到期时间
-  source?: string; // 资源来源
-  note?: string; // 备注
+  name?: string;
+  vcpus?: number;
+  ram?: number;
+  ipv4?: string;
+  public_ip?: boolean;
+  image?: string;
+  creation_time?: string;
+  remarks?: string;
+  endpoint_url?: string;
+  service?: {
+    id: string;
+    name: string;
+    service_type: string;
+  },
+  user_quota?: {
+    id?: string;
+    tag?: {
+      value: number;
+      display: string;
+    },
+    expiration_time?:string;
+    deleted?: boolean;
+    display?: string;
+  },
+  center_quota?: number;
+
+  // 以下结构是本地所需，额外添加
   status?: string; // 设备状态
-  timeCreate?: string; // 创建时间
-  charge?: string; // 计费
 }
 
 export interface ResServerInterface {
@@ -179,23 +211,23 @@ export interface ServiceInterface {
   flavors: FlavorInterface[]
 }
 
-export interface ServerDetailInterface {
-  id: string;
-  name?: string;
-  vcpus?: number;
-  ram?: number;
-  ipv4?: string;
-  public_ip?: boolean;
-  image?: string;
-  creation_time?: string;
-  remarks?: string;
-  endpoint_url?: string;
-  service?: {
-    id: string;
-    name: string;
-    service_type: string;
-  }
-}
+// export interface ServerDetailInterface {
+//   id: string;
+//   name?: string;
+//   vcpus?: number;
+//   ram?: number;
+//   ipv4?: string;
+//   public_ip?: boolean;
+//   image?: string;
+//   creation_time?: string;
+//   remarks?: string;
+//   endpoint_url?: string;
+//   service?: {
+//     id: string;
+//     name: string;
+//     service_type: string;
+//   }
+// }
 
 export interface VpnInterface {
   username: string;
@@ -212,7 +244,7 @@ export interface UsageInterface {
   // dataPointOnShow: DataPointOnShowInterface;
   pagination: PaginationInterface;
   serviceList: ServiceInterface[]; // 当前用户全部可用service
-  serverDetail: ServerDetailInterface;
+  serverDetail: ServerInterface;
   vpn: Map<string, VpnInterface>;
 }
 

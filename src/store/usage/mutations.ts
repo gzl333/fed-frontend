@@ -4,7 +4,7 @@ import {
   DataRootInterface,
   ServerInterface,
   // DataPointOnShowInterface,
-  PaginationInterface, ReqServerNote, ServiceInterface, ServerDetailInterface, VpnInterface
+  PaginationInterface, ReqServerNote, ServiceInterface, VpnInterface
 } from './state'
 
 const mutation: MutationTree<UsageInterface> = {
@@ -16,7 +16,7 @@ const mutation: MutationTree<UsageInterface> = {
     state.serverDetail = { id: '' }
   },
   // 保存当前展示的云主机详情信息
-  storeServerDetail (state, payload: ServerDetailInterface) {
+  storeServerDetail (state, payload: ServerInterface) {
     state.serverDetail = payload
   },
   storeService (state, payload: ServiceInterface) {
@@ -40,6 +40,7 @@ const mutation: MutationTree<UsageInterface> = {
   //   state.dataPointOnShow = payload
   // },
   storePagination (state, payload: PaginationInterface) {
+    // console.log(payload)
     for (const key in payload) {
       // @ts-ignore
       state.pagination[key] = payload[key]
@@ -49,7 +50,7 @@ const mutation: MutationTree<UsageInterface> = {
   storeNote (state, payload: ReqServerNote) {
     state.serverList.forEach((server) => {
       if (server.id && server.id === payload.id) {
-        server.note = payload.remark
+        server.remarks = payload.remark
       }
     })
   }

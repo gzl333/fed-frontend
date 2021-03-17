@@ -18,7 +18,7 @@
           selected-color="primary"
           v-model:selected="selectedTree"
         />
-        <!--        <pre>{{ pagination }}</pre>-->
+<!--                <pre>{{ rows }}</pre>-->
         <!--        </q-scroll-area>-->
       </div>
 
@@ -87,9 +87,9 @@
               <q-td key="ip" :props="props" class="table-td-ip">
                 <div class="row">
                   <div class="col">
-                    <q-btn :label="props.row.ip" :to="{path: '/my/usage/vmdetail'}" color="primary" flat dense
+                    <q-btn :label="props.row.ipv4" :to="{path: '/my/usage/vmdetail'}" color="primary" flat dense
                            unelevated
-                           @click="updateServerDetail(props.row.id, props.row.serviceId)">
+                           @click="updateServerDetail(props.row.id, props.row.service.id)">
                       <q-tooltip>
                         进入详情页面
                       </q-tooltip>
@@ -97,7 +97,7 @@
                   </div>
                   <q-btn v-show="hoverRow === props.row.name"
                          class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
-                         @click="clickToCopy(props.row.ip)">
+                         @click="clickToCopy(props.row.ipv4)">
                     <q-tooltip>
                       复制到剪切板
                     </q-tooltip>
@@ -109,16 +109,16 @@
                 </div>
               </q-td>
               <q-td key="dataCenterName" :props="props">
-                {{ props.row.dataCenterName }}
+                {{ props.row.service.name }}
               </q-td>
               <q-td key="serviceType" :props="props">
-                {{ props.row.serviceType }}
+                {{ props.row.service.service_type }}
               </q-td>
               <q-td key="image" :props="props">
                 {{ props.row.image }}
               </q-td>
               <q-td key="cpu" :props="props">
-                {{ props.row.cpu }}
+                {{ props.row.vcpus }}
               </q-td>
               <q-td key="ram" :props="props">
                 {{ props.row.ram }}
@@ -126,11 +126,11 @@
               <q-td key="note" :props="props" class="table-td-note">
                 <div class="row">
                   <div class="col">
-                    {{ props.row.note }}
+                    {{ props.row.remarks }}
                   </div>
                   <q-btn v-show="hoverRow === props.row.name"
                          class="col-shrink q-px-xs text-nord9" flat icon="edit" size="xs"
-                         @click="popEdit(props.row.ip, props.row.id, props.row.note)">
+                         @click="popEdit(props.row.ipv4, props.row.id, props.row.remarks)">
                     <q-tooltip>
                       编辑备注信息
                     </q-tooltip>
@@ -195,13 +195,13 @@
                     </q-tooltip>
                   </q-btn>
                   <q-btn v-if="props.row.status=='已关机'" color="nord4" icon="play_arrow" text-color="primary"
-                         @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'start'})">
+                         @click="vmOperation({endPoint: props.row.endpoint_url, id: props.row.id, action: 'start'})">
                     <q-tooltip>
                       开机
                     </q-tooltip>
                   </q-btn>
                   <q-btn v-if="props.row.status=='运行中'" color="nord4" icon="stop" text-color="primary"
-                         @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'shutdown'})">
+                         @click="vmOperation({endPoint: props.row.endpoint_url, id: props.row.id, action: 'shutdown'})">
                     <q-tooltip>
                       关机
                     </q-tooltip>
@@ -210,37 +210,37 @@
                   <q-btn-dropdown color="primary" label="操作">
                     <q-list separator dense class="dropdown-items">
                       <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-nord14"
-                              @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'start'})">
+                              @click="vmOperation({endPoint: props.row.endpoint_url, id: props.row.id, action: 'start'})">
                         <q-item-section>
                           <q-item-label>开机</q-item-label>
                         </q-item-section>
                       </q-item>
                       <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
-                              @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'reboot'})">
+                              @click="vmOperation({endPoint: props.row.endpoint_url, id: props.row.id, action: 'reboot'})">
                         <q-item-section>
                           <q-item-label>重启</q-item-label>
                         </q-item-section>
                       </q-item>
                       <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
-                              @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'shutdown'})">
+                              @click="vmOperation({endPoint: props.row.endpoint_url, id: props.row.id, action: 'shutdown'})">
                         <q-item-section>
                           <q-item-label>关机</q-item-label>
                         </q-item-section>
                       </q-item>
                       <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
-                              @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'poweroff'})">
+                              @click="vmOperation({endPoint: props.row.endpoint_url, id: props.row.id, action: 'poweroff'})">
                         <q-item-section>
                           <q-item-label>强制断电</q-item-label>
                         </q-item-section>
                       </q-item>
                       <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-nord11"
-                              @click="isShowDelConfirm = true; vmToDel.id=props.row.id; vmToDel.ip=props.row.ip; vmToDel.endPoint=props.row.endPoint; vmToDel.action='delete'">
+                              @click="isShowDelConfirm = true; vmToDel.id=props.row.id; vmToDel.ip=props.row.ipv4; vmToDel.endPoint=props.row.endpoint_url; vmToDel.action='delete'">
                         <q-item-section>
                           <q-item-label>删除</q-item-label>
                         </q-item-section>
                       </q-item>
                       <q-item clickable v-close-popup class="bg-nord11"
-                              @click="isShowDelConfirm = true; vmToDel.id=props.row.id; vmToDel.ip=props.row.ip; vmToDel.endPoint=props.row.endPoint; vmToDel.action='delete_force'">
+                              @click="isShowDelConfirm = true; vmToDel.id=props.row.id; vmToDel.ip=props.row.ipv4; vmToDel.endPoint=props.row.endpoint_url; vmToDel.action='delete_force'">
                         <q-item-section>
                           <q-item-label>强制删除</q-item-label>
                         </q-item-section>
@@ -460,7 +460,7 @@ export default defineComponent({
       // console.log('serverlist changed')
       return $store.state.usage.serverList
     })
-    console.log(rows)
+    // console.log(rows)
 
     // 分页部分
     // 通过屏幕尺寸动态计算最佳rows， 并同步至store的pageSize
@@ -468,7 +468,7 @@ export default defineComponent({
     // 计算尺寸变化后更新server list
     watch(computedPageSize, () => {
       // 更新pagination的pagesize
-      $store.commit('usage/storePagination', { pageSize: computedPageSize })
+      $store.commit('usage/storePagination', { pageSize: computedPageSize.value })
       // 更新serverList，此时page来自store.pagination.page
       void $store.dispatch('usage/updateServerList')
     })
@@ -478,7 +478,7 @@ export default defineComponent({
     if ($store.state.usage.pagination.page === 1) {
       $store.commit('usage/storePagination', {
         page: 1,
-        pageSize: computedPageSize,
+        pageSize: computedPageSize.value,
         serviceId: '0'
       })
     }

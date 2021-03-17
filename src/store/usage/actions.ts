@@ -5,7 +5,7 @@ import {
   DataRootInterface,
   ResServiceResultInterface,
   ReqServerListInterface,
-  ResServerInterface,
+  // ResServerInterface,
   ServerInterface, ReqServerNote, DataPointNetworkInterface, ServiceInterface, ReqServerCreate
   // , PaginationInterface
 } from './state'
@@ -251,26 +251,26 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     context.commit('storePagination', { count: resServerList.data.count })
     // console.log(resServerList.data)
     // 保存resp中server信息
-    const resServers: ResServerInterface[] = resServerList.data.servers
+    // const resServers: ServerInterface[] = resServerList.data.servers
     // console.log(resServers)
     const serverList: ServerInterface[] = []
-    for (const resServer of resServers) {
-      const currentServer = {
-        ip: resServer.ipv4,
-        serviceId: resServer.service.id,
-        serviceName: resServer.service.name,
-        serviceType: resServer.service.service_type,
-        image: resServer.image,
-        cpu: `${resServer.vcpus}核`,
-        ram: `${resServer.ram}MB`,
-        endPoint: resServer.endpoint_url,
-        note: resServer.remarks,
-        id: resServer.id,
-        name: resServer.name,
-        isIpPublic: resServer.public_ip,
-        timeCreate: resServer.creation_time
-      }
-      serverList.push(currentServer)
+    for (const resServer of resServerList.data.servers) {
+      // const currentServer = {
+      //   ip: resServer.ipv4,
+      //   serviceId: resServer.service.id,
+      //   serviceName: resServer.service.name,
+      //   serviceType: resServer.service.service_type,
+      //   image: resServer.image,
+      //   cpu: `${resServer.vcpus}核`,
+      //   ram: `${resServer.ram}MB`,
+      //   endPoint: resServer.endpoint_url,
+      //   note: resServer.remarks,
+      //   id: resServer.id,
+      //   name: resServer.name,
+      //   isIpPublic: resServer.public_ip,
+      //   timeCreate: resServer.creation_time
+      // }
+      serverList.push(resServer)
     }
     context.commit('storeServerList', serverList)
     // console.log(context.state.serverList)
