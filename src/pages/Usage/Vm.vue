@@ -477,9 +477,10 @@ export default defineComponent({
     // console.log($store.state.usage.pagination)
     if ($store.state.usage.pagination.page === 1) {
       $store.commit('usage/storePagination', {
-        page: 1,
-        pageSize: computedPageSize.value,
-        serviceId: '0'
+        // page: 1,
+        pageSize: computedPageSize.value
+        // ,
+        // serviceId: '0'
       })
     }
     // 供table获取分页信息，单向从store -> pagination -> UI
