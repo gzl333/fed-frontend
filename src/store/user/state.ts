@@ -29,7 +29,7 @@ export interface CstJwtInterface {
   securityEmail: string;
   cstnetIdStatus: string;
   cstnetId: string;
-  expiration:number;
+  exp:number;
   iss: string;
   iat: number;
 }

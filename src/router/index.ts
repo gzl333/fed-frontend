@@ -52,7 +52,7 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
       void await store.dispatch('user/loginCstUser', code)
       // 开启定时更新token
       await store.dispatch('user/retainCstToken')
-      console.log(store.state.user)
+      // console.log(store.state.user)
       // 跳转至内页
       next({ path: '/my' })
     }

@@ -514,7 +514,8 @@ export default defineComponent({
           spinner: true,
           timeout: 4000,
           color: 'nord9',
-          message: `正在删除IP地址为：${payload.ip || ''} 的云主机，请稍候`
+          message: `正在删除IP地址为：${payload.ip || ''} 的云主机，请稍候`,
+          closeBtn: false
         })
       }
     }
@@ -566,7 +567,8 @@ export default defineComponent({
         $q.notify({
           color: 'nord9',
           message: `${ipToCopy} 已经复制到剪切板`,
-          position: 'bottom-right'
+          position: 'bottom-right',
+          closeBtn: false
         })
       })
       ipToCopy = ''

@@ -5,8 +5,8 @@
 
       <div v-if="!isShowJumper" class="col-1 self-start title-area">
         <div>
-          <q-btn icon="arrow_back_ios_new" color="primary" flat unelevated dense :to="{path: '/my/usage/'}"/>
           新建云主机
+          <q-btn class="back-btn" icon="arrow_back_ios_new" color="primary" flat unelevated dense :to="{path: '/my/usage/'}"/>
         </div>
         <!--        <q-btn @click="quickJump" label="quickjump"/>-->
       </div>
@@ -406,7 +406,9 @@ export default defineComponent({
       $q.notify({
         color: 'nord14',
         message: `已成功创建id为${newIP.value}的云主机`,
-        position: 'bottom-right'
+        position: 'bottom-right',
+        closeBtn: false,
+        timeout: 3000
       })
       isShowJumper.value = true
       setTimeout(() => {
@@ -464,6 +466,9 @@ export default defineComponent({
   font-size: large;
   font-weight: bold;
   border-bottom: $primary 2px solid;
+}
+.back-btn {
+  left: -150px;
 }
 .content-area {
   width: calc(100vw - 200px);

@@ -7,7 +7,7 @@
             <img src="logo.png" class="logo"/>
           </q-btn>
         </q-toolbar-title>
-        <q-btn label="LOG" @click="log"/>
+<!--        <q-btn label="LOG" @click="log"/>-->
 
         <!--        <router-link :to="{path: '/'}" class="text-nord7">DEV: goto HOME</router-link>-->
         <q-space/>
@@ -24,7 +24,7 @@
             <q-tooltip>系统消息</q-tooltip>
           </q-btn>
 
-          <q-btn-dropdown :ripple="false" rounded flat class="q-pa-sm" :label="currentUser">
+          <q-btn-dropdown :ripple="false" rounded flat class="q-pa-sm" :label="currentUser.cstEmail">
             <!--            <template v-slot:label>-->
             <!--              <q-avatar size="26px">-->
             <!--                <img src="https://cdn.quasar.dev/img/boy-avatar.png">-->
@@ -35,9 +35,10 @@
             <div class="row justify-center no-wrap q-pa-md dropdown-content non-selectable">
               <div class="column items-center">
                 <q-avatar size="72px" class="q-mt-lg">
-                  <img src="https://cdn.quasar.dev/img/boy-avatar.png">
+                  <img src="img/default-avatar.png">
                 </q-avatar>
-                <div class="text-subtitle1 q-mt-md q-mb-md text-nord6">{{ currentUser }}</div>
+                <div class="text-subtitle1 q-ma-none q-mt-md text-nord6">{{ currentUser.cstTrueName }}</div>
+                <div class="text-subtitle1 q-ma-none q-mb-md text-nord6">{{ currentUser.cstEmail }}</div>
               </div>
             </div>
 
@@ -86,7 +87,7 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const currentUser = $store.state.user.cstTrueName
+    const currentUser = $store.state.user
 
     const rightDrawerOpen = ref(false)
     const toggleRightDrawer = () => {
@@ -118,7 +119,7 @@ export default defineComponent({
 .dropdown-content {
   min-width: 200px;
   background-image: url(https://cdn.quasar.dev/img/material.png);
-  background-size: 120% auto;
+  background-size: 150% auto;
 }
 
 .dropdown-items {
