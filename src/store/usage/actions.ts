@@ -66,7 +66,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     const response = await axios.get(api)
     return response
   },
-  async buildServiceList (context) {
+  async updateServiceList (context) {
     if (context.state.dataPointTree[0].children.length === 0) {
       void await context.dispatch('updateDataPointTree')
     }
@@ -257,8 +257,8 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     for (const resServer of resServers) {
       const currentServer = {
         ip: resServer.ipv4,
-        dataCenterId: resServer.service.id,
-        dataCenterName: resServer.service.name,
+        serviceId: resServer.service.id,
+        serviceName: resServer.service.name,
         serviceType: resServer.service.service_type,
         image: resServer.image,
         cpu: `${resServer.vcpus}核`,

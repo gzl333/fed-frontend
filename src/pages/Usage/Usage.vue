@@ -4,8 +4,8 @@
           <q-tabs
             v-model="activeTab"
             class="bg-nord4"
-            active-color="nord10"
-            indicator-color="nord10"
+            active-color="primary"
+            indicator-color="primary"
             align="left"
             inline-label
           >

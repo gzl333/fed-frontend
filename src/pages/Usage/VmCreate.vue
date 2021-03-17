@@ -265,7 +265,7 @@ export default defineComponent({
     const $q = useQuasar()
     onMounted(async () => {
       // 当前加载策略：挂载页面后建立全部dataPoint(service)的serviceList，以后可以改成根据serviceId的逐步选择，逐步建立serviceList
-      void await $store.dispatch('usage/buildServiceList')
+      void await $store.dispatch('usage/updateServiceList')
       void await $store.dispatch('quota/updateQuota')
       // 页面加载后，默认选择第一个数据中心
       const firstService = $store.state.usage.serviceList[0]

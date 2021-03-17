@@ -18,7 +18,7 @@
           selected-color="primary"
           v-model:selected="selectedTree"
         />
-        <pre>{{ pagination }}</pre>
+        <!--        <pre>{{ pagination }}</pre>-->
         <!--        </q-scroll-area>-->
       </div>
 
@@ -33,7 +33,7 @@
         </q-btn>
       </div>
 
-      <div class="col  q-py-sm q-pr-sm">
+      <div class="col  q-py-none q-pr-sm">
 
         <q-table
           class="q-px-lg"
@@ -61,7 +61,7 @@
                 </q-btn>
               </div>
 
-              <div class="col text-nord10 text-h7 table-title">
+              <div class="col text-primary text-h7 table-title">
                 正在展示：{{ tableTitle }}
               </div>
 
@@ -69,8 +69,8 @@
 
                 <q-input disable bottom-slots v-model="text" label="模糊搜索" dense>
                   <template v-slot:append>
-                    <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer" />
-                    <q-icon name="search" />
+                    <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>
+                    <q-icon name="search"/>
                   </template>
                 </q-input>
 
@@ -87,8 +87,9 @@
               <q-td key="ip" :props="props" class="table-td-ip">
                 <div class="row">
                   <div class="col">
-                    <q-btn :label="props.row.ip" :to="{path: '/my/usage/vmdetail'}" color="primary" flat dense unelevated
-                           @click="updateServerInfo(props.row.id)">
+                    <q-btn :label="props.row.ip" :to="{path: '/my/usage/vmdetail'}" color="primary" flat dense
+                           unelevated
+                           @click="updateServerDetail(props.row.id, props.row.serviceId)">
                       <q-tooltip>
                         进入详情页面
                       </q-tooltip>
@@ -146,7 +147,7 @@
                 </q-btn>
                 <q-btn v-else unelevated color="nord3" icon="computer">
                   <q-tooltip>
-                    请将云主机开机以使用VNC
+                    请开机以使用VNC
                   </q-tooltip>
                 </q-btn>
               </q-td>
@@ -158,30 +159,30 @@
                   </q-inner-loading>
                 </q-chip>
 
-                <q-chip v-if="props.row.status === '无法获取状态'" square color="nord11" text-color="white"
-                        label="无法获取状态"/>
-                <q-chip v-if="props.row.status === '运行中'" square color="nord14" text-color="white"
-                        label="运行中"/>
-                <q-chip v-if="props.row.status === '已屏蔽'" square color="nord3" text-color="white"
-                        label="已屏蔽"/>
-                <q-chip v-if="props.row.status === '已暂停'" square color="nord3" text-color="white"
-                        label="已暂停"/>
-                <q-chip v-if="props.row.status === '正在关机'" square color="nord9" text-color="white"
-                        label="正在关机"/>
-                <q-chip v-if="props.row.status === '已关机'" square color="nord3" text-color="white"
-                        label="已关机"/>
-                <q-chip v-if="props.row.status === '已崩溃'" square color="nord11" text-color="white"
-                        label="已崩溃"/>
-                <q-chip v-if="props.row.status === '被电源管理器挂起'" square color="nord3" text-color="white"
-                        label="被电源管理器挂起"/>
-                <q-chip v-if="props.row.status === '与宿主机通讯失败'" square color="nord11" text-color="white"
-                        label="与宿主机通讯失败"/>
-                <q-chip v-if="props.row.status === '已丢失'" square color="nord11" text-color="white"
-                        label="已丢失"/>
-                <q-chip v-if="props.row.status === '正在创建'" square color="nord9" text-color="white"
-                        label="正在创建"/>
-                <q-chip v-if="props.row.status === '创建失败'" square color="nord11" text-color="white"
-                        label="创建失败"/>
+                <q-chip v-if="props.row.status === '无法获取状态'" outline color="nord11" text-color="white"
+                        label="无法获取状态" class="text-bold"/>
+                <q-chip v-if="props.row.status === '运行中'" outline color="nord14" text-color="white"
+                        label="运行中" class="text-bold"/>
+                <q-chip v-if="props.row.status === '已屏蔽'" outline color="nord3" text-color="white"
+                        label="已屏蔽" class="text-bold"/>
+                <q-chip v-if="props.row.status === '已暂停'" outline color="nord3" text-color="white"
+                        label="已暂停" class="text-bold"/>
+                <q-chip v-if="props.row.status === '正在关机'" outline color="nord9" text-color="white"
+                        label="正在关机" class="text-bold"/>
+                <q-chip v-if="props.row.status === '已关机'" outline color="nord3" text-color="white"
+                        label="已关机" class="text-bold"/>
+                <q-chip v-if="props.row.status === '已崩溃'" outline color="nord11" text-color="white"
+                        label="已崩溃" class="text-bold"/>
+                <q-chip v-if="props.row.status === '被电源管理器挂起'" outline color="nord3" text-color="white"
+                        label="被电源管理器挂起" class="text-bold"/>
+                <q-chip v-if="props.row.status === '与宿主机通讯失败'" outline color="nord11" text-color="white"
+                        label="与宿主机通讯失败" class="text-bold"/>
+                <q-chip v-if="props.row.status === '已丢失'" outline color="nord11" text-color="white"
+                        label="已丢失" class="text-bold"/>
+                <q-chip v-if="props.row.status === '正在创建'" outline color="nord9" text-color="white"
+                        label="正在创建" class="text-bold"/>
+                <q-chip v-if="props.row.status === '创建失败'" outline color="nord11" text-color="white"
+                        label="创建失败" class="text-bold"/>
               </q-td>
               <q-td key="operation" :props="props" class="non-selectable">
                 <q-btn-group unelevated>
@@ -193,20 +194,20 @@
                       远程执行中，请稍候
                     </q-tooltip>
                   </q-btn>
-                  <q-btn v-if="props.row.status=='已关机'" color="nord4" icon="play_arrow" text-color="nord10"
+                  <q-btn v-if="props.row.status=='已关机'" color="nord4" icon="play_arrow" text-color="primary"
                          @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'start'})">
                     <q-tooltip>
                       开机
                     </q-tooltip>
                   </q-btn>
-                  <q-btn v-if="props.row.status=='运行中'" color="nord4" icon="stop" text-color="nord10"
+                  <q-btn v-if="props.row.status=='运行中'" color="nord4" icon="stop" text-color="primary"
                          @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'shutdown'})">
                     <q-tooltip>
                       关机
                     </q-tooltip>
                   </q-btn>
 
-                  <q-btn-dropdown color="nord10" label="操作">
+                  <q-btn-dropdown color="primary" label="操作">
                     <q-list separator dense class="dropdown-items">
                       <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-nord14"
                               @click="vmOperation({endPoint: props.row.endPoint, id: props.row.id, action: 'start'})">
@@ -258,7 +259,7 @@
               unelevated
               v-if="paginationMax!==1"
               v-model="paginationSelected"
-              color="nord9"
+              color="primary"
               :max="paginationMax"
               :max-pages="7"
               size="md"
@@ -411,7 +412,7 @@ export default defineComponent({
       },
       {
         name: 'image',
-        label: '镜像',
+        label: '系统镜像',
         field: 'image',
         align: 'center'
       },
@@ -459,6 +460,7 @@ export default defineComponent({
       // console.log('serverlist changed')
       return $store.state.usage.serverList
     })
+    console.log(rows)
 
     // 分页部分
     // 通过屏幕尺寸动态计算最佳rows， 并同步至store的pageSize
@@ -539,14 +541,14 @@ export default defineComponent({
       idEdited = id
       $q.dialog({
         title: `编辑${ip}的备注信息`,
-        message: '长度限制为15字以内',
+        message: '长度限制为15个字',
         prompt: {
           model: `${note}`,
           counter: true,
           maxlength: 15,
           type: 'text' // optional
         },
-        color: 'nord10',
+        color: 'primary',
         cancel: true
       }).onOk((data: string) => {
         const payload: ReqServerNote = {
@@ -565,10 +567,11 @@ export default defineComponent({
       ipToCopy = text
       void await copyToClipboard(text).then(() => {
         $q.notify({
-          color: 'nord9',
+          color: 'primary',
           message: `${ipToCopy} 已经复制到剪切板`,
-          position: 'bottom-right',
-          closeBtn: false
+          // position: 'bottom-right',
+          closeBtn: false,
+          timeout: 1500
         })
       })
       ipToCopy = ''
@@ -581,9 +584,12 @@ export default defineComponent({
     const onMouseLeaveRow = () => {
       hoverRow.value = ''
     }
-    // 更新单个server的具体信息
-    const updateServerInfo = (id: string) => {
+    // 进入server detail页面前，更新单个server的具体信息
+    const updateServerDetail = (id: string, serviceId: string) => {
+      // server实例信息
       void $store.dispatch('usage/updateServerInfo', id)
+      // vpn 信息
+      void $store.dispatch('usage/updateVpn', serviceId)
     }
     return {
       $store,
@@ -608,7 +614,7 @@ export default defineComponent({
       hoverRow,
       onMouseEnterRow,
       onMouseLeaveRow,
-      updateServerInfo,
+      updateServerDetail,
       pagination
     }
   }

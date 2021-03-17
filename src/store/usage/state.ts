@@ -37,8 +37,10 @@ export interface ServerInterface {
   name: string;
   isIpPublic: boolean;
   ip: string;
-  dataCenterId?: string;
-  dataCenterName?: string;
+  // dataCenterId?: string;
+  // dataCenterName?: string;
+  serviceId?: string;
+  serviceName?: string;
   serviceType?: string;
   image: string;
   cpu: string;

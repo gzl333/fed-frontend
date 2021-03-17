@@ -21,7 +21,7 @@ const mutation: MutationTree<UserInterface> = {
     localStorage.setItem('refresh', state.token.refresh)
 
     // axios header
-    axios.defaults.headers.common.Authorization = `JWT ${state.token.access}`
+    axios.defaults.headers.common.Authorization = `Bearer ${state.token.access}`
   },
   deleteUser (state: UserInterface) {
     // vuex
