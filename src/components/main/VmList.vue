@@ -34,31 +34,19 @@
         </div>
       </q-card-section>
 
-      <q-card-actions align="right" v-if="pageCount !== 1">
-        <div class="q-ml-xl">
-          第 {{ paginationSelected }} 页 ，共 {{ pageCount }} 页
-        </div>
-        <q-space />
-        <q-btn
-          push
-          dense
-          color="nord14"
-          text-color="white"
-          icon="arrow_left"
-          @click="clickPrevious()"
-        />
-        <q-btn
-          push
-          dense
-          color="nord14"
-          text-color="white"
-          icon="arrow_right"
-          class="q-mr-xl"
-          @click="clickNext()"
-        />
-      </q-card-actions>
-      <q-separator />
       <q-card-section class="height: 650px;">
+        <div class="q-pl-lg q-pr-lg flex flex-center">
+          第 {{ paginationSelected }} 页 ，共 {{ pageCount }} 页
+          <q-space />
+          <q-pagination
+            v-model="paginationSelected"
+            :max="pageCount"
+            :direction-links="true"
+            :boundary-links="true"
+            color="secondary"
+          >
+          </q-pagination>
+        </div>
         <div class="row items-center wrap q-ml-xl">
           <div v-for="(item, index) in serverList" :key="index">
             <div class="col-4 every-card q-ml-lg">
@@ -146,7 +134,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, onMounted, onUnmounted, watch } from 'vue'
+import { defineComponent, computed, ref, watch } from 'vue'
 import { StateInterface } from '../../store'
 import { useStore } from 'vuex'
 
@@ -159,18 +147,20 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
+    console.log('in setup')
     $store.commit('usage/storePagination', {
       page: 1,
       pageSize: 9
     })
-    console.log('$store.state.usage.pagination.pageSize:', $store.state.usage.pagination.pageSize)
+
+    // console.log('$store.state.usage.pagination.pageSize:', $store.state.usage.pagination.pageSize)
 
     void $store.dispatch('usage/updateServerList')
     const serverList = computed(() => {
       return $store.state.usage.serverList
     })
 
-    console.log('$store.state.usage.pagination.count:', $store.state.usage.pagination.count)
+    // console.log('$store.state.usage.pagination.count:', $store.state.usage.pagination.count)
     const pageCount = computed(() => {
       if ($store.state.usage.pagination.count && $store.state.usage.pagination.pageSize) {
         return Math.ceil($store.state.usage.pagination.count / $store.state.usage.pagination.pageSize)
@@ -178,46 +168,22 @@ export default defineComponent({
         return 1
       }
     })
-    console.log('pageCount:', pageCount)
+    // console.log('pageCount:', pageCount)
 
-    const paginationSelected = ref(1)
-    const buttonRef = ref<null|HTMLElement>(null)
-    const isClickButtonPrevious = ref(false)
-    const handler = (e: MouseEvent) => {
-      if (buttonRef.value) {
-        if (buttonRef.value.contains(e.target as HTMLElement)) {
-          isClickButtonPrevious.value = true
-        } else {
-          isClickButtonPrevious.value = false
-        }
+    // const paginationSelected = ref(1)
+    // watch(paginationSelected, () => {
+    //   // console.log('paginationSelected:', paginationSelected.value)
+    //   $store.commit('usage/storePagination', { page: paginationSelected.value })
+    //   void $store.dispatch('usage/updateServerList')
+    // })
+
+    const paginationSelected = computed({
+      get: () => $store.state.usage.pagination.page,
+      set: (value) => {
+        console.log(value)
+        $store.commit('usage/storePagination', { page: value })
+        void $store.dispatch('usage/updateServerList')
       }
-    }
-    onMounted(() => {
-      document.addEventListener('click', handler)
-    })
-    onUnmounted(() => {
-      document.removeEventListener('click', handler)
-    })
-    watch(isClickButtonPrevious, () => {
-      if (isClickButtonPrevious.value) {
-        paginationSelected.value += 1
-      }
-      console.log('isClickButtonPrevious:', isClickButtonPrevious)
-      console.log('paginationSelected:', paginationSelected.value)
-    })
-
-    const clickPrevious = () => {
-      $store.commit('usage/storePagination', { page: paginationSelected.value })
-      void $store.dispatch('usage/updateServerList')
-    }
-    const clickNext = () => {
-      $store.commit('usage/storePagination', { page: 2 })
-      void $store.dispatch('usage/updateServerList')
-    }
-
-    watch(clickNext, () => {
-      paginationSelected.value += 1
-      console.log('paginationSelected:', paginationSelected.value)
     })
 
     // VNC
@@ -230,14 +196,15 @@ export default defineComponent({
     const vmOperation = (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
       void $store.dispatch('usage/vmOperation', payload)
     }
+
     return {
       serverList,
       gotoVNC,
       vmOperation,
       pageCount,
-      paginationSelected,
-      clickPrevious,
-      clickNext
+      paginationSelected
+      // clickPrevious,
+      // clickNext
     }
   }
 })
