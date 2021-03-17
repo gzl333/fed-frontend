@@ -9,6 +9,18 @@ const routes: RouteRecordRaw[] = [
       myPages: false
     }
   },
+  // {
+  //   path: '/login',
+  //   component: () => import('layouts/HomeLayout.vue'),
+  //   meta: {
+  //     title: '中国科技云联邦',
+  //     myPages: false
+  //   },
+  //   beforeEnter: (to/*, from */) => {
+  //     const code = to.fullPath.slice(12)
+  //     console.log(code)
+  //   }
+  // },
   {
     path: '/my',
     component: () => import('layouts/MyLayout.vue'),
@@ -44,6 +56,13 @@ const routes: RouteRecordRaw[] = [
               myPages: true
             },
             component: () => import('pages/Usage/VmCreate.vue')
+          },
+          {
+            path: 'vmdetail',
+            meta: {
+              myPages: true
+            },
+            component: () => import('pages/Usage/VmDetail.vue')
           },
           {
             path: 'vd',

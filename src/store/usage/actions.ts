@@ -6,10 +6,10 @@ import {
   ResServiceResultInterface,
   ReqServerListInterface,
   ResServerInterface,
-  ServerInterface, ReqServerNote
+  ServerInterface, ReqServerNote, DataPointNetworkInterface, ServiceInterface, ReqServerCreate
   // , PaginationInterface
 } from './state'
-import axios from 'axios'
+import axios, { AxiosResponse } from 'axios'
 
 const apiBase = 'http://gosc.cstcloud.cn/api'
 const codeMap = new Map<number, string>(
@@ -30,6 +30,94 @@ const codeMap = new Map<number, string>(
 )
 
 const actions: ActionTree<UsageInterface, StateInterface> = {
+  async updateVpn (context, serviceId: string) {
+    const respFetchVpn = await context.dispatch('fetchVpn', serviceId)
+    context.commit('storeVpn', {
+      serviceId: serviceId,
+      vpn: respFetchVpn.data.vpn
+    })
+  },
+  async fetchVpn (context, serviceId: string) {
+    const api = apiBase + '/vpn/' + serviceId
+    const response = await axios.get(api)
+    return response
+  },
+  async updateServerInfo (context, id: string) {
+    // serverDetail中： id='0'是直接进入页面，应重定向；id=''是在读取中，应loading，其它状态则显示信息
+    // 先清空已有的server detail
+    void context.commit('clearServerDetail')
+    // 获取新的server detail
+    const respFetchServerInto = await context.dispatch('fetchServerInfo', id)
+    context.commit('storeServerDetail', respFetchServerInto.data.server)
+  },
+  async fetchServerInfo (context, id: string) {
+    const api = apiBase + '/server/' + id
+    const response = axios.get(api)
+    return response
+  },
+  async createServer (context, payload: ReqServerCreate) {
+    const api = apiBase + '/server/'
+    const data = payload
+    const response = axios.post(api, data)
+    return response
+  },
+  async fetchFlavor (/* context */) {
+    const api = apiBase + '/flavor/'
+    const response = await axios.get(api)
+    return response
+  },
+  async updateServiceList (context) {
+    if (context.state.dataPointTree[0].children.length === 0) {
+      void await context.dispatch('updateDataPointTree')
+    }
+    for (const dataCenter of context.state.dataPointTree[0].children) {
+      for (const dataPoint of dataCenter.children) {
+        const service: ServiceInterface = {
+          serviceId: dataPoint.key,
+          serviceName: dataPoint.label,
+          networks: {
+            public: [],
+            private: []
+          },
+          images: [],
+          flavors: []
+        }
+        dataPoint.networks.forEach((network) => {
+          if (network.public) {
+            service.networks.public.unshift(network)
+          } else {
+            service.networks.private.unshift(network)
+          }
+        })
+        const resImage = await context.dispatch('fetchImage', dataPoint.key)
+        service.images = resImage.data
+        const resFlavor = await context.dispatch('fetchFlavor')
+        service.flavors = resFlavor.data.flavors
+        context.commit('storeService', service)
+      }
+    }
+    // console.log(context.state.serviceList)
+  },
+  async fetchImage (context, payload: string) {
+    const api = apiBase + '/image/'
+    const config = {
+      params: {
+        service_id: payload
+      }
+    }
+    const response = await axios.get(api, config)
+    return response
+  },
+  async fetchNetwork (context, payload: string) {
+    const api = apiBase + '/network/'
+    const config = {
+      params: {
+        service_id: payload
+      }
+    }
+    const response = await axios.get(api, config)
+    return response
+  },
   async patchNote (context, payload: ReqServerNote) {
     // const api = apiBase + '/server/' + payload.id + '/remark/'
     const api = `${apiBase}/server/${payload.id}/remark/`
@@ -54,9 +142,8 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
         setTimeout(resolve, 3000)
       ))
       // 重新获取serverList
-      const config = context.state.dataPointOnShow.key === '0' ? {} : { service_id: context.state.dataPointOnShow.key }
+      const config = context.state.pagination.serviceId === '0' ? {} : { service_id: context.state.pagination.serviceId }
       void await context.dispatch('updateServerList', config)
-      console.log('in deleting vm', context.state.dataPointOnShow.key)
     } else {
       // 其它操作只更新该主机状态
       // 状态更新应延时获取
@@ -72,7 +159,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     }
     return response
   },
-  async fetchService () {
+  async fetchService () { // todo 按照分页修改
     const api = apiBase + '/service/'
     const response = await axios.get(api)
     return response
@@ -104,18 +191,25 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
       }
     })
     // second iteration to add dataPoints to dataCenters
-    results.forEach((resPoint: ResServiceResultInterface) => {
-      dataPointTree[0].children.forEach((treeCenter) => {
+    for (const resPoint of results) {
+      for (const treeCenter of dataPointTree[0].children) {
         if (treeCenter.label === resPoint.data_center.name) {
+          const resNetwork: AxiosResponse = await context.dispatch('fetchNetwork', resPoint.id)
+          const networks: DataPointNetworkInterface[] = []
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+          resNetwork.data.forEach((network: DataPointNetworkInterface) => {
+            networks.unshift(network)
+          })
           treeCenter.children.unshift({
             key: resPoint.id,
             label: resPoint.name,
             serviceType: resPoint.service_type,
-            icon: 'storage'
+            icon: 'storage',
+            networks: networks
           })
         }
-      })
-    })
+      }
+    }
     context.commit('storeDataPointTree', dataPointTree)
     // console.log(context.state.dataPointTree)
   },
@@ -139,12 +233,13 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     return response
   },
   async updateServerList (context) {
-    // 每次获取serverList之前先从pagination取得当前分页信息
+    // 每次获取serverList之前先从store.pagination取得当前分页信息
     const payload: ReqServerListInterface = {
       page: context.state.pagination.page,
       page_size: context.state.pagination.pageSize
     }
-    if (context.state.pagination.serviceId) {
+    // serviceId 不为0时才有config发出，为0就是获取全部list，没有config发出
+    if (context.state.pagination.serviceId !== '0') {
       payload.service_id = context.state.pagination.serviceId
     }
     // console.log('ajax req', payload)
@@ -154,7 +249,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     // console.log('res', resServerList)
     // 保存resp中分页信息，分页store中count的来源
     context.commit('storePagination', { count: resServerList.data.count })
-
+    // console.log(resServerList.data)
     // 保存resp中server信息
     const resServers: ResServerInterface[] = resServerList.data.servers
     // console.log(resServers)
@@ -162,8 +257,8 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     for (const resServer of resServers) {
       const currentServer = {
         ip: resServer.ipv4,
-        dataCenterId: resServer.service.id,
-        dataCenterName: resServer.service.name,
+        serviceId: resServer.service.id,
+        serviceName: resServer.service.name,
         serviceType: resServer.service.service_type,
         image: resServer.image,
         cpu: `${resServer.vcpus}核`,

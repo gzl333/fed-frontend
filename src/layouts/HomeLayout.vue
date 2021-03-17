@@ -1,33 +1,40 @@
 <template>
   <q-layout view="hHh lpR fFf">
     <q-header :elevated="scrollRatio===0.4" class="home-header column justify-center" :style="dynamicBackground">
-      <q-toolbar>
-        <q-toolbar-title class="col-4">
-          <q-btn flat :ripple="false" unelevated>
-            <img src="logo.png" class="logo">
-          </q-btn>
-        </q-toolbar-title>
+<!--      <q-toolbar>-->
+<!--        <q-toolbar-title class="col-4">-->
+<!--          <q-btn flat :ripple="false" unelevated dense>-->
+<!--            <img src="logo.png" class="logo">-->
+<!--          </q-btn>-->
+<!--        </q-toolbar-title>-->
 <!--        <q-btn label="LOG" @click="logJWT"/>-->
         <!--        <pre class="q-ma-none container">{{ scrollTop }}, {{scrollRatio}}</pre>-->
-        <q-space/>
+<!--        <q-space/>-->
         <!--        <q-separator vertical v-if="scrollRatio===0.6"/>-->
-        <div class="q-px-xl q-gutter-xl">
-          <q-btn flat :ripple="false" color="nord6" label="资源与服务" @click="scrollToElement($refs['part1'])"/>
-          <q-btn flat :ripple="false" color="nord6" label="资源提供者" @click="scrollToElement($refs['part2'])"/>
-          <q-btn flat :ripple="false" color="nord6" label="开发者" @click="scrollToElement($refs['part3'])"/>
+      <div class="row items-center justify-center">
+        <div class="col-4 text-right">
+                    <q-btn flat :ripple="false" unelevated dense>
+                      <img src="logo.png" class="logo">
+                    </q-btn>
+        </div>
+        <div class="col-4 text-right q-px-md q-gutter-xs">
+          <q-btn flat :ripple="false" color="white" label="资源与服务" @click="scrollToElement($refs['part1'])"/>
+          <q-btn flat :ripple="false" color="white" label="资源提供者" @click="scrollToElement($refs['part2'])"/>
+          <q-btn flat :ripple="false" color="white" label="开发者" @click="scrollToElement($refs['part3'])"/>
         </div>
         <!--        <q-separator vertical v-if="scrollRatio===0.6"/>-->
-        <div class="q-px-xl q-gutter-sm">
-          <q-btn unelevated :ripple="false" color="nord10" label="登 录" @click="isShowLogin = true"/>
-          <q-btn outline :ripple="false" color="nord6" label="注 册" type="a" href="https://passport.escience.cn/regist.jsp"
+        <div class="col-4 text-left q-px-xl q-gutter-sm">
+          <q-btn outline :ripple="false" color="white" label="注 册" type="a" href="https://passport.escience.cn/regist.jsp"
                  target="_blank"/>
+          <q-btn unelevated :ripple="false" color="primary" label="登 录" @click="cstLogin"/>
 
-          <q-dialog v-model="isShowLogin">
-            <login-card/>
-          </q-dialog>
+          <!--          <q-dialog v-model="isShowLogin">-->
+          <!--            <login-card/>-->
+          <!--          </q-dialog>-->
         </div>
+      </div>
 
-      </q-toolbar>
+<!--      </q-toolbar>-->
     </q-header>
 
     <q-page-container >
@@ -70,10 +77,10 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
 import { scroll } from 'quasar'
-import LoginCard from 'components/LoginCard.vue'
+// import LoginCard from 'components/LoginCard.vue'
 
-// import { useStore } from 'vuex'
-// import { StateInterface } from 'src/store'
+import { useStore } from 'vuex'
+import { StateInterface } from 'src/store'
 
 const {
   getScrollTarget,
@@ -82,11 +89,11 @@ const {
 export default defineComponent({
   name: 'HomeLayout.vue',
   components: {
-    LoginCard
+    // LoginCard
   },
   props: {},
   setup () {
-    // const $store = useStore<StateInterface>()
+    const $store = useStore<StateInterface>()
     // const logJWT = () => {
     //   void $store.dispatch('retainToken')
     // }
@@ -110,13 +117,21 @@ export default defineComponent({
         background: `rgb(0,0,0, ${scrollRatio.value})`
       }
     })
+    // 科技云通行证用户登录
+    const cstLogin = async () => {
+      // loginCard 只负责获取科技云通行证登录页面地址，并跳转。 code及token处理、/login路由跳转逻辑处理，均放在router.beforeEach中
+      const respUrl = await $store.dispatch('user/fetchCstLoginUrl')
+      window.location.href = respUrl.data.data
+      console.log(respUrl.data.data)
+    }
     return {
       isShowLogin: ref('false'),
       scrollTop,
       onScroll,
       scrollRatio,
       dynamicBackground,
-      scrollToElement
+      scrollToElement,
+      cstLogin
     }
   }
 })

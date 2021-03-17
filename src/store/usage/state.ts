@@ -1,3 +1,12 @@
+export interface ReqServerCreate {
+  service_id: string;
+  network_id: string;
+  image_id: string;
+  flavor_id: string;
+  quota_id: string;
+  remarks?: string;
+}
+
 export interface ReqServerNote {
   id: string;
   remark: string;
@@ -18,6 +27,7 @@ export interface PaginationInterface {
   page?: number;
   pageSize?: number;
   serviceId?: string;
+  serviceName?: string;
   next?: string | null;
   previous?: string | null;
 }
@@ -27,8 +37,10 @@ export interface ServerInterface {
   name: string;
   isIpPublic: boolean;
   ip: string;
-  dataCenterId?: string;
-  dataCenterName?: string;
+  // dataCenterId?: string;
+  // dataCenterName?: string;
+  serviceId?: string;
+  serviceName?: string;
   serviceType?: string;
   image: string;
   cpu: string;
@@ -106,11 +118,19 @@ export interface ResServiceInterface {
 }
 
 // 机构树组件所需数据接口
+export interface DataPointNetworkInterface {
+  id: string; // network id
+  name: string;
+  public: boolean;
+  segment: string;
+}
+
 export interface DataPointInterface {
   key: string;
   label: string;
   icon?: string;
   serviceType: string;
+  networks: DataPointNetworkInterface[]
 }
 
 export interface DataCenterInterface {
@@ -127,17 +147,73 @@ export interface DataRootInterface {
   children: DataCenterInterface[]
 }
 
-export interface DataPointOnShowInterface {
-  key: string;
-  label: string;
+// export interface DataPointOnShowInterface {
+//   key: string;
+//   label: string;
+// }
+
+// service_id对应各种服务
+export interface FlavorInterface {
+  id: string;
+  vcpus: number;
+  ram: number;
+}
+
+export interface ImageInterface {
+  id: string;
+  name: string;
+  system: string;
+  systemType: string;
+  creationTime: string;
+  desc: string;
+}
+
+export interface ServiceInterface {
+  serviceId: string;
+  serviceName: string;
+  networks: {
+    public: DataPointNetworkInterface[];
+    private: DataPointNetworkInterface[];
+  };
+  images: ImageInterface[];
+  flavors: FlavorInterface[]
+}
+
+export interface ServerDetailInterface {
+  id: string;
+  name?: string;
+  vcpus?: number;
+  ram?: number;
+  ipv4?: string;
+  public_ip?: boolean;
+  image?: string;
+  creation_time?: string;
+  remarks?: string;
+  endpoint_url?: string;
+  service?: {
+    id: string;
+    name: string;
+    service_type: string;
+  }
+}
+
+export interface VpnInterface {
+  username: string;
+  password: string;
+  active: boolean;
+  create_time: string;
+  modified_time: string;
 }
 
 // Usage总接口
 export interface UsageInterface {
   dataPointTree: DataRootInterface[];
   serverList: ServerInterface[];
-  dataPointOnShow: DataPointOnShowInterface;
+  // dataPointOnShow: DataPointOnShowInterface;
   pagination: PaginationInterface;
+  serviceList: ServiceInterface[]; // 当前用户全部可用service
+  serverDetail: ServerDetailInterface;
+  vpn: Map<string, VpnInterface>;
 }
 
 function state (): UsageInterface {
@@ -148,16 +224,23 @@ function state (): UsageInterface {
       icon: 'storage',
       children: []
     }],
-    dataPointOnShow: {
-      key: '0',
-      label: '全部节点'
-    },
+    // dataPointOnShow: {
+    //   key: '0',
+    //   label: '全部节点'
+    // },
     serverList: [],
     pagination: {
       count: 1,
       page: 1,
-      pageSize: 1
-    }
+      pageSize: 1,
+      serviceId: '0',
+      serviceName: '全部节点'
+    },
+    serviceList: [],
+    serverDetail: {
+      id: '0' // serverDetail中： id='0'是直接进入页面，应重定向；id=''是在读取中，应loading，其它状态则显示信息
+    },
+    vpn: new Map()
   }
 }
 

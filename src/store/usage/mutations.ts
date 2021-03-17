@@ -3,11 +3,25 @@ import {
   UsageInterface,
   DataRootInterface,
   ServerInterface,
-  DataPointOnShowInterface,
-  PaginationInterface, ReqServerNote
+  // DataPointOnShowInterface,
+  PaginationInterface, ReqServerNote, ServiceInterface, ServerDetailInterface, VpnInterface
 } from './state'
 
 const mutation: MutationTree<UsageInterface> = {
+  storeVpn (state, payload: { serviceId: string, vpn: VpnInterface }) {
+    state.vpn.set(payload.serviceId, payload.vpn)
+  },
+  // 清除当前展示的云主机详情信息
+  clearServerDetail (state) {
+    state.serverDetail = { id: '' }
+  },
+  // 保存当前展示的云主机详情信息
+  storeServerDetail (state, payload: ServerDetailInterface) {
+    state.serverDetail = payload
+  },
+  storeService (state, payload: ServiceInterface) {
+    state.serviceList.push(payload)
+  },
   storeDataPointTree (state, payload: DataRootInterface[]) {
     state.dataPointTree = payload
   },
@@ -22,19 +36,15 @@ const mutation: MutationTree<UsageInterface> = {
       currentServer.status = payload.status
     }
   },
-  storeDataPointOnShow (state, payload: DataPointOnShowInterface) {
-    state.dataPointOnShow = payload
-  },
+  // storeDataPointOnShow (state, payload: DataPointOnShowInterface) {
+  //   state.dataPointOnShow = payload
+  // },
   storePagination (state, payload: PaginationInterface) {
-    console.log('storePayload', payload)
     for (const key in payload) {
       // @ts-ignore
       state.pagination[key] = payload[key]
     }
-    if (state.pagination.serviceId === '0') {
-      delete state.pagination.serviceId
-    }
-    console.log('current store', state.pagination)
+    // console.log('current store', state.pagination)
   },
   storeNote (state, payload: ReqServerNote) {
     state.serverList.forEach((server) => {

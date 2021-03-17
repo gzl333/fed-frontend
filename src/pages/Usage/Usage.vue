@@ -4,8 +4,8 @@
           <q-tabs
             v-model="activeTab"
             class="bg-nord4"
-            active-color="nord10"
-            indicator-color="nord10"
+            active-color="primary"
+            indicator-color="primary"
             align="left"
             inline-label
           >
@@ -19,6 +19,7 @@
               exact
             />
             <q-route-tab
+              disable
               name="disk"
               icon="save"
               label="云硬盘"
@@ -38,6 +39,7 @@
               exact
             />
             <q-route-tab
+              disable
               name="vpn"
               icon="vpn_lock"
               label="VPN"

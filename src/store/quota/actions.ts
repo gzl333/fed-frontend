@@ -6,7 +6,8 @@ import axios from 'axios'
 const baseAPI = 'http://gosc.cstcloud.cn/api/'
 // context.state -> store.state.quota
 const actions: ActionTree<QuotaInterface, StateInterface> = {
-  async fetchQuota () {
+  // eslint-disable-next-line camelcase
+  async fetchQuota (/* context, page?:number, page_size?:number */) {
     const response = await axios.get(baseAPI + 'u-quota/')
     return response
   },

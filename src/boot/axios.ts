@@ -54,9 +54,16 @@ axios.interceptors.response.use(config => {
   Loading.hide()
   return config
 }, error => {
-  Loading.hide()
-  errorNotifier(error)
-  throw error
+  // 从小尺寸页面变成大尺寸页面时，如果选中了最后一页，会请求一个不存在的页面，此时的请求错误不该显示出来
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+  if (error.config.url.contains('server') && error.config.method === 'get') {
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    return error
+  } else {
+    Loading.hide()
+    errorNotifier(error)
+    throw error
+  }
 })
 
 declare module '@vue/runtime-core' {
@@ -64,7 +71,6 @@ declare module '@vue/runtime-core' {
     $axios: AxiosInstance;
   }
 }
-
 const api = axios.create(/* { timeout: 1000 , baseURL: 'https://api.example.com'} */)
 
 export default boot(({ app }) => {

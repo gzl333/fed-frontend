@@ -28,7 +28,10 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
         : createWebHashHistory
 
   const Router = createRouter({
-    scrollBehavior: () => ({ left: 0, top: 0 }),
+    scrollBehavior: () => ({
+      left: 0,
+      top: 0
+    }),
     routes,
 
     // Leave this as is and make changes in quasar.conf.js instead!
@@ -39,7 +42,25 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
     )
   })
 
-  Router.beforeEach((to, from, next) => {
+  Router.beforeEach(async (to, from, next) => {
+    // 此处截获科技云通行证返回的 /login?code=xxxx 部分
+    // 未登录则获取code，换取token，进行登录
+    if (to.fullPath.startsWith('/login?code=') && !store.state.user.isLogin) {
+      // 在科技云通行证处登录成功后，跳转至/login?code=xxxx。 此处截取code
+      const code = to.fullPath.slice(12)
+      // 利用code，在updatePassportToken中获取token并保存token，改变用户登录状态
+      void await store.dispatch('user/loginCstUser', code)
+      // 开启定时更新token
+      await store.dispatch('user/retainCstToken')
+      // console.log(store.state.user)
+      // 跳转至内页
+      next({ path: '/my' })
+    }
+    // 已经登录，访问/login，重定向到/my
+    if (to.fullPath.startsWith('/login') && store.state.user.isLogin) {
+      next({ path: '/my' })
+    }
+
     if (to.meta.myPages && !store.state.user.isLogin) {
       next({ path: '/' })
     }

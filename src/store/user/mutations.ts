@@ -1,29 +1,38 @@
 import { MutationTree } from 'vuex'
-import { TokenInterface, UserInterface } from './state'
+import { CstJwtInterface, UserInterface } from './state'
 import axios from 'axios'
+import jwtDecode from 'jwt-decode'
 
 // 注意此时state是store.state.user，而不是store.state
 const mutation: MutationTree<UserInterface> = {
-  storeEmail (context: UserInterface, payload: string) {
-    context.email = payload
-  },
-  storeToken (/* this: rightType, */state:UserInterface, payload:TokenInterface) {
+  storeUser (/* this: rightType, */state, payload: { access: string; refresh: string; }) {
     // vuex
     state.isLogin = true
-    state.token = payload
+    state.token = {
+      access: payload.access,
+      refresh: payload.refresh
+    }
+    const decoded = jwtDecode<CstJwtInterface>(payload.access)
+    state.cstTrueName = decoded.trueName
+    state.cstEmail = decoded.cstnetId
+    state.cstId = decoded.umtId
     // localStorage
-    localStorage.setItem('tokenAccess', state.token.access)
-    localStorage.setItem('tokenRefresh', state.token.refresh)
+    localStorage.setItem('access', state.token.access)
+    localStorage.setItem('refresh', state.token.refresh)
+
     // axios header
-    axios.defaults.headers.common.Authorization = `JWT ${state.token.access}`
+    axios.defaults.headers.common.Authorization = `Bearer ${state.token.access}`
   },
-  deleteToken (state: UserInterface) {
+  deleteUser (state: UserInterface) {
     // vuex
     state.isLogin = false
     delete state.token
+    delete state.cstTrueName
+    delete state.cstEmail
+    delete state.cstId
     // localStorage
-    localStorage.removeItem('tokenAccess')
-    localStorage.removeItem('tokenRefresh')
+    localStorage.removeItem('access')
+    localStorage.removeItem('refresh')
     // axios header
     delete axios.defaults.headers.common.Authorization
     // @ts-ignore
