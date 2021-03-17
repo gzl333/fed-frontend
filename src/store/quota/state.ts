@@ -1,3 +1,7 @@
+export interface ServersInterface {
+  id: string;
+  ip: string;
+}
 export interface TypeInterface {
   type: string; // 配额类型
   id: string; // quota id
@@ -14,6 +18,8 @@ export interface TypeInterface {
   expirationTime: string;
   deleted?: boolean;
   display:string;
+  usedServersCount?:number;
+  usedServers?:ServersInterface[];
 }
 
 export interface ServiceInterface {
@@ -79,6 +85,26 @@ export interface UquotaResponseInterface {
   results: UquotaResponseResultsInterface[];
 }
 
+export interface UquotaServersResponseResultsInterface {
+  id: string;
+  name: string;
+  vcpu: number;
+  ipv4: string;
+  // eslint-disable-next-line camelcase
+  public_ip: boolean;
+  image: string;
+  // eslint-disable-next-line camelcase
+  creation_time: string;
+  remarks: string;
+}
+
+export interface UquotaServersResponseInterface {
+  count: number;
+  next: unknown;
+  previous: unknown;
+  results: UquotaServersResponseResultsInterface[];
+}
+
 function state (): QuotaInterface {
   return {
     userQuota: {
@@ -101,7 +127,8 @@ function state (): QuotaInterface {
             diskTotal: 1,
             diskUsed: 0,
             expirationTime: '',
-            display: ''
+            display: '',
+            usedServersCount: 0
           }
         ]
       }]

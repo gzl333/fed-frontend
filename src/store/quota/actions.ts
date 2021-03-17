@@ -10,6 +10,11 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
     const response = await axios.get(baseAPI + 'u-quota/')
     return response
   },
+  async fetchQuotaServers (context, payload: string) {
+    const api = baseAPI + 'u-quota/' + payload + '/servers/'
+    const response = await axios.get(api)
+    return response
+  },
   async updateQuota (context) {
     // console.log('in fetchQuota')
     const response: UquotaResponseInterface = (await context.dispatch('fetchQuota')).data
@@ -61,6 +66,9 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
     // console.log('before storeQuota', payload)
     context.commit('storeQuota', payload)
     // console.log('back in fetch', context.state)
+
+    // 更新每个配额下的server数量
+    // for (const server of context.state.userQuota) {}
   }
 }
 

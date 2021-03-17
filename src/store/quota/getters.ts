@@ -110,7 +110,7 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
         lessOneWeekNum: lessOneWeekNum
       }
       lessOneWeek.push(quotaWarning)
-      console.log('in getters lessOneWeek:', lessOneWeek)
+      // console.log('in getters lessOneWeek:', lessOneWeek)
       return lessOneWeek
     }
   },
@@ -142,7 +142,7 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
         lessOneMonthNum: lessOneMonthNum
       }
       lessOneMonth.push(quotaWarning)
-      console.log('in getters lessOneMonth:', lessOneMonth)
+      // console.log('in getters lessOneMonth:', lessOneMonth)
       return lessOneMonth
     }
   }

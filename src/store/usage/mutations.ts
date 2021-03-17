@@ -26,7 +26,7 @@ const mutation: MutationTree<UsageInterface> = {
     state.dataPointOnShow = payload
   },
   storePagination (state, payload: PaginationInterface) {
-    // console.log('storePayload', payload)
+    console.log('storePayload', payload)
     for (const key in payload) {
       // @ts-ignore
       state.pagination[key] = payload[key]
@@ -34,7 +34,7 @@ const mutation: MutationTree<UsageInterface> = {
     if (state.pagination.serviceId === '0') {
       delete state.pagination.serviceId
     }
-    // console.log('current store', state.pagination)
+    console.log('current store', state.pagination)
   },
   storeNote (state, payload: ReqServerNote) {
     state.serverList.forEach((server) => {
