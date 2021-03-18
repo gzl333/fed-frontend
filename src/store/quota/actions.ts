@@ -31,11 +31,6 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
     const response = await axios.get(api)
     return response
   },
-  async fetchVpn (context, serviceId: string) {
-    const api = baseAPI + 'vpn/' + serviceId
-    const response = await axios.get(api)
-    return response
-  },
   async updateQuota (context) {
     // console.log('in fetchQuota')
     const response: UquotaResponseInterface = (await context.dispatch('fetchQuota')).data
@@ -89,7 +84,7 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
     // console.log('back in fetch', context.state)
 
     // 更新每个配额下的server数量
-    // for (const server of context.state.userQuota) {}
+    // for (const server of context.state.userQuota.services) {}
   },
   async fetchServerList (context, payload?: ReqServerListInterface) {
     const api = baseAPI + 'server/'

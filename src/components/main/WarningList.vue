@@ -1,7 +1,7 @@
 <template>
   <div class="WarningList">
     <q-card flat bordered class="my-card">
-      <q-card-section class="bg-secondary text-nord6">
+      <q-card-section class="bg-nord8 text-white">
         <div class="text-h6 text-weight-bold">资源到期预警</div>
       </q-card-section>
       <q-separator />
@@ -60,11 +60,7 @@
                 <q-card-section class="q-pt-md q-pb-xs q-px-xs text-white">
                   <div class="text-subtitle1">{{ warningList[0] }}</div>
                   <q-badge align="top" color="nord11"> 虚拟机 </q-badge>
-                  <div class="text-h5 q-my-xs q-ml-md">
-                    5<q-tooltip class="bg-nord10" :offset="[5, 10]"
-                      >3.3.3.3；4.4.4.4
-                    </q-tooltip>
-                  </div>
+                  <div class="text-h5 q-my-xs q-ml-md">xx</div>
                 </q-card-section>
               </q-card-section>
             </q-card>
@@ -80,11 +76,7 @@
                 <q-card-section class="q-pt-md q-pb-xs q-px-xs text-white">
                   <div class="text-subtitle1">{{ warningList[1] }}</div>
                   <q-badge align="top" color="nord13">虚拟机</q-badge>
-                  <div class="text-h5 q-my-xs q-ml-md">
-                    6<q-tooltip class="bg-nord14" :offset="[5, 10]"
-                      >1.1.1.1；2.2.2.2
-                    </q-tooltip>
-                  </div>
+                  <div class="text-h5 q-my-xs q-ml-md">xx</div>
                 </q-card-section>
               </q-card-section>
             </q-card>
@@ -135,6 +127,7 @@ export default defineComponent({
 }
 .my-card {
   width: 100%;
+  height: 210px;
 }
 .inner-card {
   width: 90%;

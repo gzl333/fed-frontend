@@ -48,6 +48,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     void context.commit('clearServerDetail')
     // 获取新的server detail
     const respFetchServerInto = await context.dispatch('fetchServerInfo', id)
+    console.log('respFetchServerInto', respFetchServerInto)
     context.commit('storeServerDetail', respFetchServerInto.data.server)
   },
   async fetchServerInfo (context, id: string) {

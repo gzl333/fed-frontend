@@ -1,17 +1,44 @@
 <template>
   <div class="QuotaList">
     <q-card flat bordered class="my-card">
-      <q-card-section class="bg-secondary">
+      <q-card-section class="bg-nord8">
         <div class="row items-center no-wrap">
           <div class="col">
-            <div class="text-h6 text-weight-bold text-nord6">
+            <div class="text-h6 text-weight-bold text-white">
               资源配额使用情况
             </div>
           </div>
-          <div class="col-auto">
-            <router-link :to="`/my/usage/vm`" class="flat q-ml-md text-nord6"
-              >全部在用资源</router-link
+          <div class="col-auto" style="visibility: hidden">
+            <q-input
+              dark
+              dense
+              standout
+              v-model="searchContent"
+              input-class="text-right"
+              class="q-ml-sm"
+              type="search"
             >
+              <template v-slot:append>
+                <q-icon v-if="searchContent === ''" name="search" />
+                <q-icon
+                  v-else
+                  name="clear"
+                  class="cursor-pointer"
+                  @click="searchContent = ''"
+                />
+              </template>
+            </q-input>
+          </div>
+          <div class="col-auto">
+            <q-btn
+              color="nord8"
+              label="全部在用资源"
+              dense
+              unelevated
+              flat
+              class="text-white q-ml-md"
+              :to="{ path: '/my/usage/vm' }"
+            />
           </div>
         </div>
       </q-card-section>
@@ -23,7 +50,7 @@
             v-model="toptab"
             narrow-indicator
             inline-label
-            class="text-secondary"
+            class="text-nord8"
             align="justify"
             v-for="service in serviceName"
             :key="service.name"
@@ -66,7 +93,7 @@
                           v-model="innertab"
                           narrow-indicator
                           inline-label
-                          class="text-secondary"
+                          class="text-nord8"
                           align="justify"
                         >
                           <q-tab
@@ -114,7 +141,7 @@
                               class="q-mt-sm q-ml-xl q-mr-xs"
                               size="25px"
                               :value="it.vCpuUsed / it.vCpuTotal"
-                              color="secondary"
+                              color="nord8"
                               v-if="it.vCpuTotal != 0"
                             >
                               <div class="absolute-full flex flex-center">
@@ -139,7 +166,7 @@
                             <q-linear-progress
                               size="25px"
                               :value="it.ramUsed / it.ramTotal"
-                              color="secondary"
+                              color="nord8"
                               class="q-mt-sm q-ml-xl q-mr-xs"
                               v-if="it.ramTotal != 0"
                             >
@@ -164,7 +191,7 @@
                             <q-linear-progress
                               size="25px"
                               :value="it.diskUsed / it.diskTotal"
-                              color="secondary"
+                              color="nord8"
                               class="q-mt-sm q-ml-xl q-mr-xs"
                               v-if="it.diskTotal != 0"
                             >
@@ -189,7 +216,7 @@
                             <q-linear-progress
                               size="25px"
                               :value="it.publicIpUsed / it.publicIpTotal"
-                              color="secondary"
+                              color="nord8"
                               class="q-mt-sm q-ml-xl q-mr-xs"
                               v-if="it.publicIpTotal != 0"
                             >
@@ -214,7 +241,7 @@
                             <q-linear-progress
                               size="25px"
                               :value="it.privateIpUsed / it.privateIpTotal"
-                              color="secondary"
+                              color="nord8"
                               class="q-mt-sm q-ml-xl q-mr-xs"
                               v-if="it.privateIpTotal != 0"
                             >
@@ -291,6 +318,6 @@ export default defineComponent({
 }
 .my-card {
   width: 100%;
-  height: 620px;
+  height: 590px;
 }
 </style>

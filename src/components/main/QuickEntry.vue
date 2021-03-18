@@ -1,27 +1,63 @@
 <template>
   <div class="QuickEntry">
     <q-card flat bordered class="my-card">
-      <q-card-section class="bg-secondary text-nord6">
+      <q-card-section class="bg-nord8 text-white">
         <div class="text-h6 text-weight-bold">快捷入口</div>
       </q-card-section>
       <q-separator />
       <q-card-section>
-        <div class="row items-center wrap q-gutter-sm">
-          <div
-            class="col"
-            v-for="{ title, img } in entryList"
-            :key="(title, img)"
-          >
-            <q-img
-              src="https://cdn.quasar.dev/img/parallax2.jpg"
-              style="height: 108px; max-width: 150px"
-            >
-              <div
-                class="absolute-full text-subtitle2 flex flex-center text-weight-bold"
-              >
-                {{ title }}
-              </div>
-            </q-img>
+        <div class="row items-center no-wrap q-pl-xl">
+          <div class="col-3">
+            <div>
+              <q-btn flat :to="{ path: '/my/usage/vmcreate' }">
+                <q-icon style="font-size: 5em"
+                  ><i class="fas fa-tv"></i
+                ></q-icon>
+              </q-btn>
+            </div>
+            <div>
+              <q-btn
+                flat
+                label="创建云主机"
+                :to="{ path: '/my/usage/vmcreate' }"
+              ></q-btn>
+            </div>
+          </div>
+          <div class="col-3">
+            <div>
+              <q-btn flat disable>
+                <q-icon style="font-size: 5em"
+                  ><i class="fas fa-cog"></i
+                ></q-icon>
+              </q-btn>
+            </div>
+            <div>
+              <q-btn flat disable label="VPN配置"></q-btn>
+            </div>
+          </div>
+          <div class="col-3">
+            <div>
+              <q-btn flat disable>
+                <q-icon style="font-size: 5em"
+                  ><i class="fas fa-wrench"></i
+                ></q-icon>
+              </q-btn>
+            </div>
+            <div>
+              <q-btn flat disable label="工单中心"></q-btn>
+            </div>
+          </div>
+          <div class="col-3">
+            <div>
+              <q-btn flat disable>
+                <q-icon style="font-size: 5em"
+                  ><i class="fas fa-yen-sign"></i
+                ></q-icon>
+              </q-btn>
+            </div>
+            <div>
+              <q-btn flat disable label="计费中心"></q-btn>
+            </div>
           </div>
         </div>
       </q-card-section>
@@ -39,24 +75,8 @@ export default defineComponent({
   props: {
   },
   setup () {
-    const entryList = [{
-      title: '创建云主机',
-      img: 'fas fa-server'
-    },
-    {
-      title: 'VPN配置',
-      img: 'fas fa-cog'
-    },
-    {
-      title: '工单中心',
-      img: 'fas fa-wrench'
-    },
-    {
-      title: '计费中心',
-      img: 'fas fa-yen-sign'
-    }]
     return {
-      entryList
+
     }
   }
 })
@@ -67,5 +87,6 @@ export default defineComponent({
 }
 .my-card {
   width: 100%;
+  height: 210px;
 }
 </style>
