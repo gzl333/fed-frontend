@@ -30,6 +30,33 @@ const codeMap = new Map<number, string>(
 )
 
 const actions: ActionTree<UsageInterface, StateInterface> = {
+  async serverDetailOperation (context, payload: { endPoint: string; id: string; action: string }) {
+    // 将主机状态清空，界面将显示loading
+    context.commit('storeServerDetailStatus', '')
+
+    const api = payload.endPoint.endsWith('/') ? payload.endPoint + 'api/server/' + payload.id + '/action/' : payload.endPoint + '/api/server/' + payload.id + '/action/'
+    const data = { action: payload.action }
+    const response = await axios.post(api, data)
+
+    // 状态更新应延时获取
+    void await new Promise(resolve => (
+      setTimeout(resolve, 3000)
+    ))
+    // 为server detail 获取status
+    const respFetchServerStatus = await context.dispatch('fetchServerStatus', payload.id)
+    const status = codeMap.get(respFetchServerStatus.data.status.status_code)
+    context.commit('storeServerDetailStatus', status)
+
+    return response
+  },
+  async patchVpnPassword (context, payload: { serviceId: string; password: string }) {
+    const api = apiBase + '/vpn/' + payload.serviceId
+    const data = {
+      password: payload.password
+    }
+    const response = await axios.patch(api, data)
+    return response
+  },
   async updateVpn (context, serviceId: string) {
     const respFetchVpn = await context.dispatch('fetchVpn', serviceId)
     context.commit('storeVpn', {
@@ -42,14 +69,17 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     const response = await axios.get(api)
     return response
   },
-  async updateServerInfo (context, id: string) {
+  async updateServerInfo (context, serverId: string) {
     // serverDetail中： id='0'是直接进入页面，应重定向；id=''是在读取中，应loading，其它状态则显示信息
     // 先清空已有的server detail
     void context.commit('clearServerDetail')
     // 获取新的server detail
-    const respFetchServerInto = await context.dispatch('fetchServerInfo', id)
-    console.log('respFetchServerInto', respFetchServerInto)
+    const respFetchServerInto = await context.dispatch('fetchServerInfo', serverId)
     context.commit('storeServerDetail', respFetchServerInto.data.server)
+    // 为server detail 获取status
+    const respFetchServerStatus = await context.dispatch('fetchServerStatus', serverId)
+    const status = codeMap.get(respFetchServerStatus.data.status.status_code)
+    context.commit('storeServerDetailStatus', status)
   },
   async fetchServerInfo (context, id: string) {
     const api = apiBase + '/server/' + id
@@ -223,8 +253,8 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     // console.log(config)
     return response
   },
-  async fetchServerStatus (context, payload: string) {
-    const api = apiBase + '/server/' + payload + '/status/'
+  async fetchServerStatus (context, serverId: string) {
+    const api = apiBase + '/server/' + serverId + '/status/'
     const response = await axios.get(api)
     return response
   },
@@ -243,7 +273,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     if (context.state.pagination.serviceId !== '0') {
       payload.service_id = context.state.pagination.serviceId
     }
-    console.log('ajax req', payload)
+    // console.log('ajax req', payload)
     // 根据payload发送请求
     const resServerList = await context.dispatch('fetchServerList', payload)
 

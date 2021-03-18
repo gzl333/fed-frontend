@@ -26,9 +26,9 @@ const actions: ActionTree<UserInterface, StateInterface> = {
       const decoded = jwtDecode<CstJwtInterface>(tokenAccess)
       // console.log(decoded)
       if (decoded.exp) {
-        // const timeOut = decoded.exp - Date.now() - 431990000 // 测试用，快速refresh
-        const timeOut = decoded.exp - Date.now() - 5000 // 到期时间前5秒钟更新token,到期时间小于5秒时立即尝试更新token
-        // console.log('retain timeout', timeOut)
+        // const timeOut = decoded.exp * 1000 - Date.now() - 3595000 // 测试用，快速refresh
+        const timeOut = decoded.exp * 1000 - Date.now() - 5000 // 到期时间前5秒钟更新token,到期时间小于5秒时立即尝试更新token
+        console.log('retain timeout', timeOut)
         setTimeout(() => {
           // https://stackoverflow.com/questions/63488141/promise-returned-in-function-argument-where-a-void-return-was-expected/63488201
           void (async () => {
@@ -53,7 +53,7 @@ const actions: ActionTree<UserInterface, StateInterface> = {
                   })
                 }
               }
-            } catch {
+            } catch (error) {
               void await context.dispatch('logoutCstUser')
             }
           })()
@@ -62,9 +62,12 @@ const actions: ActionTree<UserInterface, StateInterface> = {
     }
   },
   async fetchCstNewToken (context, refreshToken: string) {
-    // console.log('in refresh action')
     const api = cstApiBase + '/open/api/UMTOauthLogin/refreshToken'
-    const config = { params: { refreshToken: refreshToken } }
+    // 更新token时应删除请求头中的gosc token
+    delete axios.defaults.headers.common.Authorization
+    const config = {
+      params: { refreshToken: refreshToken }
+    }
     const response = await axios.post(api, null, config)
     return response
   },

@@ -2,8 +2,8 @@
   <div class="Vm">
     <div class="row no-wrap routerview-area">
 
-      <div v-if="isTreeOpen" class="col-1.5 items-center bg-nord6 q-py-sm q-px-sm tree-area">
-        <div class="tree-title q-px-xs">
+      <div v-if="isTreeOpen" class="col-1.5 items-center q-py-sm q-px-sm q-my-lg tree-area">
+        <div class="tree-title text-grey-7 text-center ">
           机构与数据中心
           <q-tooltip>
             正在使用的机构与数据中心
@@ -18,16 +18,16 @@
           selected-color="primary"
           v-model:selected="selectedTree"
         />
-<!--                <pre>{{ rows }}</pre>-->
+        <!--                <pre>{{ rows }}</pre>-->
         <!--        </q-scroll-area>-->
       </div>
 
       <div class="col-shrink btn-area">
-        <q-btn v-if="isTreeOpen" class="btn-close" unelevated color="nord9"
+        <q-btn v-if="isTreeOpen" class="btn-close" unelevated color="primary"
                icon="arrow_back_ios_new" size="xs" padding="30px 0px" @click="toggleTree">
           <q-tooltip>折叠机构树</q-tooltip>
         </q-btn>
-        <q-btn v-if="!isTreeOpen" class="btn-open" unelevated color="nord9"
+        <q-btn v-if="!isTreeOpen" class="btn-open" unelevated color="primary"
                icon="arrow_forward_ios" size="xs" padding="30px 0px" @click="toggleTree">
           <q-tooltip>展开机构树</q-tooltip>
         </q-btn>
@@ -40,7 +40,7 @@
           flat
           card-class=""
           table-class="text-nord0"
-          table-header-class="server-table-header bg-nord6"
+          table-header-class="server-table-header bg-grey-2"
           :title="`云主机所在节点：${tableTitle}`"
           :rows="rows"
           :columns="columns"
@@ -61,8 +61,14 @@
                 </q-btn>
               </div>
 
-              <div class="col text-primary text-h7 table-title">
-                正在展示：{{ tableTitle }}
+              <div class="col text-center">
+                <span class="text-grey-7 text-h7">
+                  正在展示：
+                </span>
+                <span class="text-primary text-h7">
+                  {{ tableTitle }}
+                </span>
+
               </div>
 
               <div class="col-shrink">
@@ -99,7 +105,7 @@
                          class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
                          @click="clickToCopy(props.row.ipv4)">
                     <q-tooltip>
-                      复制到剪切板
+                      复制
                     </q-tooltip>
                   </q-btn>
                   <q-btn v-show="hoverRow !== props.row.name"
@@ -118,10 +124,10 @@
                 {{ props.row.image }}
               </q-td>
               <q-td key="cpu" :props="props">
-                {{ props.row.vcpus }}
+                {{ props.row.vcpus }}核
               </q-td>
               <q-td key="ram" :props="props">
-                {{ props.row.ram }}
+                {{ props.row.ram }}MB
               </q-td>
               <q-td key="note" :props="props" class="table-td-note">
                 <div class="row">
@@ -200,7 +206,7 @@
                       开机
                     </q-tooltip>
                   </q-btn>
-                  <q-btn v-if="props.row.status=='运行中'" color="nord4" icon="stop" text-color="primary"
+                  <q-btn v-if="props.row.status=='运行中'" color="nord4" icon="power_settings_new" text-color="primary"
                          @click="vmOperation({endPoint: props.row.endpoint_url, id: props.row.id, action: 'shutdown'})">
                     <q-tooltip>
                       关机
@@ -563,19 +569,16 @@ export default defineComponent({
       })
     }
     // 复制信息到剪切板
-    let ipToCopy = ''
     const clickToCopy = async (text: string) => {
-      ipToCopy = text
       void await copyToClipboard(text).then(() => {
         $q.notify({
           color: 'primary',
-          message: `${ipToCopy} 已经复制到剪切板`,
+          message: `${text} 已经复制到剪切板`,
           // position: 'bottom-right',
           closeBtn: false,
           timeout: 1500
         })
       })
-      ipToCopy = ''
     }
     // tabel row hover
     const hoverRow = ref('')
@@ -625,59 +628,46 @@ export default defineComponent({
 <style lang="scss" scoped>
 .Vm {
 }
-
 .routerview-area {
-  height: calc(100vh - 114px);
+  height: calc(100vh - 115px);
   width: calc(100vw - 165px);
-}
 
+}
 .tree-area {
   //height: calc(100vh - 180px);
   min-width: calc(100vw / 9);
+  min-height: calc(100vh /5);
+  border-right: $grey-4 solid 1px;
 }
-
 .tree-title {
-  border-radius: 3px;
-  background-color: $nord9;
-  text-align: center;
-  color: white;
+  //border-radius: 3px;
+  //background-color: $nord9;
+  //text-align: center;
+  //color: white;
   line-height: 30px;
 }
-
 .btn-area {
   //border-right: 0.5px solid $nord9;
 }
-
 .btn-close {
   top: calc((100vh - 114px) / 2 - 50px);
   left: -22px;
-
 }
-
 .btn-open {
   top: calc((100vh - 114px) / 2 - 50px);
 }
-
-.table-title {
-  text-align: center;
-}
-
 .server-table-header {
   background-color: #999;
 }
-
 .table-td-ip {
   min-width: 160px;
 }
-
 .table-td-note {
   min-width: 240px;
 }
-
 .inner-loading {
   background-color: transparent;
 }
-
 .dropdown-items {
   text-align: center;
 }

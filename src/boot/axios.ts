@@ -38,7 +38,6 @@ const errorNotifier = (error: AxiosError) => {
 
 axios.interceptors.request.use(config => {
   // todo /server/相关请求节流：记录请求及时间，固定秒数内对同一id的操作请求被拦截并提示：  errorNotifier('msg') throw error
-
   // 使用server status的api时延时较长，关闭全局loading bar，使用组件自己的loading状态
   if (config.url?.indexOf('/status/')) {
     return config
@@ -53,11 +52,9 @@ axios.interceptors.request.use(config => {
 axios.interceptors.response.use(config => {
   Loading.hide()
   return config
-}, error => {
+}, (error: AxiosError) => {
   // 从小尺寸页面变成大尺寸页面时，如果选中了最后一页，会请求一个不存在的页面，此时的请求错误不该显示出来
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-  if (error.config.url.contains('server') && error.config.method === 'get') {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+  if (error.config.url!.includes('server') && error.config.method === 'get') {
     return error
   } else {
     Loading.hide()

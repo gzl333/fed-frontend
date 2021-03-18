@@ -8,6 +8,9 @@ import {
 } from './state'
 
 const mutation: MutationTree<UsageInterface> = {
+  deleteVpn (state, serviceId: string) {
+    state.vpn.delete(serviceId)
+  },
   storeVpn (state, payload: { serviceId: string, vpn: VpnInterface }) {
     state.vpn.set(payload.serviceId, payload.vpn)
   },
@@ -19,6 +22,9 @@ const mutation: MutationTree<UsageInterface> = {
   storeServerDetail (state, payload: ServerInterface) {
     state.serverDetail = payload
     console.log('state.serverDetail:', state.serverDetail)
+  },
+  storeServerDetailStatus (state, status: string) {
+    state.serverDetail.status = status
   },
   storeService (state, payload: ServiceInterface) {
     state.serviceList.push(payload)
