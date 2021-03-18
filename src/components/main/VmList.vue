@@ -55,16 +55,20 @@
                   <q-card-section class="col-5 flex flex-center">
                     <div v-if="item.status == '运行中'">
                       <q-icon style="font-size: 5em" class="text-nord14 q-mt-md"
-                        ><i class="fas fa-tv"></i
-                      ></q-icon>
+                        ><i class="fas fa-tv">
+                          <q-tooltip>点击进入VNC</q-tooltip></i
+                        ></q-icon
+                      >
                     </div>
                     <div v-if="item.status == '已关机'">
                       <q-icon style="font-size: 5em" class="text-nord14 q-mt-md"
-                        ><i class="fas fa-times"></i
-                      ></q-icon>
+                        ><i class="fas fa-times"
+                          ><q-tooltip>请开机以使用VNC</q-tooltip></i
+                        ></q-icon
+                      >
                     </div>
                     <div class="text-subtitle2 q-mt-md">
-                      {{ item.ip }}
+                      {{ item.ipv4 }}
                     </div>
                   </q-card-section>
                   <q-card-section class="text-white">
@@ -95,7 +99,7 @@
                         dense
                         @click="
                           vmOperation({
-                            endPoint: item.endPoint,
+                            endPoint: item.endpoint_url,
                             id: item.id,
                             action: 'shutdown',
                           })
@@ -109,7 +113,7 @@
                         dense
                         @click="
                           vmOperation({
-                            endPoint: item.endPoint,
+                            endPoint: item.endpoint_url,
                             id: item.id,
                             action: 'start',
                           })
@@ -147,54 +151,47 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
-    console.log('in setup')
-    $store.commit('usage/storePagination', {
+    // console.log('in setup')
+    $store.commit('quota/storePagination', {
       page: 1,
-      pageSize: 9
+      pageSize: 9,
+      serviceId: '0'
     })
 
-    // console.log('$store.state.usage.pagination.pageSize:', $store.state.usage.pagination.pageSize)
+    // console.log('$store.state.quota.pagination.pageSize:', $store.state.quota.pagination.pageSize)
 
-    void $store.dispatch('usage/updateServerList')
+    void $store.dispatch('quota/updateServerList')
     const serverList = computed(() => {
-      return $store.state.usage.serverList
+      return $store.state.quota.serverList
     })
 
-    // console.log('$store.state.usage.pagination.count:', $store.state.usage.pagination.count)
+    // console.log('$store.state.quota.pagination.count:', $store.state.quota.pagination.count)
     const pageCount = computed(() => {
-      if ($store.state.usage.pagination.count && $store.state.usage.pagination.pageSize) {
-        return Math.ceil($store.state.usage.pagination.count / $store.state.usage.pagination.pageSize)
+      if ($store.state.quota.pagination.count && $store.state.quota.pagination.pageSize) {
+        return Math.ceil($store.state.quota.pagination.count / $store.state.quota.pagination.pageSize)
       } else {
         return 1
       }
     })
     // console.log('pageCount:', pageCount)
 
-    // const paginationSelected = ref(1)
-    // watch(paginationSelected, () => {
-    //   // console.log('paginationSelected:', paginationSelected.value)
-    //   $store.commit('usage/storePagination', { page: paginationSelected.value })
-    //   void $store.dispatch('usage/updateServerList')
-    // })
-
     const paginationSelected = computed({
-      get: () => $store.state.usage.pagination.page,
+      get: () => $store.state.quota.pagination.page,
       set: (value) => {
-        console.log(value)
-        $store.commit('usage/storePagination', { page: value })
-        void $store.dispatch('usage/updateServerList')
+        $store.commit('quota/storePagination', { page: value })
+        void $store.dispatch('quota/updateServerList')
       }
     })
 
     // VNC
     const gotoVNC = async (payload: string) => {
-      const response = await $store.dispatch('usage/fetchServerVNC', payload)
+      const response = await $store.dispatch('quota/fetchServerVNC', payload)
       const url = response.data.vnc.url
       window.open(url)
     }
     // 云主机操作
     const vmOperation = (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
-      void $store.dispatch('usage/vmOperation', payload)
+      void $store.dispatch('quota/vmOperation', payload)
     }
 
     return {

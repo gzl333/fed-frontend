@@ -1,11 +1,31 @@
 import { MutationTree } from 'vuex'
-import { QuotaInterface } from './state'
+import { ServerInterface } from '../usage/state'
+import { QuotaInterface, PaginationInterface, UserQuotaInterface } from './state'
 
 // 注意此时context是store.state.quota，而不是store.state
 const mutation: MutationTree<QuotaInterface> = {
-  storeQuota (state: QuotaInterface, payload: QuotaInterface) {
+  storeQuota (state: QuotaInterface, payload: {userQuota: UserQuotaInterface;}) {
     state.userQuota = payload.userQuota
-    state.groupQuota = payload.groupQuota
+    // state.groupQuota = payload.groupQuota
+  },
+  storePagination (state, payload: PaginationInterface) {
+    // console.log('quota-payload:', payload)
+    for (const key in payload) {
+      // @ts-ignore
+      state.pagination[key] = payload[key]
+    }
+    // console.log('current store', state.pagination)
+  },
+  storeServerList (state, payload: ServerInterface[]) {
+    state.serverList = payload
+  },
+  storeServerStatus (state, payload: { id: string; status: string }) {
+    const currentServer = state.serverList.find((server) => {
+      return server.id === payload.id
+    })
+    if (currentServer) {
+      currentServer.status = payload.status
+    }
   }
 }
 

@@ -242,7 +242,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     if (context.state.pagination.serviceId !== '0') {
       payload.service_id = context.state.pagination.serviceId
     }
-    // console.log('ajax req', payload)
+    console.log('ajax req', payload)
     // 根据payload发送请求
     const resServerList = await context.dispatch('fetchServerList', payload)
 

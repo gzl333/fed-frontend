@@ -1,3 +1,5 @@
+import { ServerInterface } from '../usage/state'
+
 export interface ServersInterface {
   id: string;
   ip: string;
@@ -32,10 +34,20 @@ export interface UserQuotaInterface {
   userEmail: string;
   services: ServiceInterface[]; // 数据提供机构
 }
-
+export interface PaginationInterface {
+  count?: number;
+  page?: number;
+  pageSize?: number;
+  serviceId?: string;
+  serviceName?: string;
+  next?: string | null;
+  previous?: string | null;
+}
 export interface QuotaInterface {
   userQuota: UserQuotaInterface; // 用户配额
   groupQuota?: unknown;
+  pagination: PaginationInterface;
+  serverList: ServerInterface[];
 }
 
 export interface UquotaResponseResultsInterface {
@@ -132,7 +144,15 @@ function state (): QuotaInterface {
           }
         ]
       }]
-    }
+    },
+    pagination: {
+      count: 1,
+      page: 1,
+      pageSize: 1,
+      serviceId: '0',
+      serviceName: '全部节点'
+    },
+    serverList: []
   }
 }
 
