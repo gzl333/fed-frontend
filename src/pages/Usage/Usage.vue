@@ -21,7 +21,7 @@
           <q-route-tab
             disable
             name="disk"
-            icon="save"
+            icon="fas fa-compact-disc"
             label="云硬盘"
             class="q-px-xl"
             :ripple="false"
@@ -31,7 +31,7 @@
           <q-route-tab
             disable
             name="obs"
-            icon="sd_card"
+            icon="fas fa-database"
             label="对象存储"
             class="q-px-xl"
             :ripple="false"
@@ -51,7 +51,7 @@
       </div>
 
       <div class="row">
-        <q-scroll-area class="scroll-area">
+        <q-scroll-area class="scroll-area overflow-hidden">
           <router-view/>
         </q-scroll-area>
       </div>

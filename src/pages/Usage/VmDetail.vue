@@ -1,223 +1,276 @@
 <template>
   <div class="VmDetail">
-    <div class="column items-center justify-center routerview-area">
-      <div class="col-1 self-start title-area">
-        <div>
-          云主机详情
-          <q-btn class="back-btn" icon="arrow_back_ios_new" color="primary" flat unelevated dense
-                 :to="{path: '/my/usage/'}"/>
-        </div>
-      </div>
-
-      <div v-if=" !serverDetail.ipv4" class="col content-area loading">
-        <q-spinner
-          color="primary"
-          size="5em"
-          :thickness="2"
-        />
-      </div>
-
-      <div v-else class="col content-area">
-        <div class="row justify-center items-center q-pt-lg">
-          <div class="col-3 text-h5">
+    <div class="row routerview-area">
+      <div class="col-1"></div>
+      <div class="col">
+        <div class="column items-center justify-center ">
+          <div class="col-1 self-start title-area">
             <div>
-              {{ serverDetail.ipv4 }}
-              <q-btn
-                class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
-                @click="clickToCopy(serverDetail.ipv4)">
-                <q-tooltip>
-                  复制
-                </q-tooltip>
-              </q-btn>
+              云主机详情
+              <q-btn class="back-btn" icon="arrow_back_ios_new" color="primary" flat unelevated dense
+                     :to="{path: '/my/usage/'}"/>
             </div>
-            <div>
-              <q-chip v-if="!serverDetail.status" label="读取中" square color="nord4">
-                <q-inner-loading showing class="inner-loading">
-                  <q-spinner size="30px" color="nord9"/>
-                </q-inner-loading>
-              </q-chip>
-
-              <q-chip v-if="serverDetail.status === '无法获取状态'" outline color="nord11" text-color="white"
-                      label="无法获取状态" class="text-bold"/>
-              <q-chip v-if="serverDetail.status === '运行中'" square outline color="nord14" text-color="white"
-                      label="运行中" class="text-bold"/>
-              <q-chip v-if="serverDetail.status === '已屏蔽'" outline color="nord3" text-color="white"
-                      label="已屏蔽" class="text-bold"/>
-              <q-chip v-if="serverDetail.status === '已暂停'" outline color="nord3" text-color="white"
-                      label="已暂停" class="text-bold"/>
-              <q-chip v-if="serverDetail.status === '正在关机'" outline color="nord9" text-color="white"
-                      label="正在关机" class="text-bold"/>
-              <q-chip v-if="serverDetail.status === '已关机'" outline color="nord3" text-color="white"
-                      label="已关机" class="text-bold"/>
-              <q-chip v-if="serverDetail.status === '已崩溃'" outline color="nord11" text-color="white"
-                      label="已崩溃" class="text-bold"/>
-              <q-chip v-if="serverDetail.status === '被电源管理器挂起'" outline color="nord3" text-color="white"
-                      label="被电源管理器挂起" class="text-bold"/>
-              <q-chip v-if="serverDetail.status === '与宿主机通讯失败'" outline color="nord11" text-color="white"
-                      label="与宿主机通讯失败" class="text-bold"/>
-              <q-chip v-if="serverDetail.status === '已丢失'" outline color="nord11" text-color="white"
-                      label="已丢失" class="text-bold"/>
-              <q-chip v-if="serverDetail.status === '正在创建'" outline color="nord9" text-color="white"
-                      label="正在创建" class="text-bold"/>
-              <q-chip v-if="serverDetail.status === '创建失败'" outline color="nord11" text-color="white"
-                      label="创建失败" class="text-bold"/>
-            </div>
-
           </div>
-          <div class="col">
-          </div>
-        </div>
-        <div class="row justify-center items-center q-py-xl">
-          <div class="col-3">
-            <q-btn v-if="serverDetail.status=='运行中'" unelevated flat padding="none" size="lg" color="nord14" icon="computer"
-                   @click="gotoVNC(serverDetail.id)">
-            </q-btn>
-            <q-btn v-else unelevated color="nord3" flat padding="none" size="lg" icon="computer">
-              <q-tooltip>
-                请开机以使用VNC
-              </q-tooltip>
-            </q-btn>
 
-            <q-btn v-if="serverDetail.status=='已关机'" color="nord4" icon="play_arrow" text-color="primary" unelevated
-                   @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'start'})">
-              <q-tooltip>
-                开机
-              </q-tooltip>
-            </q-btn>
-            <q-btn v-if="serverDetail.status=='运行中'" color="nord4" icon="power_settings_new" text-color="primary" unelevated
-                   @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'shutdown'})">
-              <q-tooltip>
-                关机
-              </q-tooltip>
-            </q-btn>
+          <div v-if=" !serverDetail.ipv4" class="col content-area loading">
+            <q-spinner
+              color="primary"
+              size="5em"
+              :thickness="2"
+            />
           </div>
-          <div class="col">
-          </div>
-        </div>
-        <div class="row justify-center">
-          <div class="col-4">
-            <div class="row">
-              <div class="col-2">
-                <div class="q-pb-md text-grey-7">
-                  ID
-                </div>
 
-                <div class="q-pb-md text-grey-7">
-                  CPU
-                </div>
-                <div class="q-pb-md text-grey-7">
-                  内存
-                </div>
-                <div class="q-pb-md text-grey-7">
-                  公网IP
-                </div>
-                <div class="q-pb-md text-grey-7">
-                  系统镜像
-                </div>
-                <div class="q-pb-md text-grey-7">
-                  创建时间
-                </div>
-                <div class="q-pb-md text-grey-7">
-                  过期时间
-                </div>
-                <div class="q-pb-md text-grey-7">
-                  备注
-                </div>
-              </div>
-              <div class="col">
-                <div class="q-pb-md">
-                  {{ serverDetail.id }}
+          <div v-else class="col content-area">
+            <div class="row justify-center items-center q-pt-lg">
+              <div class="col-4 text-h5">
+                <div>
+                  {{ serverDetail.ipv4 }}
                   <q-btn
                     class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
-                    @click="clickToCopy(serverDetail.id)">
+                    @click="clickToCopy(serverDetail.ipv4)">
                     <q-tooltip>
                       复制
                     </q-tooltip>
                   </q-btn>
                 </div>
-                <div class="q-pb-md">
-                  {{ serverDetail.vcpus }}核
+                <div>
+                  <q-chip v-if="!serverDetail.status" label="操作中" square color="nord4">
+                    <q-inner-loading showing class="inner-loading">
+                      <q-spinner size="30px" color="nord9"/>
+                    </q-inner-loading>
+                  </q-chip>
+
+                  <q-chip v-if="serverDetail.status === '无法获取状态'" outline color="nord11" text-color="white"
+                          label="无法获取状态" class="text-bold"/>
+                  <q-chip v-if="serverDetail.status === '运行中'" outline color="nord14" text-color="white"
+                          label="运行中" class="text-bold"/>
+                  <q-chip v-if="serverDetail.status === '已屏蔽'" outline color="nord3" text-color="white"
+                          label="已屏蔽" class="text-bold"/>
+                  <q-chip v-if="serverDetail.status === '已暂停'" outline color="nord3" text-color="white"
+                          label="已暂停" class="text-bold"/>
+                  <q-chip v-if="serverDetail.status === '正在关机'" outline color="nord9" text-color="white"
+                          label="正在关机" class="text-bold"/>
+                  <q-chip v-if="serverDetail.status === '已关机'" outline color="nord3" text-color="white"
+                          label="已关机" class="text-bold"/>
+                  <q-chip v-if="serverDetail.status === '已崩溃'" outline color="nord11" text-color="white"
+                          label="已崩溃" class="text-bold"/>
+                  <q-chip v-if="serverDetail.status === '被电源管理器挂起'" outline color="nord3" text-color="white"
+                          label="被电源管理器挂起" class="text-bold"/>
+                  <q-chip v-if="serverDetail.status === '与宿主机通讯失败'" outline color="nord11" text-color="white"
+                          label="与宿主机通讯失败" class="text-bold"/>
+                  <q-chip v-if="serverDetail.status === '已丢失'" outline color="nord11" text-color="white"
+                          label="已丢失" class="text-bold"/>
+                  <q-chip v-if="serverDetail.status === '正在创建'" outline color="nord9" text-color="white"
+                          label="正在创建" class="text-bold"/>
+                  <q-chip v-if="serverDetail.status === '创建失败'" outline color="nord11" text-color="white"
+                          label="创建失败" class="text-bold"/>
                 </div>
-                <div class="q-pb-md">
-                  {{ serverDetail.ram }}MB
-                </div>
-                <div class="q-pb-md">
-                  {{ serverDetail.public_ip ? '是' : '否' }}
-                </div>
-                <div class="q-pb-md">
-                  {{ serverDetail.image }}
-                </div>
-                <div class="q-pb-md">
-                  {{ serverDetail.creation_time }}
-                </div>
-                <div class="q-pb-md">
-                  {{ serverDetail.expiration_time || '永久有效' }}
-                </div>
-                <div class="q-pb-md">
-                  {{ serverDetail.remarks }}
-                </div>
+
+              </div>
+              <div class="col q-gutter-lg">
+                <q-btn v-if="serverDetail.status=='运行中'"
+                       :disable="!serverDetail.status"
+                       unelevated flat padding="none" size="lg" color="primary" icon="computer"
+                       @click="gotoVNC(serverDetail.id)">
+                  <q-tooltip>
+                    使用VNC
+                  </q-tooltip>
+                </q-btn>
+                <q-btn v-else
+                       :disable="!serverDetail.status"
+                       unelevated color="grey-5" flat padding="none" size="lg" icon="computer">
+                  <q-tooltip>
+                    请开机以使用VNC
+                  </q-tooltip>
+                </q-btn>
+
+                <q-btn :disable="!serverDetail.status || serverDetail.status === '运行中'"
+                       color="nord4" icon="play_arrow" text-color="primary"
+                       unelevated flat padding="none" size="lg"
+                       @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'start'})">
+                  <q-tooltip>
+                    开机
+                  </q-tooltip>
+                </q-btn>
+
+                <q-btn :disable="!serverDetail.status || serverDetail.status === '已关机'"
+                       color="nord4" icon="power_settings_new" text-color="primary"
+                       unelevated flat padding="none" size="lg"
+                       @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'shutdown'})">
+                  <q-tooltip>
+                    关机
+                  </q-tooltip>
+                </q-btn>
+
+                <q-btn :disable="!serverDetail.status || serverDetail.status === '已关机'"
+                       color="nord4" icon="restart_alt" text-color="primary"
+                       unelevated flat padding="none" size="lg"
+                       @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'reboot'})">
+                  <q-tooltip>
+                    重启
+                  </q-tooltip>
+                </q-btn>
+
+                <q-btn :disable="!serverDetail.status || serverDetail.status === '已关机'"
+                       color="nord4" icon="power_off" text-color="primary"
+                       unelevated flat padding="none" size="lg"
+                       @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'poweroff'})">
+                  <q-tooltip>
+                    强制断电
+                  </q-tooltip>
+                </q-btn>
+
+                <q-btn :disable="!serverDetail.status || serverDetail.status === '运行中'"
+                       color="nord4" icon="delete" text-color="primary"
+                       unelevated flat padding="none" size="lg"
+                       @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'delete'})">
+                  <q-tooltip>
+                    删除
+                  </q-tooltip>
+                </q-btn>
+
+                <q-btn :disable="!serverDetail.status"
+                       color="nord4" icon="delete_forever" text-color="primary"
+                       unelevated flat padding="none" size="lg"
+                       @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'delete_force'})">
+                  <q-tooltip>
+                    强制删除
+                  </q-tooltip>
+                </q-btn>
               </div>
             </div>
-          </div>
+            <div class="row justify-center items-center q-py-xl ">
+              <div class="col-3 button-area q-gutter-lg">
 
-          <div class="col-8 justify-start">
-            <div class="row">
-              <div class="col-1">
-                <div class="q-pb-md text-grey-7">
-                  数据中心
-                </div>
-                <div class="q-pb-md text-grey-7">
-                  服务类型
-                </div>
-                <div class="q-pb-md text-grey-7">
-                  配额
-                </div>
-                <div class="q-pb-md text-grey-7">
-                  VPN 用户名
-                </div>
-                <div class="q-pb-md text-grey-7">
-                  VPN 密码
-                </div>
-                <div class="q-pb-md text-grey-7">
-                  VPN 配置
-                </div>
-                <div class="q-pb-md text-grey-7">
-                  VPN CA证书
-                </div>
               </div>
               <div class="col">
-                <div class="q-pb-md">
-                  {{ serverDetail.service.name }}
-                </div>
-                <div class="q-pb-md">
-                  {{ serverDetail.service.service_type }}
-                </div>
-                <div class="q-pb-md">
-                  {{ serverDetail.user_quota.display }}
-                </div>
-                <div class="q-pb-md">
-                  {{ vpnDetail.username }}
-                  <q-btn
-                    class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
-                    @click="clickToCopy(vpnDetail.username)">
-                    <q-tooltip>
-                      复制
-                    </q-tooltip>
-                  </q-btn>
-                </div>
-                <div class="q-pb-md row q-gutter-md">
+              </div>
+            </div>
+            <div class="row justify-center">
+              <div class="col-4">
+                <div class="row">
+                  <div class="col-2">
+                    <div class="q-pb-md text-grey-7">
+                      ID
+                    </div>
 
-                  <q-input class="password-input"
-                           :loading="isLoading"
-                           v-model="vpnDetail.password" :type="isPwd ? 'password' : 'text'"
-                           readonly borderless dense square outlined>
-                    <template v-slot:prepend>
-                      <q-icon
-                        :name="isPwd ? 'visibility' : 'visibility_off'"
-                        @click="isPwd = !isPwd"
-                      />
-                    </template>
-                    <template v-slot:append>
+                    <div class="q-pb-md text-grey-7">
+                      CPU
+                    </div>
+                    <div class="q-pb-md text-grey-7">
+                      内存
+                    </div>
+                    <div class="q-pb-md text-grey-7">
+                      公网IP
+                    </div>
+                    <div class="q-pb-md text-grey-7">
+                      系统镜像
+                    </div>
+                    <div class="q-pb-md text-grey-7">
+                      创建时间
+                    </div>
+                    <div class="q-pb-md text-grey-7">
+                      过期时间
+                    </div>
+                    <div class="q-pb-md text-grey-7">
+                      备注
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="q-pb-md">
+                      {{ serverDetail.id }}
+                      <q-btn
+                        class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
+                        @click="clickToCopy(serverDetail.id)">
+                        <q-tooltip>
+                          复制
+                        </q-tooltip>
+                      </q-btn>
+                    </div>
+                    <div class="q-pb-md">
+                      {{ serverDetail.vcpus }}核
+                    </div>
+                    <div class="q-pb-md">
+                      {{ serverDetail.ram }}MB
+                    </div>
+                    <div class="q-pb-md">
+                      {{ serverDetail.public_ip ? '是' : '否' }}
+                    </div>
+                    <div class="q-pb-md">
+                      {{ serverDetail.image }}
+                    </div>
+                    <div class="q-pb-md">
+                      {{ serverDetail.creation_time }}
+                    </div>
+                    <div class="q-pb-md">
+                      {{ serverDetail.expiration_time || '永久有效' }}
+                    </div>
+                    <div class="q-pb-md">
+                      {{ serverDetail.remarks }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-8 justify-start">
+                <div class="row">
+                  <div class="col-1">
+                    <div class="q-pb-md text-grey-7">
+                      数据中心
+                    </div>
+                    <div class="q-pb-md text-grey-7">
+                      服务类型
+                    </div>
+                    <div class="q-pb-md text-grey-7">
+                      配额
+                    </div>
+                    <div class="q-pb-md text-grey-7">
+                      VPN 用户名
+                    </div>
+                    <div class="q-pb-md text-grey-7">
+                      VPN 密码
+                    </div>
+                    <div class="q-pb-md text-grey-7">
+                      VPN 配置文件
+                    </div>
+                    <div class="q-pb-md text-grey-7">
+                      VPN CA证书
+                    </div>
+                  </div>
+                  <div class="col">
+                    <div class="q-pb-md">
+                      {{ serverDetail.service.name }}
+                    </div>
+                    <div class="q-pb-md">
+                      {{ serverDetail.service.service_type }}
+                    </div>
+                    <div class="q-pb-md">
+                      {{ serverDetail.user_quota.display }}
+                    </div>
+                    <div class="q-pb-md">
+                      {{ vpnDetail.username }}
+                      <q-btn
+                        class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
+                        @click="clickToCopy(vpnDetail.username)">
+                        <q-tooltip>
+                          复制
+                        </q-tooltip>
+                      </q-btn>
+                    </div>
+                    <div class="q-pb-md row q-gutter-md">
+
+                      <q-input class="password-input"
+                               :loading="isLoading"
+                               v-model="vpnDetail.password" :type="isPwd ? 'password' : 'text'"
+                               readonly borderless dense square outlined>
+                        <template v-slot:prepend>
+                          <q-icon
+                            :name="isPwd ? 'visibility' : 'visibility_off'"
+                            @click="isPwd = !isPwd"
+                          />
+                        </template>
+                      </q-input>
+
                       <q-btn
                         class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
                         @click="clickToCopy(vpnDetail.password)">
@@ -225,27 +278,29 @@
                           复制
                         </q-tooltip>
                       </q-btn>
-                    </template>
-                  </q-input>
 
-                  <q-btn label="修改密码" padding="none" dense flat color="primary"
-                         @click="popEdit(serverDetail.service.id, vpnDetail.password)"/>
+                      <q-btn label="修改密码" padding="none" dense flat color="primary"
+                             @click="popEdit(serverDetail.service.id, vpnDetail.password)"/>
 
-                </div>
-                <div class="q-pb-sm">
-                  <q-btn label="下载" class=" " color="primary" padding="none" dense flat @click="fetchConfig"/>
-                </div>
-                <div class="q-pb-md">
-                  <q-btn label="下载" class="" color="primary" padding="none" dense flat @click="fetchCa"/>
-                </div>
+                    </div>
+                    <div class="q-pb-sm">
+                      <q-btn label="下载" class=" " color="primary" padding="none" dense flat @click="fetchConfig"/>
+                    </div>
+                    <div class="q-pb-md">
+                      <q-btn label="下载" class="" color="primary" padding="none" dense flat @click="fetchCa"/>
+                    </div>
 
+                  </div>
+                </div>
               </div>
+
             </div>
           </div>
-
         </div>
       </div>
+      <div class="col-1"></div>
     </div>
+
   </div>
 
 </template>
@@ -339,6 +394,7 @@ export default defineComponent({
         })
       })
     }
+
     // 云主机操作
     const vmOperation = (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
       void $store.dispatch('usage/serverDetailOperation', payload)
@@ -398,7 +454,7 @@ export default defineComponent({
   color: $primary;
   font-size: large;
   font-weight: bold;
-  border-bottom: $primary 2px solid;
+  //border-bottom: $primary 2px solid;
 }
 
 .loading {
@@ -409,6 +465,9 @@ export default defineComponent({
 .content-area {
   margin-left: 140px;
   width: calc(100vw - 200px);
+}
+.button-area {
+
 }
 
 .ip-title {
@@ -422,6 +481,6 @@ export default defineComponent({
 
 .password-input {
   height: 20px;
-  width: 300px;
+  width: 280px;
 }
 </style>

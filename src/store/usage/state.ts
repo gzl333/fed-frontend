@@ -15,9 +15,7 @@ export interface ReqServerNote {
 // 当前展示的云主机数据接口
 export interface ResServerStatusInterface {
   status: {
-    // eslint-disable-next-line camelcase
     status_code: number;
-    // eslint-disable-next-line camelcase
     status_text: string;
   }
 }
@@ -32,28 +30,6 @@ export interface PaginationInterface {
   previous?: string | null;
 }
 
-// export interface ServerInterface {
-//   id: string;
-//   name: string;
-//   isIpPublic: boolean;
-//   ip: string;
-//   // dataCenterId?: string;
-//   // dataCenterName?: string;
-//   serviceId?: string;
-//   serviceName?: string;
-//   serviceType?: string;
-//   image: string;
-//   cpu: string;
-//   ram: string;
-//   endPoint: string;
-//   vnc?: string;
-//   daysRemain?: number; // 到期时间
-//   source?: string; // 资源来源
-//   note?: string; // 备注
-//   status?: string; // 设备状态
-//   timeCreate?: string; // 创建时间
-//   charge?: string; // 计费
-// }
 export interface ServerInterface {
   // 以下结构来自api response
   id: string;
@@ -93,18 +69,14 @@ export interface ResServerInterface {
   vcpus: number;
   ram: number;
   ipv4: string;
-  // eslint-disable-next-line camelcase
   public_ip: boolean;
   image: string;
-  // eslint-disable-next-line camelcase
   creation_time: string;
   remarks: string;
-  // eslint-disable-next-line camelcase
   endpoint_url: string;
   service: {
     id: string;
     name: string;
-    // eslint-disable-next-line camelcase
     service_type: string;
   }
 }
@@ -118,9 +90,7 @@ export interface ResServerListInterface {
 
 export interface ReqServerListInterface {
   page?: number;
-  // eslint-disable-next-line camelcase
   page_size?: number;
-  // eslint-disable-next-line camelcase
   service_id?: string;
 }
 
@@ -128,14 +98,10 @@ export interface ReqServerListInterface {
 export interface ResServiceResultInterface {
   id: string;
   name: string;
-  // eslint-disable-next-line camelcase
   service_type: string;
-  // eslint-disable-next-line camelcase
   add_time: string;
-  // eslint-disable-next-line camelcase
   need_vpn: boolean;
   status: number;
-  // eslint-disable-next-line camelcase
   data_center: {
     id: string;
     name: string;
@@ -172,7 +138,7 @@ export interface DataCenterInterface {
   children: DataPointInterface[];
 }
 
-export interface DataRootInterface {
+export interface TreeRootInterface {
   key: '0';
   label: '全部节点';
   icon?: string;
@@ -211,35 +177,21 @@ export interface ServiceInterface {
   flavors: FlavorInterface[]
 }
 
-// export interface ServerDetailInterface {
-//   id: string;
-//   name?: string;
-//   vcpus?: number;
-//   ram?: number;
-//   ipv4?: string;
-//   public_ip?: boolean;
-//   image?: string;
-//   creation_time?: string;
-//   remarks?: string;
-//   endpoint_url?: string;
-//   service?: {
-//     id: string;
-//     name: string;
-//     service_type: string;
-//   }
-// }
-
 export interface VpnInterface {
+  // 来自api
   username: string;
   password: string;
   active: boolean;
   create_time: string;
   modified_time: string;
+  // 以下结构是本地所需，额外添加
+  serviceId: string;
+  serviceName?: string;
 }
 
 // Usage总接口
 export interface UsageInterface {
-  dataPointTree: DataRootInterface[];
+  dataPointTree: TreeRootInterface[];
   serverList: ServerInterface[];
   // dataPointOnShow: DataPointOnShowInterface;
   pagination: PaginationInterface;

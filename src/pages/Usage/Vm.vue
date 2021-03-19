@@ -95,7 +95,7 @@
                   <div class="col">
                     <q-btn :label="props.row.ipv4" :to="{path: '/my/usage/vmdetail'}" color="primary" flat dense
                            unelevated
-                           @click="updateServerDetail(props.row.id, props.row.service.id)">
+                           @click="updateServerDetail(props.row.id, props.row.service.id, props.row.service.name)">
                       <q-tooltip>
                         进入详情页面
                       </q-tooltip>
@@ -138,7 +138,7 @@
                          class="col-shrink q-px-xs text-nord9" flat icon="edit" size="xs"
                          @click="popEdit(props.row.ipv4, props.row.id, props.row.remarks)">
                     <q-tooltip>
-                      编辑备注信息
+                      编辑备注
                     </q-tooltip>
                   </q-btn>
                   <q-btn v-show="hoverRow !== props.row.name"
@@ -148,10 +148,11 @@
                 </div>
               </q-td>
               <q-td key="vnc" :props="props" class="non-selectable">
-                <q-btn v-if="props.row.status=='运行中'" unelevated color="nord14" icon="computer"
+                <q-btn v-if="props.row.status=='运行中'" unelevated flat padding="none" size="lg" color="nord14"
+                       icon="computer"
                        @click="gotoVNC(props.row.id)">
                 </q-btn>
-                <q-btn v-else unelevated color="nord3" icon="computer">
+                <q-btn v-else unelevated flat padding="none" size="lg" color="grey-5" icon="computer">
                   <q-tooltip>
                     请开机以使用VNC
                   </q-tooltip>
@@ -159,7 +160,7 @@
               </q-td>
               <q-td key="status" :props="props" class="non-selectable">
 
-                <q-chip v-if="!props.row.status" label="读取中" square color="nord4">
+                <q-chip v-if="!props.row.status" label="操作中" color="nord4">
                   <q-inner-loading showing class="inner-loading">
                     <q-spinner size="30px" color="nord9"/>
                   </q-inner-loading>
@@ -522,7 +523,7 @@ export default defineComponent({
         $q.notify({
           spinner: true,
           timeout: 4000,
-          color: 'nord9',
+          color: 'primary',
           message: `正在删除IP地址为：${payload.ip || ''} 的云主机，请稍候`,
           closeBtn: false
         })
@@ -589,11 +590,14 @@ export default defineComponent({
       hoverRow.value = ''
     }
     // 进入server detail页面前，更新单个server的具体信息
-    const updateServerDetail = (id: string, serviceId: string) => {
+    const updateServerDetail = (id: string, serviceId: string, serviceName: string) => {
       // server实例信息
       void $store.dispatch('usage/updateServerInfo', id)
       // vpn 信息
-      void $store.dispatch('usage/updateVpn', serviceId)
+      void $store.dispatch('usage/updateVpn', {
+        serviceId,
+        serviceName
+      })
     }
     return {
       $store,
@@ -628,17 +632,20 @@ export default defineComponent({
 <style lang="scss" scoped>
 .Vm {
 }
+
 .routerview-area {
   height: calc(100vh - 115px);
   width: calc(100vw - 165px);
 
 }
+
 .tree-area {
   //height: calc(100vh - 180px);
-  min-width: calc(100vw / 9);
-  min-height: calc(100vh /5);
+  min-width: calc(100vw / 7);
+  min-height: calc(100vh / 5);
   border-right: $grey-4 solid 1px;
 }
+
 .tree-title {
   //border-radius: 3px;
   //background-color: $nord9;
@@ -646,28 +653,36 @@ export default defineComponent({
   //color: white;
   line-height: 30px;
 }
+
 .btn-area {
   //border-right: 0.5px solid $nord9;
 }
+
 .btn-close {
   top: calc((100vh - 114px) / 2 - 50px);
   left: -22px;
 }
+
 .btn-open {
   top: calc((100vh - 114px) / 2 - 50px);
 }
+
 .server-table-header {
   background-color: #999;
 }
+
 .table-td-ip {
   min-width: 160px;
 }
+
 .table-td-note {
   min-width: 240px;
 }
+
 .inner-loading {
   background-color: transparent;
 }
+
 .dropdown-items {
   text-align: center;
 }

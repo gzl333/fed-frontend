@@ -6,7 +6,7 @@
     :breakpoint="0"
     class="bg-nord3 text-white"
   >
-    <q-scroll-area class="fit non-selectable">
+    <q-scroll-area class="fit non-selectable overflow-hidden">
       <q-list>
         <q-item
           clickable

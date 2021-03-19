@@ -1,7 +1,7 @@
 import { MutationTree } from 'vuex'
 import {
   UsageInterface,
-  DataRootInterface,
+  TreeRootInterface,
   ServerInterface,
   // DataPointOnShowInterface,
   PaginationInterface, ReqServerNote, ServiceInterface, VpnInterface
@@ -11,8 +11,12 @@ const mutation: MutationTree<UsageInterface> = {
   deleteVpn (state, serviceId: string) {
     state.vpn.delete(serviceId)
   },
-  storeVpn (state, payload: { serviceId: string, vpn: VpnInterface }) {
-    state.vpn.set(payload.serviceId, payload.vpn)
+  storeVpn (state, payload: { serviceId: string; serviceName: string; vpn: VpnInterface }) {
+    state.vpn.set(payload.serviceId, {
+      ...payload.vpn,
+      serviceId: payload.serviceId,
+      serviceName: payload.serviceName
+    })
   },
   // 清除当前展示的云主机详情信息
   clearServerDetail (state) {
@@ -29,7 +33,7 @@ const mutation: MutationTree<UsageInterface> = {
   storeService (state, payload: ServiceInterface) {
     state.serviceList.push(payload)
   },
-  storeDataPointTree (state, payload: DataRootInterface[]) {
+  storeDataPointTree (state, payload: TreeRootInterface[]) {
     state.dataPointTree = payload
   },
   storeServerList (state, payload: ServerInterface[]) {

@@ -1,18 +1,180 @@
 <template>
-  <div class="Vpn">this is Vpn</div>
+  <div class="row routerview-area">
+    <div class="col-2"></div>
+    <div class="col column">
+      <div v-for="vpn in vpnMap" class="col-3 section q-gutter-sm">
+        <div class="row">
+          <div class="col-2 q-pb-lg text-primary">
+            {{ vpn[1].serviceName }}
+          </div>
+          <div class="col"></div>
+        </div>
+        <div class="row">
+          <div class="col-2 text-grey-7">
+            VPN 用户名
+          </div>
+          <div class="col">
+            {{ vpn[1].username }}
+            <q-btn
+              class="col-shrink q-px-xs text-primary" flat icon="content_copy" size="xs"
+              @click="clickToCopy(vpn[1].username)">
+              <q-tooltip>
+                复制
+              </q-tooltip>
+            </q-btn>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-2 text-grey-7">
+            VPN 密码
+          </div>
+          <div class="col row q-gutter-sm">
+            <q-input class="password-input"
+                     :loading="isLoading"
+                     v-model="vpn[1].password" :type="isPwd ? 'password' : 'text'"
+                     readonly borderless dense square outlined>
+              <template v-slot:prepend>
+                <q-icon
+                  :name="isPwd ? 'visibility' : 'visibility_off'"
+                  @click="isPwd = !isPwd"
+                />
+              </template>
+            </q-input>
+            <!--            {{ vpn[1].password }}-->
+            <q-btn
+              class="col-shrink q-px-xs text-primary" flat icon="content_copy" size="xs"
+              @click="clickToCopy(vpn[1].password)">
+              <q-tooltip>
+                复制
+              </q-tooltip>
+            </q-btn>
+
+            <q-btn label="修改密码" padding="none" dense flat color="primary"
+                   @click="popEdit(vpn[1].serviceId, vpn[1].serviceName, vpn[1].password)"/>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-2 text-grey-7">
+            VPN 配置文件
+          </div>
+          <div class="col">
+            <q-btn label="下载" class=" " color="primary" padding="none" dense flat
+                   @click="fetchConfig(vpn[1].serviceId)"/>
+
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-2 text-grey-7">
+            VPN CA证书
+          </div>
+          <div class="col">
+            <q-btn label="下载" class="" color="primary" padding="none" dense flat @click="fetchCa(vpn[1].serviceId)"/>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-3 section">
+      vpn使用说明：
+      待补充
+      <!--      <pre>{{ vpnMap }}</pre>-->
+    </div>
+    <div class="col-2"></div>
+  </div>
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
+import { StateInterface } from 'src/store'
+import { copyToClipboard, useQuasar } from 'quasar'
 
 export default defineComponent({
   name: 'Vpn',
-  components: {
-  },
-  props: {
-  },
+  components: {},
+  props: {},
   setup () {
+    const $store = useStore<StateInterface>()
+    const $q = useQuasar()
+
+    void $store.dispatch('usage/updateVpnAll')
+    const vpnMap = computed(() => $store.state.usage.vpn)
+
+    // 复制信息到剪切板
+    const clickToCopy = async (text: string) => {
+      void await copyToClipboard(text).then(() => {
+        $q.notify({
+          color: 'primary',
+          message: `${text} 已经复制到剪切板`,
+          // position: 'bottom-right',
+          closeBtn: false,
+          timeout: 1500
+        })
+      })
+    }
+
+    // password可见性
+    const isPwd = ref(true)
+
+    // 修改密码loading状态
+    const isLoading = ref(false)
+    // vpn 修改密码
+    const popEdit = (serviceId: string, serviceName: string, password: string) => {
+      $q.dialog({
+        title: `修改${serviceName}的VPN密码`,
+        message: '新密码长度为6-64位',
+        prompt: {
+          model: `${password}`,
+          counter: true,
+          maxlength: 64,
+          isValid: (val: string) => {
+            if (val.trim().length < 6 || val.trim().length > 64) {
+              return false
+            } else {
+              return true
+            }
+          },
+          type: 'text' // optional
+        },
+        color: 'primary',
+        cancel: true
+      }).onOk((data: string) => {
+        isLoading.value = true
+        const payload = {
+          serviceId: serviceId,
+          password: data.trim()
+        }
+        void $store.dispatch('usage/patchVpnPassword', payload).then((value) => {
+          $store.commit('usage/storeVpn', {
+            serviceId,
+            serviceName,
+            vpn: value.data.vpn
+          })
+          isLoading.value = false
+        }
+        ).catch(() => {
+          isLoading.value = false
+        }
+        )
+      })
+    }
+
+    const fetchCa = (serviceId: string) => {
+      const url = 'http://gosc.cstcloud.cn/api/vpn/' + serviceId + '/ca/'
+      window.open(url)
+    }
+    // download vpn config
+    const fetchConfig = (serviceId: string) => {
+      const url = 'http://gosc.cstcloud.cn/api/vpn/' + serviceId + '/config/'
+      window.open(url)
+    }
     return {
+      vpnMap,
+      isPwd,
+      isLoading,
+      popEdit,
+      fetchCa,
+      fetchConfig,
+      clickToCopy
     }
   }
 })
@@ -20,5 +182,21 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .Vpn {
+}
+
+.routerview-area {
+  height: calc(100vh - 115px);
+  width: calc(100vw - 165px);
+}
+
+.section {
+  margin: 30px 30px;
+  padding: 10px 20px;
+  border: 1px solid $grey-4;
+  border-radius: 5px;
+}
+.password-input {
+  height: 20px;
+  width: 280px;
 }
 </style>

@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import {
   UsageInterface,
-  DataRootInterface,
+  TreeRootInterface,
   ResServiceResultInterface,
   ReqServerListInterface,
   // ResServerInterface,
@@ -57,10 +57,23 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     const response = await axios.patch(api, data)
     return response
   },
-  async updateVpn (context, serviceId: string) {
-    const respFetchVpn = await context.dispatch('fetchVpn', serviceId)
+  // 获取并存储全部用户有关的vpn信息
+  async updateVpnAll (context) {
+    // 获取用户全部相关service
+    const respFetchService = await context.dispatch('fetchService', { available_only: true })
+    for (const service of respFetchService.data.results) {
+      // 拿到每个service， 用service.id获取并更新单个vpn信息
+      void await context.dispatch('updateVpn', {
+        serviceId: service.id,
+        serviceName: service.name
+      })
+    }
+  },
+  // 获取并存储单个vpn信息
+  async updateVpn (context, payload: { serviceId: string; serviceName: string }) {
+    const respFetchVpn = await context.dispatch('fetchVpn', payload.serviceId)
     context.commit('storeVpn', {
-      serviceId: serviceId,
+      ...payload,
       vpn: respFetchVpn.data.vpn
     })
   },
@@ -190,16 +203,25 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     }
     return response
   },
-  async fetchService () { // todo 按照分页修改
+  async fetchService (context, payload?: { page?: number; page_size?: number; center_id?: string; available_only?: boolean; }) { // todo 按照分页修改
     const api = apiBase + '/service/'
-    const response = await axios.get(api)
+    let response
+    if (payload) {
+      const config = {
+        params: payload
+      }
+      response = await axios.get(api, config)
+    } else {
+      response = await axios.get(api)
+    }
     return response
   },
   async updateDataPointTree (context) {
-    const response = await context.dispatch('fetchService')
+    // 获取全部与用户有关的service
+    const response = await context.dispatch('fetchService', { available_only: true })
     const results: ResServiceResultInterface[] = response.data.results
     // translate response to dataPointTree
-    const dataPointTree: DataRootInterface[] = [{
+    const dataPointTree: TreeRootInterface[] = [{
       key: '0',
       label: '全部节点',
       icon: 'storage',
