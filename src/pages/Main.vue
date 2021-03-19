@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, onMounted, onUpdated } from 'vue'
 import VmList from 'src/components/main/VmList.vue'
 // import TodoList, { ToDoProp } from 'src/components/main/TodoList.vue'
 import WarningList from 'src/components/main/WarningList.vue'
@@ -76,6 +76,7 @@ export default defineComponent({
     // const updateUnpaid = (unpaid: number) => {
     //   todoList.unpaid = unpaid
     // }
+
     return {
       // todo,
       // updateUnpaid,

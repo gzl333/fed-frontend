@@ -1,6 +1,6 @@
 <template>
   <div class="WarningList">
-    <q-card flat bordered class="my-card">
+    <q-card flat bordered class="my-card q-mt-md">
       <q-card-section class="bg-nord8 text-white">
         <div class="text-h6 text-weight-bold">资源到期预警</div>
       </q-card-section>
@@ -49,7 +49,7 @@
               </q-card-section>
             </q-card>
           </div>
-          <div class="col">
+          <div class="col" style="visibility: hidden">
             <q-card class="inner-card bg-nord10 text-white" flat>
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
@@ -65,7 +65,7 @@
               </q-card-section>
             </q-card>
           </div>
-          <div class="col">
+          <div class="col" style="visibility: hidden">
             <q-card class="inner-card bg-nord14 text-white" flat>
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
@@ -127,9 +127,12 @@ export default defineComponent({
 }
 .my-card {
   width: 100%;
-  height: 210px;
+  height: calc(100vh - 114px - 67vh);
+  width: calc(100vw - 165px - 49vw);
 }
 .inner-card {
   width: 90%;
+  width: calc(100vw - 165px - 82vw);
+  height: calc(100vh - 114px - 77vh);
 }
 </style>

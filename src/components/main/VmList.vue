@@ -41,11 +41,13 @@
         </div>
       </q-card-section>
       <q-card-section v-if="searchContent !== ''" class="height: 650px;">
+        {{ searchContent }},{{ resultServerList }}
       </q-card-section>
       <q-card-section v-if="searchContent === ''" class="height: 650px;">
         <div class="q-pl-lg q-pr-lg flex flex-center">
           第 {{ paginationSelected }} 页 ，共 {{ pageCount }} 页
           <q-space />
+
           <q-pagination
             v-model="paginationSelected"
             :max="pageCount"
@@ -54,6 +56,7 @@
           >
           </q-pagination>
         </div>
+
         <div class="row items-center wrap q-ml-xl q-mt-lg">
           <div v-for="(item, index) in serverList" :key="index">
             <div class="col-4 every-card q-ml-lg">
@@ -86,6 +89,7 @@
                       {{ item.ipv4 }}
                     </div>
                   </q-card-section>
+
                   <q-card-section class="text-white q-ml-xs">
                     <div>
                       <q-btn
@@ -111,6 +115,7 @@
                           })
                         "
                       />
+
                       <q-btn
                         v-if="item.status == '已关机'"
                         color="nord8"
@@ -129,10 +134,10 @@
                     <div>
                       <q-btn
                         color="nord8"
-                        disable
                         label="VPN"
                         dense
                         unelevated
+                        disable
                       />
                     </div>
                     <div>
@@ -160,7 +165,6 @@
 import { defineComponent, computed, ref } from 'vue'
 import { StateInterface } from '../../store'
 import { useStore } from 'vuex'
-import { ServerInterface } from '../../store/usage/state'
 
 export default defineComponent({
   name: 'VmList',
@@ -203,19 +207,6 @@ export default defineComponent({
       }
     })
 
-    // 搜索结果列表
-    const resultServerList: ServerInterface[] = []
-    serverList.value.filter((item) => {
-      if (item.ipv4) {
-        if (item.ipv4.indexOf(searchContent.value) !== -1) {
-          resultServerList.push(item)
-          console.log('searchContent:', searchContent.value)
-        }
-      }
-      console.log('search:', resultServerList)
-      return resultServerList
-    })
-
     // VNC
     const gotoVNC = async (payload: string) => {
       const response = await $store.dispatch('usage/fetchServerVNC', payload)
@@ -224,7 +215,7 @@ export default defineComponent({
     }
     // 云主机操作
     const vmOperation = (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
-      void $store.dispatch('usage/vmOperation', payload)
+      void $store.dispatch('quota/vmOperation', payload) // 做开机/关机的操作
     }
     // more
     const more = (id: string) => {
@@ -238,8 +229,7 @@ export default defineComponent({
       pageCount,
       paginationSelected,
       more,
-      searchContent,
-      resultServerList
+      searchContent
     }
   }
 })
@@ -250,11 +240,13 @@ export default defineComponent({
 }
 .my-card {
   width: 100%;
-  height: 590px;
+  height: calc(100vh - 114px - 28vh);
+  width: calc(100vw - 165px - 49vw);
 }
 .every-card {
   width: 100%;
-  max-width: 200px;
+  width: calc(100vw - 165px - 81vw);
+  height: calc(100vh - 114px - 74vh);
 }
 .inner-loading {
   background-color: transparent;

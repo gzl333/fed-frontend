@@ -42,7 +42,6 @@
           </div>
         </div>
       </q-card-section>
-      <q-separator />
       <q-card-section>
         <div class="row items-center q-gutter-md q-pt-xs">
           <!-- this is top title, use servicName to classify -->
@@ -81,7 +80,7 @@
           <q-tab-panel :name="service.name">
             <q-splitter
               v-model="splitterModel"
-              style="height: 100%; max-height: 480px"
+              style="height: 100%; max-height: 1000px"
             >
               <!-- this is left title, use servicType to classify -->
               <template v-slot:before>
@@ -318,6 +317,8 @@ export default defineComponent({
 }
 .my-card {
   width: 100%;
-  height: 590px;
+  height: calc(100vh - 114px - 28vh);
+  width: calc(100vw - 165px - 49vw);
+  overflow: hidden;
 }
 </style>

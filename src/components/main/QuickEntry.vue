@@ -1,6 +1,6 @@
 <template>
   <div class="QuickEntry">
-    <q-card flat bordered class="my-card">
+    <q-card flat bordered class="my-card q-mt-md">
       <q-card-section class="bg-nord8 text-white">
         <div class="text-h6 text-weight-bold">快捷入口</div>
       </q-card-section>
@@ -27,12 +27,12 @@
             <div>
               <q-btn flat disable>
                 <q-icon style="font-size: 5em"
-                  ><i class="fas fa-cog"></i
+                  ><i class="fas fa-archive"></i
                 ></q-icon>
               </q-btn>
             </div>
             <div>
-              <q-btn flat disable label="VPN配置"></q-btn>
+              <q-btn flat disable label="创建存储桶"></q-btn>
             </div>
           </div>
           <div class="col-3">
@@ -87,6 +87,7 @@ export default defineComponent({
 }
 .my-card {
   width: 100%;
-  height: 210px;
+  height: calc(100vh - 114px - 67vh);
+  width: calc(100vw - 165px - 49vw);
 }
 </style>

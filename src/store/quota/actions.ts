@@ -36,7 +36,6 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
     const response: UquotaResponseInterface = (await context.dispatch('fetchQuota')).data
     // console.log(response)
     const servicesTemp: ServiceInterface[] = []
-
     response.results.forEach((responseResult) => {
       const serviceTypes: TypeInterface[] = []
       response.results.forEach((item) => {
@@ -147,6 +146,29 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
 
     // console.log(context.state.serverList)
     // console.log('end update list')
+  },
+  async vmOperation (context, payload: { endPoint: string; id: string; action: string }) {
+    // 将主机状态清空，界面将显示loading
+    context.commit('storeServerStatus', {
+      id: payload.id,
+      status: ''
+    })
+    const api = payload.endPoint.endsWith('/') ? payload.endPoint + 'api/server/' + payload.id + '/action/' : payload.endPoint + '/api/server/' + payload.id + '/action/'
+    const data = { action: payload.action }
+    const response = await axios.post(api, data)
+
+    // 状态更新应延时获取
+    void await new Promise(resolve => (
+      setTimeout(resolve, 3000)
+    ))
+    const resServerStatus = await context.dispatch('fetchServerStatus', payload.id)
+    context.commit('storeServerStatus', {
+      id: payload.id,
+      status: codeMap.get(resServerStatus.data.status.status_code)
+    })
+    // console.log('vmOperaton', context.state.serverList)
+
+    return response
   }
 }
 
