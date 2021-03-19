@@ -2,7 +2,7 @@
   <div class="row routerview-area">
     <div class="col-2"></div>
     <div class="col column">
-      <div v-for="vpn in vpnMap" class="col-3 section q-gutter-sm">
+      <div v-for="vpn in vpnMap" :key="vpn[0]" class="col-3 section q-gutter-sm">
         <div class="row">
           <div class="col-2 q-pb-lg text-primary">
             {{ vpn[1].serviceName }}
