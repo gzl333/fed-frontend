@@ -11,20 +11,20 @@
         <!--        <pre class="q-ma-none container">{{ scrollTop }}, {{scrollRatio}}</pre>-->
 <!--        <q-space/>-->
         <!--        <q-separator vertical v-if="scrollRatio===0.6"/>-->
-      <div class="row items-center justify-center">
-        <div class="col-4 text-right">
-                    <q-btn flat :ripple="false" unelevated dense>
+      <div class="row items-center justify-center no-wrap">
+        <div class="col-xs-6 col-sm-6 col-md-4 text-right">
+                    <q-btn flat :ripple="false" padding="none" size="xs" unelevated dense>
                       <img src="logo.png" class="logo">
                     </q-btn>
         </div>
-        <div class="col-4 text-right q-px-md q-gutter-xs">
+        <div class="gt-sm col-md-4 text-right q-px-md q-gutter-xs">
           <q-btn flat :ripple="false" color="white" label="资源与服务" @click="scrollToElement($refs['part1'])"/>
           <q-btn flat :ripple="false" color="white" label="资源提供者" @click="scrollToElement($refs['part2'])"/>
           <q-btn flat :ripple="false" color="white" label="开发者" @click="scrollToElement($refs['part3'])"/>
         </div>
         <!--        <q-separator vertical v-if="scrollRatio===0.6"/>-->
-        <div class="col-4 text-left q-px-xl q-gutter-sm">
-          <q-btn outline :ripple="false" color="white" label="注 册" type="a" href="https://passport.escience.cn/regist.jsp"
+        <div class="col-xs-6 col-sm-6 col-md-4 text-left q-px-xl q-gutter-sm">
+          <q-btn class="gt-xs" outline :ripple="false" color="white" label="注 册" type="a" href="https://passport.escience.cn/regist.jsp"
                  target="_blank"/>
           <q-btn unelevated :ripple="false" color="primary" label="登 录" @click="cstLogin"/>
 

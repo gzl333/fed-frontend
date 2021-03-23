@@ -25,7 +25,7 @@ const mutation: MutationTree<UsageInterface> = {
   // 保存当前展示的云主机详情信息
   storeServerDetail (state, payload: ServerInterface) {
     state.serverDetail = payload
-    console.log('state.serverDetail:', state.serverDetail)
+    // console.log('state.serverDetail:', state.serverDetail)
   },
   storeServerDetailStatus (state, status: string) {
     state.serverDetail.status = status
