@@ -396,9 +396,9 @@ export default defineComponent({
     }
 
     // 云主机操作
-    const vmOperation = (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
-      void $store.dispatch('usage/serverDetailOperation', payload)
-      // console.log('in vmops', payload)
+    const vmOperation = async (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
+      void await $store.dispatch('usage/serverDetailOperation', payload)
+      // console.log('in vmops', payload) todo 跳转流程优化
       if (payload.action === 'delete' || payload.action === 'delete_force') {
         $q.notify({
           spinner: true,
@@ -407,7 +407,7 @@ export default defineComponent({
           message: `正在删除IP地址为：${payload.ip || ''} 的云主机，请稍候。即将跳转至上一级页面。`,
           closeBtn: false
         })
-        void $router.push({ path: '/my/usage/' })
+        void await $router.push({ path: '/my/usage/' })
       }
     }
     // VNC
@@ -466,6 +466,7 @@ export default defineComponent({
   margin-left: 140px;
   width: calc(100vw - 200px);
 }
+
 .button-area {
 
 }

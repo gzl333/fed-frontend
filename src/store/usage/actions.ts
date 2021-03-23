@@ -11,6 +11,49 @@ import {
 } from './state'
 import axios, { AxiosResponse } from 'axios'
 
+// 格式化数据结构工具 -> 将数据扁平化
+
+import { normalize, schema } from 'normalizr'
+
+const originData =
+  [
+    {
+      id: 'f6740e68-8862-11eb-ad18-c8009fe2eb02',
+      name: '6c660b3707304132a787fba87bbfb56b',
+      vcpus: 1,
+      ram: 1024,
+      ipv4: '159.226.235.62',
+      public_ip: true,
+      image: 'CentOS_Stream',
+      creation_time: '2021-03-19T03:26:58.793601Z',
+      remarks: 'zlguo@cnic.cn',
+      endpoint_url: 'http://gosc.cstcloud.cn/',
+      service: {
+        id: '1',
+        name: 'HR_204机房',
+        service_type: 'evcloud'
+      },
+      user_quota: {
+        id: '70ef572e-7fdf-11eb-b60f-c8009fe2eb02',
+        tag: {
+          value: 1,
+          display: '普通配额'
+        },
+        expiration_time: null,
+        deleted: false,
+        display: '[普通配额](vCPU: 50, RAM: 51200Mb, PublicIP: 50, PrivateIP: 50)'
+      },
+      center_quota: 2
+    }
+  ]
+const service = new schema.Entity('service')
+const user_quota = new schema.Entity('user_quota')
+const server = new schema.Entity('server', { service, user_quota })
+originData.forEach((data) => {
+  const normalizedData = normalize(data, server)
+  console.log(normalizedData)
+})
+
 const apiBase = 'http://gosc.cstcloud.cn/api'
 const codeMap = new Map<number, string>(
   [
@@ -126,6 +169,9 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
           images: [],
           flavors: []
         }
+
+        // 根据dataPointTree上建立的network信息来构建
+        // todo 将networks单独建立一个表
         dataPoint.networks.forEach((network) => {
           if (network.public) {
             service.networks.public.unshift(network)
@@ -133,6 +179,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
             service.networks.private.unshift(network)
           }
         })
+
         const resImage = await context.dispatch('fetchImage', dataPoint.key)
         service.images = resImage.data
         const resFlavor = await context.dispatch('fetchFlavor')
@@ -247,12 +294,14 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     for (const resPoint of results) {
       for (const treeCenter of dataPointTree[0].children) {
         if (treeCenter.label === resPoint.data_center.name) {
+          // 建立dataPointTree时，额外添加的network信息，共serviceList使用
+          // todo 优化结构，此处不再存储network，或者单独建立network表，或者在serviceList建立时再取数据
           const resNetwork: AxiosResponse = await context.dispatch('fetchNetwork', resPoint.id)
           const networks: DataPointNetworkInterface[] = []
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-call
           resNetwork.data.forEach((network: DataPointNetworkInterface) => {
             networks.unshift(network)
           })
+
           treeCenter.children.unshift({
             key: resPoint.id,
             label: resPoint.name,
@@ -304,25 +353,9 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     context.commit('storePagination', { count: resServerList.data.count })
     // console.log(resServerList.data)
     // 保存resp中server信息
-    // const resServers: ServerInterface[] = resServerList.data.servers
     // console.log(resServers)
     const serverList: ServerInterface[] = []
     for (const resServer of resServerList.data.servers) {
-      // const currentServer = {
-      //   ip: resServer.ipv4,
-      //   serviceId: resServer.service.id,
-      //   serviceName: resServer.service.name,
-      //   serviceType: resServer.service.service_type,
-      //   image: resServer.image,
-      //   cpu: `${resServer.vcpus}核`,
-      //   ram: `${resServer.ram}MB`,
-      //   endPoint: resServer.endpoint_url,
-      //   note: resServer.remarks,
-      //   id: resServer.id,
-      //   name: resServer.name,
-      //   isIpPublic: resServer.public_ip,
-      //   timeCreate: resServer.creation_time
-      // }
       serverList.push(resServer)
     }
     context.commit('storeServerList', serverList)
