@@ -1,14 +1,13 @@
 <template>
   <div class="VmList">
     <q-card flat bordered class="my-card">
-      <q-card-section class="bg-nord8 text-white">
+      <q-card-section>
         <div class="row items-center no-wrap">
           <div class="col">
             <div class="text-h6 text-weight-bold">云主机</div>
           </div>
           <div class="col-auto">
             <q-input
-              dark
               dense
               standout
               v-model="searchContent"
@@ -34,17 +33,16 @@
               dense
               unelevated
               flat
-              class="text-white q-ml-md"
+              class="q-ml-md"
               :to="{ path: '/my/usage/vm' }"
             />
           </div>
         </div>
       </q-card-section>
-      <q-card-section v-if="searchContent !== ''" class="height: 650px;">
-        {{ searchContent }},{{ resultServerList }}
-      </q-card-section>
-      <q-card-section v-if="searchContent === ''" class="height: 650px;">
-        <div class="q-pl-lg q-pr-lg flex flex-center">
+      <q-separator />
+
+      <q-card-section v-if="searchContent === ''">
+        <div class="q-pl-lg q-pr-lg flex flex-center" style="font-size: 0.9em">
           第 {{ paginationSelected }} 页 ，共 {{ pageCount }} 页
           <q-space />
 
@@ -57,15 +55,15 @@
           </q-pagination>
         </div>
 
-        <div class="row items-center wrap q-ml-xl q-mt-lg">
+        <div class="row items-center wrap">
           <div v-for="(item, index) in serverList" :key="index">
-            <div class="col-4 every-card q-ml-lg">
+            <div class="col-4 every-card">
               <q-card flat>
                 <q-card-section horizontal>
                   <q-card-section class="col-5 flex flex-center">
                     <q-chip v-if="!item.status" label="读取中" square>
                       <q-inner-loading showing class="inner-loading">
-                        <q-spinner size="30px" color="nord9" />
+                        <q-spinner color="nord9" />
                       </q-inner-loading>
                     </q-chip>
                     <div v-if="item.status == '运行中'">
@@ -74,23 +72,23 @@
                         v-if="item.status == '运行中'"
                         @click="gotoVNC(item.id)"
                       >
-                        <q-icon size="4em" name="computer"></q-icon>
+                        <q-icon size="3em" name="computer"></q-icon>
                         <q-tooltip>点击进入VNC</q-tooltip></q-btn
                       >
                     </div>
                     <div v-if="item.status == '已关机'">
-                      <q-icon style="font-size: 5em"
+                      <q-icon style="font-size: 3em"
                         ><i class="fas fa-times"
                           ><q-tooltip>请开机以使用VNC</q-tooltip></i
                         ></q-icon
                       >
                     </div>
-                    <div class="text-subtitle2 q-mt-xs">
+                    <div>
                       {{ item.ipv4 }}
                     </div>
                   </q-card-section>
 
-                  <q-card-section class="text-white q-ml-xs">
+                  <q-card-section class="text-white">
                     <div>
                       <q-btn
                         v-if="
@@ -98,7 +96,8 @@
                         "
                         loading
                         color="nord8"
-                        label="."
+                        label="1"
+                        style="font-size: 0.5em"
                       >
                       </q-btn>
                       <q-btn
@@ -107,6 +106,7 @@
                         label="关机"
                         unelevated
                         dense
+                        style="font-size: 0.9em"
                         @click="
                           vmOperation({
                             endPoint: item.endpoint_url,
@@ -122,6 +122,7 @@
                         label="开机"
                         unelevated
                         dense
+                        style="font-size: 0.9em"
                         @click="
                           vmOperation({
                             endPoint: item.endpoint_url,
@@ -138,6 +139,7 @@
                         dense
                         unelevated
                         disable
+                        style="font-size: 0.9em"
                       />
                     </div>
                     <div>
@@ -146,6 +148,7 @@
                         label="详情"
                         dense
                         unelevated
+                        style="font-size: 0.9em"
                         :to="{ path: '/my/usage/vmdetail' }"
                         @click="more(item.id)"
                       />
@@ -240,13 +243,17 @@ export default defineComponent({
 }
 .my-card {
   width: 100%;
-  height: calc(100vh - 114px - 28vh);
-  width: calc(100vw - 165px - 49vw);
+  // height: calc(100vh - 114px - 28vh);
+  height: 580px;
+  font-size: 1vw;
+  width: 41.666666667vw;
 }
 .every-card {
   width: 100%;
-  width: calc(100vw - 165px - 81vw);
-  height: calc(100vh - 114px - 74vh);
+  // width: calc(100vw - 165px - 81vw);
+  // height: calc(100vh - 114px - 74vh);
+  width: 9.8958333vw;
+  height: 130px;
 }
 .inner-loading {
   background-color: transparent;

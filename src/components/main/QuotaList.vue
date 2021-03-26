@@ -1,12 +1,10 @@
 <template>
   <div class="QuotaList">
     <q-card flat bordered class="my-card">
-      <q-card-section class="bg-nord8">
+      <q-card-section>
         <div class="row items-center no-wrap">
           <div class="col">
-            <div class="text-h6 text-weight-bold text-white">
-              资源配额使用情况
-            </div>
+            <div class="text-h6 text-weight-bold">资源配额使用情况</div>
           </div>
           <div class="col-auto" style="visibility: hidden">
             <q-input
@@ -36,12 +34,13 @@
               dense
               unelevated
               flat
-              class="text-white q-ml-md"
+              class="q-ml-md"
               :to="{ path: '/my/usage/vm' }"
             />
           </div>
         </div>
       </q-card-section>
+      <q-separator />
       <q-card-section>
         <div class="row items-center q-gutter-md q-pt-xs">
           <!-- this is top title, use servicName to classify -->
@@ -317,8 +316,11 @@ export default defineComponent({
 }
 .my-card {
   width: 100%;
-  height: calc(100vh - 114px - 28vh);
-  width: calc(100vw - 165px - 49vw);
+  // height: calc(100vh - 114px - 28vh);
+  // width: calc(100vw - 165px - 49vw);
   overflow: hidden;
+  height: 580px;
+  font-size: 1vw;
+  width: 41.666666667vw;
 }
 </style>
