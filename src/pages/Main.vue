@@ -1,25 +1,25 @@
 <template>
   <div class="Main">
-    <div class="q-pt-md q-pl-xl q-pr-xl">
-      <div class="row items-center q-gutter-lg">
-        <!--   <q-responsive :ratio="8 / 3" class="col"> -->
+    <div>
+      <div class="row justify-around q-col-gutter-y-m">
         <!--       <todo-list :todo="todo" @update-unpaid="updateUnpaid" />-->
-        <!-- <todo-list :todo="todo" />
-        </q-responsive>-->
-        <div class="col">
+        <!-- <todo-list :todo="todo" />-->
+        <div class="col-5">
           <warning-list />
         </div>
-        <div class="col">
+
+        <div class="col-5">
           <quick-entry />
         </div>
       </div>
 
-      <div class="row items-center q-gutter-lg q-mt-md">
-        <div class="col"><vm-list /></div>
-        <div class="col">
+      <div class="row justify-around q-col-gutter-y-md">
+        <div class="col-5"><vm-list /></div>
+        <div class="col-5">
           <quota-list />
         </div>
       </div>
+
       <!-- <div class="row items-center q-gutter-lg q-pt-lg">
         <div class="col">
           <obs-list />
