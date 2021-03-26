@@ -206,14 +206,15 @@ export interface UsageInterface {
 const sampleUsageTables = {
 
   statusMap: {}, // todo 云主机状态的映射关系，硬写进去，一般不变
+  // 以下均为object结构，也可写为map结构，则无需存储allIds，map自带全部key和顺序
 
   // 来源1：列举servers -> query: service_id
-  // 来源2：查询单个server -> query: server id 不确定什么场景使用？
+  // 来源2：查询单个server -> query: server_id 不确定什么场景使用？
   serverTable: {
     byId: {
       id1: {
         id: 'id1',
-        center_quota: 2,
+        center_quota: 2, // 1: 服务的私有资源配额，"user_quota"=null; 2: 服务的分享资源配额
         creation_time: '2021-03-19T03:26:58.793601Z',
         endpoint_url: 'http://gosc.cstcloud.cn/',
         image: 'CentOS_Stream',
@@ -243,7 +244,7 @@ const sampleUsageTables = {
         add_time: '2020-08-28T00:29:47.396311Z',
         need_vpn: true,
         status: 1,
-        data_center: 'id1', // 关联dataCenterTable
+        data_center: 'id1', // 关联dataCenterTable 双向关联
         // 以下来自其它接口
         networks: ['id1', 'id2'],
         vpn: 'id1' // 关联vpnTable
@@ -288,7 +289,7 @@ const sampleUsageTables = {
         id: 'id1',
         name: '地球大数据科学工程专项',
         // 以下来自其它接口
-        services: [] // 关联serviceTable
+        services: ['id1'] // 关联serviceTable
       }
     },
     allIds: ['id1']
@@ -306,7 +307,7 @@ const sampleUsageTables = {
           id: '6',
           username: 'zlguo@cnic.cn'
         },
-        service: 'id1', // 关联serverTable
+        service: 'id1', // 关联serviceTable
         // ->根据创建删除云主机被动更新 以下数据更新较多，逐个更新或许不如整体更新：增加或删除云主机后，应重新获取数据
         private_ip_total: 100,
         private_ip_used: 3,
@@ -320,7 +321,33 @@ const sampleUsageTables = {
         disk_size_used: 0,
         expiration_time: null,
         deleted: false,
-        display: '[普通配额](vCPU: 100, RAM: 102400Mb, Disk: 1000Gb, PublicIP: 100, PrivateIP: 100)'
+        display: '[普通配额](vCPU: 100, RAM: 102400Mb, Disk: 1000Gb, PublicIP: 100, PrivateIP: 100)',
+
+        // 以下来自其它接口
+        servers: ['id1', 'id2'] // 关联serverTable，该配额下创建的云主机id
+      }
+    },
+    allIds: ['id1']
+  },
+  // 归档的云主机目录
+  serverArchiveTable: {
+    byId: {
+      id1: {
+        id: 'id1',
+        name: '669920fef6cd49f2bf7df39fdccd03e1',
+        vcpus: 1,
+        ram: 1024,
+        ipv4: '159.226.235.98',
+        public_ip: true,
+        image: 'CentOS_Stream',
+        creation_time: '2021-03-15T03:10:29.600666Z',
+        remarks: 'zlguo@cnic.cn',
+        deleted_time: '2021-03-15T03:10:29.600706Z',
+        service: 'id1', // 与serviceTable关联
+        user_quota: 'id1', // 与userQuotaTable关联
+        center_quota: 2, // 1: 服务的私有资源配额，"user_quota"=null; 2: 服务的分享资源配额
+
+        user_quota_tag: 1 // 重复，应该删除
       }
     },
     allIds: ['id1']

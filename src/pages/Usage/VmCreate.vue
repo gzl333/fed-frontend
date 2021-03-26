@@ -244,7 +244,7 @@
               已成功创建id为{{ newIP }}的云主机
             </div>
             <div class="q-pa-lg">
-              5秒后跳转至详情页面
+              3秒后跳转至详情页面
             </div>
             <q-btn label="继续创建云主机" @click="refresh" color="primary" unelevated/>
           </div>
@@ -429,11 +429,15 @@ export default defineComponent({
       // 进入vmdetai页面前，更新server实例信息
       void await $store.dispatch('usage/updateServerInfo', respFetchServerInfo.data.server.id)
       // 更新vpn 信息
-      void await $store.dispatch('usage/updateVpn', respFetchServerInfo.data.server.service.id)
+
+      void await $store.dispatch('usage/updateVpn', {
+        serviceId: respFetchServerInfo.data.server.service.id,
+        serviceName: respFetchServerInfo.data.server.service.name
+      })
 
       setTimeout(() => {
         void $router.push('/my/usage/vmdetail')
-      }, 5000)
+      }, 3000)
     }
     // 刷新本页
     const refresh = () => {
