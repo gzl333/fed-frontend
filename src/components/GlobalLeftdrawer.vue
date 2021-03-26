@@ -2,12 +2,19 @@
   <q-drawer
     v-model="leftDrawerOpen"
     show-if-above
-    :width="165"
+    :width="100"
     :breakpoint="0"
-    class="bg-nord3 text-white"
+    class="bg-c-blue1 text-white"
   >
     <q-scroll-area class="fit non-selectable overflow-hidden">
       <q-list>
+
+        <q-item>
+          <q-item-section class="column items-center q-py-sm">
+            <img src="fedlogo.png" class="logo"/>
+          </q-item-section>
+        </q-item>
+
         <q-item
           clickable
           :active="activeItem === 'main'"
@@ -15,10 +22,10 @@
           active-class="active-item"
           to='/my/main'
         >
-          <q-item-section avatar>
-            <q-icon name="home"/>
+          <q-item-section class="column items-center">
+            <q-icon name="home" size="lg"/>
+            <div class="text-c-blue5"> 我的首页</div>
           </q-item-section>
-          <q-item-section> 我的首页</q-item-section>
         </q-item>
 
         <q-item
@@ -28,75 +35,77 @@
           active-class="active-item"
           to='/my/usage'
         >
-          <q-item-section avatar>
-            <q-icon name="cloud_done"/>
+
+          <q-item-section class="column items-center">
+            <q-icon name="cloud_done" size="lg"/>
+            <div class="text-c-blue5">在用资源</div>
           </q-item-section>
-          <q-item-section> 在用资源</q-item-section>
         </q-item>
 
         <q-separator/>
 
-        <q-item clickable disable>
-          <q-item-section avatar>
-            <q-icon name="group"/>
+        <q-item clickable disable class="text-center">
+          <q-item-section class="column items-center">
+            <q-icon name="group" size="lg"/>
+            <div class="text-c-blue5">我的群组</div>
           </q-item-section>
-          <q-item-section> 我的群组</q-item-section>
         </q-item>
 
         <q-item clickable disable>
-          <q-item-section avatar>
-            <q-icon name="paid"/>
+          <q-item-section class="column items-center">
+            <q-icon name="paid" size="lg"/>
+            <div class="text-c-blue5">结算计费</div>
           </q-item-section>
-          <q-item-section> 结算计费</q-item-section>
         </q-item>
 
         <q-item clickable disable>
-          <q-item-section avatar>
-            <q-icon name="cloud_upload"/>
+          <q-item-section class="column items-center">
+            <q-icon name="cloud_upload" size="lg"/>
+            <div class="text-c-blue5">已供资源</div>
           </q-item-section>
-          <q-item-section> 已供资源</q-item-section>
         </q-item>
 
         <q-item clickable disable>
-          <q-item-section avatar>
-            <q-icon name="help_center"/>
+          <q-item-section class="column items-center">
+            <q-icon name="help_center" size="lg"/>
+            <div class="text-c-blue5">工单服务</div>
           </q-item-section>
-          <q-item-section> 工单服务</q-item-section>
         </q-item>
 
-        <q-item clickable disable>
-          <q-item-section avatar>
-            <q-icon name="build_circle"/>
+        <q-item clickable disable >
+          <q-item-section class="column items-center">
+            <q-icon name="build_circle" size="lg"/>
+            <div class="text-c-blue5">资源管理</div>
           </q-item-section>
-          <q-item-section> 资源管理</q-item-section>
         </q-item>
 
-        <q-item clickable disable>
-          <q-item-section avatar>
-            <q-icon name="visibility"/>
+        <q-item clickable disable >
+          <q-item-section class="column items-center">
+            <q-icon name="visibility" size="lg"/>
+            <div class="text-c-blue5">计量监测</div>
           </q-item-section>
-          <q-item-section> 计量监测</q-item-section>
         </q-item>
 
-        <q-item clickable disable>
-          <q-item-section avatar>
-            <q-icon name="analytics"/>
+        <q-item clickable disable >
+          <q-item-section class="column items-center">
+            <q-icon name="analytics" size="lg"/>
+            <div class="text-c-blue5">统计报表</div>
           </q-item-section>
-          <q-item-section> 统计报表</q-item-section>
         </q-item>
 
-        <q-item clickable disable>
-          <q-item-section avatar>
-            <q-icon name="construction"/>
+        <q-item clickable disable >
+          <q-item-section class="column items-center">
+            <q-icon name="construction" size="lg"/>
+            <div class="text-c-blue5">联邦维护</div>
           </q-item-section>
-          <q-item-section> 联邦维护</q-item-section>
         </q-item>
 
-        <q-item clickable disable>
-          <q-item-section avatar>
-            <q-icon name="switch_account"/>
+        <q-item clickable disable >
+          <q-item-section class="column items-center">
+            <q-icon name="switch_account" size="lg"/>
+            <div class="text-c-blue5">用户管理</div>
+
           </q-item-section>
-          <q-item-section> 用户管理</q-item-section>
         </q-item>
       </q-list>
     </q-scroll-area>
@@ -124,6 +133,9 @@ export default defineComponent({
 <style lang="scss" scoped>
 .active-item {
   color: white;
-  background: $nord10;
+  background: $c-blue-4;
+}
+.logo {
+ height: 50px;
 }
 </style>
