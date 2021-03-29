@@ -1,25 +1,25 @@
 <template>
   <div class="Vm">
     <div class="row no-wrap">
-            <div v-if="isTreeOpen" class="col-1.5 items-center q-py-sm q-px-sm q-my-lg tree-area">
-              <div class="tree-title text-grey-7 text-center ">
-                机构与数据中心
-                <q-tooltip>
-                  正在使用的机构与数据中心
-                </q-tooltip>
-              </div>
-              <!--        <q-scroll-area class="min-tree-size">-->
-              <q-tree
-                class="col-12 col-sm-6"
-                default-expand-all
-                :nodes="dataPointTree"
-                node-key="key"
-                selected-color="primary"
-                v-model:selected="selectedTree"
-              />
-              <!--                <pre>{{ rows }}</pre>-->
-              <!--        </q-scroll-area>-->
-            </div>
+      <div v-if="isTreeOpen" class="col-1.5 items-center q-py-sm q-px-sm q-my-lg tree-area">
+        <div class="tree-title text-grey-7 text-center ">
+          机构与数据中心
+          <q-tooltip>
+            正在使用的机构与数据中心
+          </q-tooltip>
+        </div>
+        <!--        <q-scroll-area class="min-tree-size">-->
+        <q-tree
+          class="col-12 col-sm-6"
+          default-expand-all
+          :nodes="dataPointTree"
+          node-key="key"
+          selected-color="primary"
+          v-model:selected="selectedTree"
+        />
+        <!--                <pre>{{ rows }}</pre>-->
+        <!--        </q-scroll-area>-->
+      </div>
 
       <!--      <div class="col-shrink btn-area">-->
       <!--        <q-btn v-if="isTreeOpen" class="btn-close" unelevated color="primary"-->
@@ -74,13 +74,15 @@
                 <!--                <span class="text-primary text-h7">-->
                 <!--                  {{ tableTitle }}-->
                 <!--                </span>-->
-
+<!--                <div class="col"> 选择节点：</div>-->
               </div>
 
-              <div class="col-auto">
+              <div class="co">
                 <div class="row">
-                  <div class="col">  选择节点：</div>
-                  <div class="col"><q-select filled v-model="serviceSelection" :options="serviceOptions" /></div>
+<!--                  <div class="col-3"> 选择节点：</div>-->
+                  <div class="coll-auto">
+                    <q-select outlined dense v-model="serviceSelection" :options="serviceOptions"/>
+                  </div>
                 </div>
                 <span class="text-grey-7 text-h7">
 
@@ -408,39 +410,23 @@ export default defineComponent({
     }
 
     // service下拉列表
-    const serviceSelection = ref(null)
+    const serviceSelection = ref({
+      label: '全部节点',
+      value: '0'
+    })
 
     const serviceOptions = [
       {
-        label: 'Google',
-        value: 'Google',
-        description: 'Search engine',
-        category: '1'
+        label: '全部节点',
+        value: '0'
       },
       {
-        label: 'Facebook',
-        value: 'Facebook',
-        description: 'Social media',
-        category: '1'
+        label: '中国科学院计算机网络信息中心 - HR_204机房',
+        value: '1'
       },
       {
-        label: 'Twitter',
-        value: 'Twitter',
-        description: 'Quick updates',
-        category: '2'
-      },
-      {
-        label: 'Apple',
-        value: 'Apple',
-        description: 'iStuff',
-        category: '2'
-      },
-      {
-        label: 'Oracle',
-        value: 'Oracle',
-        disable: true,
-        description: 'Databases',
-        category: '3'
+        label: '地球大数据科学工程专项 - 怀柔机房一层',
+        value: '2'
       }
     ]
 
