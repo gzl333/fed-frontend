@@ -1,38 +1,38 @@
 <template>
   <div class="Vm">
-    <div class="row no-wrap routerview-area">
-      <div v-if="isTreeOpen" class="col-1.5 items-center q-py-sm q-px-sm q-my-lg tree-area">
-        <div class="tree-title text-grey-7 text-center ">
-          机构与数据中心
-          <q-tooltip>
-            正在使用的机构与数据中心
-          </q-tooltip>
-        </div>
-        <!--        <q-scroll-area class="min-tree-size">-->
-        <q-tree
-          class="col-12 col-sm-6"
-          default-expand-all
-          :nodes="dataPointTree"
-          node-key="key"
-          selected-color="primary"
-          v-model:selected="selectedTree"
-        />
-        <!--                <pre>{{ rows }}</pre>-->
-        <!--        </q-scroll-area>-->
-      </div>
+    <div class="row no-wrap">
+            <div v-if="isTreeOpen" class="col-1.5 items-center q-py-sm q-px-sm q-my-lg tree-area">
+              <div class="tree-title text-grey-7 text-center ">
+                机构与数据中心
+                <q-tooltip>
+                  正在使用的机构与数据中心
+                </q-tooltip>
+              </div>
+              <!--        <q-scroll-area class="min-tree-size">-->
+              <q-tree
+                class="col-12 col-sm-6"
+                default-expand-all
+                :nodes="dataPointTree"
+                node-key="key"
+                selected-color="primary"
+                v-model:selected="selectedTree"
+              />
+              <!--                <pre>{{ rows }}</pre>-->
+              <!--        </q-scroll-area>-->
+            </div>
 
-      <div class="col-shrink btn-area">
-        <q-btn v-if="isTreeOpen" class="btn-close" unelevated color="primary"
-               icon="arrow_back_ios_new" size="xs" padding="30px 0px" @click="toggleTree">
-          <q-tooltip>折叠机构树</q-tooltip>
-        </q-btn>
-        <q-btn v-if="!isTreeOpen" class="btn-open" unelevated color="primary"
-               icon="arrow_forward_ios" size="xs" padding="30px 0px" @click="toggleTree">
-          <q-tooltip>展开机构树</q-tooltip>
-        </q-btn>
-      </div>
+      <!--      <div class="col-shrink btn-area">-->
+      <!--        <q-btn v-if="isTreeOpen" class="btn-close" unelevated color="primary"-->
+      <!--               icon="arrow_back_ios_new" size="xs" padding="30px 0px" @click="toggleTree">-->
+      <!--          <q-tooltip>折叠机构树</q-tooltip>-->
+      <!--        </q-btn>-->
+      <!--        <q-btn v-if="!isTreeOpen" class="btn-open" unelevated color="primary"-->
+      <!--               icon="arrow_forward_ios" size="xs" padding="30px 0px" @click="toggleTree">-->
+      <!--          <q-tooltip>展开机构树</q-tooltip>-->
+      <!--        </q-btn>-->
+      <!--      </div>-->
 
-      <div class="col  q-py-none q-pr-sm">
+      <div class="col ">
 
         <q-table
           class="q-px-lg"
@@ -52,33 +52,42 @@
           <template v-slot:top>
             <div class="col row items-center justify-between q-pa-none">
 
-              <div class="col-shrink">
-                <q-btn icon="add" color="primary" size="md" unelevated label="新建" :to="{ path: '/my/usage/vmcreate' }">
-                  <q-tooltip>
-                    新建云主机
-                  </q-tooltip>
-                </q-btn>
-              </div>
+              <q-input disable outlined bottom-slots v-model="text" label="模糊搜索" dense>
+                <template v-slot:append>
+                  <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>
+                  <q-icon name="search"/>
+                </template>
+              </q-input>
+
+              <!--              <div class="col-shrink">-->
+              <!--                <q-btn icon="add" color="primary" size="md" unelevated label="新建" :to="{ path: '/my/usage/vmcreate' }">-->
+              <!--                  <q-tooltip>-->
+              <!--                    新建云主机-->
+              <!--                  </q-tooltip>-->
+              <!--                </q-btn>-->
+              <!--              </div>-->
 
               <div class="col text-center">
-                <span class="text-grey-7 text-h7">
-                  正在展示：
-                </span>
-                <span class="text-primary text-h7">
-                  {{ tableTitle }}
-                </span>
+                <!--                <span class="text-grey-7 text-h7">-->
+                <!--                  正在展示：-->
+                <!--                </span>-->
+                <!--                <span class="text-primary text-h7">-->
+                <!--                  {{ tableTitle }}-->
+                <!--                </span>-->
 
               </div>
 
-              <div class="col-shrink">
+              <div class="col-auto">
+                <div class="row">
+                  <div class="col">  选择节点：</div>
+                  <div class="col"><q-select filled v-model="serviceSelection" :options="serviceOptions" /></div>
+                </div>
+                <span class="text-grey-7 text-h7">
 
-                <q-input disable bottom-slots v-model="text" label="模糊搜索" dense>
-                  <template v-slot:append>
-                    <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>
-                    <q-icon name="search"/>
-                  </template>
-                </q-input>
+                </span>
+                <span>
 
+                </span>
               </div>
 
             </div>
@@ -316,6 +325,7 @@ export default defineComponent({
 
     // 云主机状态按钮
     const isStatusLoading = ref(true)
+
     // 获取机构树，获取云主机列表
     onMounted(() => {
       void $store.dispatch('usage/updateDataPointTree')
@@ -396,6 +406,44 @@ export default defineComponent({
     const toggleTree = () => {
       isTreeOpen.value = !isTreeOpen.value
     }
+
+    // service下拉列表
+    const serviceSelection = ref(null)
+
+    const serviceOptions = [
+      {
+        label: 'Google',
+        value: 'Google',
+        description: 'Search engine',
+        category: '1'
+      },
+      {
+        label: 'Facebook',
+        value: 'Facebook',
+        description: 'Social media',
+        category: '1'
+      },
+      {
+        label: 'Twitter',
+        value: 'Twitter',
+        description: 'Quick updates',
+        category: '2'
+      },
+      {
+        label: 'Apple',
+        value: 'Apple',
+        description: 'iStuff',
+        category: '2'
+      },
+      {
+        label: 'Oracle',
+        value: 'Oracle',
+        disable: true,
+        description: 'Databases',
+        category: '3'
+      }
+    ]
+
     // 云主机列表分栏定义
     const columns = [
       {
@@ -622,7 +670,9 @@ export default defineComponent({
       onMouseEnterRow,
       onMouseLeaveRow,
       updateServerDetail,
-      pagination
+      pagination,
+      serviceSelection,
+      serviceOptions
     }
   }
 })

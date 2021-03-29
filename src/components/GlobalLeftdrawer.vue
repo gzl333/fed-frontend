@@ -7,7 +7,7 @@
     class="bg-c-blue1 text-white"
   >
     <div class="column full-height">
-      <q-scroll-area class="col overflow-hidden non-selectable">
+      <q-scroll-area class="col overflow-hidden non-selectable visible">
 
         <q-list>
 

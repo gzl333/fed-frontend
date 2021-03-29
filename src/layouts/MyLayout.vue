@@ -64,16 +64,17 @@
     </q-drawer>
 
     <q-page-container>
+      <q-page class="row no-wrap">
+        <div class="col ">
+          <div class="column full-height">
 
-      <div class="col">
-        <div class="column full-height">
-          <q-scroll-area class="col  overflow-hidden" visible>
+            <q-scroll-area class="col " visible>
+              <router-view class="routerview-area"/>
+            </q-scroll-area>
 
-            <router-view/>
-
-          </q-scroll-area>
+          </div>
         </div>
-      </div>
+      </q-page>
 
     </q-page-container>
   </q-layout>

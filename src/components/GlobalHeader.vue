@@ -1,11 +1,12 @@
 <template>
   <div class="GlobalHeader">
     <div class="row">
-      <q-toolbar>
+      <q-toolbar class="q-pa-none">
         <q-toolbar-title>
 <!--          <q-btn :ripple="false" flat to="/my" dense>-->
-            <dvi class="text-h5">中国科技云联邦</dvi>
+<!--            <div class="text-h5">中国科技云联邦</div>-->
 <!--          </q-btn>-->
+          <img src="title.png" alt="中国科技云联邦" class="title q-pt-xs">
         </q-toolbar-title>
 
         <q-space/>
@@ -82,6 +83,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .GlobalHeader {
+}
+.title {
+  opacity: .7;
+  width: 250px;
 }
 .dropdown-content {
   min-width: 200px;
