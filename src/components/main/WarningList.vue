@@ -1,15 +1,15 @@
 <template>
   <div class="WarningList">
-    <div class="my-card">
+    <!-- 适配大屏：尺寸大于sm = md lg xl-->
+    <div class="my-card-big gt-sm">
       <q-card-section>
         <div class="text-h6 text-weight-bold">资源到期预警</div>
       </q-card-section>
       <q-separator />
       <q-card-section>
-        <!-- 适配大屏：尺寸大于sm（1023）-->
-        <div class="row gt-sm items-center no-warp">
+        <div class="row items-center no-warp">
           <div class="col">
-            <q-card class="inner-card" bordered flat>
+            <q-card class="inner-card-big" bordered="false" flat>
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
                   <q-icon style="font-size: 2em"
@@ -18,10 +18,10 @@
                 </q-card-section>
                 <q-card-section class="q-pt-md q-pb-xs q-px-xs">
                   <div>{{ warningList[0] }}</div>
-                  <q-badge align="top" color="nord10"> 配额 </q-badge>
+                  <q-badge align="top"> 配额 </q-badge>
                   <div style="font-size: 1.5em" class="q-my-xs q-ml-md">
                     {{ quotaLessOneWeek[0].lessOneWeekNum
-                    }}<q-tooltip class="bg-nord10" :offset="[5, 10]"
+                    }}<q-tooltip :offset="[5, 10]"
                       >{{ quotaLessOneWeek[0].quotaName }}
                     </q-tooltip>
                   </div>
@@ -31,7 +31,7 @@
           </div>
 
           <div class="col">
-            <q-card class="inner-card" bordered flat>
+            <q-card class="inner-card-big" bordered="false" flat>
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
                   <q-icon style="font-size: 2em"
@@ -53,8 +53,8 @@
           </div>
 
           <!-- style="visibility: hidden" -->
-          <div class="col">
-            <q-card class="inner-card" bordered flat>
+          <div class="col" style="visibility: hidden">
+            <q-card class="inner-card-big" bordered="false" flat>
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
                   <q-icon style="font-size: 2em"
@@ -70,8 +70,8 @@
             </q-card>
           </div>
           <!--  style="visibility: hidden" -->
-          <div class="col">
-            <q-card class="inner-card" bordered flat>
+          <div class="col" style="visibility: hidden">
+            <q-card class="inner-card-big" bordered="false" flat>
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
                   <q-icon style="font-size: 2em"
@@ -87,22 +87,30 @@
             </q-card>
           </div>
         </div>
-        <!-- 适配手机 -->
-        <!-- <div class="row lt-md items-center no-warp q-pa-xs">
+      </q-card-section>
+    </div>
+    <!-- 适配手机 -->
+    <div class="my-card-small lt-md">
+      <q-card-section>
+        <div class="text-h6 text-weight-bold">资源到期预警</div>
+      </q-card-section>
+      <q-separator />
+      <q-card-section>
+        <div class="row items-center no-warp">
           <div class="col">
-            <q-card class="inner-card bg-nord11" flat>
+            <q-card class="inner-card-small" bordered="false" flat>
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
-                  <q-icon style="font-size: 2em" class="text-white"
+                  <q-icon style="font-size: 2em"
                     ><i class="fas fa-exclamation-triangle"></i
                   ></q-icon>
                 </q-card-section>
-                <q-card-section class="text-white q-pt-md q-pb-xs q-px-xs">
-                  <div class="text-subtitle1">{{ warningList[0] }}</div>
-                  <q-badge align="top" color="nord10"> 配额 </q-badge>
-                  <div class="text-h5 q-my-xs q-ml-md">
+                <q-card-section class="q-pt-md q-pb-xs q-px-xs">
+                  <div>{{ warningList[0] }}</div>
+                  <q-badge align="top"> 配额 </q-badge>
+                  <div style="font-size: 1.5em" class="q-my-xs q-ml-md">
                     {{ quotaLessOneWeek[0].lessOneWeekNum
-                    }}<q-tooltip class="bg-nord10" :offset="[5, 10]"
+                    }}<q-tooltip :offset="[5, 10]"
                       >{{ quotaLessOneWeek[0].quotaName }}
                     </q-tooltip>
                   </div>
@@ -112,17 +120,17 @@
           </div>
 
           <div class="col">
-            <q-card class="inner-card bg-nord13 text-white" flat>
+            <q-card class="inner-card-small" bordered="false" flat>
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
-                  <q-icon style="font-size: 2em" class="text-white"
+                  <q-icon style="font-size: 2em"
                     ><i class="fas fa-exclamation-triangle"></i
                   ></q-icon>
                 </q-card-section>
-                <q-card-section class="q-pt-md q-pb-xs q-px-xs text-white">
-                  <div class="text-subtitle1">{{ warningList[1] }}</div>
+                <q-card-section class="q-pt-md q-pb-xs q-px-xs">
+                  <div>{{ warningList[1] }}</div>
                   <q-badge align="top" color="nord14"> 配额 </q-badge>
-                  <div class="text-h5 q-my-xs q-ml-md">
+                  <div class="q-my-xs q-ml-md" style="font-size: 1.5em">
                     {{ quotaLessOneWeek[0].lessOneWeekNum
                     }}<q-tooltip class="bg-nord10" :offset="[5, 10]"
                       >{{ quotaLessOneWeek[0].quotaName }}
@@ -133,40 +141,41 @@
             </q-card>
           </div>
 
+          <!-- style="visibility: hidden" -->
           <div class="col" style="visibility: hidden">
-            <q-card class="inner-card bg-nord10 text-white" flat>
+            <q-card class="inner-card-small" bordered="false" flat>
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
-                  <q-icon style="font-size: 2em" class="text-white"
+                  <q-icon style="font-size: 2em"
                     ><i class="fas fa-desktop"></i
                   ></q-icon>
                 </q-card-section>
-                <q-card-section class="q-pt-md q-pb-xs q-px-xs text-white">
-                  <div class="text-subtitle1">{{ warningList[0] }}</div>
+                <q-card-section class="q-pt-md q-pb-xs q-px-xs">
+                  <div>{{ warningList[0] }}</div>
                   <q-badge align="top" color="nord11"> 虚拟机 </q-badge>
-                  <div class="text-h5 q-my-xs q-ml-md">xx</div>
+                  <div style="font-size: 1.5em" class="q-my-xs q-ml-md">xx</div>
                 </q-card-section>
               </q-card-section>
             </q-card>
           </div>
-
+          <!--  style="visibility: hidden" -->
           <div class="col" style="visibility: hidden">
-            <q-card class="inner-card bg-nord14 text-white" flat>
+            <q-card class="inner-card-small" bordered="false" flat>
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
-                  <q-icon style="font-size: 2em" class="text-white"
+                  <q-icon style="font-size: 2em"
                     ><i class="fas fa-desktop"></i
                   ></q-icon>
                 </q-card-section>
-                <q-card-section class="q-pt-md q-pb-xs q-px-xs text-white">
-                  <div class="text-subtitle1">{{ warningList[1] }}</div>
+                <q-card-section class="q-pt-md q-pb-xs q-px-xs">
+                  <div>{{ warningList[1] }}</div>
                   <q-badge align="top" color="nord13">虚拟机</q-badge>
-                  <div class="text-h5 q-my-xs q-ml-md">xx</div>
+                  <div style="font-size: 1.5em" class="q-my-xs q-ml-md">xx</div>
                 </q-card-section>
               </q-card-section>
             </q-card>
           </div>
-        </div> -->
+        </div>
       </q-card-section>
     </div>
   </div>
@@ -197,7 +206,7 @@ export default defineComponent({
     })
     // console.log('quotaLessOneWeek:', quotaLessOneWeek)
     // console.log('quotaLessOneMonth:', quotaLessOneMonth)
-    const warningList = ['本周到期', '一个月到期']
+    const warningList = ['本周到期', '本月到期']
     return {
       warningList,
       quotaLessOneWeek,
@@ -210,20 +219,27 @@ export default defineComponent({
 <style lang="scss" scoped>
 .WarningList {
 }
-.my-card {
+.my-card-big {
   width: 100%;
   // height: calc(100vh - 114px - 67vh);
   width: 41.666666667vw;
   // width: calc(0.41666667 * 100vw);
   height: 216px;
-  font-size: 1vw;
+  // font-size: 1vw;
 }
-.inner-card {
+.inner-card-big {
   width: 90%;
   // width: calc(100vw - 165px - 82vw);
   // height: calc(100vh - 114px - 77vh);
   width: 8.85416667vw;
   height: 110px;
   font-size: 0.833333333vw;
+}
+
+.my-card-small {
+  width: 100%;
+}
+.inner-card-small {
+  width: 100%;
 }
 </style>

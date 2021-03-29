@@ -1,21 +1,21 @@
 <template>
-  <div class="Main">
-    <div>
-      <div class="row justify-around q-col-gutter-y-m">
+  <div class="Main q-pa-xl">
+    <div class="gt-sm">
+      <div class="row justify-between">
         <!--       <todo-list :todo="todo" @update-unpaid="updateUnpaid" />-->
         <!-- <todo-list :todo="todo" />-->
-        <div class="col-5">
+        <div class="col">
           <warning-list />
         </div>
 
-        <div class="col-5">
+        <div class="col">
           <quick-entry />
         </div>
       </div>
 
-      <div class="row justify-around q-col-gutter-y-md">
-        <div class="col-5"><vm-list /></div>
-        <div class="col-5">
+      <div class="row justify-around q-pt-md">
+        <div class="col"><vm-list /></div>
+        <div class="col">
           <quota-list />
         </div>
       </div>
@@ -31,6 +31,20 @@
            <group-list />
         </div>
       </div> -->
+    </div>
+    <div class="lt-md column justify-around">
+      <div class="col">
+        <warning-list />
+      </div>
+      <div class="col">
+        <quick-entry />
+      </div>
+      <div class="col q-pt-md">
+        <vm-list />
+      </div>
+      <div class="col q-pt-md">
+        <quota-list />
+      </div>
     </div>
   </div>
 </template>
