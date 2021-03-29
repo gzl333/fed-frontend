@@ -54,7 +54,7 @@ import axios, { AxiosResponse } from 'axios'
 //   console.log(normalizedData)
 // })
 
-const apiBase = 'http://vms.gosc.cstcloud.cn/api'
+const apiBase = 'https://vms.cstcloud.cn/api'
 const codeMap = new Map<number, string>(
   [
     [0, '无法获取状态'],

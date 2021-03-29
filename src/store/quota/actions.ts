@@ -19,7 +19,7 @@ const codeMap = new Map<number, string>(
     [12, '创建失败']
   ]
 )
-const baseAPI = 'http://vms.gosc.cstcloud.cn/api/'
+const baseAPI = 'https://vms.cstcloud.cn/api/'
 // context.state -> store.state.quota
 const actions: ActionTree<QuotaInterface, StateInterface> = {
   async fetchQuota () {
