@@ -1,9 +1,6 @@
 <template>
   <div class="Vm">
     <div class="row no-wrap routerview-area">
-
-      <global-header/>
-
       <div v-if="isTreeOpen" class="col-1.5 items-center q-py-sm q-px-sm q-my-lg tree-area">
         <div class="tree-title text-grey-7 text-center ">
           机构与数据中心

@@ -1,5 +1,4 @@
 <template>
-  <q-page>
     <div class="column">
       <div class="col">
         <div class="row justify-center">
@@ -67,9 +66,9 @@
               </div>
 
               <div class="row">
-                <q-scroll-area class="scroll-area overflow-hidden">
+<!--                <q-scroll-area class="scroll-area overflow-hidden">-->
                   <router-view/>
-                </q-scroll-area>
+<!--                </q-scroll-area>-->
               </div>
 
             </div>
@@ -78,7 +77,6 @@
         </div>
       </div>
     </div>
-  </q-page>
 </template>
 
 <script lang="ts">
