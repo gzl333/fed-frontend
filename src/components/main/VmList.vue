@@ -171,21 +171,22 @@
           </div>
           <div class="col-auto gt-xs">
             <q-input
+              borderless
               dense
-              standout
+              debounce="300"
               v-model="searchContent"
-              input-class="text-right"
+              placeholder="Search"
               class="q-ml-sm"
-              type="search"
             >
               <template v-slot:append>
-                <q-icon v-if="searchContent === ''" name="search" />
+                <q-icon name="search" />
+                <!-- <q-icon v-if="searchContent === ''" name="search" />
                 <q-icon
                   v-else
                   name="clear"
                   class="cursor-pointer"
                   @click="searchContent = ''"
-                />
+                /> -->
               </template>
             </q-input>
           </div>

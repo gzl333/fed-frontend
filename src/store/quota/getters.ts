@@ -4,28 +4,36 @@ import { ServiceInterface, QuotaInterface, TypeInterface } from './state'
 
 const getters: GetterTree<QuotaInterface, StateInterface> = {
   serviceName (state) {
-    const serviceName: {name: string; number: string}[] = []
+    const serviceName: {name: string; number: number}[] = []
     if (state.userQuota.services) {
       state.userQuota.services.forEach((item) => {
         const name = item.name
-        const num = item.serviceTypes.length.toString()
+        let num = 0
         let flag = true
-        item.serviceTypes.forEach((it) => {
-          if (it.deleted === false) { // 包含没有deleted的机构，均展示配额
-            flag = true
-          } else {
-            flag = false
+        if (item.serviceTypes.length !== 0) {
+          // 没有deleted的配额 && 且机构下的配额没有过期
+          item.serviceTypes.forEach((it) => {
+            if (it.deleted === false) {
+              // 未过期 && 或者没有时间限制的配额
+              if ((new Date(it.expirationTime).getTime() > new Date().getTime()) || it.expirationTime === null) {
+                num += 1
+              }
+              flag = true
+            } else {
+              flag = false
+            }
+          })
+          if (flag === true) {
+            const service = {
+              name: name,
+              number: num
+            }
+            serviceName.push(service)
           }
-        })
-        if (flag === true) {
-          const service = {
-            name: name,
-            number: num
-          }
-          serviceName.push(service)
         }
       })
     }
+    // console.log('in getter serviceName:', serviceName)
     return serviceName
   },
   servicetype (state) {
@@ -35,33 +43,36 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
         const arrType: TypeInterface[] = []
         item.serviceTypes.forEach((it) => {
           if (it.deleted === false) {
-            const time = it.expirationTime
-            let timeJoin = ''
-            if (time != null) {
-              const time1 = time.slice(0, 10)
-              const time2 = time.slice(11, 19)
-              timeJoin = time1 + ' ' + time2
-            } else {
-              timeJoin = it.expirationTime
+            // 未过期 && 或者没有时间限制的配额
+            if ((new Date(it.expirationTime).getTime() > new Date().getTime()) || it.expirationTime === null) {
+              const time = it.expirationTime
+              let timeJoin = ''
+              if (time != null) {
+                const time1 = time.slice(0, 10)
+                const time2 = time.slice(11, 19)
+                timeJoin = time1 + ' ' + time2
+              } else {
+                timeJoin = it.expirationTime
+              }
+              const type:TypeInterface = {
+                type: it.type, // 配额类型
+                id: it.id,
+                privateIpTotal: it.privateIpTotal,
+                privateIpUsed: it.privateIpUsed,
+                publicIpTotal: it.publicIpTotal,
+                publicIpUsed: it.publicIpUsed,
+                vCpuTotal: it.vCpuTotal,
+                vCpuUsed: it.vCpuUsed,
+                ramTotal: it.ramTotal,
+                ramUsed: it.ramUsed,
+                diskTotal: it.diskTotal,
+                diskUsed: it.diskUsed,
+                expirationTime: timeJoin,
+                deleted: it.deleted,
+                display: it.display
+              }
+              arrType.push(type)
             }
-            const type:TypeInterface = {
-              type: it.type, // 配额类型
-              id: it.id,
-              privateIpTotal: it.privateIpTotal,
-              privateIpUsed: it.privateIpUsed,
-              publicIpTotal: it.publicIpTotal,
-              publicIpUsed: it.publicIpUsed,
-              vCpuTotal: it.vCpuTotal,
-              vCpuUsed: it.vCpuUsed,
-              ramTotal: it.ramTotal,
-              ramUsed: it.ramUsed,
-              diskTotal: it.diskTotal,
-              diskUsed: it.diskUsed,
-              expirationTime: timeJoin,
-              deleted: it.deleted,
-              display: it.display
-            }
-            arrType.push(type)
           }
         })
         const temp:ServiceInterface = {
@@ -72,6 +83,7 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
         serviceType.push(temp)
       })
     }
+    // console.log('in getter serviceType:', serviceType)
     return serviceType
   },
   toptab (state) {
@@ -90,16 +102,24 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
       let index = 1
       state.userQuota.services.forEach((item) => {
         let name = ''
+        let flag = true
         item.serviceTypes.forEach((it) => {
-          if (it.expirationTime) {
-            const diff = Math.abs(new Date(it.expirationTime).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
-            const days = Math.ceil(diff / (1000 * 3600 * 24)) // 差换算成天数
-            if (days < 7 || days === 7) {
-              lessOneWeekNum += 1
-            }
+          if (it.deleted === false) { // 没有deleted的配额
+            flag = true
+          } else {
+            flag = false
           }
-          if (it.expirationTime) {
-            name = `${index}、${item.name}：${it.type}。`
+          if (flag === true) {
+            // 未过期
+            if (it.expirationTime && (new Date(it.expirationTime).getTime() > new Date().getTime())) {
+              const diff = Math.abs(new Date(it.expirationTime).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
+              const days = Math.ceil(diff / (1000 * 3600 * 24)) // 差换算成天数
+              // console.log('in getter days:', it.type, '+', it.expirationTime, '+', days)
+              if (days > 0 && days <= 7) {
+                lessOneWeekNum += 1
+                name = `${index}、${item.name}：${it.type}。`
+              }
+            }
           }
         })
         index += 1
@@ -122,16 +142,23 @@ const getters: GetterTree<QuotaInterface, StateInterface> = {
       let index = 1
       state.userQuota.services.forEach((item) => {
         let name = ''
+        let flag = true
         item.serviceTypes.forEach((it) => {
-          if (it.expirationTime) {
-            const diff = Math.abs(new Date(it.expirationTime).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
-            const days = Math.ceil(diff / (1000 * 3600 * 24)) // 差换算成天数
-            if ((days < 30 || days === 30) && (days > 7)) {
-              lessOneMonthNum += 1
-            }
+          if (it.deleted === false) { // 没有deleted的配额
+            flag = true
+          } else {
+            flag = false
           }
-          if (it.expirationTime) {
-            name = `${index}、${item.name}：${it.type}。`
+          if (flag === true) {
+            // 未过期
+            if (it.expirationTime && (new Date(it.expirationTime).getTime() > new Date().getTime())) {
+              const diff = Math.abs(new Date(it.expirationTime).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
+              const days = Math.ceil(diff / (1000 * 3600 * 24)) // 差换算成天数
+              if (days <= 30 && days > 7) {
+                lessOneMonthNum += 1
+                name = `${index}、${item.name}：${it.type}。`
+              }
+            }
           }
         })
         index += 1

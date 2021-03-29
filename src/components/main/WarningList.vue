@@ -21,7 +21,9 @@
                   <q-badge align="top"> 配额 </q-badge>
                   <div style="font-size: 1.5em" class="q-my-xs q-ml-md">
                     {{ quotaLessOneWeek[0].lessOneWeekNum
-                    }}<q-tooltip :offset="[5, 10]"
+                    }}<q-tooltip
+                      :offset="[5, 10]"
+                      v-if="quotaLessOneWeek[0].lessOneWeekNum != 0"
                       >{{ quotaLessOneWeek[0].quotaName }}
                     </q-tooltip>
                   </div>
@@ -42,9 +44,11 @@
                   <div>{{ warningList[1] }}</div>
                   <q-badge align="top" color="nord14"> 配额 </q-badge>
                   <div class="q-my-xs q-ml-md" style="font-size: 1.5em">
-                    {{ quotaLessOneWeek[0].lessOneWeekNum
-                    }}<q-tooltip class="bg-nord10" :offset="[5, 10]"
-                      >{{ quotaLessOneWeek[0].quotaName }}
+                    {{ quotaLessOneMonth[0].lessOneMonthNum
+                    }}<q-tooltip
+                      :offset="[5, 10]"
+                      v-if="quotaLessOneMonth[0].lessOneMonthNum != 0"
+                      >{{ quotaLessOneMonth[0].quotaName }}
                     </q-tooltip>
                   </div>
                 </q-card-section>
@@ -110,7 +114,9 @@
                   <q-badge align="top"> 配额 </q-badge>
                   <div style="font-size: 1.5em" class="q-my-xs q-ml-md">
                     {{ quotaLessOneWeek[0].lessOneWeekNum
-                    }}<q-tooltip :offset="[5, 10]"
+                    }}<q-tooltip
+                      :offset="[5, 10]"
+                      v-if="quotaLessOneWeek[0].lessOneWeekNum != 0"
                       >{{ quotaLessOneWeek[0].quotaName }}
                     </q-tooltip>
                   </div>
@@ -131,9 +137,12 @@
                   <div>{{ warningList[1] }}</div>
                   <q-badge align="top" color="nord14"> 配额 </q-badge>
                   <div class="q-my-xs q-ml-md" style="font-size: 1.5em">
-                    {{ quotaLessOneWeek[0].lessOneWeekNum
-                    }}<q-tooltip class="bg-nord10" :offset="[5, 10]"
-                      >{{ quotaLessOneWeek[0].quotaName }}
+                    {{ quotaLessOneMonth[0].lessOneMonthNum
+                    }}<q-tooltip
+                      v-if="quotaLessOneMonth[0].lessOneMonthNum != 0"
+                      class="bg-nord10"
+                      :offset="[5, 10]"
+                      >{{ quotaLessOneMonth[0].quotaName }}
                     </q-tooltip>
                   </div>
                 </q-card-section>
