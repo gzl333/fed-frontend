@@ -131,7 +131,7 @@ export interface DataPointInterface {
   networks: DataPointNetworkInterface[]
 }
 
-export interface DataCenterInterface {
+export interface DataCenterInterface_old {
   key: string; // 应该与label值相同，避免tree组件中与dataPoint的id重合
   label: string;
   selectable: false;
@@ -142,7 +142,7 @@ export interface TreeRootInterface {
   key: '0';
   label: '全部节点';
   icon?: string;
-  children: DataCenterInterface[]
+  children: DataCenterInterface_old[]
 }
 
 // service_id对应各种服务
@@ -161,7 +161,7 @@ export interface ImageInterface {
   desc: string;
 }
 
-export interface ServiceInterface {
+export interface ServiceInterface_old {
   serviceId: string;
   serviceName: string;
   networks: {
@@ -184,6 +184,37 @@ export interface VpnInterface {
   serviceName?: string;
 }
 
+/*
+重构后的interface
+*/
+export interface DataCenterInterface {
+  // 来自registry接口
+  'id': string;
+  'name': string;
+  'endpoint_vms': string;
+  'endpoint_object': never; // 待细化
+  'endpoint_compute': never; // 待细化
+  'endpoint_monitor': never; // 待细化
+  'creation_time': string;
+  'status': {
+    'code': number;
+    'message': string;
+  },
+  'desc': string;
+  // 来自service接口补充
+  services?: string[];
+}
+
+export interface ServiceInterface {
+  id: string;
+  name: string;
+  service_type: string;
+  add_time: string;
+  need_vpn: boolean;
+  status: number;
+  data_center: string;
+}
+
 // Usage总接口
 export interface UsageInterface {
   // 机构树 -> 此数据结构是q-tree组件的要求，无法更改
@@ -195,18 +226,71 @@ export interface UsageInterface {
   // 云主机分页
   pagination: PaginationInterface;
   // 新建云主机
-  serviceList: ServiceInterface[]; // 当前用户全部可用service
+  serviceList: ServiceInterface_old[]; // 当前用户全部可用service
   // 云主机详情页
   serverDetail: ServerInterface;
   // vpn
   vpn: Map<string, VpnInterface>;
   // <-- 待重构
+
+  /* 扁平的数据结构 */
+  /*
+  map内部，0代表该map是否loaded
+  0: true/false,
+  1: {id:1, ....}
+  */
+  // allDataCenterTable: Map<string, DataCenterInterface | boolean>;
+  allDataCenterTable: Map<string, DataCenterInterface>; // 全部的datacenter
+  userServiceTable: Map<string, ServiceInterface>; // 与用户有关的service
 }
 
 const sampleUsageTables = {
 
   statusMap: {}, // todo 云主机状态的映射关系，硬写进去，一般不变
   // 以下均为object结构，也可写为map结构，则无需存储allIds，map自带全部key和顺序
+
+  // 来源： 来自列举registry -> 无需参数，列举全部datacenter
+  dataCenterTable: {
+    byId: {
+      id1: {
+        id: 'id1',
+        name: '地球大数据科学工程专项',
+        endpoint_vms: 'https://vms.cstcloud.cn/',
+        endpoint_object: null,
+        endpoint_compute: null,
+        endpoint_monitor: null,
+        creation_time: '2021-02-08T01:01:00Z',
+        status: {
+          code: 1,
+          message: '开启状态'
+        },
+        desc: '',
+
+        // 以下来自其它接口
+        services: ['id1'] // 关联serviceTable
+      }
+    },
+    allIds: ['id1']
+  },
+
+  // 来源：列举service -> query1: center_id / query2: available_only
+  serviceTable: {
+    byId: {
+      id1: {
+        id: 'id1',
+        name: '怀柔机房一层',
+        service_type: 'evcloud',
+        add_time: '2020-08-28T00:29:47.396311Z',
+        need_vpn: true,
+        status: 1,
+        data_center: 'id1', // 关联dataCenterTable 双向关联
+        // 以下来自其它接口
+        networks: ['id1', 'id2'],
+        vpn: 'id1' // 关联vpnTable
+      }
+    },
+    allIds: ['id1']
+  },
 
   // 来源1：列举servers -> query: service_id
   // 来源2：查询单个server -> query: server_id 不确定什么场景使用？
@@ -234,24 +318,7 @@ const sampleUsageTables = {
     },
     allIds: ['id1']
   },
-  // 来源：列举service -> query1: center_id / query2: available_only
-  serviceTable: {
-    byId: {
-      id1: {
-        id: 'id1',
-        name: '怀柔机房一层',
-        service_type: 'evcloud',
-        add_time: '2020-08-28T00:29:47.396311Z',
-        need_vpn: true,
-        status: 1,
-        data_center: 'id1', // 关联dataCenterTable 双向关联
-        // 以下来自其它接口
-        networks: ['id1', 'id2'],
-        vpn: 'id1' // 关联vpnTable
-      }
-    },
-    allIds: ['id1']
-  },
+
   // 来源：列举network -> query: service_id
   networkTable: {
     byId: {
@@ -282,18 +349,7 @@ const sampleUsageTables = {
     },
     allIds: ['id1']
   },
-  // 来源： 来自列举registry -> 无需参数，列举全部datacenter
-  dataCenterTable: {
-    byId: {
-      id1: {
-        id: 'id1',
-        name: '地球大数据科学工程专项',
-        // 以下来自其它接口
-        services: ['id1'] // 关联serviceTable
-      }
-    },
-    allIds: ['id1']
-  },
+
   // 来源: 列举uquota -> query1:service_id/query2: usable
   userQuotaTable: {
     byId: {
@@ -378,7 +434,11 @@ function state ():
     serverDetail: {
       id: '0' // serverDetail中： id='0'是直接进入页面，应重定向；id=''是在读取中，应loading，其它状态则显示信息
     },
-    vpn: new Map()
+    vpn: new Map(),
+
+    // 重构后的数据结构
+    allDataCenterTable: new Map(),
+    userServiceTable: new Map()
   }
 }
 

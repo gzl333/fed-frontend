@@ -1,25 +1,25 @@
 <template>
   <div class="Vm">
     <div class="row no-wrap">
-      <div v-if="isTreeOpen" class="col-1.5 items-center q-py-sm q-px-sm q-my-lg tree-area">
-        <div class="tree-title text-grey-7 text-center ">
-          机构与数据中心
-          <q-tooltip>
-            正在使用的机构与数据中心
-          </q-tooltip>
-        </div>
-        <!--        <q-scroll-area class="min-tree-size">-->
-        <q-tree
-          class="col-12 col-sm-6"
-          default-expand-all
-          :nodes="dataPointTree"
-          node-key="key"
-          selected-color="primary"
-          v-model:selected="selectedTree"
-        />
-        <!--                <pre>{{ rows }}</pre>-->
-        <!--        </q-scroll-area>-->
-      </div>
+      <!--      <div v-if="isTreeOpen" class="col-1.5 items-center q-py-sm q-px-sm q-my-lg tree-area">-->
+      <!--        <div class="tree-title text-grey-7 text-center ">-->
+      <!--          机构与数据中心-->
+      <!--          <q-tooltip>-->
+      <!--            正在使用的机构与数据中心-->
+      <!--          </q-tooltip>-->
+      <!--        </div>-->
+      <!--        &lt;!&ndash;        <q-scroll-area class="min-tree-size">&ndash;&gt;-->
+      <!--        <q-tree-->
+      <!--          class="col-12 col-sm-6"-->
+      <!--          default-expand-all-->
+      <!--          :nodes="dataPointTree"-->
+      <!--          node-key="key"-->
+      <!--          selected-color="primary"-->
+      <!--          v-model:selected="selectedTree"-->
+      <!--        />-->
+      <!--        &lt;!&ndash;                <pre>{{ rows }}</pre>&ndash;&gt;-->
+      <!--        &lt;!&ndash;        </q-scroll-area>&ndash;&gt;-->
+      <!--      </div>-->
 
       <!--      <div class="col-shrink btn-area">-->
       <!--        <q-btn v-if="isTreeOpen" class="btn-close" unelevated color="primary"-->
@@ -74,12 +74,12 @@
                 <!--                <span class="text-primary text-h7">-->
                 <!--                  {{ tableTitle }}-->
                 <!--                </span>-->
-<!--                <div class="col"> 选择节点：</div>-->
+                <!--                <div class="col"> 选择节点：</div>-->
               </div>
 
               <div class="co">
                 <div class="row">
-<!--                  <div class="col-3"> 选择节点：</div>-->
+                  <!--                  <div class="col-3"> 选择节点：</div>-->
                   <div class="coll-auto">
                     <q-select outlined dense v-model="serviceSelection" :options="serviceOptions"/>
                   </div>
@@ -329,10 +329,38 @@ export default defineComponent({
     const isStatusLoading = ref(true)
 
     // 获取机构树，获取云主机列表
-    onMounted(() => {
-      void $store.dispatch('usage/updateDataPointTree')
-      void $store.dispatch('usage/updateServerList')
+    onMounted(async () => {
+      void await $store.dispatch('usage/updateDataPointTree')
+      void await $store.dispatch('usage/updateServerList')
+
+      // 重构后
+      void await $store.dispatch('usage/updateUserServiceTable')
+      void await $store.dispatch('usage/updateAllDataCenterTable')
     })
+
+    // service下拉列表
+    const serviceSelection = ref({
+      label: '全部节点',
+      value: '0'
+    })
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+    const serviceOptions = computed(() => $store.getters['usage/getServiceOptions'])
+    console.log(serviceOptions)
+
+    /*    const serviceOptions = [
+          {
+            label: '全部节点',
+            value: '0'
+          },
+          {
+            label: '中国科学院计算机网络信息中心 - HR_204机房',
+            value: '1'
+          },
+          {
+            label: '地球大数据科学工程专项 - 怀柔机房一层',
+            value: '2'
+          }
+        ] */
 
     // 得到机构树信息
     const dataPointTree = computed(() => {
@@ -379,19 +407,20 @@ export default defineComponent({
     const pagination = computed(() => $store.state.usage.pagination)
     // 云主机列表title
     const tableTitle = computed(() => $store.state.usage.pagination.serviceName)
+
     // 监控机构树节点选择
-    watch(selectedTree, () => {
+    watch(serviceSelection, () => {
       // 分页store中serviceId的来源
       dataPointTree.value[0].children.forEach((dataCenterSelected) => {
         dataCenterSelected.children.forEach((dataPointSelected) => {
           // null 和 '0'都存为'0'
-          if (selectedTree.value === '0' || selectedTree.value === null) {
+          if (serviceSelection.value.value === '0' || serviceSelection.value.value === null) {
             $store.commit('usage/storePagination', {
               serviceId: '0',
               serviceName: '全部节点',
               page: 1
             })
-          } else if (dataPointSelected.key === selectedTree.value) {
+          } else if (dataPointSelected.key === serviceSelection.value.value) {
             $store.commit('usage/storePagination', {
               serviceId: dataPointSelected.key,
               serviceName: dataPointSelected.label,
@@ -408,27 +437,6 @@ export default defineComponent({
     const toggleTree = () => {
       isTreeOpen.value = !isTreeOpen.value
     }
-
-    // service下拉列表
-    const serviceSelection = ref({
-      label: '全部节点',
-      value: '0'
-    })
-
-    const serviceOptions = [
-      {
-        label: '全部节点',
-        value: '0'
-      },
-      {
-        label: '中国科学院计算机网络信息中心 - HR_204机房',
-        value: '1'
-      },
-      {
-        label: '地球大数据科学工程专项 - 怀柔机房一层',
-        value: '2'
-      }
-    ]
 
     // 云主机列表分栏定义
     const columns = [

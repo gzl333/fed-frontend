@@ -6,15 +6,13 @@ import {
   ResServiceResultInterface,
   ReqServerListInterface,
   // ResServerInterface,
-  ServerInterface, ReqServerNote, DataPointNetworkInterface, ServiceInterface, ReqServerCreate
+  ServerInterface, ReqServerNote, DataPointNetworkInterface, ReqServerCreate, ServiceInterface_old
   // , PaginationInterface
 } from './state'
 import axios, { AxiosResponse } from 'axios'
+import { normalize, schema } from 'normalizr'
 
 // 格式化数据结构工具 -> 将数据扁平化
-
-// import { normalize, schema } from 'normalizr'
-//
 // const originData =
 //   [
 //     {
@@ -48,7 +46,10 @@ import axios, { AxiosResponse } from 'axios'
 //   ]
 // const service = new schema.Entity('service')
 // const user_quota = new schema.Entity('user_quota')
-// const server = new schema.Entity('server', { service, user_quota })
+// const server = new schema.Entity('server', {
+//   service,
+//   user_quota
+// })
 // originData.forEach((data) => {
 //   const normalizedData = normalize(data, server)
 //   console.log(normalizedData)
@@ -73,6 +74,52 @@ const codeMap = new Map<number, string>(
 )
 
 const actions: ActionTree<UsageInterface, StateInterface> = {
+  // allDataCenterTable
+  async updateAllDataCenterTable (context) {
+    const respDataCenters = await context.dispatch('fetchDataCenters')
+    const dataCenter = new schema.Entity('dataCenter', {})
+    respDataCenters.data.registries.forEach((data: Record<string, never>) => {
+      const normalizedData = normalize(data, dataCenter)
+      context.commit('storeDataCenterTable', normalizedData.entities.dataCenter)
+    })
+    // console.log(context.state.allDataCenterTable)
+  },
+  async fetchDataCenters () {
+    const api = apiBase + '/registry/'
+    const response = await axios.get(api)
+    return response
+  },
+  // userServiceTable
+  async updateUserServiceTable (context) {
+    // 发送请求
+    const respServices = await context.dispatch('fetchServices', { available_only: true })
+    // 将响应normalize，存入state里的serviceTable
+    const data_center = new schema.Entity('data_center')
+    const service = new schema.Entity('service', { data_center })
+    respServices.data.results.forEach((data: Record<string, never>) => {
+      const normalizedData = normalize(data, service)
+      context.commit('storeServiceTable', normalizedData.entities.service)
+    })
+    // 标注serviceTable isLoaded
+    // context.commit('storeServiceTable', { 0: true })
+    console.log(context.state.userServiceTable)
+  },
+  async fetchServices (context, payload?: { page?: number; page_size?: number; center_id?: string; available_only?: boolean; }) {
+    const api = apiBase + '/service/'
+    let response
+    if (payload) {
+      const config = {
+        params: payload
+      }
+      response = await axios.get(api, config)
+    } else {
+      response = await axios.get(api)
+    }
+    return response
+  },
+  /*
+  以上为重构数据结构
+  */
   async serverDetailOperation (context, payload: { endPoint: string; id: string; action: string }) {
     // 将主机状态清空，界面将显示loading
     context.commit('storeServerDetailStatus', '')
@@ -159,7 +206,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     }
     for (const dataCenter of context.state.dataPointTree[0].children) {
       for (const dataPoint of dataCenter.children) {
-        const service: ServiceInterface = {
+        const service: ServiceInterface_old = {
           serviceId: dataPoint.key,
           serviceName: dataPoint.label,
           networks: {
@@ -250,7 +297,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     }
     return response
   },
-  async fetchService (context, payload?: { page?: number; page_size?: number; center_id?: string; available_only?: boolean; }) { // todo 按照分页修改
+  async fetchService (context, payload?: { page?: number; page_size?: number; center_id?: string; available_only?: boolean; }) {
     const api = apiBase + '/service/'
     let response
     if (payload) {

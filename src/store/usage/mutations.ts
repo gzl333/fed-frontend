@@ -4,10 +4,19 @@ import {
   TreeRootInterface,
   ServerInterface,
   // DataPointOnShowInterface,
-  PaginationInterface, ReqServerNote, ServiceInterface, VpnInterface
+  PaginationInterface, ReqServerNote, VpnInterface, ServiceInterface_old, DataCenterInterface, ServiceInterface
 } from './state'
 
 const mutation: MutationTree<UsageInterface> = {
+  /* 以下为重构后的数据结构 */
+  storeDataCenterTable (state, tableObj: Record<string, DataCenterInterface>) {
+    state.allDataCenterTable.set(Object.keys(tableObj)[0], Object.values(tableObj)[0])
+  },
+  storeServiceTable (state, tableObj: Record<string, ServiceInterface>) {
+    state.userServiceTable.set(Object.keys(tableObj)[0], Object.values(tableObj)[0])
+  },
+  /* 以上为重构后的数据结构 */
+
   deleteVpn (state, serviceId: string) {
     state.vpn.delete(serviceId)
   },
@@ -30,7 +39,7 @@ const mutation: MutationTree<UsageInterface> = {
   storeServerDetailStatus (state, status: string) {
     state.serverDetail.status = status
   },
-  storeService (state, payload: ServiceInterface) {
+  storeService (state, payload: ServiceInterface_old) {
     state.serviceList.push(payload)
   },
   storeDataPointTree (state, payload: TreeRootInterface[]) {
