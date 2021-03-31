@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { QuotaInterface, UquotaResponseInterface, ServiceInterface, TypeInterface, UserQuotaInterface } from './state'
 import axios from 'axios'
-import { ReqServerListInterface, ServerInterface } from '../usage/state'
+import { ReqServerListInterface, ServerInterface_old } from '../usage/state'
 const codeMap = new Map<number, string>(
   [
     [0, '无法获取状态'],
@@ -117,7 +117,7 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
     // 保存resp中server信息
     // const resServers: ServerInterface[] = resServerList.data.servers
     // console.log(resServers)
-    const serverList: ServerInterface[] = []
+    const serverList: ServerInterface_old[] = []
     for (const resServer of resServerList.data.servers) {
       serverList.push(resServer)
     }

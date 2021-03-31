@@ -1,4 +1,4 @@
-import { ServerInterface } from '../usage/state'
+import { ServerInterface_old } from '../usage/state'
 
 export interface ServersInterface {
   id: string;
@@ -47,7 +47,7 @@ export interface QuotaInterface {
   userQuota: UserQuotaInterface; // 用户配额
   groupQuota?: unknown;
   pagination: PaginationInterface;
-  serverList: ServerInterface[];
+  serverList: ServerInterface_old[];
 }
 
 export interface UquotaResponseResultsInterface {

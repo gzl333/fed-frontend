@@ -40,7 +40,6 @@
           card-class=""
           table-class="text-nord0"
           table-header-class="server-table-header bg-grey-2"
-          :title="`云主机所在节点：${tableTitle}`"
           :rows="rows"
           :columns="columns"
           row-key="name"
@@ -125,10 +124,10 @@
                 </div>
               </q-td>
               <q-td key="dataCenterName" :props="props">
-                {{ props.row.service.name }}
+                {{ $store.state.usage.userServiceTable.byId[props.row.service].name }}
               </q-td>
               <q-td key="serviceType" :props="props">
-                {{ props.row.service.service_type }}
+                {{ $store.state.usage.userServiceTable.byId[props.row.service].service_type }}
               </q-td>
               <q-td key="image" :props="props">
                 {{ props.row.image }}
@@ -272,17 +271,17 @@
 
           <template v-slot:bottom>
             <!--            blank bottom just to show the bottom border of table-->
-            <q-pagination
-              unelevated
-              v-if="paginationMax!==1"
-              v-model="paginationSelected"
-              color="primary"
-              :max="paginationMax"
-              :max-pages="7"
-              size="md"
-              :direction-links="true"
-              @click="clickPagination"
-            />
+            <!--            <q-pagination-->
+            <!--              unelevated-->
+            <!--              v-if="paginationMax!==1"-->
+            <!--              v-model="paginationSelected"-->
+            <!--              color="primary"-->
+            <!--              :max="paginationMax"-->
+            <!--              :max-pages="7"-->
+            <!--              size="md"-->
+            <!--              :direction-links="true"-->
+            <!--              @click="clickPagination"-->
+            <!--            />-->
           </template>
 
         </q-table>
@@ -311,7 +310,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, watch } from 'vue'
+import { defineComponent, ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from '../../store'
 import { useQuasar, copyToClipboard } from 'quasar'
@@ -329,43 +328,36 @@ export default defineComponent({
     const isStatusLoading = ref(true)
 
     // 获取机构树，获取云主机列表
-    onMounted(async () => {
-      void await $store.dispatch('usage/updateDataPointTree')
-      void await $store.dispatch('usage/updateServerList')
+    // onMounted(async () => {
+    // void await $store.dispatch('usage/updateDataPointTree')
+    // void await $store.dispatch('usage/updateServerList')
+    // })
 
-      // 重构后
-      void await $store.dispatch('usage/updateUserServiceTable')
-      void await $store.dispatch('usage/updateAllDataCenterTable')
-    })
+    // 重构后
+    if (!$store.state.usage.allDataCenterTable.isLoaded) {
+      void $store.dispatch('usage/updateAllDataCenterTable')
+    }
+    if (!$store.state.usage.userServiceTable.isLoaded) {
+      void $store.dispatch('usage/updateUserServiceTable')
+    }
+    if (!$store.state.usage.allServerTable.isLoaded) {
+      void $store.dispatch('usage/updateAllServerTable')
+    }
 
-    // service下拉列表
+    // service_id下拉列表
+    const serviceOptions = computed(() => $store.getters['usage/getServiceOptions'])
     const serviceSelection = ref({
-      label: '全部节点',
+      label: '全部服务节点',
       value: '0'
     })
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-    const serviceOptions = computed(() => $store.getters['usage/getServiceOptions'])
-    console.log(serviceOptions)
-
-    /*    const serviceOptions = [
-          {
-            label: '全部节点',
-            value: '0'
-          },
-          {
-            label: '中国科学院计算机网络信息中心 - HR_204机房',
-            value: '1'
-          },
-          {
-            label: '地球大数据科学工程专项 - 怀柔机房一层',
-            value: '2'
-          }
-        ] */
+    watch(serviceSelection, () => {
+      $store.commit('usage/storeAllServerTableFilter', serviceSelection.value.value)
+    })
 
     // 得到机构树信息
-    const dataPointTree = computed(() => {
-      return $store.state.usage.dataPointTree
-    })
+    // const dataPointTree = computed(() => {
+    //   return $store.state.usage.dataPointTree
+    // })
 
     /*    const dataPointTree = [
           {
@@ -398,45 +390,45 @@ export default defineComponent({
           }
         ] */
 
-    // 机构树上所选择节点的id
-    const selectedTree = computed({
-      get: () => $store.state.usage.pagination.serviceId,
-      set: val => $store.commit('usage/storePagination', { serviceId: val })
-    })
-    // temp
-    const pagination = computed(() => $store.state.usage.pagination)
-    // 云主机列表title
-    const tableTitle = computed(() => $store.state.usage.pagination.serviceName)
+    // // 机构树上所选择节点的id
+    // const selectedTree = computed({
+    //   get: () => $store.state.usage.pagination.serviceId,
+    //   set: val => $store.commit('usage/storePagination', { serviceId: val })
+    // })
+    // // temp
+    // const pagination = computed(() => $store.state.usage.pagination)
+    // // 云主机列表title
+    // const tableTitle = computed(() => $store.state.usage.pagination.serviceName)
 
     // 监控机构树节点选择
-    watch(serviceSelection, () => {
-      // 分页store中serviceId的来源
-      dataPointTree.value[0].children.forEach((dataCenterSelected) => {
-        dataCenterSelected.children.forEach((dataPointSelected) => {
-          // null 和 '0'都存为'0'
-          if (serviceSelection.value.value === '0' || serviceSelection.value.value === null) {
-            $store.commit('usage/storePagination', {
-              serviceId: '0',
-              serviceName: '全部节点',
-              page: 1
-            })
-          } else if (dataPointSelected.key === serviceSelection.value.value) {
-            $store.commit('usage/storePagination', {
-              serviceId: dataPointSelected.key,
-              serviceName: dataPointSelected.label,
-              page: 1
-            })
-          }
-        })
-      })
-      // 更新serverList
-      void $store.dispatch('usage/updateServerList') //, { service_id: selectedTree.value }
-    })
-    // 机构树折叠
-    const isTreeOpen = ref(true)
-    const toggleTree = () => {
-      isTreeOpen.value = !isTreeOpen.value
-    }
+    // watch(selectedTree, () => {
+    //   // 分页store中serviceId的来源
+    //   dataPointTree.value[0].children.forEach((dataCenterSelected) => {
+    //     dataCenterSelected.children.forEach((dataPointSelected) => {
+    //       // null 和 '0'都存为'0'
+    //       if (serviceSelection.value.value === '0' || serviceSelection.value.value === null) {
+    //         $store.commit('usage/storePagination', {
+    //           serviceId: '0',
+    //           serviceName: '全部节点',
+    //           page: 1
+    //         })
+    //       } else if (dataPointSelected.key === serviceSelection.value.value) {
+    //         $store.commit('usage/storePagination', {
+    //           serviceId: dataPointSelected.key,
+    //           serviceName: dataPointSelected.label,
+    //           page: 1
+    //         })
+    //       }
+    //     })
+    //   })
+    //   // 更新serverList
+    //   void $store.dispatch('usage/updateServerList') //, { service_id: selectedTree.value }
+    // })
+    // // 机构树折叠
+    // const isTreeOpen = ref(true)
+    // const toggleTree = () => {
+    //   isTreeOpen.value = !isTreeOpen.value
+    // }
 
     // 云主机列表分栏定义
     const columns = [
@@ -504,34 +496,34 @@ export default defineComponent({
       }
     ]
     // 获取云主机列表数据
-    const rows = computed(() => {
-      // console.log('serverlist changed')
-      return $store.state.usage.serverList
-    })
-    // console.log(rows)
+    const rows = computed(() => $store.getters['usage/getServersByServiceId'])
 
+    // const rows = computed(() => {
+    //   // console.log('serverlist changed')
+    //   return $store.state.usage.serverList
+    // })
     // 分页部分
     // 通过屏幕尺寸动态计算最佳rows， 并同步至store的pageSize
-    const computedPageSize = computed(() => (Math.max(5, Math.ceil(($q.screen.height - 350) / 50))))
-    // 计算尺寸变化后更新server list
-    watch(computedPageSize, () => {
-      // 更新pagination的pagesize
-      $store.commit('usage/storePagination', { pageSize: computedPageSize.value })
-      // 更新serverList，此时page来自store.pagination.page
-      void $store.dispatch('usage/updateServerList')
-    })
-    // 如果store.pagination.page不是1 ，则说明是重新进入页面，利用已有pagination信息更新serverList即可
-    // 如果store.pagination.page是1, 则为首次进入页面，需更新pagination信息
-    // console.log($store.state.usage.pagination)
-    if ($store.state.usage.pagination.page === 1) {
-      $store.commit('usage/storePagination', {
-        // page: 1,
-        pageSize: computedPageSize.value
-        // ,
-        // serviceId: '0'
-      })
-    }
-    // 供table获取分页信息，单向从store -> pagination -> UI
+    // const computedPageSize = computed(() => (Math.max(5, Math.ceil(($q.screen.height - 350) / 50))))
+    // // 计算尺寸变化后更新server list
+    // watch(computedPageSize, () => {
+    //   // 更新pagination的pagesize
+    //   $store.commit('usage/storePagination', { pageSize: computedPageSize.value })
+    //   // 更新serverList，此时page来自store.pagination.page
+    //   void $store.dispatch('usage/updateServerList')
+    // })
+    // // 如果store.pagination.page不是1 ，则说明是重新进入页面，利用已有pagination信息更新serverList即可
+    // // 如果store.pagination.page是1, 则为首次进入页面，需更新pagination信息
+    // // console.log($store.state.usage.pagination)
+    // if ($store.state.usage.pagination.page === 1) {
+    //   $store.commit('usage/storePagination', {
+    //     // page: 1,
+    //     pageSize: computedPageSize.value
+    //     // ,
+    //     // serviceId: '0'
+    //   })
+    // }
+    // // 供table获取分页信息，单向从store -> pagination -> UI
     // q-pagination 所需配置对象
     const paginationTable = ref({
       // sortBy: 'desc',
@@ -539,22 +531,22 @@ export default defineComponent({
       page: 1,
       rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
     })
-    // q-pagination 所需分页最大值
-    const paginationMax = computed(() => {
-      if ($store.state.usage.pagination.count && $store.state.usage.pagination.pageSize) {
-        return Math.ceil($store.state.usage.pagination.count / $store.state.usage.pagination.pageSize)
-      } else {
-        return 1
-      }
-    })
-    // pagination当前选择的值应与store.pagination.page同步
-    const paginationSelected = computed({
-      get: () => $store.state.usage.pagination.page,
-      set: val => $store.commit('usage/storePagination', { page: val })
-    })
-    const clickPagination = () => {
-      void $store.dispatch('usage/updateServerList')
-    }
+    // // q-pagination 所需分页最大值
+    // const paginationMax = computed(() => {
+    //   if ($store.state.usage.pagination.count && $store.state.usage.pagination.pageSize) {
+    //     return Math.ceil($store.state.usage.pagination.count / $store.state.usage.pagination.pageSize)
+    //   } else {
+    //     return 1
+    //   }
+    // })
+    // // pagination当前选择的值应与store.pagination.page同步
+    // const paginationSelected = computed({
+    //   get: () => $store.state.usage.pagination.page,
+    //   set: val => $store.commit('usage/storePagination', { page: val })
+    // })
+    // const clickPagination = () => {
+    //   void $store.dispatch('usage/updateServerList')
+    // }
 
     // 云主机操作
     const vmOperation = (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
@@ -570,7 +562,7 @@ export default defineComponent({
         })
       }
     }
-    // VNC
+    // VNC 不保存在vuex里，vnc图标根据云主机状态变化，开机时可以点击vnc按钮，点击后再获取vnc地址并打开新窗口跳转
     const gotoVNC = async (payload: string) => {
       const response = await $store.dispatch('usage/fetchServerVNC', payload)
       const url = response.data.vnc.url
@@ -642,29 +634,29 @@ export default defineComponent({
     }
     return {
       $store,
-      isTreeOpen,
-      toggleTree,
-      selectedTree,
-      dataPointTree,
+      // isTreeOpen,
+      // toggleTree,
+      // selectedTree,
+      // dataPointTree,
       columns,
       rows,
       vmOperation,
       isStatusLoading,
-      tableTitle,
+      // tableTitle,
       gotoVNC,
       isShowDelConfirm,
       vmToDel,
       paginationTable,
-      paginationSelected,
-      clickPagination,
-      paginationMax,
+      // paginationSelected,
+      // clickPagination,
+      // paginationMax,
       popEdit,
       clickToCopy,
       hoverRow,
       onMouseEnterRow,
       onMouseLeaveRow,
       updateServerDetail,
-      pagination,
+      // pagination,
       serviceSelection,
       serviceOptions
     }
