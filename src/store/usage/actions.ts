@@ -33,7 +33,163 @@ const statusCodeMap = new Map<number, string>(
 )
 
 const actions: ActionTree<UsageInterface, StateInterface> = {
-  // vmlist页面中的云主机操作
+  /* 更新全部Usage模块Table */
+  updateUsageTable (context) {
+    if (!context.state.allServerTable.isLoaded) {
+      void context.dispatch('updateAllServerTable')
+    }
+    if (!context.state.allFlavorTable.isLoaded) {
+      void context.dispatch('updateAllFlavorTable')
+    }
+    if (!context.state.allDataCenterTable.isLoaded) {
+      void context.dispatch('updateAllDataCenterTable')
+    }
+    if (!context.state.availableServiceTable.isLoaded) {
+      void context.dispatch('updateAvailableServiceTable').then(() => {
+        // 获取依赖availableServiceTable的表
+        if (!context.state.availableNetworkTable.isLoaded) {
+          void context.dispatch('updateAvailableNetworkTable')
+        }
+        if (!context.state.availableImageTable.isLoaded) {
+          void context.dispatch('updateAvailableImageTable')
+        }
+        if (!context.state.availableVpnTable.isLoaded) {
+          void context.dispatch('updateAvailableVpnTable')
+        }
+        if (!context.state.availableUserQuotaTable.isLoaded) {
+          void context.dispatch('updateAvailableUserQuotaTable')
+        }
+      }).then(() => {
+        console.log(context.state)
+      })
+    }
+  },
+  /* 更新全部Usage模块Table */
+
+  /* todo allArchivedServerTable */
+  // 该table暂未实现
+  /*  allArchivedServerTable */
+
+  /* availableUserQuotaTable */
+  async updateAvailableUserQuotaTable (context) {
+    // 将响应normalize
+    const service = new schema.Entity('service')
+    const quota = new schema.Entity('quota', { service })
+    for (const serviceId of context.state.availableServiceTable.allIds) {
+      const respQuota = await context.dispatch('fetchUserQuota', serviceId)
+      for (const data of respQuota.data.results) {
+        const normalizedData = normalize(data, quota)
+        context.commit('storeAvailableUserQuotaTable', normalizedData.entities.quota)
+      }
+    }
+    // console.log(context.state.availableUserQuotaTable)
+  },
+  async fetchUserQuota (context, serviceId: string) {
+    const api = apiBase + '/u-quota/'
+    const config = {
+      params: {
+        service: serviceId
+      }
+    }
+    const response = await axios.get(api, config)
+    return response
+  },
+  async fetchUserQuotaServers (context, servicdId: string) {
+    const api = apiBase + 'u-quota/' + servicdId + '/servers/'
+    const response = await axios.get(api)
+    return response
+  },
+  /* availableUserQuotaTable */
+
+  /* availableVpnTable */
+  async updateAvailableVpnTable (context) {
+    for (const serviceId of context.state.availableServiceTable.allIds) {
+      const respVpn = await context.dispatch('fetchVpn', serviceId)
+      // 将id补充进vpn对象
+      Object.assign(respVpn.data.vpn, { id: serviceId })
+      context.commit('storeAvailableVpnTable', respVpn.data.vpn)
+    }
+    // console.log(context.state.availableVpnTable)
+  },
+  async fetchVpn (context, serviceId: string) {
+    const api = apiBase + '/vpn/' + serviceId
+    const response = await axios.get(api)
+    return response
+  },
+  /* availableVpnTable */
+
+  /* allFlavorTable */
+  async updateAllFlavorTable (context) {
+    const respFlavor = await context.dispatch('fetchFlavor')
+    for (const flavor of respFlavor.data.flavors) {
+      context.commit('storeAllFlavorTable', flavor)
+    }
+    // console.log(context.state.allFlavorTable)
+  },
+  async fetchFlavor (context) {
+    const api = apiBase + '/flavor/'
+    const response = await axios.get(api)
+    return response
+  },
+  /* allFlavorTable */
+
+  /* availableImageTable -> 依赖 availableServiceTable */
+  async updateAvailableImageTable (context) {
+    for (const serviceId of context.state.availableServiceTable.allIds) {
+      const respImage = await context.dispatch('fetchImage', serviceId)
+      for (const image of respImage.data) {
+        // 将service 和 localId补充进image对象
+        Object.assign(image, {
+          service: serviceId,
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          localId: `${serviceId}-${image.id}`
+        })
+        context.commit('storeAvailableImageTable', image)
+      }
+    }
+    // console.log(context.state.availableImageTable)
+  },
+  async fetchImage (context, payload: string) {
+    const api = apiBase + '/image/'
+    const config = {
+      params: {
+        service_id: payload
+      }
+    }
+    const response = await axios.get(api, config)
+    return response
+  },
+  /* availableImageTable */
+
+  /* availableNetworkTable -> 依赖 availableServiceTable */
+  async updateAvailableNetworkTable (context) {
+    for (const serviceId of context.state.availableServiceTable.allIds) {
+      const respNetwork = await context.dispatch('fetchNetwork', serviceId)
+      for (const network of respNetwork.data) {
+        // 将service 和 localId补充进network对象
+        Object.assign(network, {
+          service: serviceId,
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          localId: `${serviceId}-${network.id}`
+        })
+        context.commit('storeAvailableNetworkTable', network)
+      }
+    }
+    // console.log(context.state.availableNetworkTable)
+  },
+  async fetchNetwork (context, serviceId: string) {
+    const api = apiBase + '/network/'
+    const config = {
+      params: {
+        service_id: serviceId
+      }
+    }
+    const response = await axios.get(api, config)
+    return response
+  },
+  /* availableNetworkTable */
+
+  /* vmlist页面中的云主机操作 */
   async vmOperation (context, payload: { endPoint: string; id: string; action: string }) {
     // 将主机状态清空，界面将显示loading
     context.commit('storeAllServerTableSingleStatus', {
@@ -64,15 +220,9 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     }
     return response
   },
-  // allServerTable 更新单个server的status
-  async updateAllServerTableSingleStatus (context, serverId: string) {
-    const respStatus = await context.dispatch('fetchServerStatus', serverId)
-    context.commit('storeAllServerTableSingleStatus', {
-      serverId,
-      status_code: statusCodeMap.get(respStatus.data.status.status_code)
-    })
-  },
-  // allServerTable
+  /* vmlist页面中的云主机操作 */
+
+  /*  allServerTable */
   async updateAllServerTable (context) {
     // 先清空allServerTable，避免多次更新时数据累加
     context.commit('clearAllServerTable')
@@ -81,7 +231,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     const respServers = await context.dispatch('fetchServers')
     // 将响应normalize，存入state里的allServerTable
     const service = new schema.Entity('service')
-    const user_quota = new schema.Entity('suer_quota')
+    const user_quota = new schema.Entity('user_quota')
     const server = new schema.Entity('server', {
       service,
       user_quota
@@ -91,10 +241,18 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
       context.commit('storeAllServerTable', normalizedData.entities.server)
     }
     // console.log(context.state.allServerTable)
-    // 建立allServerTable之后，分别更新每个server status
+    // 建立allServerTable之后，分别更新每个server status, 并发更新，无需await
     for (const serverId of context.state.allServerTable.allIds) {
-      void await context.dispatch('updateAllServerTableSingleStatus', serverId)
+      void context.dispatch('updateAllServerTableSingleStatus', serverId)
     }
+  },
+  // 更新单个server的status
+  async updateAllServerTableSingleStatus (context, serverId: string) {
+    const respStatus = await context.dispatch('fetchServerStatus', serverId)
+    context.commit('storeAllServerTableSingleStatus', {
+      serverId,
+      status_code: statusCodeMap.get(respStatus.data.status.status_code)
+    })
   },
   async fetchServerStatus (context, serverId: string) {
     const api = apiBase + '/server/' + serverId + '/status/'
@@ -119,7 +277,9 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     }
     return response
   },
-  // allDataCenterTable
+  /*  allServerTable */
+
+  /*  allDataCenterTable */
   async updateAllDataCenterTable (context) {
     const respDataCenters = await context.dispatch('fetchDataCenters')
     const dataCenter = new schema.Entity('dataCenter', {})
@@ -134,8 +294,10 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     const response = await axios.get(api)
     return response
   },
-  // userServiceTable
-  async updateUserServiceTable (context) {
+  /*  allDataCenterTable */
+
+  /*  availableServiceTable */
+  async updateAvailableServiceTable (context) {
     // 发送请求
     const respServices = await context.dispatch('fetchServices', { available_only: true })
     // 将响应normalize，存入state里的serviceTable
@@ -143,11 +305,8 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     const service = new schema.Entity('service', { data_center })
     respServices.data.results.forEach((data: Record<string, never>) => {
       const normalizedData = normalize(data, service)
-      context.commit('storeUserServiceTable', normalizedData.entities.service)
+      context.commit('storeAvailableServiceTable', normalizedData.entities.service)
     })
-    // 标注serviceTable isLoaded
-    // context.commit('storeServiceTable', { isLoaded: true })
-    // console.log(context.state.userServiceTable)
   },
   async fetchServices (context, payload?: { page?: number; page_size?: number; center_id?: string; available_only?: boolean; }) {
     const api = apiBase + '/service/'
@@ -162,8 +321,11 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     }
     return response
   },
+  /*  availableServiceTable */
   /*
+
   以上为重构数据结构
+
   */
   async serverDetailOperation (context, payload: { endPoint: string; id: string; action: string }) {
     // todo 将主机状态清空，界面将显示loading 待验证
@@ -216,11 +378,6 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
       vpn: respFetchVpn.data.vpn
     })
   },
-  async fetchVpn (context, serviceId: string) {
-    const api = apiBase + '/vpn/' + serviceId
-    const response = await axios.get(api)
-    return response
-  },
 
   // async updateServerInfo (context, serverId: string) {
   //   // serverDetail中： id='0'是直接进入页面，应重定向；id=''是在读取中，应loading，其它状态则显示信息
@@ -246,11 +403,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     const response = axios.post(api, data)
     return response
   },
-  async fetchFlavor (/* context */) {
-    const api = apiBase + '/flavor/'
-    const response = await axios.get(api)
-    return response
-  },
+
   // async updateServiceList (context) {
   //   if (context.state.dataPointTree[0].children.length === 0) {
   //     void await context.dispatch('updateDataPointTree')
@@ -287,26 +440,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
   //   }
   //   // console.log(context.state.serviceList)
   // },
-  async fetchImage (context, payload: string) {
-    const api = apiBase + '/image/'
-    const config = {
-      params: {
-        service_id: payload
-      }
-    }
-    const response = await axios.get(api, config)
-    return response
-  },
-  async fetchNetwork (context, payload: string) {
-    const api = apiBase + '/network/'
-    const config = {
-      params: {
-        service_id: payload
-      }
-    }
-    const response = await axios.get(api, config)
-    return response
-  },
+
   async patchNote (context, payload: ReqServerNote) {
     // const api = apiBase + '/server/' + payload.id + '/remark/'
     const api = `${apiBase}/server/${payload.id}/remark/`

@@ -4,14 +4,52 @@ import {
   TreeRootInterface,
   ServerInterface_old,
   // DataPointOnShowInterface,
-  PaginationInterface, ReqServerNote, VpnInterface, ServiceInterface_old, DataCenterInterface, ServiceInterface
+  PaginationInterface,
+  VpnInterface_old,
+  ServiceInterface_old,
+  DataCenterInterface,
+  ServiceInterface,
+  NetworkInterface, ImageInterface, FlavorInterface, VpnInterface, UserQuotaInterface, ServerInterface
 } from './state'
 
 const mutation: MutationTree<UsageInterface> = {
   /*
   以下为重构后的数据结构
   */
-  storeNote (state, payload: ReqServerNote) {
+  storeAvailableUserQuotaTable (state, tableObj: Record<string, UserQuotaInterface>) {
+    Object.assign(state.availableUserQuotaTable.byId, tableObj)
+    state.availableUserQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.availableUserQuotaTable.allIds = [...new Set(state.availableUserQuotaTable.allIds)]
+    // allServerTable.isLoaded,每次都更新，可以优化
+    state.availableUserQuotaTable.isLoaded = true
+  },
+  storeAvailableVpnTable (state, vpn: VpnInterface) {
+    Object.assign(state.availableVpnTable.byId, { [vpn.id]: vpn })
+    state.availableVpnTable.allIds.unshift(vpn.id)
+    state.availableVpnTable.allIds = [...new Set(state.availableVpnTable.allIds)]
+    state.availableVpnTable.isLoaded = true
+  },
+  storeAllFlavorTable (state, flavor: FlavorInterface) {
+    Object.assign(state.allFlavorTable.byId, { [flavor.id]: flavor })
+    state.allFlavorTable.allIds.unshift(flavor.id)
+    state.allFlavorTable.allIds = [...new Set(state.allFlavorTable.allIds)]
+    state.allFlavorTable.isLoaded = true
+  },
+  storeAvailableImageTable (state, image: ImageInterface) {
+    // 存进allImageTable
+    Object.assign(state.availableImageTable.byLocalId, { [image.localId]: image })
+    state.availableImageTable.allLocalIds.unshift(image.localId)
+    state.availableImageTable.allLocalIds = [...new Set(state.availableImageTable.allLocalIds)]
+    state.availableImageTable.isLoaded = true
+  },
+  storeAvailableNetworkTable (state, network: NetworkInterface) {
+    // 存进allNetworkTable
+    Object.assign(state.availableNetworkTable.byLocalId, { [network.localId]: network })
+    state.availableNetworkTable.allLocalIds.unshift(network.localId)
+    state.availableNetworkTable.allLocalIds = [...new Set(state.availableNetworkTable.allLocalIds)]
+    state.availableNetworkTable.isLoaded = true
+  },
+  storeNote (state, payload: { id: string; remark: string; }) {
     state.allServerTable.byId[payload.id].remarks = payload.remark
   },
   storeAllServerTableSingleStatus (state, payload: { serverId: string; status_code: string; }) {
@@ -26,9 +64,9 @@ const mutation: MutationTree<UsageInterface> = {
     state.allServerTable.isLoaded = false
     // 不清空filter值，保持serviceId的选择
   },
-  storeAllServerTable (state, tableObj: Record<string, DataCenterInterface>) {
+  storeAllServerTable (state, tableObj: Record<string, ServerInterface>) {
     Object.assign(state.allServerTable.byId, tableObj)
-    state.allServerTable.allIds.push(Object.keys(tableObj)[0])
+    state.allServerTable.allIds.unshift(Object.keys(tableObj)[0])
     state.allServerTable.allIds = [...new Set(state.allServerTable.allIds)]
     // allServerTable.isLoaded,每次都更新，可以优化
     state.allServerTable.isLoaded = true
@@ -38,20 +76,20 @@ const mutation: MutationTree<UsageInterface> = {
     // 将dataCenter对象补充至allDataCenterTable.byId
     Object.assign(state.allDataCenterTable.byId, tableObj)
     // 更新allDataCenterTable.allIds，更新后去重
-    state.allDataCenterTable.allIds.push(Object.keys(tableObj)[0])
+    state.allDataCenterTable.allIds.unshift(Object.keys(tableObj)[0])
     state.allDataCenterTable.allIds = [...new Set(state.allDataCenterTable.allIds)]
     // 更新allDataCenterTable.isLoaded,每次都更新，可以优化
     state.allDataCenterTable.isLoaded = true
     // console.log('updating allDataCenterTable')
   },
-  storeUserServiceTable (state, tableObj: Record<string, ServiceInterface>) {
+  storeAvailableServiceTable (state, tableObj: Record<string, ServiceInterface>) {
     // 将service对象补充至userServiceTable.byId
-    Object.assign(state.userServiceTable.byId, tableObj)
+    Object.assign(state.availableServiceTable.byId, tableObj)
     // 更新userServiceTable.allIds，更新后去重
-    state.userServiceTable.allIds.push(Object.keys(tableObj)[0])
-    state.userServiceTable.allIds = [...new Set(state.userServiceTable.allIds)]
+    state.availableServiceTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.availableServiceTable.allIds = [...new Set(state.availableServiceTable.allIds)]
     // 更新userServiceTable.isLoaded，每次都更新，可以优化
-    state.userServiceTable.isLoaded = true
+    state.availableServiceTable.isLoaded = true
     // console.log('updating userServiceTable')
   },
   /*
@@ -61,7 +99,7 @@ const mutation: MutationTree<UsageInterface> = {
   deleteVpn (state, serviceId: string) {
     state.vpn.delete(serviceId)
   },
-  storeVpn (state, payload: { serviceId: string; serviceName: string; vpn: VpnInterface }) {
+  storeVpn (state, payload: { serviceId: string; serviceName: string; vpn: VpnInterface_old }) {
     state.vpn.set(payload.serviceId, {
       ...payload.vpn,
       serviceId: payload.serviceId,
@@ -81,7 +119,7 @@ const mutation: MutationTree<UsageInterface> = {
     state.serverDetail.status = status
   },
   storeService (state, payload: ServiceInterface_old) {
-    state.serviceList.push(payload)
+    state.serviceList.unshift(payload)
   },
   storeDataPointTree (state, payload: TreeRootInterface[]) {
     state.dataPointTree = payload

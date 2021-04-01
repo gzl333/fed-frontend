@@ -47,7 +47,7 @@
                         {{ dataCenter.label }}
                       </div>
                       <div class="col item-radios">
-                        <q-radio v-for="dataPoint in dataCenter.children" dense v-model="radioDataPoint"
+                        <q-radio v-for="dataPoint in dataCenter.children" dense v-model="radioService"
                                  :val="dataPoint.key" :label="dataPoint.label" :key="dataPoint.key" class="radio"/>
                       </div>
                     </div>
@@ -132,7 +132,7 @@
                       通用配额
                     </div>
                     <div class="col item-radios">
-                      <q-radio v-for="uquota in options.uquota" dense v-model="radioUquota" :val="uquota.id"
+                      <q-radio v-for="uquota in options.uquota" dense v-model="radioUserQuota" :val="uquota.id"
                                :key="uquota.id" class="radio">
                         {{ uquota.display }}
                       </q-radio>
@@ -261,7 +261,7 @@ import { computed, defineComponent, onMounted, ref, watch, reactive } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { StateInterface } from 'src/store'
-import { DataPointNetworkInterface, ImageInterface, FlavorInterface } from 'src/store/usage/state'
+import { DataPointNetworkInterface, ImageInterface_old, FlavorInterface_old } from 'src/store/usage/state'
 import { useQuasar } from 'quasar'
 import { TypeInterface } from 'src/store/quota/state'
 
@@ -273,28 +273,34 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const $router = useRouter()
     const $q = useQuasar()
-    onMounted(async () => {
-      // 当前加载策略：挂载页面后建立全部dataPoint(service)的serviceList，以后可以改成根据serviceId的逐步选择，逐步建立serviceList
-      void await $store.dispatch('usage/updateServiceList')
-      void await $store.dispatch('quota/updateQuota')
-      // 页面加载后，默认选择第一个数据中心
-      const firstService = $store.state.usage.serviceList[0]
-      radioDataPoint.value = firstService.serviceId
-      radioNetwork.value = firstService.networks.public[0].id || firstService.networks.private[0].id
-      radioImage.value = firstService.images[0].id
-      radioFlavor.value = firstService.flavors[0].id
 
-      for (const service of $store.state.quota.userQuota.services) {
-        if (service.id === firstService.serviceId) {
-          radioUquota.value = service.serviceTypes[0].id
-        } else {
-          radioUquota.value = ''
-        }
-      }
+    onMounted(async () => {
+      void await $store.dispatch('usage/updateUsageTable')
+
+      // 当前加载策略：挂载页面后建立全部dataPoint(service)的serviceList，以后可以改成根据serviceId的逐步选择，逐步建立serviceList
+      // void await $store.dispatch('usage/updateServiceList')
+      // void await $store.dispatch('quota/updateQuota')
+
+      // 页面加载后，默认选择第一个数据中心
+      const firstServiceId = $store.state.usage.availableServiceTable.allIds[0]
+      radioService.value = firstServiceId
+      // radioNetwork.value = firstService.networks.public[0].id || firstService.networks.private[0].id
+      // radioImage.value = firstService.images[0].id
+      // radioFlavor.value = firstService.flavors[0].id
+      //
+      // for (const service of $store.state.quota.userQuota.services) {
+      //   if (service.id === firstService.serviceId) {
+      //     radioUserQuota.value = service.serviceTypes[0].id
+      //   } else {
+      //     radioUserQuota.value = ''
+      //   }
+      // }
     })
+
     // 选项数据，其中options根据所选择serviceId建立
     const dataPointTree = computed(() => $store.state.usage.dataPointTree)
-    const options: { serviceId: string; serviceName: string; public: DataPointNetworkInterface[]; private: DataPointNetworkInterface[]; images: ImageInterface[]; flavors: FlavorInterface[]; uquota: TypeInterface[]; /* pquota?: Record<string, any>[] */ } = reactive({
+    // options是radio的选项集合
+    const options: { serviceId: string; serviceName: string; public: DataPointNetworkInterface[]; private: DataPointNetworkInterface[]; images: ImageInterface_old[]; flavors: FlavorInterface_old[]; uquota: TypeInterface[]; /* pquota?: Record<string, any>[] */ } = reactive({
       serviceId: '',
       serviceName: '',
       public: [],
@@ -302,27 +308,25 @@ export default defineComponent({
       images: [],
       flavors: [],
       uquota: [] // 通用配额
-      /*      , pquota: [] // 专有配额，预留数据结构 */
     })
     // 页面选项的状态
-    const radioDataPoint = ref('')
+    const radioService = ref('')
     const radioNetwork = ref('')
     const radioImage = ref('')
     const radioFlavor = ref('')
-    const radioUquota = ref('')
-    // const radioPquota = ref('')
+    const radioUserQuota = ref('')
     const inputRemarks = ref('')
 
-    watch(radioDataPoint, () => {
-      // 数据中心选择变化时，重新建立options对象
-      options.serviceId = radioDataPoint.value
+    watch(radioService, () => {
+      // serviceId选择变化时，重新建立options对象
+      options.serviceId = radioService.value
       for (const service of $store.state.usage.serviceList) {
-        if (service.serviceId === radioDataPoint.value) {
+        if (service.serviceId === radioService.value) {
           options.serviceName = service.serviceName
         }
       }
       for (const service of $store.state.usage.serviceList) {
-        if (service.serviceId === radioDataPoint.value) {
+        if (service.serviceId === radioService.value) {
           options.public = service.networks.public
           options.private = service.networks.private
           options.images = service.images
@@ -330,7 +334,7 @@ export default defineComponent({
         }
       }
       for (const service of $store.state.quota.userQuota.services) {
-        if (service.id === radioDataPoint.value) {
+        if (service.id === radioService.value) {
           options.uquota = service.serviceTypes
         }
       }
@@ -338,16 +342,16 @@ export default defineComponent({
       radioNetwork.value = options.public[0] ? options.public[0].id : options.private[0] ? options.private[0].id : ''
       radioImage.value = options.images[0] ? options.images[0].id : ''
       radioFlavor.value = options.flavors[0] ? options.flavors[0].id : ''
-      radioUquota.value = options.uquota[0] ? options.uquota[0].id : ''
+      radioUserQuota.value = options.uquota[0] ? options.uquota[0].id : ''
     })
     // 选择结果
     const selectionId = computed(() => {
       return {
-        service_id: radioDataPoint.value,
+        service_id: radioService.value,
         network_id: radioNetwork.value,
         image_id: radioImage.value,
         flavor_id: radioFlavor.value,
-        quota_id: radioUquota.value,
+        quota_id: radioUserQuota.value,
         // private_quota_id: '',
         remarks: inputRemarks.value
       }
@@ -379,7 +383,7 @@ export default defineComponent({
       }
       let quotaName = ''
       for (const quota of options.uquota) {
-        if (quota.id === radioUquota.value) {
+        if (quota.id === radioUserQuota.value) {
           quotaName = quota.display
         }
       }
@@ -455,11 +459,11 @@ export default defineComponent({
       reset,
       selectionId,
       selectionName,
-      radioDataPoint,
+      radioService,
       radioNetwork,
       radioImage,
       radioFlavor,
-      radioUquota,
+      radioUserQuota,
       inputRemarks,
       dataPointTree,
       options,

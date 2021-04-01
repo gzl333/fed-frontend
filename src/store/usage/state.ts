@@ -146,13 +146,13 @@ export interface TreeRootInterface {
 }
 
 // service_id对应各种服务
-export interface FlavorInterface {
+export interface FlavorInterface_old {
   id: string;
   vcpus: number;
   ram: number;
 }
 
-export interface ImageInterface {
+export interface ImageInterface_old {
   id: string;
   name: string;
   system: string;
@@ -168,11 +168,11 @@ export interface ServiceInterface_old {
     public: DataPointNetworkInterface[];
     private: DataPointNetworkInterface[];
   };
-  images: ImageInterface[];
-  flavors: FlavorInterface[]
+  images: ImageInterface_old[];
+  flavors: FlavorInterface_old[]
 }
 
-export interface VpnInterface {
+export interface VpnInterface_old {
   // 来自api
   username: string;
   password: string;
@@ -189,52 +189,136 @@ export interface VpnInterface {
 */
 export interface DataCenterInterface {
   // 来自registry接口
-  'id': string;
-  'name': string;
-  'endpoint_vms': string;
-  'endpoint_object': never; // 待细化
-  'endpoint_compute': never; // 待细化
-  'endpoint_monitor': never; // 待细化
-  'creation_time': string;
+  'id': string
+  'name': string
+  'endpoint_vms': string
+  'endpoint_object': never // null 待细化
+  'endpoint_compute': never // null 待细化
+  'endpoint_monitor': never // null 待细化
+  'creation_time': string
   'status': {
-    'code': number;
-    'message': string;
+    'code': number
+    'message': string
   },
-  'desc': string;
+  'desc': string
 
   // 来自service接口
-  services?: string[];
+  services?: string[]
 }
 
 export interface ServiceInterface {
   // 来自service接口
-  id: string;
-  name: string;
-  service_type: string;
-  add_time: string;
-  need_vpn: boolean;
-  status: number;
-  data_center: string;
+  id: string
+  name: string
+  service_type: string
+  add_time: string
+  need_vpn: boolean
+  status: number
+  data_center: string
 }
 
 export interface ServerInterface {
   // 来自server接口
-  id: string;
-  name: string;
-  vcpus: number;
-  ram: number;
-  ipv4: string;
-  public_ip: boolean;
-  image: string;
-  creation_time: string;
-  remarks: string;
-  endpoint_url: string;
-  service: string;
-  user_quota: string;
-  center_quota: number;
+  id: string
+  name: string
+  vcpus: number
+  ram: number
+  ipv4: string
+  public_ip: boolean
+  image: string
+  creation_time: string
+  remarks: string
+  endpoint_url: string
+  service: string
+  user_quota: string
+  center_quota: number
 
   // 来自status接口 根据status_code映射为文字状态
-  status?: string;
+  status?: string
+}
+
+export interface NetworkInterface {
+  // 来自network接口
+  id: string
+  name: string
+  public: boolean
+  segment: string
+  // 根据查询时所填的serviceId补充
+  service: string
+  localId: string
+}
+
+export interface ImageInterface {
+  // 来自image接口
+  id: string // 原始id
+  name: string
+  system: string
+  system_type: string
+  creation_time: string
+  desc: string
+  // 根据查询时所填的serviceId补充
+  service: string
+  localId: string
+}
+
+export interface FlavorInterface {
+  id: string
+  vcpus: number
+  ram: number
+}
+
+export interface VpnInterface {
+  username: string
+  password: string
+  active: boolean
+  create_time: string
+  modified_time: string
+  // vpn接口中无id信息，其id与所在service_id相同
+  id: string
+}
+
+export interface UserQuotaInterface {
+  id: string
+  tag: { // 提出去单做table无用，暂时保留，不拍平
+    value: number
+    display: string
+  },
+  user: { // 提出去单做table无用，暂时保留，不拍平
+    id: string
+    username: string
+  },
+  service: string
+  private_ip_total: number
+  private_ip_used: number
+  public_ip_total: number
+  public_ip_used: number
+  vcpu_total: number
+  vcpu_used: number
+  ram_total: number
+  ram_used: number
+  disk_size_total: number
+  disk_size_used: number
+  expiration_time: never // null 待细化
+  deleted: boolean
+  display: string
+  // 来自server接口补充
+  servers?: string[] // serverId
+}
+
+export interface ArchivedServerInterface {
+  id: string
+  service: string // 与serviceTable关联
+  user_quota: string // 与userQuotaTable关联
+  name: string
+  vcpus: number
+  ram: number
+  ipv4: string
+  public_ip: boolean
+  image: string
+  creation_time: string
+  remarks: string
+  center_quota: number // 1: 服务的私有资源配额，"user_quota"=null; 2: 服务的分享资源配额
+  deleted_time: string
 }
 
 // Usage总接口
@@ -252,28 +336,66 @@ export interface UsageInterface {
   // 云主机详情页
   serverDetail: ServerInterface_old;
   // vpn
-  vpn: Map<string, VpnInterface>;
+  vpn: Map<string, VpnInterface_old>;
   // <-- 待重构
 
-  /* 扁平的数据结构 */
+  /*
+  扁平的数据结构
+   */
 
   // 全部的datacenter
   allDataCenterTable: {
-    byId: Record<string, DataCenterInterface>,
-    allIds: string[],
+    byId: Record<string, DataCenterInterface>
+    allIds: string[]
     isLoaded: boolean
-  };
-  // 与用户有关的service
-  userServiceTable: {
-    byId: Record<string, ServiceInterface>,
-    allIds: string[],
+  }
+  // 用户可用的service
+  availableServiceTable: {
+    byId: Record<string, ServiceInterface>
+    allIds: string[]
     isLoaded: boolean
-  };
+  }
+  // 用户可用的network -> 依赖availableServiceTable
+  availableNetworkTable: {
+    byLocalId: Record<string, NetworkInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
+    allLocalIds: string[]
+    isLoaded: boolean
+  }
+  // 用户可用的image -> 依赖availableServiceTable
+  availableImageTable: {
+    byLocalId: Record<string, ImageInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
+    allLocalIds: string[]
+    isLoaded: boolean
+  }
+  // 用户可用的Vpn -> 依赖availableServiceTable
+  availableVpnTable: {
+    byId: Record<string, VpnInterface> // 后端没有id，自加id，与serviceId同
+    allIds: string[]
+    isLoaded: boolean
+  }
+  // 用户可用的userQuota -> 依赖availableServiceTable
+  availableUserQuotaTable: {
+    byId: Record<string, UserQuotaInterface>
+    allIds: string[]
+    isLoaded: boolean
+  }
   // 全部的server
   allServerTable: {
-    filter: string;
-    byId: Record<string, ServerInterface>,
-    allIds: string[],
+    filter: string // service_id 用于筛选显示server列表，'0'为显示全部
+    byId: Record<string, ServerInterface>
+    allIds: string[]
+    isLoaded: boolean
+  }
+  // 全部的flavor
+  allFlavorTable: {
+    byId: Record<string, FlavorInterface>
+    allIds: string[]
+    isLoaded: boolean
+  }
+  // 全部的archivedServer *暂未使用
+  allArchivedServerTable: {
+    byId: Record<string, ArchivedServerInterface>
+    allIds: string[]
     isLoaded: boolean
   }
 }
@@ -310,13 +432,43 @@ function state ():
       allIds: [],
       isLoaded: false
     },
-    userServiceTable: {
+    availableServiceTable: {
+      byId: {},
+      allIds: [],
+      isLoaded: false
+    },
+    availableNetworkTable: {
+      byLocalId: {},
+      allLocalIds: [],
+      isLoaded: false
+    },
+    availableImageTable: {
+      byLocalId: {},
+      allLocalIds: [],
+      isLoaded: false
+    },
+    availableVpnTable: {
       byId: {},
       allIds: [],
       isLoaded: false
     },
     allServerTable: {
       filter: '0',
+      byId: {},
+      allIds: [],
+      isLoaded: false
+    },
+    allFlavorTable: {
+      byId: {},
+      allIds: [],
+      isLoaded: false
+    },
+    availableUserQuotaTable: {
+      byId: {},
+      allIds: [],
+      isLoaded: false
+    },
+    allArchivedServerTable: {
       byId: {},
       allIds: [],
       isLoaded: false

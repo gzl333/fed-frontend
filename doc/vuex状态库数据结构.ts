@@ -1,7 +1,7 @@
 const sampleUsageTables = {
 
   statusMap: {}, // todo 云主机状态的映射关系，硬写进去，一般不变
-  // 以下均为object结构，也可写为map结构，则无需存储allIds，map自带全部key和顺序
+  // 以下均为object结构。 不可写为map结构！因vuex不支持对map结构mutation的探测，只支持proxy object
 
   // 来源： 来自列举registry -> 无需参数，列举全部datacenter
   dataCenterTable: {
@@ -78,37 +78,68 @@ const sampleUsageTables = {
 
   // 来源：列举network -> query: service_id
   networkTable: {
+    byLocalId: {
+      'id1-id2': { // ***与service_id拼接后的id*** 原始id在系统中不唯一
+        id: 'id2', // 原始id
+        localId: 'id1-id2',
+        name: 'v107_dev_121-140',
+        public: false,
+        segment: '10.107.50.0',
+        // 根据查询时所填的serviceId补充
+        service: 'id1'
+      }
+    },
+    allLocalIds: ['id1-id2'],
+    isLoaded: true
+  },
+  // 来源： 列举image -> query: service_id
+  imageTable: {
+    byLocalId: {
+      'id1-id2': { // ***与service_id拼接后的id*** 原始id在系统中不唯一
+        id: 'id2', // 原始id
+        localId: 'id1-id2',
+        name: 'Ubuntu_2004',
+        system: 'Ubuntu_2004',
+        system_type: 'Linux',
+        creation_time: '0001-01-01T00:00:00Z',
+        desc: '',
+        // 根据查询时所填的serviceId补充
+        service: 'id1'
+      }
+    },
+    allLocalIds: ['id1-id2'],
+    isLoaded: true
+  },
+  // 来源：查询flavor 无参数
+  flavorTable: {
     byId: {
       id1: {
         id: 'id1',
-        name: 'v107_dev_121-140',
-        public: false,
-        segment: '10.107.50.0'
+        vcpus: 1,
+        ram: 1024
       }
     },
-    allIds: ['id1'],
+    allIds: [],
     isLoaded: true
   },
   // 来源： 查询vpn -> query:service_id
-  // vpn接口中无id信息，其id与service_id相同
   vpnTable: {
     byId: {
       id1: {
-        id: 'id1',
+        id: 'id1', // vpn接口中无id信息，其id与service_id相同
         username: 'testuser',
         password: 'password', // ->主动更新, patch的resp有新密码
         active: true,
         create_time: '2020-07-29T15:12:08.715731+08:00',
         modified_time: '2020-07-29T15:12:08.715998+08:00',
         // 以下来自其它接口
-        ca: 'url',
-        config: 'url'
+        ca: 'url', // 不保存在vuex中，需要时单独获取并跳转
+        config: 'url' // 不保存在vuex中，需要时单独获取并跳转
       }
     },
     allIds: ['id1'],
     isLoaded: true
   },
-
   // 来源: 列举uquota -> query1:service_id/query2: usable
   userQuotaTable: {
     byId: {
@@ -123,6 +154,7 @@ const sampleUsageTables = {
           username: 'zlguo@cnic.cn'
         },
         service: 'id1', // 关联serviceTable
+
         // ->根据创建删除云主机被动更新 以下数据更新较多，逐个更新或许不如整体更新：增加或删除云主机后，应重新获取数据
         private_ip_total: 100,
         private_ip_used: 3,
@@ -134,11 +166,10 @@ const sampleUsageTables = {
         ram_used: 3072,
         disk_size_total: 1000,
         disk_size_used: 0,
-        expiration_time: null,
-        deleted: false,
         display: '[普通配额](vCPU: 100, RAM: 102400Mb, Disk: 1000Gb, PublicIP: 100, PrivateIP: 100)',
-
-        // 以下来自其它接口
+        expiration_time: null, // 过期时间。 和deleted共同决定该配额是否可用：其中一项即可决定该配额是否有效
+        deleted: false, // 用户或管理员删除配额
+        // 以下来自quota-server接口
         servers: ['id1', 'id2'] // 关联serverTable，该配额下创建的云主机id
       }
     },
@@ -161,9 +192,7 @@ const sampleUsageTables = {
         deleted_time: '2021-03-15T03:10:29.600706Z',
         service: 'id1', // 与serviceTable关联
         user_quota: 'id1', // 与userQuotaTable关联
-        center_quota: 2, // 1: 服务的私有资源配额，"user_quota"=null; 2: 服务的分享资源配额
-
-        user_quota_tag: 1 // 重复，应该删除
+        center_quota: 2 // 1: 服务的私有资源配额，"user_quota"=null; 2: 服务的分享资源配额
       }
     },
     allIds: ['id1'],

@@ -74,6 +74,7 @@
                 <!--                  {{ tableTitle }}-->
                 <!--                </span>-->
                 <!--                <div class="col"> 选择节点：</div>-->
+<!--                <pre>{{ $store.state.usage }}</pre>-->
               </div>
 
               <div class="co">
@@ -124,10 +125,10 @@
                 </div>
               </q-td>
               <q-td key="dataCenterName" :props="props">
-                {{ $store.state.usage.userServiceTable.byId[props.row.service].name }}
+                {{ $store.state.usage.availableServiceTable.byId[props.row.service].name }}
               </q-td>
               <q-td key="serviceType" :props="props">
-                {{ $store.state.usage.userServiceTable.byId[props.row.service].service_type }}
+                {{ $store.state.usage.availableServiceTable.byId[props.row.service].service_type }}
               </q-td>
               <q-td key="image" :props="props">
                 {{ props.row.image }}
@@ -324,6 +325,8 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const $q = useQuasar()
 
+    void $store.dispatch('usage/updateUsageTable')
+
     // 云主机状态按钮
     const isStatusLoading = ref(true)
 
@@ -334,15 +337,6 @@ export default defineComponent({
     // })
 
     // 重构后
-    if (!$store.state.usage.allDataCenterTable.isLoaded) {
-      void $store.dispatch('usage/updateAllDataCenterTable')
-    }
-    if (!$store.state.usage.userServiceTable.isLoaded) {
-      void $store.dispatch('usage/updateUserServiceTable')
-    }
-    if (!$store.state.usage.allServerTable.isLoaded) {
-      void $store.dispatch('usage/updateAllServerTable')
-    }
 
     // service_id下拉列表
     const serviceOptions = computed(() => $store.getters['usage/getServiceOptions'])
