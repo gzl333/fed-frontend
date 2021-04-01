@@ -35,28 +35,28 @@ const statusCodeMap = new Map<number, string>(
 const actions: ActionTree<UsageInterface, StateInterface> = {
   /* 更新全部Usage模块Table */
   updateUsageTable (context) {
-    if (!context.state.userServerTable.isLoaded) {
+    if (!context.state.tables.userServerTable.isLoaded) {
       void context.dispatch('updateUserServerTable')
     }
-    if (!context.state.globalFlavorTable.isLoaded) {
+    if (!context.state.tables.globalFlavorTable.isLoaded) {
       void context.dispatch('updateGlobalFlavorTable')
     }
-    if (!context.state.globalDataCenterTable.isLoaded) {
+    if (!context.state.tables.globalDataCenterTable.isLoaded) {
       void context.dispatch('updateGlobalDataCenterTable')
     }
-    if (!context.state.userServiceTable.isLoaded) {
+    if (!context.state.tables.userServiceTable.isLoaded) {
       void context.dispatch('updateUserServiceTable').then(() => {
         // 获取依赖userServiceTable的表
-        if (!context.state.userNetworkTable.isLoaded) {
+        if (!context.state.tables.userNetworkTable.isLoaded) {
           void context.dispatch('updateUserNetworkTable')
         }
-        if (!context.state.userImageTable.isLoaded) {
+        if (!context.state.tables.userImageTable.isLoaded) {
           void context.dispatch('updateUserImageTable')
         }
-        if (!context.state.userVpnTable.isLoaded) {
+        if (!context.state.tables.userVpnTable.isLoaded) {
           void context.dispatch('updateUserVpnTable')
         }
-        if (!context.state.userQuotaTable.isLoaded) {
+        if (!context.state.tables.userQuotaTable.isLoaded) {
           void context.dispatch('updateUserQuotaTable')
         }
       }).then(() => {
@@ -75,7 +75,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     // 将响应normalize
     const service = new schema.Entity('service')
     const quota = new schema.Entity('quota', { service })
-    for (const serviceId of context.state.userServiceTable.allIds) {
+    for (const serviceId of context.state.tables.userServiceTable.allIds) {
       const respQuota = await context.dispatch('fetchUserQuota', serviceId)
       for (const data of respQuota.data.results) {
         const normalizedData = normalize(data, quota)
@@ -94,8 +94,8 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     const response = await axios.get(api, config)
     return response
   },
-  async fetchUserQuotaServers (context, servicdId: string) {
-    const api = apiBase + 'u-quota/' + servicdId + '/servers/'
+  async fetchUserQuotaServers (context, serviceId: string) {
+    const api = apiBase + 'u-quota/' + serviceId + '/servers/'
     const response = await axios.get(api)
     return response
   },
@@ -103,7 +103,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
 
   /* userVpnTable */
   async updateUserVpnTable (context) {
-    for (const serviceId of context.state.userServiceTable.allIds) {
+    for (const serviceId of context.state.tables.userServiceTable.allIds) {
       const respVpn = await context.dispatch('fetchVpn', serviceId)
       // 将id补充进vpn对象
       Object.assign(respVpn.data.vpn, { id: serviceId })
@@ -126,7 +126,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     }
     // console.log(context.state.globalFlavorTable)
   },
-  async fetchFlavor (context) {
+  async fetchFlavor () {
     const api = apiBase + '/flavor/'
     const response = await axios.get(api)
     return response
@@ -135,7 +135,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
 
   /* userImageTable -> 依赖 userServiceTable */
   async updateUserImageTable (context) {
-    for (const serviceId of context.state.userServiceTable.allIds) {
+    for (const serviceId of context.state.tables.userServiceTable.allIds) {
       const respImage = await context.dispatch('fetchImage', serviceId)
       for (const image of respImage.data) {
         // 将service 和 localId补充进image对象
@@ -163,7 +163,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
 
   /* userNetworkTable -> 依赖 userServiceTable */
   async updateUserNetworkTable (context) {
-    for (const serviceId of context.state.userServiceTable.allIds) {
+    for (const serviceId of context.state.tables.userServiceTable.allIds) {
       const respNetwork = await context.dispatch('fetchNetwork', serviceId)
       for (const network of respNetwork.data) {
         // 将service 和 localId补充进network对象
@@ -228,7 +228,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     context.commit('clearUserServerTable')
 
     // 发送请求
-    const respServers = await context.dispatch('fetchServers')
+    const respServer = await context.dispatch('fetchServer')
     // 将响应normalize，存入state里的userServerTable
     const service = new schema.Entity('service')
     const user_quota = new schema.Entity('user_quota')
@@ -236,13 +236,13 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
       service,
       user_quota
     })
-    for (const data of respServers.data.servers) {
+    for (const data of respServer.data.servers) {
       const normalizedData = normalize(data, server)
       context.commit('storeUserServerTable', normalizedData.entities.server)
     }
     // console.log(context.state.userServerTable)
     // 建立userServerTable之后，分别更新每个server status, 并发更新，无需await
-    for (const serverId of context.state.userServerTable.allIds) {
+    for (const serverId of context.state.tables.userServerTable.allIds) {
       void context.dispatch('updateUserServerTableSingleStatus', serverId)
     }
   },
@@ -264,7 +264,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
     const response = await axios.get(api)
     return response
   },
-  async fetchServers (context, payload?: { page?: number; page_size?: number; service_id?: string; }) {
+  async fetchServer (context, payload?: { page?: number; page_size?: number; service_id?: string; }) {
     const api = apiBase + '/server/'
     let response
     if (payload) {
@@ -329,7 +329,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
   */
   async serverDetailOperation (context, payload: { endPoint: string; id: string; action: string }) {
     // todo 将主机状态清空，界面将显示loading 待验证
-    context.commit('storeuserServerTableSingleStatus', {
+    context.commit('storeUserServerTableSingleStatus', {
       serverId: payload.id,
       status_code: ''
     })
@@ -343,7 +343,7 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
       setTimeout(resolve, 3000)
     ))
     // todo 更新单个server status 待验证
-    void await context.dispatch('updateuserServerTableSingleStatus', payload.id)
+    void await context.dispatch('updateUserServerTableSingleStatus', payload.id)
     // const respFetchServerStatus = await context.dispatch('fetchServerStatus', payload.id)
     // const status = codeMap.get(respFetchServerStatus.data.status.status_code)
     // context.commit('storeServerDetailStatus', status)

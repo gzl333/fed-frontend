@@ -282,7 +282,7 @@ export default defineComponent({
       // void await $store.dispatch('quota/updateQuota')
 
       // 页面加载后，默认选择第一个数据中心
-      const firstServiceId = $store.state.usage.userServiceTable.allIds[0]
+      const firstServiceId = $store.state.usage.tables.userServiceTable.allIds[0]
       radioService.value = firstServiceId
       // radioNetwork.value = firstService.networks.public[0].id || firstService.networks.private[0].id
       // radioImage.value = firstService.images[0].id

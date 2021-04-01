@@ -74,7 +74,7 @@
                 <!--                  {{ tableTitle }}-->
                 <!--                </span>-->
                 <!--                <div class="col"> 选择节点：</div>-->
-<!--                <pre>{{ $store.state.usage }}</pre>-->
+                <!--                <pre>{{ $store.state.usage }}</pre>-->
               </div>
 
               <div class="co">
@@ -125,10 +125,10 @@
                 </div>
               </q-td>
               <q-td key="dataCenterName" :props="props">
-                {{ $store.state.usage.userServiceTable.byId[props.row.service].name }}
+                {{ $store.state.usage.tables.userServiceTable.byId[props.row.service].name }}
               </q-td>
               <q-td key="serviceType" :props="props">
-                {{ $store.state.usage.userServiceTable.byId[props.row.service].service_type }}
+                {{ $store.state.usage.tables.userServiceTable.byId[props.row.service].service_type }}
               </q-td>
               <q-td key="image" :props="props">
                 {{ props.row.image }}
@@ -164,7 +164,7 @@
                 </q-btn>
                 <q-btn v-else unelevated flat padding="none" size="lg" color="grey-5" icon="computer">
                   <q-tooltip>
-                    请开机以使用VNC
+                    请开机以使用远程桌面
                   </q-tooltip>
                 </q-btn>
               </q-td>
@@ -344,8 +344,9 @@ export default defineComponent({
       label: '全部服务节点',
       value: '0'
     })
+    $store.commit('usage/storeUserServerTableFilter', '0')
     watch(serviceSelection, () => {
-      $store.commit('usage/storeAllServerTableFilter', serviceSelection.value.value)
+      $store.commit('usage/storeUserServerTableFilter', serviceSelection.value.value)
     })
 
     // 得到机构树信息
@@ -472,7 +473,7 @@ export default defineComponent({
       },
       {
         name: 'vnc',
-        label: 'VNC',
+        label: '远程桌面',
         field: 'vnc',
         align: 'center'
       },
@@ -608,7 +609,7 @@ export default defineComponent({
         })
       })
     }
-    // tabel row hover
+    // table row hover
     const hoverRow = ref('')
     const onMouseEnterRow = (rowName: string) => {
       hoverRow.value = rowName

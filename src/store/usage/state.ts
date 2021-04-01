@@ -342,68 +342,76 @@ export interface UsageInterface {
   /*
   扁平的数据结构
    */
-
-  // 全局统一的datacenter
-  globalDataCenterTable: {
-    byId: Record<string, DataCenterInterface>
-    allIds: string[]
-    isLoaded: boolean
+  ui: {
+    vmList: {
+      filter: string // service_id 用于筛选显示server列表，'0'为显示全部
+    }
+    vmDetail: {
+      id: string
+    }
   }
-  // 全局统一的flavor
-  globalFlavorTable: {
-    byId: Record<string, FlavorInterface>
-    allIds: string[]
-    isLoaded: boolean
-  }
-  // 全局统一的service
-  // 未实现，暂不需使用
-  // globalServiceTable: {
-  //   byId: Record<string, ServiceInterface>
-  //   allIds: string[]
-  //   isLoaded: boolean
-  // }
-  // 用户可用的service
-  userServiceTable: {
-    byId: Record<string, ServiceInterface>
-    allIds: string[]
-    isLoaded: boolean
-  }
-  // 用户可用的network -> 依赖userServiceTable
-  userNetworkTable: {
-    byLocalId: Record<string, NetworkInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
-    allLocalIds: string[]
-    isLoaded: boolean
-  }
-  // 用户可用的image -> 依赖userServiceTable
-  userImageTable: {
-    byLocalId: Record<string, ImageInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
-    allLocalIds: string[]
-    isLoaded: boolean
-  }
-  // 用户可用的Vpn -> 依赖userServiceTable
-  userVpnTable: {
-    byId: Record<string, VpnInterface> // 后端没有id，自加id，与serviceId同
-    allIds: string[]
-    isLoaded: boolean
-  }
-  // 用户可用的userQuota -> 依赖userServiceTable
-  userQuotaTable: {
-    byId: Record<string, UserQuotaInterface>
-    allIds: string[]
-    isLoaded: boolean
-  }
-  // 用户可用的server -> api返回的天然是用户的server，不依赖serviceId，显示时可用serviceId筛选
-  userServerTable: {
-    filter: string // service_id 用于筛选显示server列表，'0'为显示全部
-    byId: Record<string, ServerInterface>
-    allIds: string[]
-    isLoaded: boolean
-  }
-  // 用户可用的archivedServer *暂未使用
-  userArchivedServerTable: {
-    byId: Record<string, ArchivedServerInterface>
-    allIds: string[]
-    isLoaded: boolean
+  tables: {
+    // 全局统一的datacenter
+    globalDataCenterTable: {
+      byId: Record<string, DataCenterInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 全局统一的flavor
+    globalFlavorTable: {
+      byId: Record<string, FlavorInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 全局统一的service
+    /*  未实现，暂不需使用
+      globalServiceTable: {
+        byId: Record<string, ServiceInterface>
+        allIds: string[]
+        isLoaded: boolean
+      } */
+    // 用户可用的service
+    userServiceTable: {
+      byId: Record<string, ServiceInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 用户可用的network -> 依赖userServiceTable
+    userNetworkTable: {
+      byLocalId: Record<string, NetworkInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
+      allLocalIds: string[]
+      isLoaded: boolean
+    }
+    // 用户可用的image -> 依赖userServiceTable
+    userImageTable: {
+      byLocalId: Record<string, ImageInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
+      allLocalIds: string[]
+      isLoaded: boolean
+    }
+    // 用户可用的Vpn -> 依赖userServiceTable
+    userVpnTable: {
+      byId: Record<string, VpnInterface> // 后端没有id，自加id，与serviceId同
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 用户可用的userQuota -> 依赖userServiceTable
+    userQuotaTable: {
+      byId: Record<string, UserQuotaInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 用户可用的server -> api返回的天然是用户的server，不依赖serviceId，显示时可用serviceId筛选
+    userServerTable: {
+      byId: Record<string, ServerInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 用户可用的archivedServer *暂未使用
+    /*  userArchivedServerTable: {
+        byId: Record<string, ArchivedServerInterface>
+        allIds: string[]
+        isLoaded: boolean
+      } */
   }
 }
 
@@ -434,51 +442,60 @@ function state ():
     /*
     重构后的数据结构
     */
-    globalDataCenterTable: {
-      byId: {},
-      allIds: [],
-      isLoaded: false
+    ui: {
+      vmList: {
+        filter: '0'
+      },
+      vmDetail: {
+        id: '0'
+      }
     },
-    globalFlavorTable: {
-      byId: {},
-      allIds: [],
-      isLoaded: false
-    },
-    userServiceTable: {
-      byId: {},
-      allIds: [],
-      isLoaded: false
-    },
-    userNetworkTable: {
-      byLocalId: {},
-      allLocalIds: [],
-      isLoaded: false
-    },
-    userImageTable: {
-      byLocalId: {},
-      allLocalIds: [],
-      isLoaded: false
-    },
-    userVpnTable: {
-      byId: {},
-      allIds: [],
-      isLoaded: false
-    },
-    userServerTable: {
-      filter: '0',
-      byId: {},
-      allIds: [],
-      isLoaded: false
-    },
-    userQuotaTable: {
-      byId: {},
-      allIds: [],
-      isLoaded: false
-    },
-    userArchivedServerTable: {
-      byId: {},
-      allIds: [],
-      isLoaded: false
+    tables: {
+      globalDataCenterTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      globalFlavorTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      userServiceTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      userNetworkTable: {
+        byLocalId: {},
+        allLocalIds: [],
+        isLoaded: false
+      },
+      userImageTable: {
+        byLocalId: {},
+        allLocalIds: [],
+        isLoaded: false
+      },
+      userVpnTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      userServerTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      userQuotaTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      }
+      // , userArchivedServerTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // }
     }
   }
 }
