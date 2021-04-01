@@ -125,10 +125,10 @@
                 </div>
               </q-td>
               <q-td key="dataCenterName" :props="props">
-                {{ $store.state.usage.availableServiceTable.byId[props.row.service].name }}
+                {{ $store.state.usage.userServiceTable.byId[props.row.service].name }}
               </q-td>
               <q-td key="serviceType" :props="props">
-                {{ $store.state.usage.availableServiceTable.byId[props.row.service].service_type }}
+                {{ $store.state.usage.userServiceTable.byId[props.row.service].service_type }}
               </q-td>
               <q-td key="image" :props="props">
                 {{ props.row.image }}

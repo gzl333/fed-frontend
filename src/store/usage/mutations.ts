@@ -16,80 +16,80 @@ const mutation: MutationTree<UsageInterface> = {
   /*
   以下为重构后的数据结构
   */
-  storeAvailableUserQuotaTable (state, tableObj: Record<string, UserQuotaInterface>) {
-    Object.assign(state.availableUserQuotaTable.byId, tableObj)
-    state.availableUserQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
-    state.availableUserQuotaTable.allIds = [...new Set(state.availableUserQuotaTable.allIds)]
-    // allServerTable.isLoaded,每次都更新，可以优化
-    state.availableUserQuotaTable.isLoaded = true
+  storeUserQuotaTable (state, tableObj: Record<string, UserQuotaInterface>) {
+    Object.assign(state.userQuotaTable.byId, tableObj)
+    state.userQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.userQuotaTable.allIds = [...new Set(state.userQuotaTable.allIds)]
+    // userServerTable.isLoaded,每次都更新，可以优化
+    state.userQuotaTable.isLoaded = true
   },
-  storeAvailableVpnTable (state, vpn: VpnInterface) {
-    Object.assign(state.availableVpnTable.byId, { [vpn.id]: vpn })
-    state.availableVpnTable.allIds.unshift(vpn.id)
-    state.availableVpnTable.allIds = [...new Set(state.availableVpnTable.allIds)]
-    state.availableVpnTable.isLoaded = true
+  storeUserVpnTable (state, vpn: VpnInterface) {
+    Object.assign(state.userVpnTable.byId, { [vpn.id]: vpn })
+    state.userVpnTable.allIds.unshift(vpn.id)
+    state.userVpnTable.allIds = [...new Set(state.userVpnTable.allIds)]
+    state.userVpnTable.isLoaded = true
   },
-  storeAllFlavorTable (state, flavor: FlavorInterface) {
-    Object.assign(state.allFlavorTable.byId, { [flavor.id]: flavor })
-    state.allFlavorTable.allIds.unshift(flavor.id)
-    state.allFlavorTable.allIds = [...new Set(state.allFlavorTable.allIds)]
-    state.allFlavorTable.isLoaded = true
+  storeGlobalFlavorTable (state, flavor: FlavorInterface) {
+    Object.assign(state.globalFlavorTable.byId, { [flavor.id]: flavor })
+    state.globalFlavorTable.allIds.unshift(flavor.id)
+    state.globalFlavorTable.allIds = [...new Set(state.globalFlavorTable.allIds)]
+    state.globalFlavorTable.isLoaded = true
   },
-  storeAvailableImageTable (state, image: ImageInterface) {
+  storeUserImageTable (state, image: ImageInterface) {
     // 存进allImageTable
-    Object.assign(state.availableImageTable.byLocalId, { [image.localId]: image })
-    state.availableImageTable.allLocalIds.unshift(image.localId)
-    state.availableImageTable.allLocalIds = [...new Set(state.availableImageTable.allLocalIds)]
-    state.availableImageTable.isLoaded = true
+    Object.assign(state.userImageTable.byLocalId, { [image.localId]: image })
+    state.userImageTable.allLocalIds.unshift(image.localId)
+    state.userImageTable.allLocalIds = [...new Set(state.userImageTable.allLocalIds)]
+    state.userImageTable.isLoaded = true
   },
-  storeAvailableNetworkTable (state, network: NetworkInterface) {
+  storeUserNetworkTable (state, network: NetworkInterface) {
     // 存进allNetworkTable
-    Object.assign(state.availableNetworkTable.byLocalId, { [network.localId]: network })
-    state.availableNetworkTable.allLocalIds.unshift(network.localId)
-    state.availableNetworkTable.allLocalIds = [...new Set(state.availableNetworkTable.allLocalIds)]
-    state.availableNetworkTable.isLoaded = true
+    Object.assign(state.userNetworkTable.byLocalId, { [network.localId]: network })
+    state.userNetworkTable.allLocalIds.unshift(network.localId)
+    state.userNetworkTable.allLocalIds = [...new Set(state.userNetworkTable.allLocalIds)]
+    state.userNetworkTable.isLoaded = true
   },
   storeNote (state, payload: { id: string; remark: string; }) {
-    state.allServerTable.byId[payload.id].remarks = payload.remark
+    state.userServerTable.byId[payload.id].remarks = payload.remark
   },
-  storeAllServerTableSingleStatus (state, payload: { serverId: string; status_code: string; }) {
-    state.allServerTable.byId[payload.serverId].status = payload.status_code
+  storeUserServerTableSingleStatus (state, payload: { serverId: string; status_code: string; }) {
+    state.userServerTable.byId[payload.serverId].status = payload.status_code
   },
-  storeAllServerTableFilter (state, filter: string) {
-    state.allServerTable.filter = filter
+  storeUserServerTableFilter (state, filter: string) {
+    state.userServerTable.filter = filter
   },
-  clearAllServerTable (state) {
-    state.allServerTable.byId = {}
-    state.allServerTable.allIds = []
-    state.allServerTable.isLoaded = false
+  clearUserServerTable (state) {
+    state.userServerTable.byId = {}
+    state.userServerTable.allIds = []
+    state.userServerTable.isLoaded = false
     // 不清空filter值，保持serviceId的选择
   },
-  storeAllServerTable (state, tableObj: Record<string, ServerInterface>) {
-    Object.assign(state.allServerTable.byId, tableObj)
-    state.allServerTable.allIds.unshift(Object.keys(tableObj)[0])
-    state.allServerTable.allIds = [...new Set(state.allServerTable.allIds)]
-    // allServerTable.isLoaded,每次都更新，可以优化
-    state.allServerTable.isLoaded = true
-    // console.log('updating allServerTable')
+  storeUserServerTable (state, tableObj: Record<string, ServerInterface>) {
+    Object.assign(state.userServerTable.byId, tableObj)
+    state.userServerTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.userServerTable.allIds = [...new Set(state.userServerTable.allIds)]
+    // userServerTable.isLoaded,每次都更新，可以优化
+    state.userServerTable.isLoaded = true
+    // console.log('updating userServerTable')
   },
-  storeAllDataCenterTable (state, tableObj: Record<string, DataCenterInterface>) {
-    // 将dataCenter对象补充至allDataCenterTable.byId
-    Object.assign(state.allDataCenterTable.byId, tableObj)
-    // 更新allDataCenterTable.allIds，更新后去重
-    state.allDataCenterTable.allIds.unshift(Object.keys(tableObj)[0])
-    state.allDataCenterTable.allIds = [...new Set(state.allDataCenterTable.allIds)]
-    // 更新allDataCenterTable.isLoaded,每次都更新，可以优化
-    state.allDataCenterTable.isLoaded = true
-    // console.log('updating allDataCenterTable')
+  storeGlobalDataCenterTable (state, tableObj: Record<string, DataCenterInterface>) {
+    // 将dataCenter对象补充至globalDataCenterTable.byId
+    Object.assign(state.globalDataCenterTable.byId, tableObj)
+    // 更新globalDataCenterTable.allIds，更新后去重
+    state.globalDataCenterTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.globalDataCenterTable.allIds = [...new Set(state.globalDataCenterTable.allIds)]
+    // 更新globalDataCenterTable.isLoaded,每次都更新，可以优化
+    state.globalDataCenterTable.isLoaded = true
+    // console.log('updating globalDataCenterTable')
   },
-  storeAvailableServiceTable (state, tableObj: Record<string, ServiceInterface>) {
+  storeUserServiceTable (state, tableObj: Record<string, ServiceInterface>) {
     // 将service对象补充至userServiceTable.byId
-    Object.assign(state.availableServiceTable.byId, tableObj)
+    Object.assign(state.userServiceTable.byId, tableObj)
     // 更新userServiceTable.allIds，更新后去重
-    state.availableServiceTable.allIds.unshift(Object.keys(tableObj)[0])
-    state.availableServiceTable.allIds = [...new Set(state.availableServiceTable.allIds)]
+    state.userServiceTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.userServiceTable.allIds = [...new Set(state.userServiceTable.allIds)]
     // 更新userServiceTable.isLoaded，每次都更新，可以优化
-    state.availableServiceTable.isLoaded = true
+    state.userServiceTable.isLoaded = true
     // console.log('updating userServiceTable')
   },
   /*

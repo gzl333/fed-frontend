@@ -14,7 +14,7 @@
       </div>
 
       <div class="row justify-around q-pt-md">
-        <div class="col"><vm-list /></div>
+<!--        <div class="col"><vm-list /></div>-->
         <div class="col">
           <quota-list />
         </div>
@@ -40,7 +40,7 @@
         <quick-entry />
       </div>
       <div class="col q-pt-md">
-        <vm-list />
+<!--        <vm-list />-->
       </div>
       <div class="col q-pt-md">
         <quota-list />

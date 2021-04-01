@@ -27,11 +27,11 @@ const getters: GetterTree<UsageInterface, StateInterface> = {
         label: '全部服务节点'
       }
     ]
-    for (const service of Object.values(state.availableServiceTable.byId)) {
+    for (const service of Object.values(state.userServiceTable.byId)) {
       serviceOptions.push(
         {
           value: service.id,
-          label: state.allDataCenterTable.byId[service.id].name + ' - ' + service.name
+          label: `${state.globalDataCenterTable.byId[service.id].name} - ${service.name}`
         }
       )
     }
@@ -39,13 +39,13 @@ const getters: GetterTree<UsageInterface, StateInterface> = {
   },
   getServersByServiceId (state): ServerInterface[] {
     // 根据用户选择的serviceId来返回server数组
-    // 当前选择的serviceId位于allServerTable.filter，利用vmlist中的watch来修改
-    if (state.allServerTable.filter === '0') {
-      return Object.values(state.allServerTable.byId)
+    // 当前选择的serviceId位于userServerTable.filter，利用vmlist中的watch来修改
+    if (state.userServerTable.filter === '0') {
+      return Object.values(state.userServerTable.byId)
     } else {
       const rows: ServerInterface[] = []
-      for (const server of Object.values(state.allServerTable.byId)) {
-        if (server.service === state.allServerTable.filter) {
+      for (const server of Object.values(state.userServerTable.byId)) {
+        if (server.service === state.userServerTable.filter) {
           rows.push(server)
         }
       }
@@ -56,16 +56,16 @@ const getters: GetterTree<UsageInterface, StateInterface> = {
 
   /* vmcreate使用 */
   getPublicNetworksByServiceId (state, serviceId: string): NetworkInterface[] {
-    return Object.values(state.availableNetworkTable.byLocalId).filter(network => network.public && network.service === serviceId)
+    return Object.values(state.userNetworkTable.byLocalId).filter(network => network.public && network.service === serviceId)
   },
   getPrivateNetworksByServicedId (state, serviceId: string): NetworkInterface[] {
-    return Object.values(state.availableNetworkTable.byLocalId).filter(network => !network.public && network.service === serviceId)
+    return Object.values(state.userNetworkTable.byLocalId).filter(network => !network.public && network.service === serviceId)
   },
   getImagesByServiceId (state, serviceId: string): NetworkInterface[] {
-    return Object.values(state.availableNetworkTable.byLocalId).filter(network => network.service === serviceId)
+    return Object.values(state.userNetworkTable.byLocalId).filter(network => network.service === serviceId)
   },
   getUserQuotasByServiceId (state, serviceId: string): NetworkInterface[] {
-    return Object.values(state.availableNetworkTable.byLocalId).filter(network => network.service === serviceId)
+    return Object.values(state.userNetworkTable.byLocalId).filter(network => network.service === serviceId)
   }
   /* vmcreate使用 */
 
