@@ -14,13 +14,6 @@
             <!--        <q-btn @click="quickJump" label="quickjump"/>-->
 
           </div>
-
-          <!--          <pre>{{ publicNetworks }}</pre>-->
-          <!--          <pre>{{ privateNetworks }}</pre>-->
-          <!--          <pre>{{ quotas }}</pre>-->
-          <!--          <pre>{{ images }}</pre>-->
-          <!--          <pre>{{ flavors }}</pre>-->
-
           <div v-if="!isShowJumper" class="col content-area">
             <q-stepper
               class="stepper overflow-hidden"
@@ -34,14 +27,14 @@
               <q-step
                 class="overflow-hidden"
                 :name="1"
-                title="数据中心"
+                title="服务节点"
                 icon="settings"
                 :done="done1"
               >
                 <div class="column">
                   <div class="col section">
                     <div class="text-h7 text-primary section-title">
-                      1 - 数据中心
+                      1 - 服务节点
                     </div>
                     <div>
                       <q-inner-loading :showing="!Boolean(dataCenters)">
@@ -81,15 +74,6 @@
                   <div class="text-h7 text-primary section-title">
                     2 - 网络类型
                   </div>
-                  <div v-if="publicNetworks.length > 0" class="row item-row">
-                    <div class="col-shrink item-title-narrow text-bold">
-                      公网IP
-                    </div>
-                    <div class="col item-radios">
-                      <q-radio v-for="network in publicNetworks" dense v-model="radioNetwork" :val="network.id"
-                               :label="network.name" :key="network.id" class="radio"/>
-                    </div>
-                  </div>
                   <div v-if="privateNetworks.length > 0" class="row item-row">
                     <div class="col-shrink item-title-narrow text-bold">
                       私网IP
@@ -99,9 +83,18 @@
                                :label="network.name" :key="network.id" class="radio"/>
                     </div>
                   </div>
+                  <div v-if="publicNetworks.length > 0" class="row item-row">
+                    <div class="col-shrink item-title-narrow text-bold">
+                      公网IP
+                    </div>
+                    <div class="col item-radios">
+                      <q-radio v-for="network in publicNetworks" dense v-model="radioNetwork" :val="network.id"
+                               :label="network.name" :key="network.id" class="radio"/>
+                    </div>
+                  </div>
                   <div v-if="publicNetworks.length === 0 && privateNetworks.length === 0" class="row item-row">
                     <div class="col-shrink item-title">
-                      该数据中心暂无可用网络类型，请选择其它数据中心
+                      该服务节点暂无可用网络类型，请选择其它服务节点
                     </div>
                   </div>
                 </div>
@@ -116,7 +109,7 @@
                                :label="image.name" :key="image.id" class="radio"/>
                     </div>
                   </div>
-                  <div v-else>该数据中心暂无可用镜像，请选择其它数据中心</div>
+                  <div v-else>该服务节点暂无可用镜像，请选择其它服务节点</div>
                 </div>
 
                 <div class="col section">
@@ -129,7 +122,7 @@
                                :label="`${flavor.vcpus}核/${flavor.ram}MB`" :key="flavor.id" class="radio"/>
                     </div>
                   </div>
-                  <div v-else>该数据中心暂无可用配置，请选择其它数据中心</div>
+                  <div v-else>该服务节点暂无可用配置，请选择其它服务节点</div>
                 </div>
 
                 <div class="col section">
@@ -141,7 +134,7 @@
                       通用配额
                     </div>
                     <div class="col item-radios">
-                      <q-radio v-for="quota in quotas" dense v-model="radioUserQuota" :val="quota.id"
+                      <q-radio v-for="quota in quotas" dense v-model="radioQuota" :val="quota.id"
                                :key="quota.id" class="radio">
                         {{ quota.display }}
                       </q-radio>
@@ -158,7 +151,7 @@
                   <!--              </div>-->
                   <div v-if="quotas.length === 0" class="row item-row">
                     <div class="col-shrink item-title">
-                      该数据中心暂无可用资源配额，请选择其它数据中心
+                      该服务中心暂无可用资源配额，请选择其它服务节点
                     </div>
                   </div>
                 </div>
@@ -184,10 +177,12 @@
 
                   <div class="row item-row">
                     <div class="col-shrink item-title-narrow text-bold">
-                      数据中心
+                      服务中心
                     </div>
                     <div class="col item-radios">
-                      {{ selectionName.serviceName }}
+                      {{
+                        `${$store.state.usage.tables.globalDataCenterTable.byId[radioDataCenter].name} - ${$store.state.usage.tables.userServiceTable.byId[radioService].name}`
+                      }}
                     </div>
                   </div>
 
@@ -196,7 +191,7 @@
                       网络类型
                     </div>
                     <div class="col item-radios">
-                      {{ selectionName.networkName }}
+                      {{ $store.state.usage.tables.userNetworkTable.byLocalId[`${radioService}-${radioNetwork}`].name }}
                     </div>
                   </div>
 
@@ -205,7 +200,7 @@
                       系统镜像
                     </div>
                     <div class="col item-radios">
-                      {{ selectionName.imageName }}
+                      {{ $store.state.usage.tables.userImageTable.byLocalId[`${radioService}-${radioImage}`].name }}
                     </div>
                   </div>
 
@@ -214,7 +209,9 @@
                       CPU/内存
                     </div>
                     <div class="col item-radios">
-                      {{ selectionName.flavorName }}
+                      {{
+                        `${$store.state.usage.tables.globalFlavorTable.byId[radioFlavor].vcpus}核/${$store.state.usage.tables.globalFlavorTable.byId[radioFlavor].ram}MB`
+                      }}
                     </div>
                   </div>
 
@@ -223,7 +220,7 @@
                       配额
                     </div>
                     <div class="col item-radios">
-                      {{ selectionName.quotaName }}
+                      {{ $store.state.usage.tables.userQuotaTable.byId[radioQuota].display }}
                     </div>
                   </div>
 
@@ -266,13 +263,11 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref /* watch, reactive */ } from 'vue'
+import { defineComponent, computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { StateInterface } from 'src/store'
-// import { DataPointNetworkInterface, ImageInterface_old, FlavorInterface_old } from 'src/store/usage/state'
 import { useQuasar } from 'quasar'
-// import { TypeInterface } from 'src/store/quota/state'
 
 export default defineComponent({
   name: 'VmCreate',
@@ -283,135 +278,43 @@ export default defineComponent({
     const $router = useRouter()
     const $q = useQuasar()
 
-    onMounted(() => {
-      // 页面加载后，默认选择第一个数据中心 todo 直接进vmcreate时，选不上默认项
-      const firstServiceId = $store.state.usage.tables.userServiceTable.allIds[0]
-      console.log(firstServiceId)
-      radioService.value = firstServiceId
-      // radioNetwork.value = firstService.networks.public[0].id || firstService.networks.private[0].id
-      // radioImage.value = firstService.images[0].id
-      // radioFlavor.value = firstService.flavors[0].id
-      //
-      // for (const service of $store.state.quota.userQuota.services) {
-      //   if (service.id === firstService.serviceId) {
-      //     radioUserQuota.value = service.serviceTypes[0].id
-      //   } else {
-      //     radioUserQuota.value = ''
-      //   }
-      // }
+    void $store.dispatch('usage/updateUsageTable').then(() => {
+      // 页面加载后，默认选择第一个服务节点 todo 直接进vmcreate时，选不上默认项
+      radioService.value = $store.state.usage.tables.userServiceTable.allIds[0]
     })
 
-    // 选项数据，根据所选择serviceId建立
-    // 全局数据
+    // radio选项数据，根据所选择serviceId建立
+    // //全局数据
     const dataCenters = computed(() => Object.values($store.state.usage.tables.globalDataCenterTable.byId))
+    // //radioService的选项数据根据dataCenters动态生成
     const flavors = computed(() => Object.values($store.state.usage.tables.globalFlavorTable.byId))
-    // 依赖radioService Id选择值的数据
-    // const services = computed(() => Object.values($store.state.usage.tables.userServiceTable.byId))
+    // //依赖radioService Id选择值的数据
     const publicNetworks = computed(() => $store.getters['usage/getPublicNetworksByServiceId'])
     const privateNetworks = computed(() => $store.getters['usage/getPrivateNetworksByServicedId'])
     const images = computed(() => $store.getters['usage/getImagesByServiceId'])
     const quotas = computed(() => $store.getters['usage/getQuotasByServiceId'])
 
-    // const dataPointTree = computed(() => $store.state.usage.dataPointTree)
-    // options是radio的选项集合
-    // const options: { serviceId: string; serviceName: string; public: DataPointNetworkInterface[]; private: DataPointNetworkInterface[]; images: ImageInterface_old[]; flavors: FlavorInterface_old[]; uquota: TypeInterface[]; /* pquota?: Record<string, any>[] */ } = reactive({
-    //   serviceId: '',
-    //   serviceName: '',
-    //   public: [],
-    //   private: [],
-    //   images: [],
-    //   flavors: [],
-    //   uquota: [] // 通用配额
-    // })
-    // 页面选项的状态
+    // radio的选择状态
     const radioService = computed({
-      get: () => $store.state.usage.ui.vmCreate.serviceId,
-      set: (value) => $store.commit('usage/storeVmCreateServiceId', value)
+      get: () => $store.state.usage.pages.vmCreate.serviceId,
+      set: (value) => $store.commit('usage/storeVmCreatePageServiceId', value)
     })
+    // //radioDataCenter不对应实体radio按钮，而是根据radioService选择结果自动更新对应的dataCenterId
+    const radioDataCenter = computed(() => $store.state.usage.tables.globalDataCenterTable.byId[radioService.value].id)
     const radioNetwork = ref('')
     const radioImage = ref('')
     const radioFlavor = ref('')
-    const radioUserQuota = ref('')
+    const radioQuota = ref('')
     const inputRemarks = ref('')
 
-    // watch(radioService, () => {
-    //   // serviceId选择变化时，重新建立options对象
-    //   options.serviceId = radioService.value
-    //   for (const service of $store.state.usage.serviceList) {
-    //     if (service.serviceId === radioService.value) {
-    //       options.serviceName = service.serviceName
-    //     }
-    //   }
-    //   for (const service of $store.state.usage.serviceList) {
-    //     if (service.serviceId === radioService.value) {
-    //       options.public = service.networks.public
-    //       options.private = service.networks.private
-    //       options.images = service.images
-    //       options.flavors = service.flavors
-    //     }
-    //   }
-    //   for (const service of $store.state.quota.userQuota.services) {
-    //     if (service.id === radioService.value) {
-    //       options.uquota = service.serviceTypes
-    //     }
-    //   }
-    //   // 页面各项均重新选择为新options中的
-    //   radioNetwork.value = options.public[0] ? options.public[0].id : options.private[0] ? options.private[0].id : ''
-    //   radioImage.value = options.images[0] ? options.images[0].id : ''
-    //   radioFlavor.value = options.flavors[0] ? options.flavors[0].id : ''
-    //   radioUserQuota.value = options.uquota[0] ? options.uquota[0].id : ''
-    // })
-
-    // 选择结果
-    const selectionId = computed(() => {
-      return {
-        service_id: radioService.value,
-        network_id: radioNetwork.value,
-        image_id: radioImage.value,
-        flavor_id: radioFlavor.value,
-        quota_id: radioUserQuota.value,
-        remarks: inputRemarks.value
-      }
+    // radioService选择变化时，更新后面所有radio的默认选择
+    watch(radioService, () => {
+      radioNetwork.value = privateNetworks.value.length > 0 ? privateNetworks.value[0].id : publicNetworks.value[0].id
+      radioImage.value = images.value[0].id
+      radioFlavor.value = flavors.value[0].id
+      radioQuota.value = quotas.value[0].id
     })
-    // const selectionName = computed(() => {
-    //   const serviceName = options.serviceName
-    //   let networkName = ''
-    //   for (const privateNetwork of options.private) {
-    //     if (privateNetwork.id === radioNetwork.value) {
-    //       networkName = '私网IP - ' + privateNetwork.name
-    //     }
-    //   }
-    //   for (const publicNetwork of options.public) {
-    //     if (publicNetwork.id === radioNetwork.value) {
-    //       networkName = '公网IP - ' + publicNetwork.name
-    //     }
-    //   }
-    //   let imageName = ''
-    //   for (const image of options.images) {
-    //     if (image.id === radioImage.value) {
-    //       imageName = image.name
-    //     }
-    //   }
-    //   let flavorName = ''
-    //   for (const flavor of options.flavors) {
-    //     if (flavor.id === radioFlavor.value) {
-    //       flavorName = `${flavor.vcpus}核/${flavor.ram}MB`
-    //     }
-    //   }
-    //   let quotaName = ''
-    //   for (const quota of options.uquota) {
-    //     if (quota.id === radioUserQuota.value) {
-    //       quotaName = quota.display
-    //     }
-    //   }
-    //   return {
-    //     serviceName,
-    //     networkName,
-    //     imageName,
-    //     flavorName,
-    //     quotaName
-    //   }
-    // })
+
     // stepper
     const step = ref(1)
     const done1 = ref(false)
@@ -433,10 +336,19 @@ export default defineComponent({
     const createVM = async () => {
       isCreating.value = true
       done3.value = true
-      const respCreateVM = await $store.dispatch('usage/createServer', selectionId.value)
-      const respFetchServerInfo = await $store.dispatch('usage/fetchServerInfo', respCreateVM.data.id)
-      // console.log(respFetchServerInfo)
-      newIP.value = respFetchServerInfo.data.server.ipv4
+      const selection = {
+        service_id: radioService.value,
+        network_id: radioNetwork.value,
+        image_id: radioImage.value,
+        flavor_id: radioFlavor.value,
+        quota_id: radioQuota.value,
+        remarks: inputRemarks.value
+      }
+      const respCreateVM = await $store.dispatch('usage/createServer', selection)
+      // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
+      void await $store.dispatch('usage/updateUserServerTableSingleServer', respCreateVM.data.id)
+
+      newIP.value = $store.state.usage.tables.userServerTable.byId[respCreateVM.data.id].ipv4
       $q.notify({
         color: 'nord14',
         message: `成功创建id为${newIP.value}的云主机`,
@@ -447,15 +359,10 @@ export default defineComponent({
       isCreating.value = false
       isShowJumper.value = true
 
-      // 进入vmdetai页面前，更新server实例信息
-      void await $store.dispatch('usage/updateServerInfo', respFetchServerInfo.data.server.id)
-      // 更新vpn 信息
+      // 进入vmdetail页面前,更新VmDetail页面内的serverId
+      $store.commit('usage/storeVmDetailPageId', respCreateVM.data.id)
 
-      void await $store.dispatch('usage/updateVpn', {
-        serviceId: respFetchServerInfo.data.server.service.id,
-        serviceName: respFetchServerInfo.data.server.service.name
-      })
-
+      console.log($store.state.usage)
       setTimeout(() => {
         void $router.push('/my/usage/vmdetail')
       }, 3000)
@@ -475,21 +382,18 @@ export default defineComponent({
       images,
       quotas,
       flavors,
-
       step,
       done1,
       done2,
       done3,
       reset,
-      selectionId,
-      // selectionName,
       radioService,
+      radioDataCenter,
       radioNetwork,
       radioImage,
       radioFlavor,
-      radioUserQuota,
+      radioQuota,
       inputRemarks,
-      // options,
       createVM,
       isShowJumper,
       refresh,

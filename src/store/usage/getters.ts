@@ -40,13 +40,13 @@ const getters: GetterTree<UsageInterface, StateInterface> = {
   },
   getServersByServiceId (state): ServerInterface[] {
     // 根据用户选择的serviceId来返回server数组
-    // 当前选择的serviceId位于state.usage.ui.vmlist.filter，利用vmlist中的watch来修改
-    if (state.ui.vmList.filter === '0') {
+    // 当前选择的serviceId位于state.usage.pages.vmlist.filter，利用vmlist中的watch来修改
+    if (state.pages.vmList.filter === '0') {
       return Object.values(state.tables.userServerTable.byId)
     } else {
       const rows: ServerInterface[] = []
       for (const server of Object.values(state.tables.userServerTable.byId)) {
-        if (server.service === state.ui.vmList.filter) {
+        if (server.service === state.pages.vmList.filter) {
           rows.push(server)
         }
       }
@@ -57,19 +57,19 @@ const getters: GetterTree<UsageInterface, StateInterface> = {
 
   /* vmcreate使用 */
   getPublicNetworksByServiceId (state): NetworkInterface[] {
-    const serviceId = state.ui.vmCreate.serviceId
+    const serviceId = state.pages.vmCreate.serviceId
     return Object.values(state.tables.userNetworkTable.byLocalId).filter(network => network.public && network.service === serviceId)
   },
   getPrivateNetworksByServicedId (state): NetworkInterface[] {
-    const serviceId = state.ui.vmCreate.serviceId
+    const serviceId = state.pages.vmCreate.serviceId
     return Object.values(state.tables.userNetworkTable.byLocalId).filter(network => !network.public && network.service === serviceId)
   },
   getImagesByServiceId (state): ImageInterface[] {
-    const serviceId = state.ui.vmCreate.serviceId
+    const serviceId = state.pages.vmCreate.serviceId
     return Object.values(state.tables.userImageTable.byLocalId).filter(image => image.service === serviceId)
   },
   getQuotasByServiceId (state): QuotaInterface[] {
-    const serviceId = state.ui.vmCreate.serviceId
+    const serviceId = state.pages.vmCreate.serviceId
     return Object.values(state.tables.userQuotaTable.byId).filter(quota => quota.service === serviceId)
   }
   /* vmcreate使用 */

@@ -8,28 +8,17 @@ import {
   FlavorInterface,
   VpnInterface,
   QuotaInterface,
-  ServerInterface,
-
-  TreeRootInterface,
-  ServerInterface_old,
-  // DataPointOnShowInterface,
-  PaginationInterface,
-  // VpnInterface_old,
-  ServiceInterface_old
-
+  ServerInterface
 } from './state'
 
 const mutation: MutationTree<UsageInterface> = {
-  /*
-  以下为重构后的数据结构
-  */
   // 保存VmCreate页面中所选择的serviceId
-  storeVmCreateServiceId (state, serviceId: string) {
-    state.ui.vmCreate.serviceId = serviceId
+  storeVmCreatePageServiceId (state, serviceId: string) {
+    state.pages.vmCreate.serviceId = serviceId
   },
   // 保存vmDetail页面中所显示的serverId
-  storeVmDetailId (state, serverId: string) {
-    state.ui.vmDetail.serverId = serverId
+  storeVmDetailPageId (state, serverId: string) {
+    state.pages.vmDetail.serverId = serverId
   },
   storeUserQuotaTable (state, tableObj: Record<string, QuotaInterface>) {
     Object.assign(state.tables.userQuotaTable.byId, tableObj)
@@ -71,7 +60,7 @@ const mutation: MutationTree<UsageInterface> = {
     state.tables.userServerTable.byId[payload.serverId].status = payload.status_code
   },
   storeUserServerTableFilter (state, filter: string) {
-    state.ui.vmList.filter = filter
+    state.pages.vmList.filter = filter
   },
   clearUserServerTable (state) {
     state.tables.userServerTable.byId = {}
@@ -110,63 +99,7 @@ const mutation: MutationTree<UsageInterface> = {
     // 更新userServiceTable.isLoaded，每次都更新，可以优化
     state.tables.userServiceTable.isLoaded = true
     // console.log('updating userServiceTable')
-  },
-  /*
-  以上为重构后的数据结构
-  */
-  //
-  // deleteVpn (state, serviceId: string) {
-  //   state.vpn.delete(serviceId)
-  // },
-
-  // 清除当前展示的云主机详情信息
-  clearServerDetail (state) {
-    state.serverDetail = { id: '' }
-  },
-  // 保存当前展示的云主机详情信息
-  storeServerDetail (state, payload: ServerInterface_old) {
-    state.serverDetail = payload
-    // console.log('state.serverDetail:', state.serverDetail)
-  },
-  storeServerDetailStatus (state, status: string) {
-    state.serverDetail.status = status
-  },
-  storeService (state, payload: ServiceInterface_old) {
-    state.serviceList.unshift(payload)
-  },
-  storeDataPointTree (state, payload: TreeRootInterface[]) {
-    state.dataPointTree = payload
-  },
-  // storeServerList (state, payload: ServerInterface_old[]) {
-  //   state.serverList = payload
-  // },
-  // storeServerStatus (state, payload: { id: string; status: string }) {
-  //   const currentServer = state.serverList.find((server) => {
-  //     return server.id === payload.id
-  //   })
-  //   if (currentServer) {
-  //     currentServer.status = payload.status
-  //   }
-  // },
-  // storeDataPointOnShow (state, payload: DataPointOnShowInterface) {
-  //   state.dataPointOnShow = payload
-  // },
-  storePagination (state, payload: PaginationInterface) {
-    // console.log(payload)
-    for (const key in payload) {
-      // @ts-ignore
-      state.pagination[key] = payload[key]
-    }
-    // console.log('current store', state.pagination)
   }
-  // ,
-  // storeVpn (state, payload: { serviceId: string; serviceName: string; vpn: VpnInterface_old }) {
-  //   state.vpn.set(payload.serviceId, {
-  //     ...payload.vpn,
-  //     serviceId: payload.serviceId,
-  //     serviceName: payload.serviceName
-  //   })
-  // }
 }
 
 export default mutation

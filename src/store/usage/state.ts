@@ -1,35 +1,3 @@
-export interface ReqServerCreate {
-  service_id: string;
-  network_id: string;
-  image_id: string;
-  flavor_id: string;
-  quota_id: string;
-  remarks?: string;
-}
-
-export interface ReqServerNote {
-  id: string;
-  remark: string;
-}
-
-// 当前展示的云主机数据接口
-export interface ResServerStatusInterface {
-  status: {
-    status_code: number;
-    status_text: string;
-  }
-}
-
-export interface PaginationInterface {
-  count?: number;
-  page?: number;
-  pageSize?: number;
-  serviceId?: string;
-  serviceName?: string;
-  next?: string | null;
-  previous?: string | null;
-}
-
 export interface ServerInterface_old {
   // 以下结构来自api response
   id: string;
@@ -61,31 +29,6 @@ export interface ServerInterface_old {
 
   // 以下结构是本地所需，额外添加
   status?: string; // 设备状态
-}
-
-export interface ResServerInterface {
-  id: string;
-  name: string;
-  vcpus: number;
-  ram: number;
-  ipv4: string;
-  public_ip: boolean;
-  image: string;
-  creation_time: string;
-  remarks: string;
-  endpoint_url: string;
-  service: {
-    id: string;
-    name: string;
-    service_type: string;
-  }
-}
-
-export interface ResServerListInterface {
-  count?: number;
-  next?: string | null;
-  previous?: string | null,
-  servers: ResServerInterface[]
 }
 
 export interface ReqServerListInterface {
@@ -184,9 +127,12 @@ export interface VpnInterface_old {
   serviceName?: string;
 }
 
+/* 以上interface应全部删除 */
+
 /*
 重构后的interface
 */
+
 export interface DataCenterInterface {
   // 来自registry接口
   'id': string
@@ -227,6 +173,7 @@ export interface ServerInterface {
   public_ip: boolean
   image: string
   creation_time: string
+  expiration_time: string | null
   remarks: string
   endpoint_url: string
   service: string
@@ -323,26 +270,7 @@ export interface ArchivedServerInterface {
 
 // Usage总接口
 export interface UsageInterface {
-  // 机构树 -> 此数据结构是q-tree组件的要求，无法更改
-  dataPointTree: TreeRootInterface[];
-  // // -->待重构
-  // // 云主机列表
-  // serverList: ServerInterface_old[];
-  // // 云主机分页
-  // pagination: PaginationInterface;
-
-  // 新建云主机
-  serviceList: ServiceInterface_old[]; // 当前用户全部可用service
-  // 云主机详情页
-  serverDetail: ServerInterface_old;
-  // // vpn
-  // vpn: Map<string, VpnInterface_old>;
-  // <-- 待重构
-
-  /*
-  扁平的数据结构
-   */
-  ui: {
+  pages: { // 各个页面所需vuex数据
     vmList: {
       filter: string // serviceId 用于筛选显示server列表，'0'为显示全部
     }
@@ -353,7 +281,7 @@ export interface UsageInterface {
       serviceId: string // serviceId
     }
   }
-  tables: {
+  tables: { // 扁平的data table
     // 全局统一的datacenter
     globalDataCenterTable: {
       byId: Record<string, DataCenterInterface>
@@ -421,31 +349,7 @@ export interface UsageInterface {
 function state ():
   UsageInterface {
   return {
-    dataPointTree: [{
-      key: '0',
-      label: '全部节点',
-      icon: 'storage',
-      children: []
-    }],
-    // serverList: [],
-    // pagination: {
-    //   count: 1,
-    //   page: 1,
-    //   pageSize: 1,
-    //   serviceId: '0',
-    //   serviceName: '全部节点'
-    // },
-
-    serviceList: [],
-    serverDetail: {
-      id: '0' // serverDetail中： id='0'是直接进入页面，应重定向；id=''是在读取中，应loading，其它状态则显示信息
-    },
-    // vpn: new Map(),
-
-    /*
-    重构后的数据结构
-    */
-    ui: {
+    pages: {
       vmList: {
         filter: '0'
       },

@@ -315,7 +315,6 @@ import { defineComponent, ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from '../../store'
 import { useQuasar, copyToClipboard } from 'quasar'
-import { ReqServerNote } from 'src/store/usage/state'
 
 export default defineComponent({
   name: 'Vm',
@@ -325,7 +324,7 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const $q = useQuasar()
 
-    // void $store.dispatch('usage/updateUsageTable')
+    // void $store.dispatch('usage/getUsageTable')
 
     // 云主机状态按钮
     const isStatusLoading = ref(true)
@@ -585,7 +584,7 @@ export default defineComponent({
         color: 'primary',
         cancel: true
       }).onOk((data: string) => {
-        const payload: ReqServerNote = {
+        const payload: { id: string; remark: string; } = {
           id,
           remark: data.trim()
         }
@@ -619,7 +618,7 @@ export default defineComponent({
     }
     // 进入server detail页面前，更新单个server的具体信息
     const updateServerDetail = (serverId: string) => {
-      $store.commit('usage/storeVmDetailId', serverId)
+      $store.commit('usage/storeVmDetailPageId', serverId)
     }
     return {
       $store,

@@ -5,18 +5,18 @@
         <!--       <todo-list :todo="todo" @update-unpaid="updateUnpaid" />-->
         <!-- <todo-list :todo="todo" />-->
         <div class="col">
-          <warning-list />
+          <warning-list/>
         </div>
 
         <div class="col">
-          <quick-entry />
+          <quick-entry/>
         </div>
       </div>
 
       <div class="row justify-around q-pt-md">
-<!--        <div class="col"><vm-list /></div>-->
+        <!--        <div class="col"><vm-list /></div>-->
         <div class="col">
-          <quota-list />
+          <quota-list/>
         </div>
       </div>
 
@@ -34,16 +34,16 @@
     </div>
     <div class="lt-md column justify-around">
       <div class="col">
-        <warning-list />
+        <warning-list/>
       </div>
       <div class="col">
-        <quick-entry />
+        <quick-entry/>
       </div>
       <div class="col q-pt-md">
-<!--        <vm-list />-->
+        <!--        <vm-list />-->
       </div>
       <div class="col q-pt-md">
-        <quota-list />
+        <quota-list/>
       </div>
     </div>
   </div>
@@ -66,7 +66,7 @@ import { StateInterface } from '../store'
 export default defineComponent({
   name: 'Main',
   components: {
-    VmList,
+    // VmList,
     // TodoList,
     WarningList,
     QuickEntry,

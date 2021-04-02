@@ -322,9 +322,9 @@ export default defineComponent({
     const $router = useRouter()
     const $q = useQuasar()
 
-    // void $store.dispatch('usage/updateUsageTable')
+    // void $store.dispatch('usage/getUsageTable')
 
-    const serverId = computed(() => $store.state.usage.ui.vmDetail.serverId)
+    const serverId = computed(() => $store.state.usage.pages.vmDetail.serverId)
     // 进入vm详情页面时， serverDetail中： id='0'是从url直接进入页面，而不是从vmlist点击进入，应重定向回vmlist；id=''是在读取中，应loading；其它状态则显示信息
     if (serverId.value === '0') {
       void $router.push({ path: '/my/usage/' })
@@ -368,7 +368,7 @@ export default defineComponent({
           password: data.trim()
         }
         void $store.dispatch('usage/patchVpnPassword', payload).then((value) => {
-          $store.commit('usage/storeUserVpnTable', Object.assign(vpn, { password: data.trim() }))
+          $store.commit('usage/storeUserVpnTable', Object.assign(vpn, { password: value.data.vpn.password }))
           isLoading.value = false
         }
         ).catch(() => {

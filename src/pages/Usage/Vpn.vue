@@ -148,7 +148,7 @@ export default defineComponent({
           password: data.trim()
         }
         void $store.dispatch('usage/patchVpnPassword', payload).then((value) => {
-          $store.commit('usage/storeUserVpnTable', Object.assign(vpn, { password: data.trim() }))
+          $store.commit('usage/storeUserVpnTable', Object.assign(vpn, { password: value.data.vpn.password }))
           isLoading.value = false
         }
         ).catch(() => {
