@@ -74,7 +74,8 @@
               </div>
 
               <div class="col-1">
-                <q-btn class="btn-add q-pa-none q-ma-none shadow-10" round :ripple="false" size="lg" icon="add" color="primary" :to="{ path: '/my/usage/vmcreate' }">
+                <q-btn class="btn-add q-pa-none q-ma-none shadow-10" round :ripple="false" size="lg" icon="add"
+                       color="primary" :to="{ path: '/my/usage/vmcreate' }">
                   <q-tooltip>
                     新建云主机
                   </q-tooltip>
@@ -92,7 +93,7 @@
         <div class="row justify-center">
           <div class="col"/>
           <div class="col-xs-12 col-md-10">
-            <router-view />
+            <router-view/>
           </div>
           <div class="col"/>
         </div>
@@ -106,12 +107,17 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader.vue'
+import { useStore } from 'vuex'
+import { StateInterface } from 'src/store'
 
 export default defineComponent({
   name: 'UsageLayout',
   components: { GlobalHeader },
   props: {},
   setup () {
+    const $store = useStore<StateInterface>()
+    void $store.dispatch('usage/updateUsageTable')
+
     return {
       activeTab: ref('vm'),
       splitterModel: ref(20) // start at 50%

@@ -1,22 +1,37 @@
 import { MutationTree } from 'vuex'
 import {
   UsageInterface,
+  DataCenterInterface,
+  ServiceInterface,
+  NetworkInterface,
+  ImageInterface,
+  FlavorInterface,
+  VpnInterface,
+  QuotaInterface,
+  ServerInterface,
+
   TreeRootInterface,
   ServerInterface_old,
   // DataPointOnShowInterface,
   PaginationInterface,
-  VpnInterface_old,
-  ServiceInterface_old,
-  DataCenterInterface,
-  ServiceInterface,
-  NetworkInterface, ImageInterface, FlavorInterface, VpnInterface, UserQuotaInterface, ServerInterface
+  // VpnInterface_old,
+  ServiceInterface_old
+
 } from './state'
 
 const mutation: MutationTree<UsageInterface> = {
   /*
   以下为重构后的数据结构
   */
-  storeUserQuotaTable (state, tableObj: Record<string, UserQuotaInterface>) {
+  // 保存VmCreate页面中所选择的serviceId
+  storeVmCreateServiceId (state, serviceId: string) {
+    state.ui.vmCreate.serviceId = serviceId
+  },
+  // 保存vmDetail页面中所显示的serverId
+  storeVmDetailId (state, serverId: string) {
+    state.ui.vmDetail.serverId = serverId
+  },
+  storeUserQuotaTable (state, tableObj: Record<string, QuotaInterface>) {
     Object.assign(state.tables.userQuotaTable.byId, tableObj)
     state.tables.userQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
     state.tables.userQuotaTable.allIds = [...new Set(state.tables.userQuotaTable.allIds)]
@@ -49,8 +64,8 @@ const mutation: MutationTree<UsageInterface> = {
     state.tables.userNetworkTable.allLocalIds = [...new Set(state.tables.userNetworkTable.allLocalIds)]
     state.tables.userNetworkTable.isLoaded = true
   },
-  storeNote (state, payload: { id: string; remark: string; }) {
-    state.tables.userServerTable.byId[payload.id].remarks = payload.remark
+  storeUserServerTableSingleRemarks (state, payload: { serverId: string; remarks: string; }) {
+    state.tables.userServerTable.byId[payload.serverId].remarks = payload.remarks
   },
   storeUserServerTableSingleStatus (state, payload: { serverId: string; status_code: string; }) {
     state.tables.userServerTable.byId[payload.serverId].status = payload.status_code
@@ -71,6 +86,10 @@ const mutation: MutationTree<UsageInterface> = {
     // userServerTable.isLoaded,每次都更新，可以优化
     state.tables.userServerTable.isLoaded = true
     // console.log('updating userServerTable')
+  },
+  storeGlobalDataCenterTableServicesField (state, payload: { dataCenterId: string; serviceId: string; }) {
+    state.tables.globalDataCenterTable.byId[payload.dataCenterId].services.unshift(payload.serviceId)
+    state.tables.globalDataCenterTable.byId[payload.dataCenterId].services = [...new Set(state.tables.globalDataCenterTable.byId[payload.dataCenterId].services)]
   },
   storeGlobalDataCenterTable (state, tableObj: Record<string, DataCenterInterface>) {
     // 将dataCenter对象补充至globalDataCenterTable.byId
@@ -95,17 +114,11 @@ const mutation: MutationTree<UsageInterface> = {
   /*
   以上为重构后的数据结构
   */
+  //
+  // deleteVpn (state, serviceId: string) {
+  //   state.vpn.delete(serviceId)
+  // },
 
-  deleteVpn (state, serviceId: string) {
-    state.vpn.delete(serviceId)
-  },
-  storeVpn (state, payload: { serviceId: string; serviceName: string; vpn: VpnInterface_old }) {
-    state.vpn.set(payload.serviceId, {
-      ...payload.vpn,
-      serviceId: payload.serviceId,
-      serviceName: payload.serviceName
-    })
-  },
   // 清除当前展示的云主机详情信息
   clearServerDetail (state) {
     state.serverDetail = { id: '' }
@@ -146,6 +159,14 @@ const mutation: MutationTree<UsageInterface> = {
     }
     // console.log('current store', state.pagination)
   }
+  // ,
+  // storeVpn (state, payload: { serviceId: string; serviceName: string; vpn: VpnInterface_old }) {
+  //   state.vpn.set(payload.serviceId, {
+  //     ...payload.vpn,
+  //     serviceId: payload.serviceId,
+  //     serviceName: payload.serviceName
+  //   })
+  // }
 }
 
 export default mutation

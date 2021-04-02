@@ -12,7 +12,7 @@
             </div>
           </div>
 
-          <div v-if=" !serverDetail.ipv4" class="col content-area loading">
+          <div v-if="!server.ipv4" class="col content-area loading">
             <q-spinner
               color="primary"
               size="5em"
@@ -24,115 +24,115 @@
             <div class="row justify-center items-center q-pt-lg">
               <div class="col-4 text-h5">
                 <div>
-                  {{ serverDetail.ipv4 }}
+                  {{ server.ipv4 }}
                   <q-btn
                     class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
-                    @click="clickToCopy(serverDetail.ipv4)">
+                    @click="clickToCopy(server.ipv4)">
                     <q-tooltip>
                       复制
                     </q-tooltip>
                   </q-btn>
                 </div>
                 <div>
-                  <q-chip v-if="!serverDetail.status" label="操作中" square color="nord4">
+                  <q-chip v-if="!server.status" label="操作中" square color="nord4">
                     <q-inner-loading showing class="inner-loading">
                       <q-spinner size="30px" color="nord9"/>
                     </q-inner-loading>
                   </q-chip>
 
-                  <q-chip v-if="serverDetail.status === '无法获取状态'" outline color="nord11" text-color="white"
+                  <q-chip v-if="server.status === '无法获取状态'" outline color="nord11" text-color="white"
                           label="无法获取状态" class="text-bold"/>
-                  <q-chip v-if="serverDetail.status === '运行中'" outline color="nord14" text-color="white"
+                  <q-chip v-if="server.status === '运行中'" outline color="nord14" text-color="white"
                           label="运行中" class="text-bold"/>
-                  <q-chip v-if="serverDetail.status === '已屏蔽'" outline color="nord3" text-color="white"
+                  <q-chip v-if="server.status === '已屏蔽'" outline color="nord3" text-color="white"
                           label="已屏蔽" class="text-bold"/>
-                  <q-chip v-if="serverDetail.status === '已暂停'" outline color="nord3" text-color="white"
+                  <q-chip v-if="server.status === '已暂停'" outline color="nord3" text-color="white"
                           label="已暂停" class="text-bold"/>
-                  <q-chip v-if="serverDetail.status === '正在关机'" outline color="nord9" text-color="white"
+                  <q-chip v-if="server.status === '正在关机'" outline color="nord9" text-color="white"
                           label="正在关机" class="text-bold"/>
-                  <q-chip v-if="serverDetail.status === '已关机'" outline color="nord3" text-color="white"
+                  <q-chip v-if="server.status === '已关机'" outline color="nord3" text-color="white"
                           label="已关机" class="text-bold"/>
-                  <q-chip v-if="serverDetail.status === '已崩溃'" outline color="nord11" text-color="white"
+                  <q-chip v-if="server.status === '已崩溃'" outline color="nord11" text-color="white"
                           label="已崩溃" class="text-bold"/>
-                  <q-chip v-if="serverDetail.status === '被电源管理器挂起'" outline color="nord3" text-color="white"
+                  <q-chip v-if="server.status === '被电源管理器挂起'" outline color="nord3" text-color="white"
                           label="被电源管理器挂起" class="text-bold"/>
-                  <q-chip v-if="serverDetail.status === '与宿主机通讯失败'" outline color="nord11" text-color="white"
+                  <q-chip v-if="server.status === '与宿主机通讯失败'" outline color="nord11" text-color="white"
                           label="与宿主机通讯失败" class="text-bold"/>
-                  <q-chip v-if="serverDetail.status === '已丢失'" outline color="nord11" text-color="white"
+                  <q-chip v-if="server.status === '已丢失'" outline color="nord11" text-color="white"
                           label="已丢失" class="text-bold"/>
-                  <q-chip v-if="serverDetail.status === '正在创建'" outline color="nord9" text-color="white"
+                  <q-chip v-if="server.status === '正在创建'" outline color="nord9" text-color="white"
                           label="正在创建" class="text-bold"/>
-                  <q-chip v-if="serverDetail.status === '创建失败'" outline color="nord11" text-color="white"
+                  <q-chip v-if="server.status === '创建失败'" outline color="nord11" text-color="white"
                           label="创建失败" class="text-bold"/>
                 </div>
 
               </div>
               <div class="col q-gutter-lg">
-                <q-btn v-if="serverDetail.status=='运行中'"
-                       :disable="!serverDetail.status"
+                <q-btn v-if="server.status=='运行中'"
+                       :disable="!server.status"
                        unelevated flat padding="none" size="lg" color="primary" icon="computer"
-                       @click="gotoVNC(serverDetail.id)">
+                       @click="gotoVNC(server.id)">
                   <q-tooltip>
-                    使用VNC
+                    远程控制
                   </q-tooltip>
                 </q-btn>
                 <q-btn v-else
-                       :disable="!serverDetail.status"
+                       :disable="!server.status"
                        unelevated color="grey-5" flat padding="none" size="lg" icon="computer">
                   <q-tooltip>
-                    请开机以使用VNC
+                    请开机以使用远程控制
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn :disable="!serverDetail.status || serverDetail.status === '运行中'"
+                <q-btn :disable="!server.status || server.status === '运行中'"
                        color="nord4" icon="play_arrow" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'start'})">
+                       @click="vmOperation({endPoint: server.endpoint_url, id: server.id, action: 'start'})">
                   <q-tooltip>
                     开机
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn :disable="!serverDetail.status || serverDetail.status === '已关机'"
+                <q-btn :disable="!server.status || server.status === '已关机'"
                        color="nord4" icon="power_settings_new" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'shutdown'})">
+                       @click="vmOperation({endPoint: server.endpoint_url, id: server.id, action: 'shutdown'})">
                   <q-tooltip>
                     关机
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn :disable="!serverDetail.status || serverDetail.status === '已关机'"
+                <q-btn :disable="!server.status || server.status === '已关机'"
                        color="nord4" icon="restart_alt" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'reboot'})">
+                       @click="vmOperation({endPoint: server.endpoint_url, id: server.id, action: 'reboot'})">
                   <q-tooltip>
                     重启
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn :disable="!serverDetail.status || serverDetail.status === '已关机'"
+                <q-btn :disable="!server.status || server.status === '已关机'"
                        color="nord4" icon="power_off" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'poweroff'})">
+                       @click="vmOperation({endPoint: server.endpoint_url, id: server.id, action: 'poweroff'})">
                   <q-tooltip>
                     强制断电
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn :disable="!serverDetail.status || serverDetail.status === '运行中'"
+                <q-btn :disable="!server.status || server.status === '运行中'"
                        color="nord4" icon="delete" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'delete'})">
+                       @click="vmOperation({endPoint: server.endpoint_url, id: server.id, action: 'delete'})">
                   <q-tooltip>
                     删除
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn :disable="!serverDetail.status"
+                <q-btn :disable="!server.status"
                        color="nord4" icon="delete_forever" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="vmOperation({endPoint: serverDetail.endpoint_url, id: serverDetail.id, action: 'delete_force'})">
+                       @click="vmOperation({endPoint: server.endpoint_url, id: server.id, action: 'delete_force'})">
                   <q-tooltip>
                     强制删除
                   </q-tooltip>
@@ -178,35 +178,35 @@
                   </div>
                   <div class="col">
                     <div class="q-pb-md">
-                      {{ serverDetail.id }}
+                      {{ server.id }}
                       <q-btn
                         class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
-                        @click="clickToCopy(serverDetail.id)">
+                        @click="clickToCopy(server.id)">
                         <q-tooltip>
                           复制
                         </q-tooltip>
                       </q-btn>
                     </div>
                     <div class="q-pb-md">
-                      {{ serverDetail.vcpus }}核
+                      {{ server.vcpus }}核
                     </div>
                     <div class="q-pb-md">
-                      {{ serverDetail.ram }}MB
+                      {{ server.ram }}MB
                     </div>
                     <div class="q-pb-md">
-                      {{ serverDetail.public_ip ? '是' : '否' }}
+                      {{ server.public_ip ? '是' : '否' }}
                     </div>
                     <div class="q-pb-md">
-                      {{ serverDetail.image }}
+                      {{ server.image }}
                     </div>
                     <div class="q-pb-md">
-                      {{ serverDetail.creation_time }}
+                      {{ server.creation_time }}
                     </div>
                     <div class="q-pb-md">
-                      {{ serverDetail.expiration_time || '永久有效' }}
+                      {{ server.expiration_time || '永久有效' }}
                     </div>
                     <div class="q-pb-md">
-                      {{ serverDetail.remarks }}
+                      {{ server.remarks }}
                     </div>
                   </div>
                 </div>
@@ -239,19 +239,19 @@
                   </div>
                   <div class="col">
                     <div class="q-pb-md">
-                      {{ serverDetail.service.name }}
+                      {{ service.name }}
                     </div>
                     <div class="q-pb-md">
-                      {{ serverDetail.service.service_type }}
+                      {{ service.service_type }}
                     </div>
                     <div class="q-pb-md">
-                      {{ serverDetail.user_quota.display }}
+                      {{ quota.display }}
                     </div>
                     <div class="q-pb-md">
-                      {{ vpnDetail.username }}
+                      {{ vpn.username }}
                       <q-btn
                         class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
-                        @click="clickToCopy(vpnDetail.username)">
+                        @click="clickToCopy(vpn.username)">
                         <q-tooltip>
                           复制
                         </q-tooltip>
@@ -261,7 +261,7 @@
 
                       <q-input class="password-input"
                                :loading="isLoading"
-                               v-model="vpnDetail.password" :type="isPwd ? 'password' : 'text'"
+                               v-model="vpn.password" :type="isPwd ? 'password' : 'text'"
                                readonly borderless dense square outlined>
                         <template v-slot:prepend>
                           <q-icon
@@ -273,14 +273,14 @@
 
                       <q-btn
                         class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
-                        @click="clickToCopy(vpnDetail.password)">
+                        @click="clickToCopy(vpn.password)">
                         <q-tooltip>
                           复制
                         </q-tooltip>
                       </q-btn>
 
                       <q-btn label="修改密码" padding="none" dense flat color="primary"
-                             @click="popEdit(serverDetail.service.id, vpnDetail.password)"/>
+                             @click="popEdit(vpn)"/>
 
                     </div>
                     <div class="q-pb-sm">
@@ -311,6 +311,7 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter } from 'vue-router'
 import { copyToClipboard, useQuasar } from 'quasar'
+import { VpnInterface } from 'src/store/usage/state'
 
 export default defineComponent({
   name: 'VmDetail',
@@ -321,24 +322,32 @@ export default defineComponent({
     const $router = useRouter()
     const $q = useQuasar()
 
-    const serverDetail = computed(() => $store.state.usage.serverDetail)
+    // void $store.dispatch('usage/updateUsageTable')
+
+    const serverId = computed(() => $store.state.usage.ui.vmDetail.serverId)
     // 进入vm详情页面时， serverDetail中： id='0'是从url直接进入页面，而不是从vmlist点击进入，应重定向回vmlist；id=''是在读取中，应loading；其它状态则显示信息
-    if (serverDetail.value.id === '0') {
+    if (serverId.value === '0') {
       void $router.push({ path: '/my/usage/' })
     }
-    // vpninfo
-    const vpnDetail = computed(() => $store.state.usage.vpn.get(serverDetail.value.service!.id))
+    // server info
+    const server = computed(() => $store.state.usage.tables.userServerTable.byId[serverId.value])
+    // service info
+    const service = computed(() => $store.state.usage.tables.userServiceTable.byId[server.value.service])
+    // quota info
+    const quota = computed(() => $store.state.usage.tables.userQuotaTable.byId[server.value.user_quota])
+    // vpn info
+    const vpn = computed(() => $store.state.usage.tables.userVpnTable.byId[server.value.service])
     // password可见性
     const isPwd = ref(true)
     // 修改密码loading状态
     const isLoading = ref(false)
     // vpn 修改密码
-    const popEdit = (serviceId: string, password: string) => {
+    const popEdit = (vpn: VpnInterface) => {
       $q.dialog({
-        title: `修改${serverDetail.value.service!.name}的VPN密码`,
+        title: `修改${server.value.service}的VPN密码`,
         message: '新密码长度为6-64位',
         prompt: {
-          model: `${password}`,
+          model: `${vpn.password}`,
           counter: true,
           maxlength: 64,
           isValid: (val: string) => {
@@ -355,14 +364,11 @@ export default defineComponent({
       }).onOk((data: string) => {
         isLoading.value = true
         const payload = {
-          serviceId: serverDetail.value.service!.id,
+          serviceId: server.value.service,
           password: data.trim()
         }
         void $store.dispatch('usage/patchVpnPassword', payload).then((value) => {
-          $store.commit('usage/storeVpn', {
-            serviceId: serverDetail.value.service!.id,
-            vpn: value.data.vpn
-          })
+          $store.commit('usage/storeUserVpnTable', Object.assign(vpn, { password: data.trim() }))
           isLoading.value = false
         }
         ).catch(() => {
@@ -373,12 +379,12 @@ export default defineComponent({
     }
     // download vpn ca
     const fetchCa = () => {
-      const url = 'http://gosc.cstcloud.cn/api/vpn/' + serverDetail.value.service!.id + '/ca/'
+      const url = 'https://vms.cstcloud.cn/api/vpn/' + server.value.service + '/ca/'
       window.open(url)
     }
     // download vpn config
     const fetchConfig = () => {
-      const url = 'http://gosc.cstcloud.cn/api/vpn/' + serverDetail.value.service!.id + '/config/'
+      const url = 'https://vms.cstcloud.cn/api/vpn/' + server.value.service + '/config/'
       window.open(url)
     }
 
@@ -397,7 +403,7 @@ export default defineComponent({
 
     // 云主机操作
     const vmOperation = async (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
-      void await $store.dispatch('usage/serverDetailOperation', payload)
+      void await $store.dispatch('usage/vmOperation', payload)
       // console.log('in vmops', payload) todo 跳转流程优化
       if (payload.action === 'delete' || payload.action === 'delete_force') {
         $q.notify({
@@ -417,8 +423,10 @@ export default defineComponent({
       window.open(url)
     }
     return {
-      serverDetail,
-      vpnDetail,
+      server,
+      service,
+      quota,
+      vpn,
       isPwd,
       popEdit,
       fetchCa,

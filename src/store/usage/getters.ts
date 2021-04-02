@@ -1,6 +1,6 @@
 import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
-import { NetworkInterface, ServerInterface, UsageInterface } from './state'
+import { NetworkInterface, ServerInterface, UsageInterface, ImageInterface, QuotaInterface } from './state'
 
 const getters: GetterTree<UsageInterface, StateInterface> = {
   /* vmlist 使用 */
@@ -31,7 +31,7 @@ const getters: GetterTree<UsageInterface, StateInterface> = {
       serviceOptions.push(
         {
           value: service.id,
-          label: state.tables.globalDataCenterTable.byId[service.id].name + ' - ' + service.name
+          label: state.tables.globalDataCenterTable.byId[service.id]?.name + ' - ' + service.name
           // label: `${state.globalDataCenterTable.byId[service.id].name} - ${service.name}`
         }
       )
@@ -40,7 +40,7 @@ const getters: GetterTree<UsageInterface, StateInterface> = {
   },
   getServersByServiceId (state): ServerInterface[] {
     // 根据用户选择的serviceId来返回server数组
-    // 当前选择的serviceId位于userServerTable.filter，利用vmlist中的watch来修改
+    // 当前选择的serviceId位于state.usage.ui.vmlist.filter，利用vmlist中的watch来修改
     if (state.ui.vmList.filter === '0') {
       return Object.values(state.tables.userServerTable.byId)
     } else {
@@ -56,17 +56,21 @@ const getters: GetterTree<UsageInterface, StateInterface> = {
   /* vmlist 使用 */
 
   /* vmcreate使用 */
-  getPublicNetworksByServiceId (state, serviceId: string): NetworkInterface[] {
+  getPublicNetworksByServiceId (state): NetworkInterface[] {
+    const serviceId = state.ui.vmCreate.serviceId
     return Object.values(state.tables.userNetworkTable.byLocalId).filter(network => network.public && network.service === serviceId)
   },
-  getPrivateNetworksByServicedId (state, serviceId: string): NetworkInterface[] {
+  getPrivateNetworksByServicedId (state): NetworkInterface[] {
+    const serviceId = state.ui.vmCreate.serviceId
     return Object.values(state.tables.userNetworkTable.byLocalId).filter(network => !network.public && network.service === serviceId)
   },
-  getImagesByServiceId (state, serviceId: string): NetworkInterface[] {
-    return Object.values(state.tables.userNetworkTable.byLocalId).filter(network => network.service === serviceId)
+  getImagesByServiceId (state): ImageInterface[] {
+    const serviceId = state.ui.vmCreate.serviceId
+    return Object.values(state.tables.userImageTable.byLocalId).filter(image => image.service === serviceId)
   },
-  getUserQuotasByServiceId (state, serviceId: string): NetworkInterface[] {
-    return Object.values(state.tables.userNetworkTable.byLocalId).filter(network => network.service === serviceId)
+  getQuotasByServiceId (state): QuotaInterface[] {
+    const serviceId = state.ui.vmCreate.serviceId
+    return Object.values(state.tables.userQuotaTable.byId).filter(quota => quota.service === serviceId)
   }
   /* vmcreate使用 */
 

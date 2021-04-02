@@ -203,7 +203,7 @@ export interface DataCenterInterface {
   'desc': string
 
   // 来自service接口
-  services?: string[]
+  services: string[]
 }
 
 export interface ServiceInterface {
@@ -277,7 +277,7 @@ export interface VpnInterface {
   id: string
 }
 
-export interface UserQuotaInterface {
+export interface QuotaInterface {
   id: string
   tag: { // 提出去单做table无用，暂时保留，不拍平
     value: number
@@ -335,8 +335,8 @@ export interface UsageInterface {
   serviceList: ServiceInterface_old[]; // 当前用户全部可用service
   // 云主机详情页
   serverDetail: ServerInterface_old;
-  // vpn
-  vpn: Map<string, VpnInterface_old>;
+  // // vpn
+  // vpn: Map<string, VpnInterface_old>;
   // <-- 待重构
 
   /*
@@ -344,10 +344,13 @@ export interface UsageInterface {
    */
   ui: {
     vmList: {
-      filter: string // service_id 用于筛选显示server列表，'0'为显示全部
+      filter: string // serviceId 用于筛选显示server列表，'0'为显示全部
     }
     vmDetail: {
-      id: string
+      serverId: string // serverId
+    }
+    vmCreate: {
+      serviceId: string // serviceId
     }
   }
   tables: {
@@ -396,7 +399,7 @@ export interface UsageInterface {
     }
     // 用户可用的userQuota -> 依赖userServiceTable
     userQuotaTable: {
-      byId: Record<string, UserQuotaInterface>
+      byId: Record<string, QuotaInterface>
       allIds: string[]
       isLoaded: boolean
     }
@@ -437,7 +440,7 @@ function state ():
     serverDetail: {
       id: '0' // serverDetail中： id='0'是直接进入页面，应重定向；id=''是在读取中，应loading，其它状态则显示信息
     },
-    vpn: new Map(),
+    // vpn: new Map(),
 
     /*
     重构后的数据结构
@@ -447,7 +450,10 @@ function state ():
         filter: '0'
       },
       vmDetail: {
-        id: '0'
+        serverId: '0'
+      },
+      vmCreate: {
+        serviceId: '0'
       }
     },
     tables: {

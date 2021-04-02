@@ -105,7 +105,7 @@
                   <div class="col">
                     <q-btn :label="props.row.ipv4" :to="{path: '/my/usage/vmdetail'}" color="primary" flat dense
                            unelevated
-                           @click="updateServerDetail(props.row.id, props.row.service.id, props.row.service.name)">
+                           @click="updateServerDetail(props.row.id)">
                       <q-tooltip>
                         进入详情页面
                       </q-tooltip>
@@ -125,10 +125,10 @@
                 </div>
               </q-td>
               <q-td key="dataCenterName" :props="props">
-                {{ $store.state.usage.tables.userServiceTable.byId[props.row.service].name }}
+                {{ $store.state.usage.tables.userServiceTable.byId[props.row.service]?.name }}
               </q-td>
               <q-td key="serviceType" :props="props">
-                {{ $store.state.usage.tables.userServiceTable.byId[props.row.service].service_type }}
+                {{ $store.state.usage.tables.userServiceTable.byId[props.row.service]?.service_type }}
               </q-td>
               <q-td key="image" :props="props">
                 {{ props.row.image }}
@@ -146,7 +146,7 @@
                   </div>
                   <q-btn v-show="hoverRow === props.row.name"
                          class="col-shrink q-px-xs text-nord9" flat icon="edit" size="xs"
-                         @click="popEdit(props.row.ipv4, props.row.id, props.row.remarks)">
+                         @click="popEdit(props.row.id)">
                     <q-tooltip>
                       编辑备注
                     </q-tooltip>
@@ -164,7 +164,7 @@
                 </q-btn>
                 <q-btn v-else unelevated flat padding="none" size="lg" color="grey-5" icon="computer">
                   <q-tooltip>
-                    请开机以使用远程桌面
+                    请开机以使用远程控制
                   </q-tooltip>
                 </q-btn>
               </q-td>
@@ -325,7 +325,7 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const $q = useQuasar()
 
-    void $store.dispatch('usage/updateUsageTable')
+    // void $store.dispatch('usage/updateUsageTable')
 
     // 云主机状态按钮
     const isStatusLoading = ref(true)
@@ -473,7 +473,7 @@ export default defineComponent({
       },
       {
         name: 'vnc',
-        label: '远程桌面',
+        label: '远程控制',
         field: 'vnc',
         align: 'center'
       },
@@ -572,14 +572,12 @@ export default defineComponent({
       action: ''
     })
     // 编辑备注
-    let idEdited = ''// $q.dialog只能传递string给data，此处间接传递值
-    const popEdit = (ip: string, id: string, note: string) => {
-      idEdited = id
+    const popEdit = (id: string) => {
       $q.dialog({
-        title: `编辑${ip}的备注信息`,
+        title: `编辑${$store.state.usage.tables.userServerTable.byId[id].ipv4}的备注信息`,
         message: '长度限制为15个字',
         prompt: {
-          model: `${note}`,
+          model: `${$store.state.usage.tables.userServerTable.byId[id].remarks}`,
           counter: true,
           maxlength: 15,
           type: 'text' // optional
@@ -588,13 +586,15 @@ export default defineComponent({
         cancel: true
       }).onOk((data: string) => {
         const payload: ReqServerNote = {
-          id: idEdited,
+          id,
           remark: data.trim()
         }
-        void $store.dispatch('usage/patchNote', payload).then(() =>
-          $store.commit('usage/storeNote', payload)
+        void $store.dispatch('usage/patchRemarks', payload).then(() =>
+          $store.commit('usage/storeUserServerTableSingleRemarks', {
+            serverId: id,
+            remarks: data.trim()
+          })
         )
-        idEdited = ''
       })
     }
     // 复制信息到剪切板
@@ -618,14 +618,8 @@ export default defineComponent({
       hoverRow.value = ''
     }
     // 进入server detail页面前，更新单个server的具体信息
-    const updateServerDetail = (id: string, serviceId: string, serviceName: string) => {
-      // server实例信息
-      void $store.dispatch('usage/updateServerInfo', id)
-      // vpn 信息
-      void $store.dispatch('usage/updateVpn', {
-        serviceId,
-        serviceName
-      })
+    const updateServerDetail = (serverId: string) => {
+      $store.commit('usage/storeVmDetailId', serverId)
     }
     return {
       $store,
