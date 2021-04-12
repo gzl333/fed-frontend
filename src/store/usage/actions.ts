@@ -4,7 +4,8 @@ import { UsageInterface } from './state'
 import axios from 'axios'
 import { normalize, schema } from 'normalizr'
 
-const apiBase = 'https://vms.cstcloud.cn/api'
+// const apiBase = 'https://vms.cstcloud.cn/api'
+const apiBase = 'http://223.193.2.211:88/api'
 const statusCodeMap = new Map<number, string>(
   [
     [0, '无法获取状态'],
@@ -92,10 +93,13 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
   /* userVpnTable */
   async updateUserVpnTable (context) {
     for (const serviceId of context.state.tables.userServiceTable.allIds) {
-      const respVpn = await context.dispatch('fetchVpn', serviceId)
-      // 将id补充进vpn对象
-      Object.assign(respVpn.data.vpn, { id: serviceId })
-      context.commit('storeUserVpnTable', respVpn.data.vpn)
+      // service不一定需要vpn访问，需要的service才去取vpn信息
+      if (context.state.tables.userServiceTable.byId[serviceId].need_vpn) {
+        const respVpn = await context.dispatch('fetchVpn', serviceId)
+        // 将id补充进vpn对象
+        Object.assign(respVpn.data.vpn, { id: serviceId })
+        context.commit('storeUserVpnTable', respVpn.data.vpn)
+      }
     }
     // console.log(context.state.userVpnTable)
   },

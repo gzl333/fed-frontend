@@ -278,7 +278,7 @@ export interface UsageInterface {
       serverId: string // serverId
     }
     vmCreate: {
-      serviceId: string // serviceId
+      serviceId: string // serviceId serviceId选择结果影响后面所有选项的options
     }
   }
   tables: { // 扁平的data table

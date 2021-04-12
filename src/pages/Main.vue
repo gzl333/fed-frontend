@@ -51,7 +51,7 @@
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import VmList from 'src/components/main/VmList.vue'
+// import VmList from 'src/components/main/VmList.vue'
 // import TodoList, { ToDoProp } from 'src/components/main/TodoList.vue'
 import WarningList from 'src/components/main/WarningList.vue'
 import QuickEntry from 'src/components/main/QuickEntry.vue'

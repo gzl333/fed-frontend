@@ -4,11 +4,11 @@
 
       <div class="col-auto">
         <div class="row justify-center">
-          <div class="col"/>
-          <div class="col-xs-12 col-md-10">
-            <global-header/>
-          </div>
-          <div class="col"/>
+<!--          <div class="col"/>-->
+<!--          <div class="col-xs-12 col-md-10">-->
+            <global-header class="content-fixed-width"/>
+<!--          </div>-->
+<!--          <div class="col"/>-->
         </div>
       </div>
 
@@ -16,8 +16,8 @@
 
       <div class="col-auto">
         <div class="row justify-center">
-          <div class="col"/>
-          <div class="col-xs-12 col-md-10">
+<!--          <div class="col"/>-->
+          <div class="content-fixed-width">
             <div class="row">
               <div class="text-h6 q-pt-lg q-px-none">
                 在用资源
@@ -83,7 +83,7 @@
               </div>
             </div>
           </div>
-          <div class="col"/>
+<!--          <div class="col"/>-->
         </div>
       </div>
 
@@ -91,11 +91,11 @@
 
       <div class="col-auto q-pt-xl">
         <div class="row justify-center">
-          <div class="col"/>
-          <div class="col-xs-12 col-md-10">
-            <router-view/>
-          </div>
-          <div class="col"/>
+<!--          <div class="col"/>-->
+<!--          <div class="col-xs-12 col-md-10">-->
+            <router-view class="content-fixed-width"/>
+<!--          </div>-->
+<!--          <div class="col"/>-->
         </div>
       </div>
 

@@ -31,7 +31,7 @@ const getters: GetterTree<UsageInterface, StateInterface> = {
       serviceOptions.push(
         {
           value: service.id,
-          label: state.tables.globalDataCenterTable.byId[service.id]?.name + ' - ' + service.name
+          label: state.tables.globalDataCenterTable.byId[service.data_center].name + ' - ' + service.name
           // label: `${state.globalDataCenterTable.byId[service.id].name} - ${service.name}`
         }
       )
@@ -68,9 +68,24 @@ const getters: GetterTree<UsageInterface, StateInterface> = {
     const serviceId = state.pages.vmCreate.serviceId
     return Object.values(state.tables.userImageTable.byLocalId).filter(image => image.service === serviceId)
   },
+  // 只返回有效guota
   getQuotasByServiceId (state): QuotaInterface[] {
     const serviceId = state.pages.vmCreate.serviceId
-    return Object.values(state.tables.userQuotaTable.byId).filter(quota => quota.service === serviceId)
+    return Object.values(state.tables.userQuotaTable.byId).filter(quota => {
+      if (!quota.deleted && quota.service === serviceId) {
+        // 有过期时间则判断是否过期
+        if (quota.expiration_time) {
+          const diff = Math.abs(new Date(quota.expiration_time).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
+          const days = Math.ceil(diff / (1000 * 3600 * 24)) // 差换算成天数
+          return days > 1
+        } else {
+          // 没有过期时间则quota可用
+          return true
+        }
+      } else {
+        return false
+      }
+    })
   }
   /* vmcreate使用 */
 

@@ -1,8 +1,15 @@
 // app global css in SCSS form
 
 body {
-  //overflow: hidden;
+  overflow: hidden; // 全局令页面调整尺寸时不显示默认滚动条，避免闪烁
   //font-family: 'microsoft yahei';
+}
+
+// general page min-width
+.content-fixed-width {
+  padding: 0 50px;
+  width: 1439px; // prod
+  //width: 1000px; // dev
 }
 
 // cnic colors
