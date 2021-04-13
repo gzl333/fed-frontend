@@ -58,7 +58,7 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/Usage/VmCreate.vue')
           },
           {
-            path: 'vmdetail',
+            path: 'vmdetail/:id', // serverId 动态路由匹配
             meta: {
               myPages: true
             },

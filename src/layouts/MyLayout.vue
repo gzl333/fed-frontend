@@ -13,7 +13,7 @@
           <div class="column full-height">
 
             <q-scroll-area class="col" visible>
-              <router-view />
+              <router-view/>
             </q-scroll-area>
 
           </div>
@@ -40,8 +40,12 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const currentUser = $store.state.user
 
+    /* my内页所有table加载起始点 */
+    void $store.dispatch('usage/updateUsageTable')
+    /* my内页所有table加载起始点 */
+
+    const currentUser = $store.state.user
     const rightDrawerOpen = ref(false)
     const toggleRightDrawer = () => {
       rightDrawerOpen.value = !rightDrawerOpen.value
@@ -68,11 +72,13 @@ export default defineComponent({
 .logo {
   height: 50px;
 }
+
 .dropdown-content {
   min-width: 200px;
   background-image: url(https://cdn.quasar.dev/img/material.png);
   background-size: 150% auto;
 }
+
 .dropdown-items {
   text-align: center;
 }

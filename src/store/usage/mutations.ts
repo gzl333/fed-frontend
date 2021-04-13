@@ -16,10 +16,6 @@ const mutation: MutationTree<UsageInterface> = {
   storeVmCreatePageServiceId (state, serviceId: string) {
     state.pages.vmCreate.serviceId = serviceId
   },
-  // 保存vmDetail页面中所显示的serverId
-  storeVmDetailPageId (state, serverId: string) {
-    state.pages.vmDetail.serverId = serverId
-  },
   storeUserQuotaTable (state, tableObj: Record<string, QuotaInterface>) {
     Object.assign(state.tables.userQuotaTable.byId, tableObj)
     state.tables.userQuotaTable.allIds.unshift(Object.keys(tableObj)[0])

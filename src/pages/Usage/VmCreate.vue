@@ -135,80 +135,18 @@
                   <!--                  </div>-->
                   <div class="col item-radios">
                     <q-radio v-for="quota in quotas" dense v-model="radioQuota" :val="quota.id"
-                             :key="quota.id" class="radio">
-                      <!--quota card items-->
-                      <q-card flat bordered class="my-card">
-                        <q-card-section>
-                          <div> {{ quota.display }}</div>
-                          <div>
-                            有效期至{{ quota.expiration_time }}
-                          </div>
-                        </q-card-section>
-
-                        <q-separator/>
-
-                        <q-card-section>
-                          <q-circular-progress
-                            show-value
-                            font-size="12px"
-                            :value="( quota.vcpu_total - quota.vcpu_used )/ quota.vcpu_total*100 "
-                            size="120px"
-                            :thickness="0.22"
-                            color="green"
-                            track-color="grey-3"
-                            class="q-ma-md"
-                          >
-                            可用CPU{{ quota.vcpu_total - quota.vcpu_used }}核
-                          </q-circular-progress>
-
-                          <q-circular-progress
-                            show-value
-                            font-size="12px"
-                            :value="(quota.ram_total - quota.ram_used )/ quota.ram_total * 100 "
-                            size="120px"
-                            :thickness="0.22"
-                            color="green"
-                            track-color="grey-3"
-                            class="q-ma-md"
-                          >
-                            可用内存{{ quota.ram_total - quota.ram_used }}MB
-                          </q-circular-progress>
-
-                          <q-circular-progress
-                            show-value
-                            font-size="12px"
-                            :value="(quota.private_ip_total -quota.private_ip_used )/ quota.private_ip_total * 100 "
-                            size="120px"
-                            :thickness="0.22"
-                            color="green"
-                            track-color="grey-3"
-                            class="q-ma-md"
-                          >
-                            可用私网IP{{ quota.private_ip_total - quota.private_ip_used }}个
-                          </q-circular-progress>
-
-                          <q-circular-progress
-                            show-value
-                            font-size="12px"
-                            :value="(quota.public_ip_total - quota.public_ip_used )/ quota.public_ip_total * 100 "
-                            size="120px"
-                            :thickness="0.22"
-                            color="green"
-                            track-color="grey-3"
-                            class="q-ma-md"
-                          >
-                            可用公网IP{{ quota.public_ip_total - quota.public_ip_used }}个
-                          </q-circular-progress>
-
-                        </q-card-section>
-                      </q-card>
-
+                             :key="quota.id" class="radio"
+                             :disable="quota.vcpu_used===quota.vcpu_total ||
+                                       quota.ram_used===quota.ram_total ||
+                                       quota.private_ip_used===quota.private_ip_total ||
+                                       quota.public_ip_used===quota.public_ip_total">
+                      <quota-card :quota="quota"/>
                     </q-radio>
                   </div>
                 </div>
                 <div v-if="quotas.length === 0" class="row item-row">
                   <div class="col-shrink item-title">
-                    该服务中心暂无可用资源配额，请选择其它服务节点。
+                    该服务节点暂无可用资源配额，请选择其它服务节点。
                     或者申请配额。
                   </div>
                 </div>
@@ -251,8 +189,7 @@
                   </div>
                   <div class="col item-radios">
                     {{
-                      $store.state.usage.tables.userNetworkTable.byLocalId[`${radioService}-${radioNetwork}`] ?
-                        $store.state.usage.tables.userNetworkTable.byLocalId[`${radioService}-${radioNetwork}`].name : '尚未选择网络类型'
+                      $store.state.usage.tables.userNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name || '尚未选择网络类型'
                     }}
                   </div>
                 </div>
@@ -263,8 +200,7 @@
                   </div>
                   <div class="col item-radios">
                     {{
-                      $store.state.usage.tables.userImageTable.byLocalId[`${radioService}-${radioImage}`] ?
-                        $store.state.usage.tables.userImageTable.byLocalId[`${radioService}-${radioImage}`].name : '尚未选择系统镜像'
+                      $store.state.usage.tables.userImageTable.byLocalId[`${radioService}-${radioImage}`]?.name || '尚未选择系统镜像'
                     }}
                   </div>
                 </div>
@@ -288,7 +224,7 @@
                   </div>
                   <div class="col item-radios">
                     {{
-                      $store.state.usage.tables.userQuotaTable.byId[radioQuota] ? $store.state.usage.tables.userQuotaTable.byId[radioQuota].display : '尚未选择配额'
+                      $store.state.usage.tables.userQuotaTable.byId[radioQuota]?.display || '尚未选择配额'
                     }}
                   </div>
                 </div>
@@ -316,7 +252,7 @@
 
         <div v-else class="jumper">
           <div class="q-pa-lg">
-            已成功创建id为{{ newIP }}的云主机
+            已成功创建IP地址为{{ newIP }}的云主机
           </div>
           <div class="q-pa-lg">
             3秒后跳转至详情页面
@@ -335,10 +271,13 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { StateInterface } from 'src/store'
 import { useQuasar } from 'quasar'
+import { QuotaInterface } from 'src/store/usage/state'
+
+import QuotaCard from 'components/usage/QuotaCard.vue'
 
 export default defineComponent({
   name: 'VmCreate',
-  components: {},
+  components: { QuotaCard },
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
@@ -380,7 +319,17 @@ export default defineComponent({
       radioNetwork.value = privateNetworks.value.length > 0 ? privateNetworks.value[0]?.id : publicNetworks.value[0]?.id
       radioImage.value = images.value[0]?.id
       radioFlavor.value = flavors.value[0]?.id
-      radioQuota.value = quotas.value[0]?.id
+      // 选择有余量的配额里的第一项
+      radioQuota.value = quotas.value.filter((quota: QuotaInterface) => {
+        if (quota.vcpu_used === quota.vcpu_total ||
+          quota.ram_used === quota.ram_total ||
+          quota.private_ip_used === quota.private_ip_total ||
+          quota.public_ip_used === quota.public_ip_total) {
+          return false
+        } else {
+          return true
+        }
+      })[0].id
     })
 
     // radioService的默认选择
@@ -422,38 +371,47 @@ export default defineComponent({
     const isCreating = ref(false)
     // 创建云主机
     const createVM = async () => {
-      isCreating.value = true
-      done3.value = true
-      const selection = {
-        service_id: radioService.value,
-        network_id: radioNetwork.value,
-        image_id: radioImage.value,
-        flavor_id: radioFlavor.value,
-        quota_id: radioQuota.value,
-        remarks: inputRemarks.value
+      // 如果radio没有选择全，则弹出通知
+      if (!radioService.value || !radioNetwork.value || !radioImage.value || !radioFlavor.value || !radioQuota.value) {
+        $q.notify({
+          color: 'red',
+          message: '请选择正确的云主机配置',
+          position: 'center',
+          closeBtn: false,
+          timeout: 3000
+        })
+      } else {
+        isCreating.value = true
+        done3.value = true
+        const selection = {
+          service_id: radioService.value,
+          network_id: radioNetwork.value,
+          image_id: radioImage.value,
+          flavor_id: radioFlavor.value,
+          quota_id: radioQuota.value,
+          remarks: inputRemarks.value
+        }
+        const respCreateVM = await $store.dispatch('usage/createServer', selection)
+        // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
+        void await $store.dispatch('usage/updateUserServerTableSingleServer', respCreateVM.data.id)
+
+        newIP.value = $store.state.usage.tables.userServerTable.byId[respCreateVM.data.id].ipv4
+        $q.notify({
+          color: 'nord14',
+          message: `成功创建id为${newIP.value}的云主机`,
+          position: 'bottom-right',
+          closeBtn: false,
+          timeout: 15000
+        })
+        isCreating.value = false
+        isShowJumper.value = true
+
+        console.log($store.state.usage)
+        setTimeout(() => {
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          void $router.push(`/my/usage/vmdetail/${respCreateVM.data.id}`)
+        }, 3000)
       }
-      const respCreateVM = await $store.dispatch('usage/createServer', selection)
-      // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
-      void await $store.dispatch('usage/updateUserServerTableSingleServer', respCreateVM.data.id)
-
-      newIP.value = $store.state.usage.tables.userServerTable.byId[respCreateVM.data.id].ipv4
-      $q.notify({
-        color: 'nord14',
-        message: `成功创建id为${newIP.value}的云主机`,
-        position: 'bottom-right',
-        closeBtn: false,
-        timeout: 15000
-      })
-      isCreating.value = false
-      isShowJumper.value = true
-
-      // 进入vmdetail页面前,更新VmDetail页面内的serverId
-      $store.commit('usage/storeVmDetailPageId', respCreateVM.data.id)
-
-      console.log($store.state.usage)
-      setTimeout(() => {
-        void $router.push('/my/usage/vmdetail')
-      }, 3000)
     }
     // 刷新本页
     const refresh = () => {

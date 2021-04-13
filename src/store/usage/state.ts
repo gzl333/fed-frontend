@@ -274,9 +274,6 @@ export interface UsageInterface {
     vmList: {
       filter: string // serviceId 用于筛选显示server列表，'0'为显示全部
     }
-    vmDetail: {
-      serverId: string // serverId
-    }
     vmCreate: {
       serviceId: string // serviceId serviceId选择结果影响后面所有选项的options
     }
@@ -352,9 +349,6 @@ function state ():
     pages: {
       vmList: {
         filter: '0'
-      },
-      vmDetail: {
-        serverId: '0'
       },
       vmCreate: {
         serviceId: '0'

@@ -107,16 +107,16 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader.vue'
-import { useStore } from 'vuex'
-import { StateInterface } from 'src/store'
+// import { useStore } from 'vuex'
+// import { StateInterface } from 'src/store'
 
 export default defineComponent({
   name: 'UsageLayout',
   components: { GlobalHeader },
   props: {},
   setup () {
-    const $store = useStore<StateInterface>()
-    void $store.dispatch('usage/updateUsageTable')
+    // const $store = useStore<StateInterface>()
+    // void $store.dispatch('usage/updateUsageTable')
 
     return {
       activeTab: ref('vm'),
