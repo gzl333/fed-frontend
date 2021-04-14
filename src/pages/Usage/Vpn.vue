@@ -2,10 +2,10 @@
   <div class="row routerview-area">
     <div class="col-2"></div>
     <div class="col column">
-      <div v-for="vpn in vpnMap" :key="vpn[0]" class="col-3 section q-gutter-sm">
+      <div v-for="vpn in vpns" :key="vpn.id" class="col-3 section q-gutter-sm">
         <div class="row">
           <div class="col-2 q-pb-lg text-primary">
-            {{ vpn[1].serviceName }}
+            {{ $store.state.vm.tables.userServiceTable.byId[vpn.id].name }}
           </div>
           <div class="col"></div>
         </div>
@@ -14,10 +14,10 @@
             VPN 用户名
           </div>
           <div class="col">
-            {{ vpn[1].username }}
+            {{ vpn.username }}
             <q-btn
               class="col-shrink q-px-xs text-primary" flat icon="content_copy" size="xs"
-              @click="clickToCopy(vpn[1].username)">
+              @click="clickToCopy(vpn.username)">
               <q-tooltip>
                 复制
               </q-tooltip>
@@ -31,7 +31,8 @@
           <div class="col row q-gutter-sm">
             <q-input class="password-input"
                      :loading="isLoading"
-                     v-model="vpn[1].password" :type="isPwd ? 'password' : 'text'"
+                     v-model="vpn.password"
+                     :type="isPwd ? 'password' : 'text'"
                      readonly borderless dense square outlined>
               <template v-slot:prepend>
                 <q-icon
@@ -43,14 +44,14 @@
             <!--            {{ vpn[1].password }}-->
             <q-btn
               class="col-shrink q-px-xs text-primary" flat icon="content_copy" size="xs"
-              @click="clickToCopy(vpn[1].password)">
+              @click="clickToCopy(vpn.password)">
               <q-tooltip>
                 复制
               </q-tooltip>
             </q-btn>
 
             <q-btn label="修改密码" padding="none" dense flat color="primary"
-                   @click="popEdit(vpn[1].serviceId, vpn[1].serviceName, vpn[1].password)"/>
+                   @click="popEdit(vpn)"/>
           </div>
         </div>
         <div class="row">
@@ -59,7 +60,7 @@
           </div>
           <div class="col">
             <q-btn label="下载" class=" " color="primary" padding="none" dense flat
-                   @click="fetchConfig(vpn[1].serviceId)"/>
+                   @click="fetchConfig(vpn.id)"/>
 
           </div>
         </div>
@@ -68,7 +69,8 @@
             VPN CA证书
           </div>
           <div class="col">
-            <q-btn label="下载" class="" color="primary" padding="none" dense flat @click="fetchCa(vpn[1].serviceId)"/>
+            <q-btn label="下载" class="" color="primary" padding="none" dense flat
+                   @click="fetchCa(vpn.id)"/>
           </div>
         </div>
       </div>
@@ -76,7 +78,7 @@
     <div class="col-3 section">
       vpn使用说明：
       待补充
-      <!--      <pre>{{ vpnMap }}</pre>-->
+      <pre>{{ $store.state.vm.tables.userVpnTable.byId }}</pre>
     </div>
     <div class="col-2"></div>
   </div>
@@ -87,6 +89,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { copyToClipboard, useQuasar } from 'quasar'
+import { VpnInterface } from 'src/store/vm/state'
 
 export default defineComponent({
   name: 'Vpn',
@@ -96,8 +99,9 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const $q = useQuasar()
 
-    void $store.dispatch('usage/updateVpnAll')
-    const vpnMap = computed(() => $store.state.usage.vpn)
+    // void $store.dispatch('vm/updateVpnAll')
+    // const vpnMap = computed(() => $store.state.vm.vpn)
+    const vpns = computed(() => Object.values($store.state.vm.tables.userVpnTable.byId))
 
     // 复制信息到剪切板
     const clickToCopy = async (text: string) => {
@@ -118,12 +122,12 @@ export default defineComponent({
     // 修改密码loading状态
     const isLoading = ref(false)
     // vpn 修改密码
-    const popEdit = (serviceId: string, serviceName: string, password: string) => {
+    const popEdit = (vpn: VpnInterface) => {
       $q.dialog({
-        title: `修改${serviceName}的VPN密码`,
+        title: `修改${$store.state.vm.tables.userServiceTable.byId[vpn.id].name}的VPN密码`,
         message: '新密码长度为6-64位',
         prompt: {
-          model: `${password}`,
+          model: `${vpn.password}`,
           counter: true,
           maxlength: 64,
           isValid: (val: string) => {
@@ -140,15 +144,11 @@ export default defineComponent({
       }).onOk((data: string) => {
         isLoading.value = true
         const payload = {
-          serviceId: serviceId,
+          serviceId: vpn.id,
           password: data.trim()
         }
-        void $store.dispatch('usage/patchVpnPassword', payload).then((value) => {
-          $store.commit('usage/storeVpn', {
-            serviceId,
-            serviceName,
-            vpn: value.data.vpn
-          })
+        void $store.dispatch('vm/patchVpnPassword', payload).then((value) => {
+          $store.commit('vm/storeUserVpnTable', Object.assign(vpn, { password: value.data.vpn.password }))
           isLoading.value = false
         }
         ).catch(() => {
@@ -159,16 +159,17 @@ export default defineComponent({
     }
 
     const fetchCa = (serviceId: string) => {
-      const url = 'http://gosc.cstcloud.cn/api/vpn/' + serviceId + '/ca/'
+      const url = 'https://vms.cstcloud.cn/api/vpn/' + serviceId + '/ca/'
       window.open(url)
     }
     // download vpn config
     const fetchConfig = (serviceId: string) => {
-      const url = 'http://gosc.cstcloud.cn/api/vpn/' + serviceId + '/config/'
+      const url = 'https://vms.cstcloud.cn/api/vpn/' + serviceId + '/config/'
       window.open(url)
     }
     return {
-      vpnMap,
+      $store,
+      vpns,
       isPwd,
       isLoading,
       popEdit,
@@ -195,6 +196,7 @@ export default defineComponent({
   border: 1px solid $grey-4;
   border-radius: 5px;
 }
+
 .password-input {
   height: 20px;
   width: 280px;

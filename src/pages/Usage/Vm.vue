@@ -1,47 +1,11 @@
 <template>
   <div class="Vm">
-    <div class="row no-wrap routerview-area">
-
-      <div v-if="isTreeOpen" class="col-1.5 items-center q-py-sm q-px-sm q-my-lg tree-area">
-        <div class="tree-title text-grey-7 text-center ">
-          机构与数据中心
-          <q-tooltip>
-            正在使用的机构与数据中心
-          </q-tooltip>
-        </div>
-        <!--        <q-scroll-area class="min-tree-size">-->
-        <q-tree
-          class="col-12 col-sm-6"
-          default-expand-all
-          :nodes="dataPointTree"
-          node-key="key"
-          selected-color="primary"
-          v-model:selected="selectedTree"
-        />
-        <!--                <pre>{{ rows }}</pre>-->
-        <!--        </q-scroll-area>-->
-      </div>
-
-      <div class="col-shrink btn-area">
-        <q-btn v-if="isTreeOpen" class="btn-close" unelevated color="primary"
-               icon="arrow_back_ios_new" size="xs" padding="30px 0px" @click="toggleTree">
-          <q-tooltip>折叠机构树</q-tooltip>
-        </q-btn>
-        <q-btn v-if="!isTreeOpen" class="btn-open" unelevated color="primary"
-               icon="arrow_forward_ios" size="xs" padding="30px 0px" @click="toggleTree">
-          <q-tooltip>展开机构树</q-tooltip>
-        </q-btn>
-      </div>
-
-      <div class="col  q-py-none q-pr-sm">
 
         <q-table
-          class="q-px-lg"
           flat
           card-class=""
           table-class="text-nord0"
           table-header-class="server-table-header bg-grey-2"
-          :title="`云主机所在节点：${tableTitle}`"
           :rows="rows"
           :columns="columns"
           row-key="name"
@@ -51,35 +15,27 @@
         >
 
           <template v-slot:top>
-            <div class="col row items-center justify-between q-pa-none">
+            <!--slot外有一层row，需要用col接一下，再新建row-->
+            <div class="col">
 
-              <div class="col-shrink">
-                <q-btn icon="add" color="primary" size="md" unelevated label="新建" :to="{ path: '/my/usage/vmcreate' }">
-                  <q-tooltip>
-                    新建云主机
-                  </q-tooltip>
-                </q-btn>
-              </div>
+              <div class="row items-center justify-between q-pa-none">
+                <div class="col-3">
+                  <q-input disable dense outlined bottom-slots v-model="text" label="模糊搜索">
+                    <template v-slot:append>
+                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>
+                      <q-icon name="search"/>
+                    </template>
+                  </q-input>
+                </div>
 
-              <div class="col text-center">
-                <span class="text-grey-7 text-h7">
-                  正在展示：
-                </span>
-                <span class="text-primary text-h7">
-                  {{ tableTitle }}
-                </span>
-
-              </div>
-
-              <div class="col-shrink">
-
-                <q-input disable bottom-slots v-model="text" label="模糊搜索" dense>
-                  <template v-slot:append>
-                    <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>
-                    <q-icon name="search"/>
-                  </template>
-                </q-input>
-
+                <div class="col-3">
+                  <div class="row justify-end">
+                    <div class="col">
+                      <q-select outlined stack-label label="筛选节点" v-model="serviceSelection"
+                                :options="serviceOptions"/>
+                    </div>
+                  </div>
+                </div>
               </div>
 
             </div>
@@ -93,9 +49,8 @@
               <q-td key="ip" :props="props" class="table-td-ip">
                 <div class="row">
                   <div class="col">
-                    <q-btn :label="props.row.ipv4" :to="{path: '/my/usage/vmdetail'}" color="primary" flat dense
-                           unelevated
-                           @click="updateServerDetail(props.row.id, props.row.service.id, props.row.service.name)">
+                    <q-btn :label="props.row.ipv4" :to="{path: `/my/usage/vmdetail/${props.row.id}`}"
+                           color="primary" flat dense unelevated>
                       <q-tooltip>
                         进入详情页面
                       </q-tooltip>
@@ -115,10 +70,10 @@
                 </div>
               </q-td>
               <q-td key="dataCenterName" :props="props">
-                {{ props.row.service.name }}
+                {{ $store.state.vm.tables.userServiceTable.byId[props.row.service]?.name }}
               </q-td>
               <q-td key="serviceType" :props="props">
-                {{ props.row.service.service_type }}
+                {{ $store.state.vm.tables.userServiceTable.byId[props.row.service]?.service_type }}
               </q-td>
               <q-td key="image" :props="props">
                 {{ props.row.image }}
@@ -129,6 +84,9 @@
               <q-td key="ram" :props="props">
                 {{ props.row.ram }}MB
               </q-td>
+              <q-td key="expiration" :props="props">
+                {{ props.row.expiration_time.substr(0, 10) }}
+              </q-td>
               <q-td key="note" :props="props" class="table-td-note">
                 <div class="row">
                   <div class="col">
@@ -136,7 +94,7 @@
                   </div>
                   <q-btn v-show="hoverRow === props.row.name"
                          class="col-shrink q-px-xs text-nord9" flat icon="edit" size="xs"
-                         @click="popEdit(props.row.ipv4, props.row.id, props.row.remarks)">
+                         @click="popEdit(props.row.id)">
                     <q-tooltip>
                       编辑备注
                     </q-tooltip>
@@ -154,7 +112,7 @@
                 </q-btn>
                 <q-btn v-else unelevated flat padding="none" size="lg" color="grey-5" icon="computer">
                   <q-tooltip>
-                    请开机以使用VNC
+                    请开机以使用远程控制
                   </q-tooltip>
                 </q-btn>
               </q-td>
@@ -261,23 +219,9 @@
           </template>
 
           <template v-slot:bottom>
-            <!--            blank bottom just to show the bottom border of table-->
-            <q-pagination
-              unelevated
-              v-if="paginationMax!==1"
-              v-model="paginationSelected"
-              color="primary"
-              :max="paginationMax"
-              :max-pages="7"
-              size="md"
-              :direction-links="true"
-              @click="clickPagination"
-            />
           </template>
 
         </q-table>
-
-      </div>
 
       <q-dialog v-model="isShowDelConfirm">
         <q-card>
@@ -296,16 +240,13 @@
       </q-dialog>
     </div>
 
-  </div>
-
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, computed, watch } from 'vue'
+import { defineComponent, ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
-import { StateInterface } from '../../store'
+import { StateInterface } from 'src/store'
 import { useQuasar, copyToClipboard } from 'quasar'
-import { ReqServerNote } from 'src/store/usage/state'
 
 export default defineComponent({
   name: 'Vm',
@@ -317,86 +258,18 @@ export default defineComponent({
 
     // 云主机状态按钮
     const isStatusLoading = ref(true)
-    // 获取机构树，获取云主机列表
-    onMounted(() => {
-      void $store.dispatch('usage/updateDataPointTree')
-      void $store.dispatch('usage/updateServerList')
+
+    // service_id下拉列表
+    const serviceOptions = computed(() => $store.getters['vm/getServiceOptions'])
+    const serviceSelection = ref({
+      label: '全部服务节点',
+      value: '0'
+    })
+    $store.commit('vm/storeUserServerTableFilter', '0')
+    watch(serviceSelection, () => {
+      $store.commit('vm/storeUserServerTableFilter', serviceSelection.value.value)
     })
 
-    // 得到机构树信息
-    const dataPointTree = computed(() => {
-      return $store.state.usage.dataPointTree
-    })
-
-    /*    const dataPointTree = [
-          {
-            key: '0',
-            label: '全部节点',
-            children: [
-              {
-                key: '中国科学院计算机网络信息中心',
-                label: '中国科学院计算机网络信息中心',
-                selectable: false,
-                children: [
-                  {
-                    key: '1',
-                    label: 'HR_204机房'
-                  }
-                ]
-              },
-              {
-                key: '地球大数据科学工程专项',
-                label: '地球大数据科学工程专项',
-                selectable: false,
-                children: [
-                  {
-                    key: '2',
-                    label: '怀柔机房一层'
-                  }
-                ]
-              }
-            ]
-          }
-        ] */
-
-    // 机构树上所选择节点的id
-    const selectedTree = computed({
-      get: () => $store.state.usage.pagination.serviceId,
-      set: val => $store.commit('usage/storePagination', { serviceId: val })
-    })
-    // temp
-    const pagination = computed(() => $store.state.usage.pagination)
-    // 云主机列表title
-    const tableTitle = computed(() => $store.state.usage.pagination.serviceName)
-    // 监控机构树节点选择
-    watch(selectedTree, () => {
-      // 分页store中serviceId的来源
-      dataPointTree.value[0].children.forEach((dataCenterSelected) => {
-        dataCenterSelected.children.forEach((dataPointSelected) => {
-          // null 和 '0'都存为'0'
-          if (selectedTree.value === '0' || selectedTree.value === null) {
-            $store.commit('usage/storePagination', {
-              serviceId: '0',
-              serviceName: '全部节点',
-              page: 1
-            })
-          } else if (dataPointSelected.key === selectedTree.value) {
-            $store.commit('usage/storePagination', {
-              serviceId: dataPointSelected.key,
-              serviceName: dataPointSelected.label,
-              page: 1
-            })
-          }
-        })
-      })
-      // 更新serverList
-      void $store.dispatch('usage/updateServerList') //, { service_id: selectedTree.value }
-    })
-    // 机构树折叠
-    const isTreeOpen = ref(true)
-    const toggleTree = () => {
-      isTreeOpen.value = !isTreeOpen.value
-    }
     // 云主机列表分栏定义
     const columns = [
       {
@@ -435,7 +308,12 @@ export default defineComponent({
         field: 'ram',
         align: 'center'
       },
-      // { name: 'daysRemain', label: '到期预警', field: 'daysRemain' ,align: 'center'},
+      {
+        name: 'expiration',
+        label: '到期时间',
+        field: 'expiration',
+        align: 'center'
+      },
       // { name: 'source', label: '资源来源', field: 'source', sortable: true,align: 'center' },
       {
         name: 'note',
@@ -445,7 +323,7 @@ export default defineComponent({
       },
       {
         name: 'vnc',
-        label: 'VNC',
+        label: '远程控制',
         field: 'vnc',
         align: 'center'
       },
@@ -463,34 +341,8 @@ export default defineComponent({
       }
     ]
     // 获取云主机列表数据
-    const rows = computed(() => {
-      // console.log('serverlist changed')
-      return $store.state.usage.serverList
-    })
-    // console.log(rows)
+    const rows = computed(() => $store.getters['vm/getServersByServiceId'])
 
-    // 分页部分
-    // 通过屏幕尺寸动态计算最佳rows， 并同步至store的pageSize
-    const computedPageSize = computed(() => (Math.max(5, Math.ceil(($q.screen.height - 350) / 50))))
-    // 计算尺寸变化后更新server list
-    watch(computedPageSize, () => {
-      // 更新pagination的pagesize
-      $store.commit('usage/storePagination', { pageSize: computedPageSize.value })
-      // 更新serverList，此时page来自store.pagination.page
-      void $store.dispatch('usage/updateServerList')
-    })
-    // 如果store.pagination.page不是1 ，则说明是重新进入页面，利用已有pagination信息更新serverList即可
-    // 如果store.pagination.page是1, 则为首次进入页面，需更新pagination信息
-    // console.log($store.state.usage.pagination)
-    if ($store.state.usage.pagination.page === 1) {
-      $store.commit('usage/storePagination', {
-        // page: 1,
-        pageSize: computedPageSize.value
-        // ,
-        // serviceId: '0'
-      })
-    }
-    // 供table获取分页信息，单向从store -> pagination -> UI
     // q-pagination 所需配置对象
     const paginationTable = ref({
       // sortBy: 'desc',
@@ -498,26 +350,10 @@ export default defineComponent({
       page: 1,
       rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
     })
-    // q-pagination 所需分页最大值
-    const paginationMax = computed(() => {
-      if ($store.state.usage.pagination.count && $store.state.usage.pagination.pageSize) {
-        return Math.ceil($store.state.usage.pagination.count / $store.state.usage.pagination.pageSize)
-      } else {
-        return 1
-      }
-    })
-    // pagination当前选择的值应与store.pagination.page同步
-    const paginationSelected = computed({
-      get: () => $store.state.usage.pagination.page,
-      set: val => $store.commit('usage/storePagination', { page: val })
-    })
-    const clickPagination = () => {
-      void $store.dispatch('usage/updateServerList')
-    }
 
     // 云主机操作
     const vmOperation = (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
-      void $store.dispatch('usage/vmOperation', payload)
+      void $store.dispatch('vm/vmOperation', payload)
       // console.log('in vmops', payload)
       if (payload.action === 'delete' || payload.action === 'delete_force') {
         $q.notify({
@@ -529,9 +365,9 @@ export default defineComponent({
         })
       }
     }
-    // VNC
+    // VNC 不保存在vuex里，vnc图标根据云主机状态变化，开机时可以点击vnc按钮，点击后再获取vnc地址并打开新窗口跳转
     const gotoVNC = async (payload: string) => {
-      const response = await $store.dispatch('usage/fetchServerVNC', payload)
+      const response = await $store.dispatch('vm/fetchServerVNC', payload)
       const url = response.data.vnc.url
       window.open(url)
     }
@@ -544,14 +380,12 @@ export default defineComponent({
       action: ''
     })
     // 编辑备注
-    let idEdited = ''// $q.dialog只能传递string给data，此处间接传递值
-    const popEdit = (ip: string, id: string, note: string) => {
-      idEdited = id
+    const popEdit = (id: string) => {
       $q.dialog({
-        title: `编辑${ip}的备注信息`,
+        title: `编辑${$store.state.vm.tables.userServerTable.byId[id].ipv4}的备注信息`,
         message: '长度限制为15个字',
         prompt: {
-          model: `${note}`,
+          model: `${$store.state.vm.tables.userServerTable.byId[id].remarks}`,
           counter: true,
           maxlength: 15,
           type: 'text' // optional
@@ -559,14 +393,16 @@ export default defineComponent({
         color: 'primary',
         cancel: true
       }).onOk((data: string) => {
-        const payload: ReqServerNote = {
-          id: idEdited,
+        const payload: { id: string; remark: string; } = {
+          id,
           remark: data.trim()
         }
-        void $store.dispatch('usage/patchNote', payload).then(() =>
-          $store.commit('usage/storeNote', payload)
+        void $store.dispatch('vm/patchRemarks', payload).then(() =>
+          $store.commit('vm/storeUserServerTableSingleRemarks', {
+            serverId: id,
+            remarks: data.trim()
+          })
         )
-        idEdited = ''
       })
     }
     // 复制信息到剪切板
@@ -581,7 +417,7 @@ export default defineComponent({
         })
       })
     }
-    // tabel row hover
+    // table row hover
     const hoverRow = ref('')
     const onMouseEnterRow = (rowName: string) => {
       hoverRow.value = rowName
@@ -589,41 +425,23 @@ export default defineComponent({
     const onMouseLeaveRow = () => {
       hoverRow.value = ''
     }
-    // 进入server detail页面前，更新单个server的具体信息
-    const updateServerDetail = (id: string, serviceId: string, serviceName: string) => {
-      // server实例信息
-      void $store.dispatch('usage/updateServerInfo', id)
-      // vpn 信息
-      void $store.dispatch('usage/updateVpn', {
-        serviceId,
-        serviceName
-      })
-    }
     return {
       $store,
-      isTreeOpen,
-      toggleTree,
-      selectedTree,
-      dataPointTree,
       columns,
       rows,
       vmOperation,
       isStatusLoading,
-      tableTitle,
       gotoVNC,
       isShowDelConfirm,
       vmToDel,
       paginationTable,
-      paginationSelected,
-      clickPagination,
-      paginationMax,
       popEdit,
       clickToCopy,
       hoverRow,
       onMouseEnterRow,
       onMouseLeaveRow,
-      updateServerDetail,
-      pagination
+      serviceSelection,
+      serviceOptions
     }
   }
 })
@@ -631,40 +449,6 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .Vm {
-}
-
-.routerview-area {
-  height: calc(100vh - 115px);
-  width: calc(100vw - 165px);
-
-}
-
-.tree-area {
-  //height: calc(100vh - 180px);
-  min-width: calc(100vw / 7);
-  min-height: calc(100vh / 5);
-  border-right: $grey-4 solid 1px;
-}
-
-.tree-title {
-  //border-radius: 3px;
-  //background-color: $nord9;
-  //text-align: center;
-  //color: white;
-  line-height: 30px;
-}
-
-.btn-area {
-  //border-right: 0.5px solid $nord9;
-}
-
-.btn-close {
-  top: calc((100vh - 114px) / 2 - 50px);
-  left: -22px;
-}
-
-.btn-open {
-  top: calc((100vh - 114px) / 2 - 50px);
 }
 
 .server-table-header {
@@ -676,7 +460,7 @@ export default defineComponent({
 }
 
 .table-td-note {
-  min-width: 240px;
+  min-width: 220px;
 }
 
 .inner-loading {

@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { QuotaInterface, UquotaResponseInterface, ServiceInterface, TypeInterface, UserQuotaInterface } from './state'
 import axios from 'axios'
-import { ReqServerListInterface, ServerInterface } from '../usage/state'
+import { ReqServerListInterface, ServerInterface_old } from '../vm/state'
 const codeMap = new Map<number, string>(
   [
     [0, '无法获取状态'],
@@ -19,7 +19,7 @@ const codeMap = new Map<number, string>(
     [12, '创建失败']
   ]
 )
-const baseAPI = 'http://vms.gosc.cstcloud.cn/api/'
+const baseAPI = 'https://vms.cstcloud.cn/api/'
 // context.state -> store.state.quota
 const actions: ActionTree<QuotaInterface, StateInterface> = {
   async fetchQuota () {
@@ -117,7 +117,7 @@ const actions: ActionTree<QuotaInterface, StateInterface> = {
     // 保存resp中server信息
     // const resServers: ServerInterface[] = resServerList.data.servers
     // console.log(resServers)
-    const serverList: ServerInterface[] = []
+    const serverList: ServerInterface_old[] = []
     for (const resServer of resServerList.data.servers) {
       serverList.push(resServer)
     }

@@ -54,13 +54,13 @@ axios.interceptors.response.use(config => {
   return config
 }, (error: AxiosError) => {
   // 从小尺寸页面变成大尺寸页面时，如果选中了最后一页，会请求一个不存在的页面，此时的请求错误不该显示出来
-  if (error.config.url!.includes('server') && error.config.method === 'get') {
-    return error
-  } else {
-    Loading.hide()
-    errorNotifier(error)
-    throw error
-  }
+  // if (error.config.url!.includes('server') && error.config.method === 'get') {
+  //   return error
+  // } else {
+  Loading.hide()
+  errorNotifier(error)
+  throw error
+  // }
 })
 
 declare module '@vue/runtime-core' {

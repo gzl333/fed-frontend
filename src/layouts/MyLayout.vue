@@ -1,63 +1,5 @@
 <template>
   <q-layout view="hHh lpR fFf">
-    <q-header elevated class="bg-nord0 text-white q-pa-xs">
-      <q-toolbar>
-        <q-toolbar-title>
-          <q-btn :ripple="false" to="/my" dense>
-            <img src="logo.png" class="logo"/>
-          </q-btn>
-        </q-toolbar-title>
-<!--        <q-btn label="LOG" @click="log"/>-->
-
-        <!--        <router-link :to="{path: '/'}" class="text-nord7">DEV: goto HOME</router-link>-->
-        <q-space/>
-        <div class="q-gutter-md row items-center no-wrap">
-
-          <q-btn disable :ripple="false" round flat color="grey-5" icon="library_books" v-if="$q.screen.gt.sm"
-                 @click="toggleRightDrawer">
-            <q-tooltip>使用手册</q-tooltip>
-          </q-btn>
-          <q-btn disable :ripple="false" round flat color="grey-5" icon="notifications">
-            <q-badge color="nord11" text-color="white" floating>
-              0
-            </q-badge>
-            <q-tooltip>系统消息</q-tooltip>
-          </q-btn>
-
-          <q-btn-dropdown :ripple="false" rounded flat class="q-pa-sm" :label="currentUser.cstEmail">
-            <!--            <template v-slot:label>-->
-            <!--              <q-avatar size="26px">-->
-            <!--                <img src="https://cdn.quasar.dev/img/boy-avatar.png">-->
-            <!--              </q-avatar>-->
-            <!--              {{ currentUser }}-->
-            <!--            </template>-->
-
-            <div class="row justify-center no-wrap q-pa-md dropdown-content non-selectable">
-              <div class="column items-center">
-                <q-avatar size="72px" class="q-mt-lg">
-                  <img src="img/default-avatar.png">
-                </q-avatar>
-                <div class="text-subtitle1 q-ma-none q-mt-md text-nord6">{{ currentUser.cstTrueName }}</div>
-                <div class="text-subtitle1 q-ma-none q-mb-md text-nord6">{{ currentUser.cstEmail }}</div>
-              </div>
-            </div>
-
-            <q-list class="dropdown-items non-selectable">
-              <q-item clickable disable>
-                <q-item-section>账户设置</q-item-section>
-              </q-item>
-              <q-item clickable tag="a" href="https://passport.escience.cn/user/password.do?act=showChangePassword"
-                      target="_blank">
-                <q-item-section>修改密码</q-item-section>
-              </q-item>
-              <q-item clickable @click="toLogout" class="bg-nord6">
-                <q-item-section>退出登录</q-item-section>
-              </q-item>
-            </q-list>
-          </q-btn-dropdown>
-        </div>
-      </q-toolbar>
-    </q-header>
 
     <global-leftdrawer/>
 
@@ -66,7 +8,18 @@
     </q-drawer>
 
     <q-page-container>
-      <router-view/>
+      <q-page class="row no-wrap">
+        <div class="col">
+          <div class="column full-height">
+
+            <q-scroll-area class="col" visible>
+              <router-view/>
+            </q-scroll-area>
+
+          </div>
+        </div>
+      </q-page>
+
     </q-page-container>
   </q-layout>
 </template>
@@ -87,42 +40,29 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const currentUser = $store.state.user
 
+    /* my内页所有table加载起始点 */
+    void $store.dispatch('vm/updateVmTable')
+    /* my内页所有table加载起始点 */
+
+    const currentUser = $store.state.account
     const rightDrawerOpen = ref(false)
     const toggleRightDrawer = () => {
       rightDrawerOpen.value = !rightDrawerOpen.value
     }
     const toLogout = () => {
-      void $store.dispatch('user/logoutCstUser')
-    }
-    const log = async () => {
-      const result = await $store.dispatch('user/fetchCstNewToken', $store.state.user.token!.refresh)
-      console.log(result)
+      void $store.dispatch('account/logoutCstUser')
     }
     return {
       rightDrawerOpen,
       toggleRightDrawer,
       currentUser,
-      toLogout,
-      log
+      toLogout
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.logo {
-  height: 50px;
-}
 
-.dropdown-content {
-  min-width: 200px;
-  background-image: url(https://cdn.quasar.dev/img/material.png);
-  background-size: 150% auto;
-}
-
-.dropdown-items {
-  text-align: center;
-}
 </style>

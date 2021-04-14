@@ -1,21 +1,28 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+
+  <q-layout class="mobile-only">
+    <div class="text-center">
+      本站暂不支持移动端访问，请使用桌面设备登录。
+    </div>
+  </q-layout>
+
+  <q-layout class="desktop-only" view="hHh lpR fFf">
     <q-header :elevated="scrollRatio===0.4" class="home-header column justify-center" :style="dynamicBackground">
-<!--      <q-toolbar>-->
-<!--        <q-toolbar-title class="col-4">-->
-<!--          <q-btn flat :ripple="false" unelevated dense>-->
-<!--            <img src="logo.png" class="logo">-->
-<!--          </q-btn>-->
-<!--        </q-toolbar-title>-->
-<!--        <q-btn label="LOG" @click="logJWT"/>-->
-        <!--        <pre class="q-ma-none container">{{ scrollTop }}, {{scrollRatio}}</pre>-->
-<!--        <q-space/>-->
-        <!--        <q-separator vertical v-if="scrollRatio===0.6"/>-->
+      <!--      <q-toolbar>-->
+      <!--        <q-toolbar-title class="col-4">-->
+      <!--          <q-btn flat :ripple="false" unelevated dense>-->
+      <!--            <img src="logo.png" class="logo">-->
+      <!--          </q-btn>-->
+      <!--        </q-toolbar-title>-->
+      <!--        <q-btn label="LOG" @click="logJWT"/>-->
+      <!--        <pre class="q-ma-none container">{{ scrollTop }}, {{scrollRatio}}</pre>-->
+      <!--        <q-space/>-->
+      <!--        <q-separator vertical v-if="scrollRatio===0.6"/>-->
       <div class="row items-center justify-center no-wrap">
         <div class="col-xs-6 col-sm-6 col-md-4 text-right">
-                    <q-btn flat :ripple="false" padding="none" size="xs" unelevated dense>
-                      <img src="logo.png" class="logo">
-                    </q-btn>
+          <q-btn flat :ripple="false" padding="none" size="xs" unelevated dense>
+            <img src="logo.png" class="logo">
+          </q-btn>
         </div>
         <div class="gt-sm col-md-4 text-right q-px-md q-gutter-xs">
           <q-btn flat :ripple="false" color="white" label="资源与服务" @click="scrollToElement($refs['part1'])"/>
@@ -24,7 +31,8 @@
         </div>
         <!--        <q-separator vertical v-if="scrollRatio===0.6"/>-->
         <div class="col-xs-6 col-sm-6 col-md-4 text-left q-px-xl q-gutter-sm">
-          <q-btn class="gt-xs" outline :ripple="false" color="white" label="注 册" type="a" href="https://passport.escience.cn/regist.jsp"
+          <q-btn class="gt-xs" outline :ripple="false" color="white" label="注 册" type="a"
+                 href="https://passport.escience.cn/regist.jsp"
                  target="_blank"/>
           <q-btn unelevated :ripple="false" color="primary" label="登 录" @click="cstLogin"/>
 
@@ -34,10 +42,10 @@
         </div>
       </div>
 
-<!--      </q-toolbar>-->
+      <!--      </q-toolbar>-->
     </q-header>
 
-    <q-page-container >
+    <q-page-container>
       <q-page class="non-selectable">
         <q-scroll-area class="home-scroll-area">
           <q-scroll-observer @scroll="onScroll"/>
@@ -120,7 +128,7 @@ export default defineComponent({
     // 科技云通行证用户登录
     const cstLogin = async () => {
       // loginCard 只负责获取科技云通行证登录页面地址，并跳转。 code及token处理、/login路由跳转逻辑处理，均放在router.beforeEach中
-      const respUrl = await $store.dispatch('user/fetchCstLoginUrl')
+      const respUrl = await $store.dispatch('account/fetchCstLoginUrl')
       window.location.href = respUrl.data.data
       console.log(respUrl.data.data)
     }

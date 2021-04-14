@@ -34,7 +34,7 @@ export interface CstJwtInterface {
   iat: number;
 }
 
-export interface UserInterface {
+export interface AccountInterface {
   isLogin: boolean;
   cstTrueName?: string;
   cstEmail?: string;
@@ -45,10 +45,10 @@ export interface UserInterface {
   }
 }
 
-function state () {
+function account () {
   return {
     isLogin: false
   }
 }
 
-export default state
+export default account
