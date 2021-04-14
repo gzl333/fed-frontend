@@ -67,10 +67,10 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const currentUser = $store.state.user
+    const currentUser = $store.state.account
 
     const toLogout = () => {
-      void $store.dispatch('user/logoutCstUser')
+      void $store.dispatch('account/logoutCstUser')
     }
     return {
       currentUser,

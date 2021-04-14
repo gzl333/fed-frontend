@@ -268,8 +268,8 @@ export interface ArchivedServerInterface {
   deleted_time: string
 }
 
-// Usage总接口
-export interface UsageInterface {
+// Vm总接口
+export interface VmInterface {
   pages: { // 各个页面所需vuex数据
     vmList: {
       filter: string // serviceId 用于筛选显示server列表，'0'为显示全部
@@ -318,7 +318,7 @@ export interface UsageInterface {
     }
     // 用户可用的Vpn -> 依赖userServiceTable
     userVpnTable: {
-      byId: Record<string, VpnInterface> // 后端没有id，自加id，与serviceId同
+      byId: Record<string, VpnInterface> // 后端没有id，自加id，与serviceId同。service不一定有vpn
       allIds: string[]
       isLoaded: boolean
     }
@@ -343,8 +343,8 @@ export interface UsageInterface {
   }
 }
 
-function state ():
-  UsageInterface {
+function vm ():
+  VmInterface {
   return {
     pages: {
       vmList: {
@@ -404,4 +404,4 @@ function state ():
   }
 }
 
-export default state
+export default vm

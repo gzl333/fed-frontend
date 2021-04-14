@@ -78,7 +78,7 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const currentUser = $store.state.user.cstTrueName
+    const currentUser = $store.state.account.cstTrueName
     // MainTodo
     // const todoList: ToDoProp = reactive({
     //   unpaid: 1,

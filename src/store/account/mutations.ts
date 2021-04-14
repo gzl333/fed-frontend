@@ -1,10 +1,10 @@
 import { MutationTree } from 'vuex'
-import { CstJwtInterface, UserInterface } from './state'
+import { CstJwtInterface, AccountInterface } from './state'
 import axios from 'axios'
 import jwtDecode from 'jwt-decode'
 
-// 注意此时state是store.state.user，而不是store.state
-const mutation: MutationTree<UserInterface> = {
+// 注意此时state是store.state.account，而不是store.state
+const mutation: MutationTree<AccountInterface> = {
   storeUser (/* this: rightType, */state, payload: { access: string; refresh: string; }) {
     // vuex
     state.isLogin = true
@@ -23,7 +23,7 @@ const mutation: MutationTree<UserInterface> = {
     // axios header
     axios.defaults.headers.common.Authorization = `Bearer ${state.token.access}`
   },
-  deleteUser (state: UserInterface) {
+  deleteUser (state: AccountInterface) {
     // vuex
     state.isLogin = false
     delete state.token

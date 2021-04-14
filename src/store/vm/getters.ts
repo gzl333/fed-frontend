@@ -1,8 +1,8 @@
 import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
-import { NetworkInterface, ServerInterface, UsageInterface, ImageInterface, QuotaInterface } from './state'
+import { NetworkInterface, ServerInterface, VmInterface, ImageInterface, QuotaInterface } from './state'
 
-const getters: GetterTree<UsageInterface, StateInterface> = {
+const getters: GetterTree<VmInterface, StateInterface> = {
   /* vmlist 使用 */
   getServiceOptions (state): { value: string; label: string; }[] {
     /*    数据结构如下
@@ -40,7 +40,7 @@ const getters: GetterTree<UsageInterface, StateInterface> = {
   },
   getServersByServiceId (state): ServerInterface[] {
     // 根据用户选择的serviceId来返回server数组
-    // 当前选择的serviceId位于state.usage.pages.vmlist.filter，利用vmlist中的watch来修改
+    // 当前选择的serviceId位于state.vm.pages.vmlist.filter，利用vmlist中的watch来修改
     if (state.pages.vmList.filter === '0') {
       return Object.values(state.tables.userServerTable.byId)
     } else {

@@ -45,22 +45,22 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
   Router.beforeEach(async (to, from, next) => {
     // 此处截获科技云通行证返回的 /login?code=xxxx 部分
     // 未登录则获取code，换取token，进行登录
-    if (to.fullPath.includes('/login?code=') && !store.state.user.isLogin) {
+    if (to.fullPath.includes('/login?code=') && !store.state.account.isLogin) {
       // 在科技云通行证处登录成功后，跳转至/login?code=xxxx。 此处截取code
       const code = to.fullPath.slice(12)
       // 利用code，在updatePassportToken中获取token并保存token，改变用户登录状态
-      void await store.dispatch('user/loginCstUser', code)
+      void await store.dispatch('account/loginCstUser', code)
       // 开启定时更新token
-      await store.dispatch('user/retainCstToken')
-      // console.log(store.state.user)
+      await store.dispatch('account/retainCstToken')
+      // console.log(store.state.account)
       // 跳转至内页
       next({ path: '/my' })
-    } else if (to.fullPath.startsWith('/login') && store.state.user.isLogin) {
+    } else if (to.fullPath.startsWith('/login') && store.state.account.isLogin) {
       // 已经登录，访问/login，重定向到/my
       next({ path: '/my' })
-    } else if (to.meta.myPages && !store.state.user.isLogin) {
+    } else if (to.meta.myPages && !store.state.account.isLogin) {
       next({ path: '/' })
-    } else if (!to.meta.myPages && store.state.user.isLogin) {
+    } else if (!to.meta.myPages && store.state.account.isLogin) {
       next({ path: '/my' })
     }
     if (to.meta.title) {

@@ -3,11 +3,11 @@ import { createStore } from 'vuex'
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state'
 
-import user from './user'
-import { UserInterface } from 'src/store/user/state'
+import account from './account'
+import { AccountInterface } from 'src/store/account/state'
 
-import usage from './usage'
-import { UsageInterface } from 'src/store/usage/state'
+import vm from './vm'
+import { VmInterface } from 'src/store/vm/state'
 
 import quota from './quota'
 import { QuotaInterface } from 'src/store/quota/state'
@@ -25,17 +25,19 @@ export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  user: UserInterface,
+  account: AccountInterface,
+  vm: VmInterface,
   quota: QuotaInterface,
-  usage: UsageInterface
+
   // example: ExampleStateInterface
 }
 
 const store = createStore<StateInterface>({
   modules: {
-    user,
-    quota,
-    usage
+    account,
+    vm,
+    quota
+
     // example
   },
 

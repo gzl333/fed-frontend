@@ -4,11 +4,7 @@
 
       <div class="col-auto">
         <div class="row justify-center">
-<!--          <div class="col"/>-->
-<!--          <div class="col-xs-12 col-md-10">-->
-            <global-header class="content-fixed-width"/>
-<!--          </div>-->
-<!--          <div class="col"/>-->
+          <global-header class="content-fixed-width"/>
         </div>
       </div>
 
@@ -16,7 +12,7 @@
 
       <div class="col-auto">
         <div class="row justify-center">
-<!--          <div class="col"/>-->
+          <!--          <div class="col"/>-->
           <div class="content-fixed-width">
             <div class="row">
               <div class="text-h6 q-pt-lg q-px-none">
@@ -83,7 +79,7 @@
               </div>
             </div>
           </div>
-<!--          <div class="col"/>-->
+          <!--          <div class="col"/>-->
         </div>
       </div>
 
@@ -91,11 +87,11 @@
 
       <div class="col-auto q-pt-xl">
         <div class="row justify-center">
-<!--          <div class="col"/>-->
-<!--          <div class="col-xs-12 col-md-10">-->
-            <router-view class="content-fixed-width"/>
-<!--          </div>-->
-<!--          <div class="col"/>-->
+          <!--          <div class="col"/>-->
+          <!--          <div class="col-xs-12 col-md-10">-->
+          <router-view class="content-fixed-width"/>
+          <!--          </div>-->
+          <!--          <div class="col"/>-->
         </div>
       </div>
 
@@ -107,20 +103,14 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader.vue'
-// import { useStore } from 'vuex'
-// import { StateInterface } from 'src/store'
 
 export default defineComponent({
   name: 'UsageLayout',
   components: { GlobalHeader },
   props: {},
   setup () {
-    // const $store = useStore<StateInterface>()
-    // void $store.dispatch('usage/updateUsageTable')
-
     return {
-      activeTab: ref('vm'),
-      splitterModel: ref(20) // start at 50%
+      activeTab: ref('vm')
     }
   }
 })

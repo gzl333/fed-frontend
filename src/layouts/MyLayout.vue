@@ -42,44 +42,27 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
 
     /* my内页所有table加载起始点 */
-    void $store.dispatch('usage/updateUsageTable')
+    void $store.dispatch('vm/updateVmTable')
     /* my内页所有table加载起始点 */
 
-    const currentUser = $store.state.user
+    const currentUser = $store.state.account
     const rightDrawerOpen = ref(false)
     const toggleRightDrawer = () => {
       rightDrawerOpen.value = !rightDrawerOpen.value
     }
     const toLogout = () => {
-      void $store.dispatch('user/logoutCstUser')
-    }
-    const log = async () => {
-      const result = await $store.dispatch('user/fetchCstNewToken', $store.state.user.token!.refresh)
-      console.log(result)
+      void $store.dispatch('account/logoutCstUser')
     }
     return {
       rightDrawerOpen,
       toggleRightDrawer,
       currentUser,
-      toLogout,
-      log
+      toLogout
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.logo {
-  height: 50px;
-}
 
-.dropdown-content {
-  min-width: 200px;
-  background-image: url(https://cdn.quasar.dev/img/material.png);
-  background-size: 150% auto;
-}
-
-.dropdown-items {
-  text-align: center;
-}
 </style>

@@ -1,4 +1,4 @@
-import { ServerInterface_old } from '../usage/state'
+import { ServerInterface_old } from '../vm/state'
 
 export interface ServersInterface {
   id: string;

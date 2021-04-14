@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex'
-import { ServerInterface_old } from '../usage/state'
+import { ServerInterface_old } from '../vm/state'
 import { QuotaInterface, PaginationInterface, UserQuotaInterface } from './state'
 
 // 注意此时context是store.state.quota，而不是store.state

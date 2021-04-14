@@ -5,7 +5,7 @@
       <div v-for="vpn in vpns" :key="vpn.id" class="col-3 section q-gutter-sm">
         <div class="row">
           <div class="col-2 q-pb-lg text-primary">
-            {{ $store.state.usage.tables.userServiceTable.byId[vpn.id].name }}
+            {{ $store.state.vm.tables.userServiceTable.byId[vpn.id].name }}
           </div>
           <div class="col"></div>
         </div>
@@ -78,7 +78,7 @@
     <div class="col-3 section">
       vpn使用说明：
       待补充
-      <pre>{{ $store.state.usage.tables.userVpnTable.byId }}</pre>
+      <pre>{{ $store.state.vm.tables.userVpnTable.byId }}</pre>
     </div>
     <div class="col-2"></div>
   </div>
@@ -89,7 +89,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { copyToClipboard, useQuasar } from 'quasar'
-import { VpnInterface } from 'src/store/usage/state'
+import { VpnInterface } from 'src/store/vm/state'
 
 export default defineComponent({
   name: 'Vpn',
@@ -99,9 +99,9 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const $q = useQuasar()
 
-    // void $store.dispatch('usage/updateVpnAll')
-    // const vpnMap = computed(() => $store.state.usage.vpn)
-    const vpns = computed(() => Object.values($store.state.usage.tables.userVpnTable.byId))
+    // void $store.dispatch('vm/updateVpnAll')
+    // const vpnMap = computed(() => $store.state.vm.vpn)
+    const vpns = computed(() => Object.values($store.state.vm.tables.userVpnTable.byId))
 
     // 复制信息到剪切板
     const clickToCopy = async (text: string) => {
@@ -124,7 +124,7 @@ export default defineComponent({
     // vpn 修改密码
     const popEdit = (vpn: VpnInterface) => {
       $q.dialog({
-        title: `修改${$store.state.usage.tables.userServiceTable.byId[vpn.id].name}的VPN密码`,
+        title: `修改${$store.state.vm.tables.userServiceTable.byId[vpn.id].name}的VPN密码`,
         message: '新密码长度为6-64位',
         prompt: {
           model: `${vpn.password}`,
@@ -147,8 +147,8 @@ export default defineComponent({
           serviceId: vpn.id,
           password: data.trim()
         }
-        void $store.dispatch('usage/patchVpnPassword', payload).then((value) => {
-          $store.commit('usage/storeUserVpnTable', Object.assign(vpn, { password: value.data.vpn.password }))
+        void $store.dispatch('vm/patchVpnPassword', payload).then((value) => {
+          $store.commit('vm/storeUserVpnTable', Object.assign(vpn, { password: value.data.vpn.password }))
           isLoading.value = false
         }
         ).catch(() => {

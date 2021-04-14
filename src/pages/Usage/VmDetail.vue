@@ -206,7 +206,8 @@
                 <div class="row q-pb-md">
                   <div class="col-2 text-grey-7">所用配额</div>
                   <div class="col-shrink">
-                    <quota-card :quota="quota"/>
+                    <!--                    <quota-card :quota="quota"/>-->
+                    {{ quota.display }}
                   </div>
                 </div>
 
@@ -445,13 +446,13 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter, useRoute } from 'vue-router'
 import { copyToClipboard, useQuasar } from 'quasar'
-import { VpnInterface } from 'src/store/usage/state'
+import { VpnInterface } from 'src/store/vm/state'
 
-import QuotaCard from 'components/usage/QuotaCard.vue'
+// import QuotaCard from 'components/usage/QuotaCard.vue'
 
 export default defineComponent({
   name: 'VmDetail',
-  components: { QuotaCard },
+  components: { /* QuotaCard */ },
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
@@ -468,13 +469,13 @@ export default defineComponent({
     // }
 
     // server info
-    const server = computed(() => $store.state.usage.tables.userServerTable.byId[serverId])
+    const server = computed(() => $store.state.vm.tables.userServerTable.byId[serverId])
     // service info
-    const service = computed(() => $store.state.usage.tables.userServiceTable.byId[server.value.service])
+    const service = computed(() => $store.state.vm.tables.userServiceTable.byId[server.value.service])
     // quota info
-    const quota = computed(() => $store.state.usage.tables.userQuotaTable.byId[server.value.user_quota])
+    const quota = computed(() => $store.state.vm.tables.userQuotaTable.byId[server.value.user_quota])
     // vpn info
-    const vpn = computed(() => $store.state.usage.tables.userVpnTable.byId[server.value.service])
+    const vpn = computed(() => $store.state.vm.tables.userVpnTable.byId[server.value.service])
     // password可见性
     const isPwd = ref(true)
     // 修改密码loading状态
@@ -505,8 +506,8 @@ export default defineComponent({
           serviceId: server.value.service,
           password: data.trim()
         }
-        void $store.dispatch('usage/patchVpnPassword', payload).then((value) => {
-          $store.commit('usage/storeUserVpnTable', Object.assign(vpn, { password: value.data.vpn.password }))
+        void $store.dispatch('vm/patchVpnPassword', payload).then((value) => {
+          $store.commit('vm/storeUserVpnTable', Object.assign(vpn, { password: value.data.vpn.password }))
           isLoading.value = false
         }
         ).catch(() => {
@@ -541,7 +542,7 @@ export default defineComponent({
 
     // 云主机操作 todo 与actions中的操作函数合并逻辑
     const vmOperation = async (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
-      void await $store.dispatch('usage/vmOperation', payload)
+      void await $store.dispatch('vm/vmOperation', payload)
       // console.log('in vmops', payload) todo 跳转流程优化
       if (payload.action === 'delete' || payload.action === 'delete_force') {
         $q.notify({
@@ -556,7 +557,7 @@ export default defineComponent({
     }
     // VNC
     const gotoVNC = async (payload: string) => {
-      const response = await $store.dispatch('usage/fetchServerVNC', payload)
+      const response = await $store.dispatch('vm/fetchServerVNC', payload)
       const url = response.data.vnc.url
       window.open(url)
     }

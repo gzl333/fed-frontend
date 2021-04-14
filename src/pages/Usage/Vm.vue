@@ -1,38 +1,5 @@
 <template>
   <div class="Vm">
-    <div class="row no-wrap">
-      <!--      <div v-if="isTreeOpen" class="col-1.5 items-center q-py-sm q-px-sm q-my-lg tree-area">-->
-      <!--        <div class="tree-title text-grey-7 text-center ">-->
-      <!--          机构与数据中心-->
-      <!--          <q-tooltip>-->
-      <!--            正在使用的机构与数据中心-->
-      <!--          </q-tooltip>-->
-      <!--        </div>-->
-      <!--        &lt;!&ndash;        <q-scroll-area class="min-tree-size">&ndash;&gt;-->
-      <!--        <q-tree-->
-      <!--          class="col-12 col-sm-6"-->
-      <!--          default-expand-all-->
-      <!--          :nodes="dataPointTree"-->
-      <!--          node-key="key"-->
-      <!--          selected-color="primary"-->
-      <!--          v-model:selected="selectedTree"-->
-      <!--        />-->
-      <!--        &lt;!&ndash;                <pre>{{ rows }}</pre>&ndash;&gt;-->
-      <!--        &lt;!&ndash;        </q-scroll-area>&ndash;&gt;-->
-      <!--      </div>-->
-
-      <!--      <div class="col-shrink btn-area">-->
-      <!--        <q-btn v-if="isTreeOpen" class="btn-close" unelevated color="primary"-->
-      <!--               icon="arrow_back_ios_new" size="xs" padding="30px 0px" @click="toggleTree">-->
-      <!--          <q-tooltip>折叠机构树</q-tooltip>-->
-      <!--        </q-btn>-->
-      <!--        <q-btn v-if="!isTreeOpen" class="btn-open" unelevated color="primary"-->
-      <!--               icon="arrow_forward_ios" size="xs" padding="30px 0px" @click="toggleTree">-->
-      <!--          <q-tooltip>展开机构树</q-tooltip>-->
-      <!--        </q-btn>-->
-      <!--      </div>-->
-
-      <div class="col ">
 
         <q-table
           flat
@@ -48,47 +15,27 @@
         >
 
           <template v-slot:top>
-            <div class="col row items-center justify-between q-pa-none">
+            <!--slot外有一层row，需要用col接一下，再新建row-->
+            <div class="col">
 
-              <q-input disable outlined bottom-slots v-model="text" label="模糊搜索" dense>
-                <template v-slot:append>
-                  <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>
-                  <q-icon name="search"/>
-                </template>
-              </q-input>
+              <div class="row items-center justify-between q-pa-none">
+                <div class="col-3">
+                  <q-input disable dense outlined bottom-slots v-model="text" label="模糊搜索">
+                    <template v-slot:append>
+                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>
+                      <q-icon name="search"/>
+                    </template>
+                  </q-input>
+                </div>
 
-              <!--              <div class="col-shrink">-->
-              <!--                <q-btn icon="add" color="primary" size="md" unelevated label="新建" :to="{ path: '/my/usage/vmcreate' }">-->
-              <!--                  <q-tooltip>-->
-              <!--                    新建云主机-->
-              <!--                  </q-tooltip>-->
-              <!--                </q-btn>-->
-              <!--              </div>-->
-
-              <div class="col text-center">
-                <!--                <span class="text-grey-7 text-h7">-->
-                <!--                  正在展示：-->
-                <!--                </span>-->
-                <!--                <span class="text-primary text-h7">-->
-                <!--                  {{ tableTitle }}-->
-                <!--                </span>-->
-                <!--                <div class="col"> 选择节点：</div>-->
-                <!--                <pre>{{ $store.state.usage }}</pre>-->
-              </div>
-
-              <div class="co">
-                <div class="row">
-                  <!--                  <div class="col-3"> 选择节点：</div>-->
-                  <div class="coll-auto">
-                    <q-select outlined dense v-model="serviceSelection" :options="serviceOptions"/>
+                <div class="col-3">
+                  <div class="row justify-end">
+                    <div class="col">
+                      <q-select outlined stack-label label="筛选节点" v-model="serviceSelection"
+                                :options="serviceOptions"/>
+                    </div>
                   </div>
                 </div>
-                <span class="text-grey-7 text-h7">
-
-                </span>
-                <span>
-
-                </span>
               </div>
 
             </div>
@@ -123,10 +70,10 @@
                 </div>
               </q-td>
               <q-td key="dataCenterName" :props="props">
-                {{ $store.state.usage.tables.userServiceTable.byId[props.row.service]?.name }}
+                {{ $store.state.vm.tables.userServiceTable.byId[props.row.service]?.name }}
               </q-td>
               <q-td key="serviceType" :props="props">
-                {{ $store.state.usage.tables.userServiceTable.byId[props.row.service]?.service_type }}
+                {{ $store.state.vm.tables.userServiceTable.byId[props.row.service]?.service_type }}
               </q-td>
               <q-td key="image" :props="props">
                 {{ props.row.image }}
@@ -272,23 +219,9 @@
           </template>
 
           <template v-slot:bottom>
-            <!--            blank bottom just to show the bottom border of table-->
-            <!--            <q-pagination-->
-            <!--              unelevated-->
-            <!--              v-if="paginationMax!==1"-->
-            <!--              v-model="paginationSelected"-->
-            <!--              color="primary"-->
-            <!--              :max="paginationMax"-->
-            <!--              :max-pages="7"-->
-            <!--              size="md"-->
-            <!--              :direction-links="true"-->
-            <!--              @click="clickPagination"-->
-            <!--            />-->
           </template>
 
         </q-table>
-
-      </div>
 
       <q-dialog v-model="isShowDelConfirm">
         <q-card>
@@ -307,14 +240,12 @@
       </q-dialog>
     </div>
 
-  </div>
-
 </template>
 
 <script lang="ts">
 import { defineComponent, ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
-import { StateInterface } from '../../store'
+import { StateInterface } from 'src/store'
 import { useQuasar, copyToClipboard } from 'quasar'
 
 export default defineComponent({
@@ -329,14 +260,14 @@ export default defineComponent({
     const isStatusLoading = ref(true)
 
     // service_id下拉列表
-    const serviceOptions = computed(() => $store.getters['usage/getServiceOptions'])
+    const serviceOptions = computed(() => $store.getters['vm/getServiceOptions'])
     const serviceSelection = ref({
       label: '全部服务节点',
       value: '0'
     })
-    $store.commit('usage/storeUserServerTableFilter', '0')
+    $store.commit('vm/storeUserServerTableFilter', '0')
     watch(serviceSelection, () => {
-      $store.commit('usage/storeUserServerTableFilter', serviceSelection.value.value)
+      $store.commit('vm/storeUserServerTableFilter', serviceSelection.value.value)
     })
 
     // 云主机列表分栏定义
@@ -410,7 +341,7 @@ export default defineComponent({
       }
     ]
     // 获取云主机列表数据
-    const rows = computed(() => $store.getters['usage/getServersByServiceId'])
+    const rows = computed(() => $store.getters['vm/getServersByServiceId'])
 
     // q-pagination 所需配置对象
     const paginationTable = ref({
@@ -422,7 +353,7 @@ export default defineComponent({
 
     // 云主机操作
     const vmOperation = (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
-      void $store.dispatch('usage/vmOperation', payload)
+      void $store.dispatch('vm/vmOperation', payload)
       // console.log('in vmops', payload)
       if (payload.action === 'delete' || payload.action === 'delete_force') {
         $q.notify({
@@ -436,7 +367,7 @@ export default defineComponent({
     }
     // VNC 不保存在vuex里，vnc图标根据云主机状态变化，开机时可以点击vnc按钮，点击后再获取vnc地址并打开新窗口跳转
     const gotoVNC = async (payload: string) => {
-      const response = await $store.dispatch('usage/fetchServerVNC', payload)
+      const response = await $store.dispatch('vm/fetchServerVNC', payload)
       const url = response.data.vnc.url
       window.open(url)
     }
@@ -451,10 +382,10 @@ export default defineComponent({
     // 编辑备注
     const popEdit = (id: string) => {
       $q.dialog({
-        title: `编辑${$store.state.usage.tables.userServerTable.byId[id].ipv4}的备注信息`,
+        title: `编辑${$store.state.vm.tables.userServerTable.byId[id].ipv4}的备注信息`,
         message: '长度限制为15个字',
         prompt: {
-          model: `${$store.state.usage.tables.userServerTable.byId[id].remarks}`,
+          model: `${$store.state.vm.tables.userServerTable.byId[id].remarks}`,
           counter: true,
           maxlength: 15,
           type: 'text' // optional
@@ -466,8 +397,8 @@ export default defineComponent({
           id,
           remark: data.trim()
         }
-        void $store.dispatch('usage/patchRemarks', payload).then(() =>
-          $store.commit('usage/storeUserServerTableSingleRemarks', {
+        void $store.dispatch('vm/patchRemarks', payload).then(() =>
+          $store.commit('vm/storeUserServerTableSingleRemarks', {
             serverId: id,
             remarks: data.trim()
           })

@@ -375,7 +375,7 @@ export default defineComponent({
 
     // VNC
     const gotoVNC = async (payload: string) => {
-      const response = await $store.dispatch('usage/fetchServerVNC', payload)
+      const response = await $store.dispatch('vm/fetchServerVNC', payload)
       const url = response.data.vnc.url
       window.open(url)
     }
@@ -385,8 +385,8 @@ export default defineComponent({
     }
     // more
     const more = (id: string) => {
-      void $store.dispatch('usage/updateServerInfo', id)
-      // console.log('$store.state.usage.serverDetail:', $store.state.usage.serverDetail)
+      void $store.dispatch('vm/updateServerInfo', id)
+      // console.log('$store.state.vm.serverDetail:', $store.state.vm.serverDetail)
     }
     return {
       serverList,

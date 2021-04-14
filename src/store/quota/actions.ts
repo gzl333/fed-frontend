@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { QuotaInterface, UquotaResponseInterface, ServiceInterface, TypeInterface, UserQuotaInterface } from './state'
 import axios from 'axios'
-import { ReqServerListInterface, ServerInterface_old } from '../usage/state'
+import { ReqServerListInterface, ServerInterface_old } from '../vm/state'
 const codeMap = new Map<number, string>(
   [
     [0, '无法获取状态'],

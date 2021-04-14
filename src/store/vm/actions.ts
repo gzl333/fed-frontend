@@ -1,6 +1,6 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
-import { UsageInterface } from './state'
+import { VmInterface } from './state'
 import axios from 'axios'
 import { normalize, schema } from 'normalizr'
 
@@ -23,9 +23,9 @@ const statusCodeMap = new Map<number, string>(
   ]
 )
 
-const actions: ActionTree<UsageInterface, StateInterface> = {
-  /* 初次获取全部Usage模块Table，已有则自动忽略 */
-  updateUsageTable (context) {
+const actions: ActionTree<VmInterface, StateInterface> = {
+  /* 初次获取全部Vm模块Table，已有则自动忽略 */
+  updateVmTable (context) {
     if (!context.state.tables.userServerTable.isLoaded) {
       void context.dispatch('updateUserServerTable')
     }
@@ -51,13 +51,13 @@ const actions: ActionTree<UsageInterface, StateInterface> = {
               void context.dispatch('updateUserQuotaTable')
             }
           }).then(() => {
-            console.log(context.state)
+            console.log('store-vm:', context.state)
           })
         }
       })
     }
   },
-  /* 初次获取全部Usage模块Table，已有则自动忽略 */
+  /* 初次获取全部Vm模块Table，已有则自动忽略 */
 
   /* userQuotaTable */
   async updateUserQuotaTable (context) {

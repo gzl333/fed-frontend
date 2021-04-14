@@ -48,7 +48,7 @@
                     </div>
                     <div class="col item-radios">
                       <q-radio
-                        v-for="service in dataCenter.services.map((serviceId) => $store.state.usage.tables.userServiceTable.byId[serviceId])"
+                        v-for="service in dataCenter.services.map((serviceId) => $store.state.vm.tables.userServiceTable.byId[serviceId])"
                         dense v-model="radioService"
                         :val="service.id" :label="service.name" :key="service.id" class="radio"/>
                     </div>
@@ -177,8 +177,8 @@
                   </div>
                   <div class="col item-radios">
                     {{
-                      $store.state.usage.tables.globalDataCenterTable.byId[radioDataCenter] && $store.state.usage.tables.userServiceTable.byId[radioService] ?
-                        `${$store.state.usage.tables.globalDataCenterTable.byId[radioDataCenter].name} - ${$store.state.usage.tables.userServiceTable.byId[radioService].name}` : '尚未选择服务中心'
+                      $store.state.vm.tables.globalDataCenterTable.byId[radioDataCenter] && $store.state.vm.tables.userServiceTable.byId[radioService] ?
+                        `${$store.state.vm.tables.globalDataCenterTable.byId[radioDataCenter].name} - ${$store.state.vm.tables.userServiceTable.byId[radioService].name}` : '尚未选择服务中心'
                     }}
                   </div>
                 </div>
@@ -189,7 +189,7 @@
                   </div>
                   <div class="col item-radios">
                     {{
-                      $store.state.usage.tables.userNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name || '尚未选择网络类型'
+                      $store.state.vm.tables.userNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name || '尚未选择网络类型'
                     }}
                   </div>
                 </div>
@@ -200,7 +200,7 @@
                   </div>
                   <div class="col item-radios">
                     {{
-                      $store.state.usage.tables.userImageTable.byLocalId[`${radioService}-${radioImage}`]?.name || '尚未选择系统镜像'
+                      $store.state.vm.tables.userImageTable.byLocalId[`${radioService}-${radioImage}`]?.name || '尚未选择系统镜像'
                     }}
                   </div>
                 </div>
@@ -211,8 +211,8 @@
                   </div>
                   <div class="col item-radios">
                     {{
-                      $store.state.usage.tables.globalFlavorTable.byId[radioFlavor] ?
-                        `${$store.state.usage.tables.globalFlavorTable.byId[radioFlavor].vcpus}核/${$store.state.usage.tables.globalFlavorTable.byId[radioFlavor].ram}MB` :
+                      $store.state.vm.tables.globalFlavorTable.byId[radioFlavor] ?
+                        `${$store.state.vm.tables.globalFlavorTable.byId[radioFlavor].vcpus}核/${$store.state.vm.tables.globalFlavorTable.byId[radioFlavor].ram}MB` :
                         '尚未选择配置'
                     }}
                   </div>
@@ -224,7 +224,7 @@
                   </div>
                   <div class="col item-radios">
                     {{
-                      $store.state.usage.tables.userQuotaTable.byId[radioQuota]?.display || '尚未选择配额'
+                      $store.state.vm.tables.userQuotaTable.byId[radioQuota]?.display || '尚未选择配额'
                     }}
                   </div>
                 </div>
@@ -271,7 +271,7 @@ import { useStore } from 'vuex'
 import { useRouter } from 'vue-router'
 import { StateInterface } from 'src/store'
 import { useQuasar } from 'quasar'
-import { QuotaInterface } from 'src/store/usage/state'
+import { QuotaInterface } from 'src/store/vm/state'
 
 import QuotaCard from 'components/usage/QuotaCard.vue'
 
@@ -284,29 +284,26 @@ export default defineComponent({
     const $router = useRouter()
     const $q = useQuasar()
 
-    // 从url直接进入此页面时，加载tables
-    // void $store.dispatch('usage/updateUsageTable')
-
     // radio选项数据，根据所选择serviceId建立
     // //全局数据
-    const dataCenters = computed(() => Object.values($store.state.usage.tables.globalDataCenterTable.byId))
+    const dataCenters = computed(() => Object.values($store.state.vm.tables.globalDataCenterTable.byId))
     // //radioService的选项数据根据dataCenters动态生成
-    const flavors = computed(() => Object.values($store.state.usage.tables.globalFlavorTable.byId))
+    const flavors = computed(() => Object.values($store.state.vm.tables.globalFlavorTable.byId))
     // //依赖radioService Id选择值的数据
-    const publicNetworks = computed(() => $store.getters['usage/getPublicNetworksByServiceId'])
-    const privateNetworks = computed(() => $store.getters['usage/getPrivateNetworksByServicedId'])
-    const images = computed(() => $store.getters['usage/getImagesByServiceId'])
-    const quotas = computed(() => $store.getters['usage/getQuotasByServiceId'])
+    const publicNetworks = computed(() => $store.getters['vm/getPublicNetworksByServiceId'])
+    const privateNetworks = computed(() => $store.getters['vm/getPrivateNetworksByServicedId'])
+    const images = computed(() => $store.getters['vm/getImagesByServiceId'])
+    const quotas = computed(() => $store.getters['vm/getQuotasByServiceId'])
 
     // radio的选择状态
     const radioService = computed({
-      get: () => $store.state.usage.pages.vmCreate.serviceId,
-      set: (value) => $store.commit('usage/storeVmCreatePageServiceId', value)
+      get: () => $store.state.vm.pages.vmCreate.serviceId,
+      set: (value) => $store.commit('vm/storeVmCreatePageServiceId', value)
     })
     // //radioDataCenter不对应实体radio按钮，而是根据radioService选择结果自动更新对应的dataCenterId
     const radioDataCenter = computed(() => {
-      // console.log($store.state.usage.tables.userServiceTable.byId[radioService.value].data_center === $store.state.usage.tables.globalDataCenterTable.byId[$store.state.usage.tables.userServiceTable.byId[radioService.value].data_center].id)
-      return $store.state.usage.tables.userServiceTable.byId[radioService.value].data_center
+      // console.log($store.state.vm.tables.userServiceTable.byId[radioService.value].data_center === $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.userServiceTable.byId[radioService.value].data_center].id)
+      return $store.state.vm.tables.userServiceTable.byId[radioService.value].data_center
     })
     const radioNetwork = ref('')
     const radioImage = ref('')
@@ -336,19 +333,19 @@ export default defineComponent({
     // // tables已经全部加载时，radioService选择第一项
     const chooseRadioService = () => {
       if (
-        $store.state.usage.tables.userServiceTable.isLoaded &&
-        $store.state.usage.tables.userNetworkTable.isLoaded &&
-        $store.state.usage.tables.userImageTable.isLoaded &&
-        $store.state.usage.tables.globalFlavorTable.isLoaded &&
-        $store.state.usage.tables.userQuotaTable.isLoaded
+        $store.state.vm.tables.userServiceTable.isLoaded &&
+        $store.state.vm.tables.userNetworkTable.isLoaded &&
+        $store.state.vm.tables.userImageTable.isLoaded &&
+        $store.state.vm.tables.globalFlavorTable.isLoaded &&
+        $store.state.vm.tables.userQuotaTable.isLoaded
       ) {
-        radioService.value = $store.state.usage.tables.userServiceTable.allIds[0]
+        radioService.value = $store.state.vm.tables.userServiceTable.allIds[0]
       }
     }
     // // setup时调用一次
     chooseRadioService()
     // // watch根据tables的变化情况，再调用
-    watch($store.state.usage.tables, () => {
+    watch($store.state.vm.tables, () => {
       chooseRadioService()
     })
 
@@ -391,11 +388,11 @@ export default defineComponent({
           quota_id: radioQuota.value,
           remarks: inputRemarks.value
         }
-        const respCreateVM = await $store.dispatch('usage/createServer', selection)
+        const respCreateVM = await $store.dispatch('vm/createServer', selection)
         // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
-        void await $store.dispatch('usage/updateUserServerTableSingleServer', respCreateVM.data.id)
+        void await $store.dispatch('vm/updateUserServerTableSingleServer', respCreateVM.data.id)
 
-        newIP.value = $store.state.usage.tables.userServerTable.byId[respCreateVM.data.id].ipv4
+        newIP.value = $store.state.vm.tables.userServerTable.byId[respCreateVM.data.id].ipv4
         $q.notify({
           color: 'nord14',
           message: `成功创建id为${newIP.value}的云主机`,
@@ -406,7 +403,7 @@ export default defineComponent({
         isCreating.value = false
         isShowJumper.value = true
 
-        console.log($store.state.usage)
+        console.log($store.state.vm)
         setTimeout(() => {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           void $router.push(`/my/usage/vmdetail/${respCreateVM.data.id}`)

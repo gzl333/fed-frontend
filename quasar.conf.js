@@ -219,9 +219,17 @@ module.exports = configure(function (/* ctx */) {
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
       nodeIntegration: true,
 
-      extendWebpack (/* cfg */) {
+      extendWebpack (cfg, { isServer, isClient }) {
         // do something with Electron main process Webpack cfg
         // chainWebpack also available besides this extendWebpack
+        cfg.resolve.alias = {
+          ...cfg.resolve.alias, // This adds the existing alias
+          // Add your own alias like this
+          css: path.resolve(__dirname, './src/css'),
+          hooks: path.resolve(__dirname, './src/hooks'),
+          store: path.resolve(__dirname, './src/store'),
+          router: path.resolve(__dirname, './src/router')
+        }
       }
     }
   }
