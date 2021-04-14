@@ -1,11 +1,13 @@
 <template>
   <div class="WarningList">
-    <!-- 适配大屏：尺寸大于sm = md lg xl-->
-    <div class="my-card-big gt-sm">
+    <div v-if="!quotaLessOneWeek || !quotaLessOneWeek">
+      正在加载，请稍候或刷新页面
+    </div>
+    <div v-else class="my-card-big">
       <q-card-section>
         <div class="text-h6 text-weight-bold">资源到期预警</div>
       </q-card-section>
-      <q-separator />
+      <q-separator/>
       <q-card-section>
         <div class="row items-center no-warp">
           <div class="col">
@@ -13,18 +15,21 @@
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
                   <q-icon style="font-size: 2em"
-                    ><i class="fas fa-exclamation-triangle"></i
+                  ><i class="fas fa-exclamation-triangle"></i
                   ></q-icon>
                 </q-card-section>
                 <q-card-section class="q-pt-md q-pb-xs q-px-xs">
-                  <div>{{ warningList[0] }}</div>
-                  <q-badge align="top"> 配额 </q-badge>
+                  <div>本周到期</div>
+                  <q-badge align="top"> 配额</q-badge>
                   <div style="font-size: 1.5em" class="q-my-xs q-ml-md">
-                    {{ quotaLessOneWeek[0].lessOneWeekNum
-                    }}<q-tooltip
+                    {{
+                      quotaLessOneWeek.length
+                    }}
+                    <q-tooltip
                       :offset="[5, 10]"
-                      v-if="quotaLessOneWeek[0].lessOneWeekNum != 0"
-                      >{{ quotaLessOneWeek[0].quotaName }}
+                      v-if="quotaLessOneWeek.length"
+                    >
+                      {{ quotaLessOneWeek[0].quotaName }}
                     </q-tooltip>
                   </div>
                 </q-card-section>
@@ -37,18 +42,20 @@
               <q-card-section horizontal>
                 <q-card-section class="col-5 flex flex-center">
                   <q-icon style="font-size: 2em"
-                    ><i class="fas fa-exclamation-triangle"></i
+                  ><i class="fas fa-exclamation-triangle"></i
                   ></q-icon>
                 </q-card-section>
                 <q-card-section class="q-pt-md q-pb-xs q-px-xs">
-                  <div>{{ warningList[1] }}</div>
-                  <q-badge align="top" color="nord14"> 配额 </q-badge>
+                  <div>本月到期</div>
+                  <q-badge align="top" color="nord14"> 配额</q-badge>
                   <div class="q-my-xs q-ml-md" style="font-size: 1.5em">
-                    {{ quotaLessOneMonth[0].lessOneMonthNum
-                    }}<q-tooltip
+                    {{
+                      quotaLessOneMonth.length
+                    }}
+                    <q-tooltip
                       :offset="[5, 10]"
-                      v-if="quotaLessOneMonth[0].lessOneMonthNum != 0"
-                      >{{ quotaLessOneMonth[0].quotaName }}
+                      v-if="quotaLessOneMonth.length"
+                    >{{ quotaLessOneMonth[0].quotaName }}
                     </q-tooltip>
                   </div>
                 </q-card-section>
@@ -57,167 +64,90 @@
           </div>
 
           <!-- style="visibility: hidden" -->
-          <div class="col" style="visibility: hidden">
-            <q-card class="inner-card-big" bordered="false" flat>
-              <q-card-section horizontal>
-                <q-card-section class="col-5 flex flex-center">
-                  <q-icon style="font-size: 2em"
-                    ><i class="fas fa-desktop"></i
-                  ></q-icon>
-                </q-card-section>
-                <q-card-section class="q-pt-md q-pb-xs q-px-xs">
-                  <div>{{ warningList[0] }}</div>
-                  <q-badge align="top" color="nord11"> 虚拟机 </q-badge>
-                  <div style="font-size: 1.5em" class="q-my-xs q-ml-md">xx</div>
-                </q-card-section>
-              </q-card-section>
-            </q-card>
-          </div>
+<!--          <div class="col" style="visibility: hidden">-->
+<!--            <q-card class="inner-card-big" bordered="false" flat>-->
+<!--              <q-card-section horizontal>-->
+<!--                <q-card-section class="col-5 flex flex-center">-->
+<!--                  <q-icon style="font-size: 2em"-->
+<!--                  ><i class="fas fa-desktop"></i-->
+<!--                  ></q-icon>-->
+<!--                </q-card-section>-->
+<!--                <q-card-section class="q-pt-md q-pb-xs q-px-xs">-->
+<!--                  <div>本周到期</div>-->
+<!--                  <q-badge align="top" color="nord11"> 虚拟机</q-badge>-->
+<!--                  <div style="font-size: 1.5em" class="q-my-xs q-ml-md">xx</div>-->
+<!--                </q-card-section>-->
+<!--              </q-card-section>-->
+<!--            </q-card>-->
+<!--          </div>-->
           <!--  style="visibility: hidden" -->
-          <div class="col" style="visibility: hidden">
-            <q-card class="inner-card-big" bordered="false" flat>
-              <q-card-section horizontal>
-                <q-card-section class="col-5 flex flex-center">
-                  <q-icon style="font-size: 2em"
-                    ><i class="fas fa-desktop"></i
-                  ></q-icon>
-                </q-card-section>
-                <q-card-section class="q-pt-md q-pb-xs q-px-xs">
-                  <div>{{ warningList[1] }}</div>
-                  <q-badge align="top" color="nord13">虚拟机</q-badge>
-                  <div style="font-size: 1.5em" class="q-my-xs q-ml-md">xx</div>
-                </q-card-section>
-              </q-card-section>
-            </q-card>
-          </div>
+<!--          <div class="col" style="visibility: hidden">-->
+<!--            <q-card class="inner-card-big" bordered="false" flat>-->
+<!--              <q-card-section horizontal>-->
+<!--                <q-card-section class="col-5 flex flex-center">-->
+<!--                  <q-icon style="font-size: 2em"-->
+<!--                  ><i class="fas fa-desktop"></i-->
+<!--                  ></q-icon>-->
+<!--                </q-card-section>-->
+<!--                <q-card-section class="q-pt-md q-pb-xs q-px-xs">-->
+<!--                  <div>本月到期</div>-->
+<!--                  <q-badge align="top" color="nord13">虚拟机</q-badge>-->
+<!--                  <div style="font-size: 1.5em" class="q-my-xs q-ml-md">xx</div>-->
+<!--                </q-card-section>-->
+<!--              </q-card-section>-->
+<!--            </q-card>-->
+<!--          </div>-->
+
         </div>
       </q-card-section>
     </div>
-    <!-- 适配手机 -->
-    <div class="my-card-small lt-md">
-      <q-card-section>
-        <div class="text-h6 text-weight-bold">资源到期预警</div>
-      </q-card-section>
-      <q-separator />
-      <q-card-section>
-        <div class="row items-center no-warp">
-          <div class="col">
-            <q-card class="inner-card-small" bordered="false" flat>
-              <q-card-section horizontal>
-                <q-card-section class="col-5 flex flex-center">
-                  <q-icon style="font-size: 2em"
-                    ><i class="fas fa-exclamation-triangle"></i
-                  ></q-icon>
-                </q-card-section>
-                <q-card-section class="q-pt-md q-pb-xs q-px-xs">
-                  <div>{{ warningList[0] }}</div>
-                  <q-badge align="top"> 配额 </q-badge>
-                  <div style="font-size: 1.5em" class="q-my-xs q-ml-md">
-                    {{ quotaLessOneWeek[0].lessOneWeekNum
-                    }}<q-tooltip
-                      :offset="[5, 10]"
-                      v-if="quotaLessOneWeek[0].lessOneWeekNum != 0"
-                      >{{ quotaLessOneWeek[0].quotaName }}
-                    </q-tooltip>
-                  </div>
-                </q-card-section>
-              </q-card-section>
-            </q-card>
-          </div>
 
-          <div class="col">
-            <q-card class="inner-card-small" bordered="false" flat>
-              <q-card-section horizontal>
-                <q-card-section class="col-5 flex flex-center">
-                  <q-icon style="font-size: 2em"
-                    ><i class="fas fa-exclamation-triangle"></i
-                  ></q-icon>
-                </q-card-section>
-                <q-card-section class="q-pt-md q-pb-xs q-px-xs">
-                  <div>{{ warningList[1] }}</div>
-                  <q-badge align="top" color="nord14"> 配额 </q-badge>
-                  <div class="q-my-xs q-ml-md" style="font-size: 1.5em">
-                    {{ quotaLessOneMonth[0].lessOneMonthNum
-                    }}<q-tooltip
-                      v-if="quotaLessOneMonth[0].lessOneMonthNum != 0"
-                      class="bg-nord10"
-                      :offset="[5, 10]"
-                      >{{ quotaLessOneMonth[0].quotaName }}
-                    </q-tooltip>
-                  </div>
-                </q-card-section>
-              </q-card-section>
-            </q-card>
-          </div>
-
-          <!-- style="visibility: hidden" -->
-          <div class="col" style="visibility: hidden">
-            <q-card class="inner-card-small" bordered="false" flat>
-              <q-card-section horizontal>
-                <q-card-section class="col-5 flex flex-center">
-                  <q-icon style="font-size: 2em"
-                    ><i class="fas fa-desktop"></i
-                  ></q-icon>
-                </q-card-section>
-                <q-card-section class="q-pt-md q-pb-xs q-px-xs">
-                  <div>{{ warningList[0] }}</div>
-                  <q-badge align="top" color="nord11"> 虚拟机 </q-badge>
-                  <div style="font-size: 1.5em" class="q-my-xs q-ml-md">xx</div>
-                </q-card-section>
-              </q-card-section>
-            </q-card>
-          </div>
-          <!--  style="visibility: hidden" -->
-          <div class="col" style="visibility: hidden">
-            <q-card class="inner-card-small" bordered="false" flat>
-              <q-card-section horizontal>
-                <q-card-section class="col-5 flex flex-center">
-                  <q-icon style="font-size: 2em"
-                    ><i class="fas fa-desktop"></i
-                  ></q-icon>
-                </q-card-section>
-                <q-card-section class="q-pt-md q-pb-xs q-px-xs">
-                  <div>{{ warningList[1] }}</div>
-                  <q-badge align="top" color="nord13">虚拟机</q-badge>
-                  <div style="font-size: 1.5em" class="q-my-xs q-ml-md">xx</div>
-                </q-card-section>
-              </q-card-section>
-            </q-card>
-          </div>
-        </div>
-      </q-card-section>
-    </div>
   </div>
 </template>
 
 <script lang="ts">
-import { defineComponent, onMounted, ref } from 'vue'
+import { defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
 export default defineComponent({
   name: 'WarningList',
-  components: {
-  },
-  props: {
-  },
-  emits: [
-  ],
+  components: {},
+  props: {},
+  emits: [],
   setup () {
     const $store = useStore<StateInterface>()
-    const quotaLessOneWeek = ref([{ quotaName: [''], lessOneWeekNum: 0 }])
-    const quotaLessOneMonth = ref([{ quotaName: [''], lessOneMonthNum: 0 }])
-    onMounted(() => {
-      void $store.dispatch('quota/updateQuota').then(() => {
-        quotaLessOneWeek.value = $store.getters['quota/lessOneWeek']
-        quotaLessOneMonth.value = $store.getters['quota/lessOneMonth']
-      })
+
+    const quotaLessOneWeek = Object.values($store.state.vm.tables.userQuotaTable.byId).filter(quota => {
+      if (!quota.expiration_time && !quota.deleted) {
+        const diff = Math.abs(new Date(quota.expiration_time).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
+        const days = Math.ceil(diff / (1000 * 3600 * 24)) // 差换算成天数
+        // console.log('in getter days:', it.type, '+', it.expirationTime, '+', days)
+        if (days > 0 && days <= 7) {
+          return true
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
     })
-    // console.log('quotaLessOneWeek:', quotaLessOneWeek)
-    // console.log('quotaLessOneMonth:', quotaLessOneMonth)
-    const warningList = ['本周到期', '本月到期']
+
+    const quotaLessOneMonth = Object.values($store.state.vm.tables.userQuotaTable.byId).filter(quota => {
+      if (!quota.expiration_time && !quota.deleted) {
+        const diff = Math.abs(new Date(quota.expiration_time).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
+        const days = Math.ceil(diff / (1000 * 3600 * 24)) // 差换算成天数
+        if (days > 0 && days <= 30) {
+          return true
+        } else {
+          return false
+        }
+      } else {
+        return false
+      }
+    })
+
     return {
-      warningList,
       quotaLessOneWeek,
       quotaLessOneMonth
     }
@@ -228,6 +158,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .WarningList {
 }
+
 .my-card-big {
   width: 100%;
   // height: calc(100vh - 114px - 67vh);
@@ -236,6 +167,7 @@ export default defineComponent({
   height: 216px;
   // font-size: 1vw;
 }
+
 .inner-card-big {
   width: 90%;
   // width: calc(100vw - 165px - 82vw);
@@ -248,6 +180,7 @@ export default defineComponent({
 .my-card-small {
   width: 100%;
 }
+
 .inner-card-small {
   width: 100%;
 }

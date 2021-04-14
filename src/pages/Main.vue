@@ -1,79 +1,57 @@
 <template>
-  <div class="Main q-pa-xl">
-    <div class="gt-sm">
-      <div class="row justify-between">
-        <!--       <todo-list :todo="todo" @update-unpaid="updateUnpaid" />-->
-        <!-- <todo-list :todo="todo" />-->
-        <div class="col">
-          <warning-list/>
-        </div>
+  <div class="Main">
+    <div class="column">
 
-        <div class="col">
-          <quick-entry/>
+      <div class="col-auto">
+        <div class="row justify-center">
+          <global-header class="content-fixed-width"/>
         </div>
       </div>
 
-      <div class="row justify-around q-pt-md">
-        <!--        <div class="col"><vm-list /></div>-->
-        <div class="col">
-          <quota-list/>
+      <q-separator/>
+
+      <div class="col-auto">
+        <div class="row justify-center">
+          <div class="content-fixed-width">
+
+              <div class="col">
+                <warning-list/>
+              </div>
+
+              <div class="col">
+                <quick-entry/>
+              </div>
+
+              <div class="col">
+                <quota-list/>
+              </div>
+
+          </div>
         </div>
       </div>
 
-      <!-- <div class="row items-center q-gutter-lg q-pt-lg">
-        <div class="col">
-          <obs-list />
-        </div>
-        <div :ratio="8 / 3.5" class="col">
-          <cost-details />
-        </div>
-        <div :ratio="8 / 3.5" class="col">
-           <group-list />
-        </div>
-      </div> -->
-    </div>
-    <div class="lt-md column justify-around">
-      <div class="col">
-        <warning-list/>
-      </div>
-      <div class="col">
-        <quick-entry/>
-      </div>
-      <div class="col q-pt-md">
-        <!--        <vm-list />-->
-      </div>
-      <div class="col q-pt-md">
-        <quota-list/>
-      </div>
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-// import VmList from 'src/components/main/VmList.vue'
-// import TodoList, { ToDoProp } from 'src/components/main/TodoList.vue'
-import WarningList from 'src/components/main/WarningList.vue'
-import QuickEntry from 'src/components/main/QuickEntry.vue'
-// import ObsList from 'src/components/main/ObsList.vue'
-import QuotaList from 'components/main/QuotaList.vue'
-// import CostDetails from 'src/components/main/CostDetails.vue'
-// import GroupList from 'src/components/main/GroupList.vue'
-
 import { useStore } from 'vuex'
 import { StateInterface } from '../store'
+
+import GlobalHeader from 'components/GlobalHeader.vue'
+import WarningList from 'src/components/main/WarningList.vue'
+import QuickEntry from 'src/components/main/QuickEntry.vue'
+import QuotaList from 'components/main/QuotaList.vue'
 
 export default defineComponent({
   name: 'Main',
   components: {
+    GlobalHeader,
     // VmList,
-    // TodoList,
     WarningList,
     QuickEntry,
-    // ObsList,
     QuotaList
-    // CostDetails,
-    // GroupList
   },
   props: {},
   setup () {
