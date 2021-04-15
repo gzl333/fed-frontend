@@ -1,71 +1,110 @@
 <template>
   <div class="WarningList">
-    <div v-if="!vmLessOneWeek ">
+    <div class="text-h6 q-pt-lg q-px-none q-pb-sm">到期预警</div>
+    <q-separator/>
+    <div v-if="!vmLessOneWeek || !vmLessOneMonth || !userQuota">
       正在加载，请稍候或刷新页面
     </div>
-    <div v-else class="my-card-big">
-      <q-card-section>
-        <div class="text-h6 text-weight-bold">资源到期预警</div>
-      </q-card-section>
-      <q-separator/>
-      <q-card-section>
-        <div class="row items-center no-warp">
-          <div class="col">
-            <q-card class="inner-card-big" bordered="false" flat>
-              <q-card-section horizontal>
-                <q-card-section class="col-5 flex flex-center">
-                  <q-icon style="font-size: 2em"
-                  ><i class="fas fa-exclamation-triangle"></i
-                  ></q-icon>
-                </q-card-section>
-                <q-card-section class="q-pt-md q-pb-xs q-px-xs">
-                  <div>本周到期</div>
-                  <q-badge align="top"> 配额</q-badge>
-                  <div style="font-size: 1.5em" class="q-my-xs q-ml-md">
-                    {{
-                      vmLessOneWeek.length
-                    }}
-                    <q-tooltip
-                      :offset="[5, 10]"
-                      v-if="vmLessOneWeek.length"
-                    >
-                      {{ vmLessOneWeek[0].ipv4 }}
-                    </q-tooltip>
-                  </div>
-                </q-card-section>
-              </q-card-section>
-            </q-card>
+    <div v-else>
+      <div class="row q-mt-md q-mb-sm">
+        <div class="col-2">
+          <div align="center" class="q-mx-md q-mt-md">
+            <q-icon size="md" name="settings">
+            </q-icon>
           </div>
+          <div align="center" class="q-mx-sm">资源配额</div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="q-ml-md text-subtitle1 q-mb-sm">您有{{ userQuota.length }}个资源配额已申请成功,请尽快使用！</div>
+            <div class="col-2" align="center">
+              <q-btn
+                color="nord8"
+                label="去使用，创建云主机"
+                dense
+                unelevated
+                flat
+                class="q-ml-md"
+                :to="{ path: '/my/usage/vmcreate' }"
+              />
+            </div>
+          </div>
+          <q-separator/>
+          <div class="row q-mt-md" v-for="(item,index) in userQuota" :key="index">
+            <div align="center" class="col-1  text-subtitle1 text-nord11">{{Math.ceil((Math.abs(new Date(item.expiration_time).getTime() - new Date().getTime())) / (1000 * 3600 * 24))}}天过期</div>
+            <div class="col">
+              <div class="row q-ml-lg">{{item.display}}</div>
+              <div class="row">
+                <div class="col q-ml-sm" >
+                  <q-circular-progress
+                    v-if="item.vcpu_total"
+                    show-value
+                    class="text-light-blue q-ma-lg"
+                    :value="item.vcpu_used"
+                    size="50px"
+                    color="light-blue"
+                  />
+                  <q-circular-progress
+                    v-if="item.ram_total"
+                    show-value
+                    class="text-light-blue q-ma-lg"
+                    :value="item.ram_used"
+                    size="50px"
+                    color="light-blue"
+                  />
+                  <q-circular-progress
+                    v-if="item.disk_size_total"
+                    show-value
+                    class="text-light-blue q-ma-lg"
+                    :value="item.disk_size_used"
+                    size="50px"
+                    color="light-blue"
+                  />
+                  <q-circular-progress
+                    v-if="item.public_ip_total"
+                    show-value
+                    class="text-light-blue q-ma-lg"
+                    :value="item.public_ip_used"
+                    size="50px"
+                    color="light-blue"
+                  />
+                  <q-circular-progress
+                    v-if="item.private_ip_total"
+                    show-value
+                    class="text-light-blue q-ma-lg"
+                    :value="item.private_ip_used"
+                    size="50px"
+                    color="light-blue"
+                  />
+                </div>
 
-          <div class="col">
-            <q-card class="inner-card-big" bordered="false" flat>
-              <q-card-section horizontal>
-                <q-card-section class="col-5 flex flex-center">
-                  <q-icon style="font-size: 2em"
-                  ><i class="fas fa-exclamation-triangle"></i
-                  ></q-icon>
-                </q-card-section>
-                <q-card-section class="q-pt-md q-pb-xs q-px-xs">
-                  <div>本月到期</div>
-                  <q-badge align="top" color="nord14"> 配额</q-badge>
-                  <div class="q-my-xs q-ml-md" style="font-size: 1.5em">
-                    {{
-                      quotaLessOneMonth.length
-                    }}
-                    <q-tooltip
-                      :offset="[5, 10]"
-                      v-if="quotaLessOneMonth.length"
-                    >{{ quotaLessOneMonth[0].quotaName }}
-                    </q-tooltip>
-                  </div>
-                </q-card-section>
-              </q-card-section>
-            </q-card>
+              </div>
+            </div>
           </div>
         </div>
-      </q-card-section>
-    </div>
+      </div>
 
+      <q-separator/>
+
+      <div class="row q-mt-sm q-mb-md">
+        <div class="col-2">
+          <div align="center" class="q-mx-md q-mt-md">
+            <q-icon size="md" name="computer">
+            </q-icon>
+          </div>
+          <div align="center" class="q-mx-sm">云主机</div>
+        </div>
+        <div class="col">
+          <div class="row">
+            <div class="col">
+
+            </div>
+            <div class="col">11</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
   </div>
 </template>
 
@@ -82,11 +121,21 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
+    const userQuota = Object.values($store.state.vm.tables.userQuotaTable.byId).filter(quota => {
+      // 已过期的返回false
+      if (quota.expiration_time && (new Date(quota.expiration_time).getTime() < new Date().getTime())) {
+        return false
+      } else {
+        // 未过期的返回true
+        return true
+      }
+    })
+    console.log('userQuota:', userQuota)
+
     const vmLessOneWeek = Object.values($store.state.vm.tables.userServerTable.byId).filter(server => {
       if (server.expiration_time) {
         const diff = Math.abs(new Date(server.expiration_time).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
         const days = Math.ceil(diff / (1000 * 3600 * 24)) // 差换算成天数
-        // console.log('in getter days:', it.type, '+', it.expirationTime, '+', days)
         if (days > 0 && days <= 7) {
           return true
         } else {
@@ -97,9 +146,9 @@ export default defineComponent({
       }
     })
 
-    const quotaLessOneMonth = Object.values($store.state.vm.tables.userQuotaTable.byId).filter(quota => {
-      if (!quota.expiration_time && !quota.deleted) {
-        const diff = Math.abs(new Date(quota.expiration_time).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
+    const vmLessOneMonth = Object.values($store.state.vm.tables.userServerTable.byId).filter(server => {
+      if (server.expiration_time) {
+        const diff = Math.abs(new Date(server.expiration_time).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
         const days = Math.ceil(diff / (1000 * 3600 * 24)) // 差换算成天数
         if (days > 0 && days <= 30) {
           return true
@@ -113,7 +162,8 @@ export default defineComponent({
 
     return {
       vmLessOneWeek,
-      quotaLessOneMonth
+      vmLessOneMonth,
+      userQuota
     }
   }
 })
@@ -123,7 +173,7 @@ export default defineComponent({
 .WarningList {
 }
 
-.my-card-big {
+.my-card {
   width: 100%;
   // height: calc(100vh - 114px - 67vh);
   width: 41.666666667vw;
@@ -132,7 +182,7 @@ export default defineComponent({
   // font-size: 1vw;
 }
 
-.inner-card-big {
+.inner-card {
   width: 90%;
   // width: calc(100vw - 165px - 82vw);
   // height: calc(100vh - 114px - 77vh);
@@ -141,11 +191,4 @@ export default defineComponent({
   font-size: 0.833333333vw;
 }
 
-.my-card-small {
-  width: 100%;
-}
-
-.inner-card-small {
-  width: 100%;
-}
 </style>

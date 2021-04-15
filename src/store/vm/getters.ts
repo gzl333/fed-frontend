@@ -1,6 +1,12 @@
 import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
-import { NetworkInterface, ServerInterface, VmInterface, ImageInterface, QuotaInterface } from './state'
+import {
+  NetworkInterface,
+  ServerInterface,
+  VmInterface,
+  ImageInterface,
+  QuotaInterface
+} from './state'
 
 const getters: GetterTree<VmInterface, StateInterface> = {
   /* vmlist 使用 */
@@ -104,8 +110,33 @@ const getters: GetterTree<VmInterface, StateInterface> = {
         return false
       }
     })
-  }
+  },
   /* vmcreate使用 */
+
+  /* 首页-在用云主机资源展示（最多8个） */
+  getServers (state): ServerInterface[] {
+    const rows: ServerInterface[] = []
+    let number = 0
+    for (const server of Object.values(state.tables.userServerTable.byId)) {
+      if (number < 8) {
+        rows.push(server)
+        number = number + 1
+      }
+    }
+    return rows
+  },
+  /* 首页-在用云主机资源展示 */
+
+  /* 首页-获取所有数据中心下的服务的数量 */
+  getServicesNumber (state) :number {
+    let num = 0
+    for (const dataCenter of Object.values(state.tables.globalDataCenterTable.byId)) {
+      num = num + dataCenter.services.length
+    }
+    const servicesNum = num
+    return servicesNum
+  }
+  /* 首页-获取所有数据中心下的服务的数量 */
 
 }
 
