@@ -138,8 +138,8 @@
                              :key="quota.id" class="radio"
                              :disable="quota.vcpu_used===quota.vcpu_total ||
                                        quota.ram_used===quota.ram_total ||
-                                       quota.private_ip_used===quota.private_ip_total ||
-                                       quota.public_ip_used===quota.public_ip_total">
+                                       (quota.private_ip_used===quota.private_ip_total &&
+                                       quota.public_ip_used===quota.public_ip_total)">
                       <quota-card :quota="quota"/>
                     </q-radio>
                   </div>
@@ -318,10 +318,7 @@ export default defineComponent({
       radioFlavor.value = flavors.value[0]?.id
       // 选择有余量的配额里的第一项
       radioQuota.value = quotas.value.filter((quota: QuotaInterface) => {
-        if (quota.vcpu_used === quota.vcpu_total ||
-          quota.ram_used === quota.ram_total ||
-          quota.private_ip_used === quota.private_ip_total ||
-          quota.public_ip_used === quota.public_ip_total) {
+        if (quota.vcpu_used === quota.vcpu_total || quota.ram_used === quota.ram_total || (quota.private_ip_used === quota.private_ip_total && quota.public_ip_used === quota.public_ip_total)) {
           return false
         } else {
           return true

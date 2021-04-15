@@ -1,6 +1,6 @@
 <template>
   <div class="WarningList">
-    <div v-if="!quotaLessOneWeek || !quotaLessOneWeek">
+    <div v-if="!vmLessOneWeek ">
       正在加载，请稍候或刷新页面
     </div>
     <div v-else class="my-card-big">
@@ -23,13 +23,13 @@
                   <q-badge align="top"> 配额</q-badge>
                   <div style="font-size: 1.5em" class="q-my-xs q-ml-md">
                     {{
-                      quotaLessOneWeek.length
+                      vmLessOneWeek.length
                     }}
                     <q-tooltip
                       :offset="[5, 10]"
-                      v-if="quotaLessOneWeek.length"
+                      v-if="vmLessOneWeek.length"
                     >
-                      {{ quotaLessOneWeek[0].quotaName }}
+                      {{ vmLessOneWeek[0].ipv4 }}
                     </q-tooltip>
                   </div>
                 </q-card-section>
@@ -62,42 +62,6 @@
               </q-card-section>
             </q-card>
           </div>
-
-          <!-- style="visibility: hidden" -->
-<!--          <div class="col" style="visibility: hidden">-->
-<!--            <q-card class="inner-card-big" bordered="false" flat>-->
-<!--              <q-card-section horizontal>-->
-<!--                <q-card-section class="col-5 flex flex-center">-->
-<!--                  <q-icon style="font-size: 2em"-->
-<!--                  ><i class="fas fa-desktop"></i-->
-<!--                  ></q-icon>-->
-<!--                </q-card-section>-->
-<!--                <q-card-section class="q-pt-md q-pb-xs q-px-xs">-->
-<!--                  <div>本周到期</div>-->
-<!--                  <q-badge align="top" color="nord11"> 虚拟机</q-badge>-->
-<!--                  <div style="font-size: 1.5em" class="q-my-xs q-ml-md">xx</div>-->
-<!--                </q-card-section>-->
-<!--              </q-card-section>-->
-<!--            </q-card>-->
-<!--          </div>-->
-          <!--  style="visibility: hidden" -->
-<!--          <div class="col" style="visibility: hidden">-->
-<!--            <q-card class="inner-card-big" bordered="false" flat>-->
-<!--              <q-card-section horizontal>-->
-<!--                <q-card-section class="col-5 flex flex-center">-->
-<!--                  <q-icon style="font-size: 2em"-->
-<!--                  ><i class="fas fa-desktop"></i-->
-<!--                  ></q-icon>-->
-<!--                </q-card-section>-->
-<!--                <q-card-section class="q-pt-md q-pb-xs q-px-xs">-->
-<!--                  <div>本月到期</div>-->
-<!--                  <q-badge align="top" color="nord13">虚拟机</q-badge>-->
-<!--                  <div style="font-size: 1.5em" class="q-my-xs q-ml-md">xx</div>-->
-<!--                </q-card-section>-->
-<!--              </q-card-section>-->
-<!--            </q-card>-->
-<!--          </div>-->
-
         </div>
       </q-card-section>
     </div>
@@ -118,9 +82,9 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
-    const quotaLessOneWeek = Object.values($store.state.vm.tables.userQuotaTable.byId).filter(quota => {
-      if (!quota.expiration_time && !quota.deleted) {
-        const diff = Math.abs(new Date(quota.expiration_time).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
+    const vmLessOneWeek = Object.values($store.state.vm.tables.userServerTable.byId).filter(server => {
+      if (server.expiration_time) {
+        const diff = Math.abs(new Date(server.expiration_time).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
         const days = Math.ceil(diff / (1000 * 3600 * 24)) // 差换算成天数
         // console.log('in getter days:', it.type, '+', it.expirationTime, '+', days)
         if (days > 0 && days <= 7) {
@@ -148,7 +112,7 @@ export default defineComponent({
     })
 
     return {
-      quotaLessOneWeek,
+      vmLessOneWeek,
       quotaLessOneMonth
     }
   }

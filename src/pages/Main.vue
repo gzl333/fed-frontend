@@ -57,22 +57,8 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
     const currentUser = $store.state.account.cstTrueName
-    // MainTodo
-    // const todoList: ToDoProp = reactive({
-    //   unpaid: 1,
-    //   tosolved: 2,
-    //   quota: 1,
-    //   toconfirmed: 1
-    // })
-    // const todo = toRefs(todoList)
-    // const updateUnpaid = (unpaid: number) => {
-    //   todoList.unpaid = unpaid
-    // }
 
     return {
-      // todo,
-      // updateUnpaid,
-      // updateMonth,
       currentUser
 
     }

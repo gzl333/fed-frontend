@@ -15,7 +15,7 @@
         <q-circular-progress
           show-value
           font-size="12px"
-          :value="( 1 - props.quota.vcpu_used / props.quota.vcpu_total) * 100 "
+          :value="props.quota.vcpu_total===0 ? 0: ( 1 - props.quota.vcpu_used / props.quota.vcpu_total) * 100 "
           size="120px"
           :thickness="0.22"
           color="green"
@@ -23,7 +23,7 @@
           class="q-ma-sm"
         >
           <div v-if="props.quota.vcpu_total===props.quota.vcpu_used" class="text-red">
-            用尽
+            CPU用尽
           </div>
           <div v-else>
             可用CPU{{ props.quota.vcpu_total - props.quota.vcpu_used }}核
@@ -33,7 +33,7 @@
         <q-circular-progress
           show-value
           font-size="12px"
-          :value="(1 - props.quota.ram_used / props.quota.ram_total) * 100 "
+          :value="props.quota.ram_total===0 ? 0 : (1 - props.quota.ram_used / props.quota.ram_total) * 100 "
           size="120px"
           :thickness="0.22"
           color="green"
@@ -41,7 +41,7 @@
           class="q-ma-sm"
         >
           <div v-if="props.quota.ram_total===props.quota.ram_used" class="text-red">
-            用尽
+            内存用尽
           </div>
           <div v-else>
             可用内存{{ props.quota.ram_total - props.quota.ram_used }}MB
@@ -51,7 +51,7 @@
         <q-circular-progress
           show-value
           font-size="12px"
-          :value="(1 -props.quota.private_ip_used / props.quota.private_ip_total) * 100 "
+          :value="props.quota.private_ip_total===0 ? 0 : (1 -props.quota.private_ip_used / props.quota.private_ip_total) * 100 "
           size="120px"
           :thickness="0.22"
           color="green"
@@ -59,7 +59,7 @@
           class="q-ma-sm"
         >
           <div v-if="props.quota.private_ip_total===props.quota.private_ip_used" class="text-red">
-            用尽
+            私网IP用尽
           </div>
           <div v-else>
             可用私网IP{{ props.quota.private_ip_total - props.quota.private_ip_used }}个
@@ -69,7 +69,7 @@
         <q-circular-progress
           show-value
           font-size="12px"
-          :value="(1 - props.quota.public_ip_used/ props.quota.public_ip_total) * 100 "
+          :value="props.quota.public_ip_total===0 ? 0: (1 - props.quota.public_ip_used/ props.quota.public_ip_total) * 100 "
           size="120px"
           :thickness="0.22"
           color="green"
@@ -77,7 +77,7 @@
           class="q-ma-sm"
         >
           <div v-if="props.quota.public_ip_total===props.quota.public_ip_used" class="text-red">
-            用尽
+            公网IP用尽
           </div>
           <div v-else>
             可用公网IP{{ props.quota.public_ip_total - props.quota.public_ip_used }}个
