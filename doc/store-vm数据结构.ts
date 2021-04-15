@@ -1,15 +1,15 @@
-const sampleUsageState = {
+const vm = {
   // 页面本地数据
   pages: {},
   // 扁平结构的表数据
   tables: {
-    statusMap: {}, // todo 云主机状态的映射关系，硬写进去，一般不变
+    statusMap: new Map(), // todo 云主机状态的映射关系，硬写进去，一般不变
     // 以下均为object结构。 不可写为map结构！因vuex不支持对map结构mutation的探测，只支持proxy object
     /*
-    table分为两种：global table，保存系统内部全部相关数据；user table，只保存与用户相关的table
+    table分为两种：global table，保存系统内部全部相关数据；user table，只保存与当前用户相关的table
     */
     // 来源： 来自列举registry -> 无需参数，列举全部datacenter
-    dataCenterTable: {
+    globalDataCenterTable: {
       byId: {
         id1: {
           id: 'id1',
@@ -33,8 +33,21 @@ const sampleUsageState = {
       isLoaded: true
     },
 
+    // 来源：查询flavor 无参数
+    globalFlavorTable: {
+      byId: {
+        id1: {
+          id: 'id1',
+          vcpus: 1,
+          ram: 1024
+        }
+      },
+      allIds: [],
+      isLoaded: true
+    },
+
     // 来源：列举service -> query1: center_id / query2: available_only
-    serviceTable: {
+    userServiceTable: {
       byId: {
         id1: {
           id: 'id1',
@@ -53,36 +66,8 @@ const sampleUsageState = {
       isLoaded: true
     },
 
-    // 来源1：列举servers -> query: service_id
-    // 来源2：查询单个server -> query: server_id 不确定什么场景使用？
-    serverTable: {
-      byId: {
-        id1: {
-          id: 'id1',
-          center_quota: 2, // 1: 服务的私有资源配额，"user_quota"=null; 2: 服务的分享资源配额
-          creation_time: '2021-03-19T03:26:58.793601Z',
-          endpoint_url: 'http://gosc.cstcloud.cn/',
-          image: 'CentOS_Stream',
-          ipv4: '159.226.235.62',
-          name: '6c660b3707304132a787fba87bbfb56b',
-          public_ip: true,
-          vcpus: 1,
-          ram: 1024,
-          service: 'id1', // 关联serviceTable
-          user_quota: 'id1', // 关联userQuotaTable
-          remarks: 'zlguo@cnic.cn', // ->主动更新，patch更新后，resp中带有新的remarks
-
-          // 以下来自不同接口的补充
-          vnc: 'http://159.226.235.2/novnc/?vncid=fdb475ef-544e-4e6f-8691-0557ca8b3ee9', // 单独查询，随着serverTable更新
-          status: 1 // 关联statusMap ->根据操作被动更新，云主机的操作之后，应重新获取状态数据 （增加保证成功的底层机制，即一次操作不成功则自动重试）
-        }
-      },
-      allIds: ['id1'],
-      isLoaded: true
-    },
-
     // 来源：列举network -> query: service_id
-    networkTable: {
+    userNetworkTable: {
       byLocalId: {
         'id1-id2': { // ***与service_id拼接后的id*** 原始id在系统中不唯一
           id: 'id2', // 原始id
@@ -97,8 +82,9 @@ const sampleUsageState = {
       allLocalIds: ['id1-id2'],
       isLoaded: true
     },
+
     // 来源： 列举image -> query: service_id
-    imageTable: {
+    userImageTable: {
       byLocalId: {
         'id1-id2': { // ***与service_id拼接后的id*** 原始id在系统中不唯一
           id: 'id2', // 原始id
@@ -115,21 +101,10 @@ const sampleUsageState = {
       allLocalIds: ['id1-id2'],
       isLoaded: true
     },
-    // 来源：查询flavor 无参数
-    flavorTable: {
-      byId: {
-        id1: {
-          id: 'id1',
-          vcpus: 1,
-          ram: 1024
-        }
-      },
-      allIds: [],
-      isLoaded: true
-    },
+
     // 来源： 查询vpn -> query:service_id
     // 注意： service可以没有VPN ！！！
-    vpnTable: {
+    userVpnTable: {
       byId: {
         id1: {
           id: 'id1', // vpn接口中无id信息，其id与service_id相同
@@ -146,6 +121,7 @@ const sampleUsageState = {
       allIds: ['id1'],
       isLoaded: true
     },
+
     // 来源: 列举uquota -> query1:service_id/query2: usable
     userQuotaTable: {
       byId: {
@@ -182,6 +158,35 @@ const sampleUsageState = {
       allIds: ['id1'],
       isLoaded: true
     },
+
+    // 来源1：列举servers -> query: service_id
+    // 来源2：查询单个server -> query: server_id 不确定什么场景使用？
+    userServerTable: {
+      byId: {
+        id1: {
+          id: 'id1',
+          center_quota: 2, // 1: 服务的私有资源配额，"user_quota"=null; 2: 服务的分享资源配额
+          creation_time: '2021-03-19T03:26:58.793601Z',
+          endpoint_url: 'http://gosc.cstcloud.cn/',
+          image: 'CentOS_Stream',
+          ipv4: '159.226.235.62',
+          name: '6c660b3707304132a787fba87bbfb56b',
+          public_ip: true,
+          vcpus: 1,
+          ram: 1024,
+          service: 'id1', // 关联serviceTable
+          user_quota: 'id1', // 关联userQuotaTable
+          remarks: 'zlguo@cnic.cn', // ->主动更新，patch更新后，resp中带有新的remarks
+
+          // 以下来自不同接口的补充
+          vnc: 'http://159.226.235.2/novnc/?vncid=fdb475ef-544e-4e6f-8691-0557ca8b3ee9', // 单独查询，随着serverTable更新
+          status: 1 // 关联statusMap ->根据操作被动更新，云主机的操作之后，应重新获取状态数据 （增加保证成功的底层机制，即一次操作不成功则自动重试）
+        }
+      },
+      allIds: ['id1'],
+      isLoaded: true
+    },
+
     // 归档的云主机目录
     serverArchiveTable: {
       byId: {
@@ -208,5 +213,4 @@ const sampleUsageState = {
 
 }
 
-console
-  .log(sampleUsageState)
+console.log(vm)

@@ -42,7 +42,12 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
 
     /* my内页所有table加载起始点 */
-    void $store.dispatch('vm/updateVmTable')
+    void $store.dispatch('vm/updateVmTable').then(() => {
+      console.log('$STORE-vm:', $store.state.vm)
+    })
+    void $store.dispatch('applyQuota/updateQuotaApplicationTable').then(() => {
+      console.log('$STORE-applyQuota:', $store.state.applyQuota)
+    })
     /* my内页所有table加载起始点 */
 
     const currentUser = $store.state.account

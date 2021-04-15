@@ -149,7 +149,8 @@ export interface DataCenterInterface {
   'desc': string
 
   // 来自service接口
-  services: string[]
+  userServices: string[] // 用户可用services
+  globalServices: string[] // 全部services
 }
 
 export interface ServiceInterface {
@@ -292,12 +293,11 @@ export interface VmInterface {
       isLoaded: boolean
     }
     // 全局统一的service
-    /*  未实现，暂不需使用
-      globalServiceTable: {
-        byId: Record<string, ServiceInterface>
-        allIds: string[]
-        isLoaded: boolean
-      } */
+    globalServiceTable: {
+      byId: Record<string, ServiceInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
     // 用户可用的service
     userServiceTable: {
       byId: Record<string, ServiceInterface>
@@ -343,7 +343,7 @@ export interface VmInterface {
   }
 }
 
-function vm ():
+function state ():
   VmInterface {
   return {
     pages: {
@@ -361,6 +361,11 @@ function vm ():
         isLoaded: false
       },
       globalFlavorTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      globalServiceTable: {
         byId: {},
         allIds: [],
         isLoaded: false
@@ -404,4 +409,4 @@ function vm ():
   }
 }
 
-export default vm
+export default state

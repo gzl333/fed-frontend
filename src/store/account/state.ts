@@ -45,10 +45,10 @@ export interface AccountInterface {
   }
 }
 
-function account () {
+function state () {
   return {
     isLogin: false
   }
 }
 
-export default account
+export default state

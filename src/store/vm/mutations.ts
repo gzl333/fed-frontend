@@ -55,7 +55,7 @@ const mutation: MutationTree<VmInterface> = {
   storeUserServerTableSingleStatus (state, payload: { serverId: string; status_code: string; }) {
     state.tables.userServerTable.byId[payload.serverId].status = payload.status_code
   },
-  storeUserServerTableFilter (state, filter: string) {
+  storeVmListFilter (state, filter: string) {
     state.pages.vmList.filter = filter
   },
   clearUserServerTable (state) {
@@ -72,9 +72,13 @@ const mutation: MutationTree<VmInterface> = {
     state.tables.userServerTable.isLoaded = true
     // console.log('updating userServerTable')
   },
-  storeGlobalDataCenterTableServicesField (state, payload: { dataCenterId: string; serviceId: string; }) {
-    state.tables.globalDataCenterTable.byId[payload.dataCenterId].services.unshift(payload.serviceId)
-    state.tables.globalDataCenterTable.byId[payload.dataCenterId].services = [...new Set(state.tables.globalDataCenterTable.byId[payload.dataCenterId].services)]
+  storeGlobalDataCenterTableGlobalServices (state, payload: { dataCenterId: string; serviceId: string; }) {
+    state.tables.globalDataCenterTable.byId[payload.dataCenterId].globalServices.unshift(payload.serviceId)
+    state.tables.globalDataCenterTable.byId[payload.dataCenterId].globalServices = [...new Set(state.tables.globalDataCenterTable.byId[payload.dataCenterId].globalServices)]
+  },
+  storeGlobalDataCenterTableUserServices (state, payload: { dataCenterId: string; serviceId: string; }) {
+    state.tables.globalDataCenterTable.byId[payload.dataCenterId].userServices.unshift(payload.serviceId)
+    state.tables.globalDataCenterTable.byId[payload.dataCenterId].userServices = [...new Set(state.tables.globalDataCenterTable.byId[payload.dataCenterId].userServices)]
   },
   storeGlobalDataCenterTable (state, tableObj: Record<string, DataCenterInterface>) {
     // 将dataCenter对象补充至globalDataCenterTable.byId
@@ -85,6 +89,16 @@ const mutation: MutationTree<VmInterface> = {
     // 更新globalDataCenterTable.isLoaded,每次都更新，可以优化
     state.tables.globalDataCenterTable.isLoaded = true
     // console.log('updating globalDataCenterTable')
+  },
+  storeGlobalServiceTable (state, tableObj: Record<string, ServiceInterface>) {
+    // 将service对象补充至globalServiceTable.byId
+    Object.assign(state.tables.globalServiceTable.byId, tableObj)
+    // 更新globalServiceTable.allIds，更新后去重
+    state.tables.globalServiceTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.tables.globalServiceTable.allIds = [...new Set(state.tables.globalServiceTable.allIds)]
+    // 更新globalServiceTable.isLoaded，每次都更新，可以优化
+    state.tables.globalServiceTable.isLoaded = true
+    // console.log('updating globalServiceTable')
   },
   storeUserServiceTable (state, tableObj: Record<string, ServiceInterface>) {
     // 将service对象补充至userServiceTable.byId

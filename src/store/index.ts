@@ -9,6 +9,10 @@ import { AccountInterface } from 'src/store/account/state'
 import vm from './vm'
 import { VmInterface } from 'src/store/vm/state'
 
+import applyQuota from './applyQuota'
+import { ApplyQuotaInterface } from 'src/store/applyQuota/state'
+
+// to delete
 import quota from './quota'
 import { QuotaInterface } from 'src/store/quota/state'
 
@@ -25,20 +29,25 @@ export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
+  // example: ExampleStateInterface
+
   account: AccountInterface,
   vm: VmInterface,
-  quota: QuotaInterface,
+  applyQuota: ApplyQuotaInterface,
 
-  // example: ExampleStateInterface
+  // to delete
+  quota: QuotaInterface
 }
 
 const store = createStore<StateInterface>({
   modules: {
+    // example
     account,
     vm,
-    quota
+    applyQuota,
 
-    // example
+    // to delete
+    quota
   },
 
   // enable strict mode (adds overhead!)

@@ -58,9 +58,9 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
     } else if (to.fullPath.startsWith('/login') && store.state.account.isLogin) {
       // 已经登录，访问/login，重定向到/my
       next({ path: '/my' })
-    } else if (to.meta.myPages && !store.state.account.isLogin) {
+    } else if (to.meta.requireLogin && !store.state.account.isLogin) {
       next({ path: '/' })
-    } else if (!to.meta.myPages && store.state.account.isLogin) {
+    } else if (!to.meta.requireLogin && store.state.account.isLogin) {
       next({ path: '/my' })
     }
     if (to.meta.title) {

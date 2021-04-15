@@ -1,5 +1,5 @@
 <template>
-  <div class="Usage">
+  <div class="Quota">
     <div class="column">
 
       <div class="col-auto">
@@ -16,7 +16,7 @@
           <div class="content-fixed-width">
             <div class="row">
               <div class="text-h6 q-pt-lg q-px-none">
-                在用资源
+                资源配额
               </div>
             </div>
 
@@ -30,55 +30,36 @@
                 >
                   <q-route-tab
                     class="q-px-none q-py-md q-mr-md"
-                    name="vm"
-                    icon="computer"
-                    label="云主机"
+                    name="list"
+                    icon="task_alt"
+                    label="已有配额"
                     :ripple="false"
-                    to="/my/usage/vm"
+                    to="/my/quota/list"
                     exact
                   />
                   <q-route-tab
-                    disable
                     class="q-px-none q-py-md q-mx-md"
-                    name="disk"
-                    icon="fas fa-compact-disc"
-                    label="云硬盘"
+                    name="application"
+                    icon="description"
+                    label="配额申请"
                     :ripple="false"
-                    to="/my/usage/vd"
+                    to="/my/quota/application"
                     exact
                   />
                   <q-route-tab
-                    disable
                     class="q-px-none q-py-md q-mx-md"
-                    name="obs"
-                    icon="fas fa-database"
-                    label="对象存储"
+                    name="manage"
+                    icon="rule"
+                    label="配额审批"
                     :ripple="false"
-                    to="/my/usage/obs"
-                    exact
-                  />
-                  <q-route-tab
-                    class="q-px-none q-py-md q-mx-sm"
-                    name="vpn"
-                    icon="vpn_lock"
-                    label="VPN"
-                    :ripple="false"
-                    to="/my/usage/vpn"
+                    to="/my/quota/manage"
                     exact
                   />
                 </q-tabs>
               </div>
 
               <div class="col-1">
-                <!--                <q-btn class="btn-add q-pa-none q-ma-none shadow-10" round :ripple="false" size="lg" icon="add"-->
-                <!--                       color="primary" :to="{ path: '/my/usage/vmcreate' }">-->
-                <!--                  <q-tooltip>-->
-                <!--                    新建云主机-->
-                <!--                  </q-tooltip>-->
-                <!--                </q-btn>-->
-
-                <global-add-button />
-
+                <global-add-button/>
               </div>
             </div>
           </div>
@@ -99,7 +80,6 @@
       </div>
 
     </div>
-
   </div>
 </template>
 
@@ -109,7 +89,7 @@ import GlobalHeader from 'components/GlobalHeader.vue'
 import GlobalAddButton from 'components/GlobalAddButton.vue'
 
 export default defineComponent({
-  name: 'UsageLayout',
+  name: 'Quota',
   components: {
     GlobalHeader,
     GlobalAddButton
@@ -117,15 +97,14 @@ export default defineComponent({
   props: {},
   setup () {
     return {
-      activeTab: ref('vm'),
-      fabButton: ref(false)
+      activeTab: ref('list')
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.Usage {
+.Quota {
 }
 
 .btn-add {

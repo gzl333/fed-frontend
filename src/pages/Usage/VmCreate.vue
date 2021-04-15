@@ -48,7 +48,7 @@
                     </div>
                     <div class="col item-radios">
                       <q-radio
-                        v-for="service in dataCenter.services.map((serviceId) => $store.state.vm.tables.userServiceTable.byId[serviceId])"
+                        v-for="service in dataCenter.userServices.map((serviceId) => $store.state.vm.tables.userServiceTable.byId[serviceId])"
                         dense v-model="radioService"
                         :val="service.id" :label="service.name" :key="service.id" class="radio"/>
                     </div>
@@ -284,6 +284,9 @@ export default defineComponent({
     const $router = useRouter()
     const $q = useQuasar()
 
+    // 强制更新userQuotaTable，不顾isLoaded。更新时前置serviceId等table已经存在。
+    void $store.dispatch('vm/updateUserQuotaTable')
+
     // radio选项数据，根据所选择serviceId建立
     // //全局数据
     const dataCenters = computed(() => Object.values($store.state.vm.tables.globalDataCenterTable.byId))
@@ -312,18 +315,19 @@ export default defineComponent({
     const inputRemarks = ref('')
 
     // radioService选择变化时，更新后面所有radio的默认选择。
-    watch(radioService, () => {
+    watch([radioService, $store.state.vm.tables.userQuotaTable], () => {
       radioNetwork.value = privateNetworks.value.length > 0 ? privateNetworks.value[0]?.id : publicNetworks.value[0]?.id
       radioImage.value = images.value[0]?.id
       radioFlavor.value = flavors.value[0]?.id
       // 选择有余量的配额里的第一项
       radioQuota.value = quotas.value.filter((quota: QuotaInterface) => {
-        if (quota.vcpu_used === quota.vcpu_total || quota.ram_used === quota.ram_total || (quota.private_ip_used === quota.private_ip_total && quota.public_ip_used === quota.public_ip_total)) {
+        if (quota.vcpu_used === quota.vcpu_total || quota.ram_used === quota.ram_total ||
+          (quota.private_ip_used === quota.private_ip_total && quota.public_ip_used === quota.public_ip_total)) {
           return false
         } else {
           return true
         }
-      })[0].id
+      })[0]?.id
     })
 
     // radioService的默认选择

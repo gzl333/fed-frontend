@@ -34,7 +34,11 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     }
     if (!context.state.tables.globalDataCenterTable.isLoaded) {
       void context.dispatch('updateGlobalDataCenterTable').then(() => {
-        // userServiceTable依赖globalDataCenterTable更新serviceTable时会补充dataCenterTable内容
+        // globalServiceTable依赖globalDataCenterTable。更新serviceTable时会补充globalServices内容
+        if (!context.state.tables.globalServiceTable.isLoaded) {
+          void context.dispatch('updateGlobalServiceTable')
+        }
+        // userServiceTable依赖globalDataCenterTable。更新serviceTable时会补充userServices内容
         if (!context.state.tables.userServiceTable.isLoaded) {
           void context.dispatch('updateUserServiceTable').then(() => {
             // 获取依赖userServiceTable的表
@@ -50,8 +54,6 @@ const actions: ActionTree<VmInterface, StateInterface> = {
             if (!context.state.tables.userQuotaTable.isLoaded) {
               void context.dispatch('updateUserQuotaTable')
             }
-          }).then(() => {
-            console.log('store-vm:', context.state)
           })
         }
       })
@@ -320,8 +322,9 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     const dataCenter = new schema.Entity('dataCenter', {})
     respDataCenters.data.registries.forEach((data: Record<string, never>) => {
       const normalizedData = normalize(data, dataCenter)
-      // 添加上services字段
-      Object.values(normalizedData.entities.dataCenter!)[0].services = []
+      // 添加上userServices/globalServices字段
+      Object.values(normalizedData.entities.dataCenter!)[0].userServices = []
+      Object.values(normalizedData.entities.dataCenter!)[0].globalServices = []
       context.commit('storeGlobalDataCenterTable', normalizedData.entities.dataCenter)
     })
     // console.log(context.state.globalDataCenterTable)
@@ -332,6 +335,26 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     return response
   },
   /*  globalDataCenterTable */
+
+  /*  globalServiceTable */
+  async updateGlobalServiceTable (context) {
+    // 发送请求
+    const respService = await context.dispatch('fetchService')
+    // 将响应normalize，存入state里的serviceTable
+    const data_center = new schema.Entity('data_center')
+    const service = new schema.Entity('service', { data_center })
+    respService.data.results.forEach((data: Record<string, never>) => {
+      const normalizedData = normalize(data, service)
+      context.commit('storeGlobalServiceTable', normalizedData.entities.service)
+
+      // 将本serviceId补充进对应dataCenter的globalServices字段
+      context.commit('storeGlobalDataCenterTableGlobalServices', {
+        dataCenterId: Object.values(normalizedData.entities.service!)[0].data_center,
+        serviceId: Object.values(normalizedData.entities.service!)[0].id
+      })
+    })
+  },
+  /*  globalServiceTable */
 
   /*  userServiceTable */
   async updateUserServiceTable (context) {
@@ -344,8 +367,8 @@ const actions: ActionTree<VmInterface, StateInterface> = {
       const normalizedData = normalize(data, service)
       context.commit('storeUserServiceTable', normalizedData.entities.service)
 
-      // 将本serviceId补充进对应dataCenter的services字段
-      context.commit('storeGlobalDataCenterTableServicesField', {
+      // 将本serviceId补充进对应dataCenter的userServices字段
+      context.commit('storeGlobalDataCenterTableUserServices', {
         dataCenterId: Object.values(normalizedData.entities.service!)[0].data_center,
         serviceId: Object.values(normalizedData.entities.service!)[0].id
       })

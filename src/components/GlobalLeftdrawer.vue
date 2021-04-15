@@ -44,6 +44,20 @@
             </q-item-section>
           </q-item>
 
+          <q-item
+            clickable
+            :active="activeItem === 'quota'"
+            @click="activeItem = 'quota'"
+            active-class="active-item"
+            to='/my/quota'
+          >
+
+            <q-item-section class="column items-center">
+              <q-icon name="source" size="lg"/>
+              <div class="text-c-blue5">资源配额</div>
+            </q-item-section>
+          </q-item>
+
           <q-separator/>
 
           <q-item clickable disable class="text-center">
@@ -74,12 +88,12 @@
             </q-item-section>
           </q-item>
 
-          <q-item clickable disable>
-            <q-item-section class="column items-center">
-              <q-icon name="build_circle" size="lg"/>
-              <div class="text-c-blue5">资源管理</div>
-            </q-item-section>
-          </q-item>
+          <!--          <q-item clickable disable>-->
+          <!--            <q-item-section class="column items-center">-->
+          <!--              <q-icon name="build_circle" size="lg"/>-->
+          <!--              <div class="text-c-blue5">资源管理</div>-->
+          <!--            </q-item-section>-->
+          <!--          </q-item>-->
 
           <q-item clickable disable>
             <q-item-section class="column items-center">

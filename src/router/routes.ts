@@ -6,7 +6,7 @@ const routes: RouteRecordRaw[] = [
     component: () => import('layouts/HomeLayout.vue'),
     meta: {
       title: '中国科技云联邦',
-      myPages: false
+      requireLogin: false
     }
   },
   // {
@@ -14,7 +14,7 @@ const routes: RouteRecordRaw[] = [
   //   component: () => import('layouts/HomeLayout.vue'),
   //   meta: {
   //     title: '中国科技云联邦',
-  //     myPages: false
+  //     requireLogin: false
   //   },
   //   beforeEnter: (to/*, from */) => {
   //     const code = to.fullPath.slice(12)
@@ -32,7 +32,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/Main.vue'),
         meta: {
           title: '我的首页-中国科技云联邦',
-          myPages: true
+          requireLogin: true
         }
       },
       {
@@ -46,44 +46,82 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'vm',
             meta: {
-              myPages: true
+              requireLogin: true
             },
             component: () => import('pages/Usage/Vm.vue')
           },
           {
             path: 'vmcreate',
             meta: {
-              myPages: true
+              requireLogin: true
             },
             component: () => import('pages/Usage/VmCreate.vue')
           },
           {
             path: 'vmdetail/:id', // serverId 动态路由匹配
             meta: {
-              myPages: true
+              requireLogin: true
             },
             component: () => import('pages/Usage/VmDetail.vue')
           },
           {
             path: 'vd',
             meta: {
-              myPages: true
+              requireLogin: true
             },
             component: () => import('pages/Usage/Vd.vue')
           },
           {
             path: 'obs',
             meta: {
-              myPages: true
+              requireLogin: true
             },
             component: () => import('pages/Usage/Obs.vue')
           },
           {
             path: 'vpn',
             meta: {
-              myPages: true
+              requireLogin: true
             },
             component: () => import('pages/Usage/Vpn.vue')
+          }
+        ]
+      },
+      {
+        path: 'quota',
+        component: () => import('pages/Quota/Quota.vue'),
+        redirect: '/my/quota/list',
+        meta: {
+          title: '配额管理-中国科技云联邦'
+        },
+        children: [
+          {
+            path: 'list',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Quota/QuotaList.vue')
+          },
+          {
+            path: 'application',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Quota/ApplicationList.vue')
+          },
+          {
+            path: 'apply',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Quota/Apply.vue')
+          },
+          {
+            path: 'manage',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Quota/Manage.vue')
           }
         ]
       }
