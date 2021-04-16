@@ -4,11 +4,11 @@
       flat
       card-class=""
       table-class="text-nord0"
-      table-header-class="server-table-header bg-grey-2"
+      table-header-class="bg-grey-2"
       :rows="rows"
       :columns="columns"
       row-key="name"
-      no-data-label="所选择节点中无可供使用的云主机"
+      no-data-label="暂无可用配额"
       hide-pagination
       :pagination="paginationTable"
     >
@@ -51,7 +51,8 @@
         >
 
           <q-td key="service" :props="props">
-            {{ $store.state.vm.tables.userServiceTable.byId[props.row.service]?.name }}
+            <div>{{ $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.userServiceTable.byId[props.row.service]?.data_center]?.name }}</div>
+            <div>{{ $store.state.vm.tables.userServiceTable.byId[props.row.service]?.name }}</div>
           </q-td>
 
           <q-td key="duration_days" :props="props">
@@ -59,44 +60,77 @@
           </q-td>
 
           <q-td key="cpu" :props="props">
-            {{ props.row.vcpu_total }}核
+            <q-circular-progress
+              show-value
+              font-size="12px"
+              :value=" props.row.vcpu_total && (1 - props.row.vcpu_used/ props.row.vcpu_total) * 100 "
+              size="80px"
+              :thickness="0.22"
+              color="light-green"
+              track-color="grey-3"
+              class="q-ma-sm"
+            >
+              <div>{{ props.row.vcpu_total - props.row.vcpu_used }}/{{ props.row.vcpu_total }}核</div>
+            </q-circular-progress>
           </q-td>
           <q-td key="ram" :props="props">
-            {{ props.row.ram_total }}
+            <q-circular-progress
+              show-value
+              font-size="12px"
+              :value=" props.row.ram_total && (1 - props.row.ram_used/ props.row.ram_total) * 100 "
+              size="80px"
+              :thickness="0.22"
+              color="light-green"
+              track-color="grey-3"
+              class="q-ma-sm"
+            >
+              <div>{{ (props.row.ram_total - props.row.ram_used)/1024 }}/{{ props.row.ram_total/1024 }}GB</div>
+            </q-circular-progress>
           </q-td>
           <q-td key="private_ip" :props="props">
-            {{ props.row.private_ip_total }}
+            <q-circular-progress
+              show-value
+              font-size="12px"
+              :value=" props.row.private_ip_total && (1 - props.row.private_ip_used/ props.row.private_ip_total) * 100 "
+              size="80px"
+              :thickness="0.22"
+              color="light-green"
+              track-color="grey-3"
+              class="q-ma-sm"
+            >
+              <div>{{ props.row.private_ip_total - props.row.private_ip_used }}/{{ props.row.private_ip_total }}个</div>
+            </q-circular-progress>
           </q-td>
           <q-td key="public_ip" :props="props">
             <q-circular-progress
               show-value
               font-size="12px"
-              :value=" props.row.public_ip_total===0 ? 0 : (1 - props.row.public_ip_used/ props.row.public_ip_total) * 100 "
+              :value=" props.row.public_ip_total && (1 - props.row.public_ip_used/ props.row.public_ip_total) * 100 "
               size="80px"
               :thickness="0.22"
-              color="green"
+              color="light-green"
               track-color="grey-3"
               class="q-ma-sm"
             >
-              <div v-if="props.row.public_ip_total===props.row.public_ip_used" class="text-red">
-                用尽
-              </div>
-              <div v-else>
-                可用{{ props.row.public_ip_total - props.row.public_ip_used }}个
-              </div>
+              <div>{{ props.row.public_ip_total - props.row.public_ip_used }}/{{ props.row.public_ip_total }}个</div>
             </q-circular-progress>
-            <div>
-              共{{ props.row.public_ip_total }}个
-            </div>
           </q-td>
           <q-td key="disk" :props="props">
-            {{ props.row.disk_size_total }}
+            <q-circular-progress
+              show-value
+              font-size="12px"
+              :value=" props.row.disk_size_total && (1 - props.row.disk_size_used/ props.row.disk_size_total) * 100 "
+              size="80px"
+              :thickness="0.22"
+              color="light-green"
+              track-color="grey-3"
+              class="q-ma-sm"
+            >
+              <div>{{ props.row.disk_size_total - props.row.disk_size_used }}/{{ props.row.disk_size_total }}GB</div>
+            </q-circular-progress>
           </q-td>
           <q-td key="expiration_time" :props="props">
             {{ props.row.expiration_time }}
-          </q-td>
-          <q-td key="status" :props="props">
-            {{ props.row.deleted }}
           </q-td>
         </q-tr>
       </template>
@@ -169,17 +203,20 @@ export default defineComponent({
         label: '配额过期时间',
         field: 'expiration_time',
         align: 'center'
-      },
-      {
-        name: 'status',
-        label: '配额状态',
-        field: 'status',
-        align: 'center'
       }
     ]
     // 获取quota列表数据
     const rows = computed(() => Object.values($store.state.vm.tables.userQuotaTable.byId))
 
+    // q-pagination 所需配置对象
+    const paginationTable = ref({
+      // sortBy: 'desc',
+      // descending: false,
+      page: 1,
+      rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
+    })
+
+    // hover
     const hoverRow = ref('')
     const onMouseEnterRow = (rowName: string) => {
       hoverRow.value = rowName
@@ -188,6 +225,7 @@ export default defineComponent({
       hoverRow.value = ''
     }
     return {
+      paginationTable,
       columns,
       rows,
       onMouseEnterRow,

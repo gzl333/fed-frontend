@@ -2,20 +2,31 @@ import { MutationTree } from 'vuex'
 import { ApplicationQuotaInterface, ApplyQuotaInterface } from './state'
 
 const mutation: MutationTree<ApplyQuotaInterface> = {
-  storeQuotaListFilter (state, filter: string) {
-    state.pages.quotaList.filter = filter
+  // 删除单一 quota application
+  deleteUserQuotaApplicationTable (state, apply_id: string) {
+    const currentTable = state.tables.userQuotaApplicationTable
+    currentTable.allIds = currentTable.allIds.filter(id => id !== apply_id)
+    delete currentTable.byId[apply_id]
+    if (currentTable.allIds.length === 0) {
+      currentTable.isLoaded = false
+    }
+  },
+  storeApplicationListFilter (state, filter: string) {
+    state.pages.applicationList.filter = filter
   },
   storeAdminQuotaApplicationTable (state, tableObj: Record<string, ApplicationQuotaInterface>) {
-    Object.assign(state.tables.adminQuotaApplicationTable.byId, tableObj)
-    state.tables.adminQuotaApplicationTable.allIds.unshift(Object.keys(tableObj)[0])
-    state.tables.adminQuotaApplicationTable.allIds = [...new Set(state.tables.adminQuotaApplicationTable.allIds)]
-    state.tables.adminQuotaApplicationTable.isLoaded = true
+    const currentTable = state.tables.adminQuotaApplicationTable
+    Object.assign(currentTable.byId, tableObj)
+    currentTable.allIds.unshift(Object.keys(tableObj)[0])
+    currentTable.allIds = [...new Set(currentTable.allIds)]
+    currentTable.isLoaded = true
   },
   storeUserQuotaApplicationTable (state, tableObj: Record<string, ApplicationQuotaInterface>) {
-    Object.assign(state.tables.userQuotaApplicationTable.byId, tableObj)
-    state.tables.userQuotaApplicationTable.allIds.unshift(Object.keys(tableObj)[0])
-    state.tables.userQuotaApplicationTable.allIds = [...new Set(state.tables.userQuotaApplicationTable.allIds)]
-    state.tables.userQuotaApplicationTable.isLoaded = true
+    const currentTable = state.tables.userQuotaApplicationTable
+    Object.assign(currentTable.byId, tableObj)
+    currentTable.allIds.unshift(Object.keys(tableObj)[0])
+    currentTable.allIds = [...new Set(currentTable.allIds)]
+    currentTable.isLoaded = true
   }
 }
 

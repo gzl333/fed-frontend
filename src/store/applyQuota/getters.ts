@@ -1,24 +1,24 @@
 import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
-import { ApplyQuotaInterface } from './state'
-// import { QuotaInterface } from 'src/store/vm/state'
+import { ApplicationQuotaInterface, ApplyQuotaInterface } from './state'
 
 const getters: GetterTree<ApplyQuotaInterface, StateInterface> = {
-  // getUserQuotasByFilter (state, getters, rootstate): QuotaInterface[] {
-  //   // 根据用户选择的filter来返回quota数组
-  //   // 当前选择的filter位于state.vm.pages.quotaList.filter，利用quotaList中的watch来修改
-  //   if (state.pages.quotaList.filter === '0') {
-  //     return Object.values(rootstate.vm.tables.userQuotaTable.byId)
-  //   } else {
-  //     const rows: QuotaInterface[] = []
-  //     for (const quota of Object.values(rootstate.vm.tables.userQuotaTable.byId)) {
-  //       if (quota.status === state.pages.quotaList.filter) {
-  //         rows.push(quota)
-  //       }
-  //     }
-  //     return rows
-  //   }
-  // }
+
+  // 根据用户选择的filter来返回application数组
+  getUserApplicationsByFilter (state): ApplicationQuotaInterface[] {
+    // 当前选择的filter位于state.applyQuota.applicationList.filter，利用applicationList页面中的watch来修改
+    if (state.pages.applicationList.filter === '0') {
+      return Object.values(state.tables.userQuotaApplicationTable.byId)
+    } else {
+      const rows: ApplicationQuotaInterface[] = []
+      for (const application of Object.values(state.tables.userQuotaApplicationTable.byId)) {
+        if (application.status === state.pages.applicationList.filter) {
+          rows.push(application)
+        }
+      }
+      return rows
+    }
+  }
 }
 
 export default getters

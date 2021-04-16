@@ -269,7 +269,7 @@ export default defineComponent({
       label: '全部服务节点',
       value: '0'
     })
-    $store.commit('vm/storeVmListFilter', '0') // 能不能去掉？
+    $store.commit('vm/storeVmListFilter', '0') // 不能去掉！从其它界面重新进入时必须设置这个值
     watch(serviceSelection, () => {
       $store.commit('vm/storeVmListFilter', serviceSelection.value.value)
     })

@@ -32,7 +32,7 @@
                     class="q-px-none q-py-md q-mr-md"
                     name="list"
                     icon="task_alt"
-                    label="已有配额"
+                    label="现有配额"
                     :ripple="false"
                     to="/my/quota/list"
                     exact
@@ -41,7 +41,7 @@
                     class="q-px-none q-py-md q-mx-md"
                     name="application"
                     icon="description"
-                    label="配额申请"
+                    label="申请记录"
                     :ripple="false"
                     to="/my/quota/application"
                     exact

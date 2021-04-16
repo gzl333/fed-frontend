@@ -19,16 +19,22 @@ export interface ApplicationQuotaInterface {
 export interface ApplyQuotaInterface {
   // eslint-disable-next-line @typescript-eslint/ban-types
   pages: {
-    quotaList: { filter: string }
+    applicationList: { filter: string }
   }
   // eslint-disable-next-line @typescript-eslint/ban-types
   tables: {
-    // 用户自己提出的quota申请
+    // 用户自己提出的quota申请，只保存undeleted
     userQuotaApplicationTable: {
       byId: Record<string, ApplicationQuotaInterface>
       allIds: string[]
       isLoaded: boolean
     }
+    // 用户自己提出的quota申请，只保存deleted，回收站用
+    // userQuotaApplicationDeletedTable: {
+    //   byId: Record<string, ApplicationQuotaInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
     // 管理员有权限审批的quota申请
     adminQuotaApplicationTable: {
       byId: Record<string, ApplicationQuotaInterface>
@@ -41,7 +47,7 @@ export interface ApplyQuotaInterface {
 function state (): ApplyQuotaInterface {
   return {
     pages: {
-      quotaList: { filter: '0' }
+      applicationList: { filter: '0' }
     },
     tables: {
       userQuotaApplicationTable: {

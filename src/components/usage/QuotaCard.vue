@@ -15,10 +15,10 @@
         <q-circular-progress
           show-value
           font-size="12px"
-          :value="props.quota.vcpu_total===0 ? 0: ( 1 - props.quota.vcpu_used / props.quota.vcpu_total) * 100 "
+          :value="props.quota.vcpu_total && ( 1 - props.quota.vcpu_used / props.quota.vcpu_total) * 100 "
           size="120px"
           :thickness="0.22"
-          color="green"
+          color="light-green"
           track-color="grey-3"
           class="q-ma-sm"
         >
@@ -33,10 +33,10 @@
         <q-circular-progress
           show-value
           font-size="12px"
-          :value="props.quota.ram_total===0 ? 0 : (1 - props.quota.ram_used / props.quota.ram_total) * 100 "
+          :value="props.quota.ram_total && (1 - props.quota.ram_used / props.quota.ram_total) * 100 "
           size="120px"
           :thickness="0.22"
-          color="green"
+          color="light-green"
           track-color="grey-3"
           class="q-ma-sm"
         >
@@ -51,10 +51,10 @@
         <q-circular-progress
           show-value
           font-size="12px"
-          :value="props.quota.private_ip_total===0 ? 0 : (1 -props.quota.private_ip_used / props.quota.private_ip_total) * 100 "
+          :value="props.quota.private_ip_total && (1 -props.quota.private_ip_used / props.quota.private_ip_total) * 100 "
           size="120px"
           :thickness="0.22"
-          color="green"
+          color="light-green"
           track-color="grey-3"
           class="q-ma-sm"
         >
@@ -69,10 +69,10 @@
         <q-circular-progress
           show-value
           font-size="12px"
-          :value="props.quota.public_ip_total===0 ? 0: (1 - props.quota.public_ip_used/ props.quota.public_ip_total) * 100 "
+          :value="props.quota.public_ip_total && (1 - props.quota.public_ip_used/ props.quota.public_ip_total) * 100 "
           size="120px"
           :thickness="0.22"
-          color="green"
+          color="light-green"
           track-color="grey-3"
           class="q-ma-sm"
         >
