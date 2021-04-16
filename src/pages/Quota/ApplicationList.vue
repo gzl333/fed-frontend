@@ -104,7 +104,7 @@
             </div>
             <div v-if="props.row.status === 'wait'">
               <q-btn label="取消申请" flat dense padding="none" color="primary"
-                     @click="$store.dispatch('applyQuota/cancelAndStoreQuotaApplication', props.row.id)"
+                     @click="$store.dispatch('applyQuota/cancelAndUpdateQuotaApplication', props.row.id)"
               />
             </div>
             <div v-if="props.row.status !== 'wait'">
