@@ -47,6 +47,7 @@
                     exact
                   />
                   <q-route-tab
+                    v-if="isQuotaAdmin"
                     class="q-px-none q-py-md q-mx-md"
                     name="manage"
                     icon="rule"
@@ -84,9 +85,11 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import GlobalHeader from 'components/GlobalHeader.vue'
 import GlobalAddButton from 'components/GlobalAddButton.vue'
+import { useStore } from 'vuex'
+import { StateInterface } from 'src/store'
 
 export default defineComponent({
   name: 'Quota',
@@ -96,8 +99,12 @@ export default defineComponent({
   },
   props: {},
   setup () {
+    const $store = useStore<StateInterface>()
+    // 根据adminQuotaApplicationTable是否为空来判断当前用户是否有权限审批quota，是否显示审批tab
+    const isQuotaAdmin = computed(() => !!$store.state.applyQuota.tables.adminQuotaApplicationTable.allIds.length)
     return {
-      activeTab: ref('list')
+      activeTab: ref('list'),
+      isQuotaAdmin
     }
   }
 })

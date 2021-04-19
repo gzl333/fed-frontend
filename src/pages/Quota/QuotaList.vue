@@ -60,7 +60,8 @@
           </q-td>
 
           <q-td key="cpu" :props="props">
-            <q-circular-progress
+            <div v-if="props.row.vcpu_total === 0">无</div>
+            <q-circular-progress v-else
               show-value
               font-size="12px"
               :value=" props.row.vcpu_total && (1 - props.row.vcpu_used/ props.row.vcpu_total) * 100 "
@@ -70,11 +71,15 @@
               track-color="grey-3"
               class="q-ma-sm"
             >
-              <div>{{ props.row.vcpu_total - props.row.vcpu_used }}/{{ props.row.vcpu_total }}核</div>
+              <div v-if="props.row.vcpu_total===props.row.vcpu_used" class="text-red">
+                用尽
+              </div>
+              <div v-else>{{ props.row.vcpu_total - props.row.vcpu_used }}/{{ props.row.vcpu_total }}核</div>
             </q-circular-progress>
           </q-td>
           <q-td key="ram" :props="props">
-            <q-circular-progress
+            <div v-if="props.row.ram_total === 0">无</div>
+            <q-circular-progress v-else
               show-value
               font-size="12px"
               :value=" props.row.ram_total && (1 - props.row.ram_used/ props.row.ram_total) * 100 "
@@ -84,11 +89,17 @@
               track-color="grey-3"
               class="q-ma-sm"
             >
-              <div>{{ (props.row.ram_total - props.row.ram_used)/1024 }}/{{ props.row.ram_total/1024 }}GB</div>
+              <div v-if="props.row.ram_total===props.row.ram_used" class="text-red">
+                用尽
+              </div>
+              <div v-else>
+                {{ (props.row.ram_total - props.row.ram_used)/1024 }}/{{ props.row.ram_total/1024 }}GB
+              </div>
             </q-circular-progress>
           </q-td>
           <q-td key="private_ip" :props="props">
-            <q-circular-progress
+            <div v-if="props.row.private_ip_total === 0">无</div>
+            <q-circular-progress v-else
               show-value
               font-size="12px"
               :value=" props.row.private_ip_total && (1 - props.row.private_ip_used/ props.row.private_ip_total) * 100 "
@@ -98,11 +109,15 @@
               track-color="grey-3"
               class="q-ma-sm"
             >
-              <div>{{ props.row.private_ip_total - props.row.private_ip_used }}/{{ props.row.private_ip_total }}个</div>
+              <div v-if="props.row.private_ip_total===props.row.private_ip_used" class="text-red">
+                用尽
+              </div>
+              <div v-else>{{ props.row.private_ip_total - props.row.private_ip_used }}/{{ props.row.private_ip_total }}个</div>
             </q-circular-progress>
           </q-td>
           <q-td key="public_ip" :props="props">
-            <q-circular-progress
+            <div v-if="props.row.public_ip_total === 0">无</div>
+            <q-circular-progress v-else
               show-value
               font-size="12px"
               :value=" props.row.public_ip_total && (1 - props.row.public_ip_used/ props.row.public_ip_total) * 100 "
@@ -112,11 +127,15 @@
               track-color="grey-3"
               class="q-ma-sm"
             >
-              <div>{{ props.row.public_ip_total - props.row.public_ip_used }}/{{ props.row.public_ip_total }}个</div>
+              <div v-if="props.row.public_ip_total===props.row.public_ip_used" class="text-red">
+                用尽
+              </div>
+              <div v-else>{{ props.row.public_ip_total - props.row.public_ip_used }}/{{ props.row.public_ip_total }}个</div>
             </q-circular-progress>
           </q-td>
           <q-td key="disk" :props="props">
-            <q-circular-progress
+            <div v-if="props.row.disk_size_total === 0">无</div>
+            <q-circular-progress v-else
               show-value
               font-size="12px"
               :value=" props.row.disk_size_total && (1 - props.row.disk_size_used/ props.row.disk_size_total) * 100 "
@@ -126,7 +145,10 @@
               track-color="grey-3"
               class="q-ma-sm"
             >
-              <div>{{ props.row.disk_size_total - props.row.disk_size_used }}/{{ props.row.disk_size_total }}GB</div>
+              <div v-if="props.row.disk_size_total===props.row.disk_size_used" class="text-red">
+                用尽
+              </div>
+              <div v-else>{{ props.row.disk_size_total - props.row.disk_size_used }}/{{ props.row.disk_size_total }}GB</div>
             </q-circular-progress>
           </q-td>
           <q-td key="expiration_time" :props="props">
@@ -153,6 +175,7 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
+    // todo userQuotaApplicationTable数据更新来自后台，进入页面后应强制更新table,刷新quota状态
 
     // quota列表分栏定义
     const columns = [

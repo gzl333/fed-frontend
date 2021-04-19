@@ -37,7 +37,6 @@ export default defineComponent({
 
 .btn-add {
   float: right;
-  top: 33px;
-  right: 20px;
+  transform: translate(-30%, 65%);
 }
 </style>

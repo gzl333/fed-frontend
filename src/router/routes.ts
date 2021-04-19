@@ -92,7 +92,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/Quota/Quota.vue'),
         redirect: '/my/quota/list',
         meta: {
-          title: '配额管理-中国科技云联邦'
+          title: '资源配额-中国科技云联邦'
         },
         children: [
           {

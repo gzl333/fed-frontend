@@ -19,14 +19,102 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   },
   /* 初次获取全部applyQuota模块Table，已有则自动忽略 */
 
+  /* 修改配额申请 */
+  async patchAndUpdateUserQuotaApplicationTable (context, payload: {
+    apply_id: string;
+    data: {
+      service_id: string;
+      duration_days: number;
+      vcpu: number;
+      ram: number;
+      private_ip: number;
+      public_ip: number;
+      disk_size: number;
+      company: string;
+      contact: string;
+      purpose: string;
+    }
+  }) {
+    const respPatch = await context.dispatch('patchQuotaApplication', payload)
+    const service = new schema.Entity('service')
+    const quotaApplication = new schema.Entity('quotaApplication', { service })
+    const normalizedData = normalize(respPatch.data, quotaApplication)
+    context.commit('storeUserQuotaApplicationTable', normalizedData.entities.quotaApplication)
+  },
+  async patchQuotaApplication (context, payload: {
+    apply_id: string;
+    data: {
+      service_id: string;
+      duration_days: number;
+      vcpu: number;
+      ram: number;
+      private_ip: number;
+      public_ip: number;
+      disk_size: number;
+      company: string;
+      contact: string;
+      purpose: string;
+    }
+  }) {
+    const api = apiBase + '/apply/quota/' + payload.apply_id + '/'
+    const response = await axios.patch(api, payload.data)
+    return response
+  },
+  /* 修改配额申请 */
+
+  /* 挂起配额申请 */
+  async suspendAndUpdateAdminQuotaApplicationTable (context, apply_id: string) {
+    const respSuspend = await context.dispatch('suspendQuotaApplication', apply_id)
+    const service = new schema.Entity('service')
+    const quotaApplication = new schema.Entity('quotaApplication', { service })
+    const normalizedData = normalize(respSuspend.data, quotaApplication)
+    context.commit('storeAdminQuotaApplicationTable', normalizedData.entities.quotaApplication)
+  },
+  async suspendQuotaApplication (context, apply_id: string) {
+    const api = apiBase + '/apply/quota/' + apply_id + '/pending/'
+    const response = await axios.post(api)
+    return response
+  },
+  /* 挂起配额申请 */
+
+  /* 通过配额申请 */
+  async approveAndUpdateAdminQuotaApplicationTable (context, apply_id: string) {
+    const respApprove = await context.dispatch('approveQuotaApplication', apply_id)
+    const service = new schema.Entity('service')
+    const quotaApplication = new schema.Entity('quotaApplication', { service })
+    const normalizedData = normalize(respApprove.data, quotaApplication)
+    context.commit('storeAdminQuotaApplicationTable', normalizedData.entities.quotaApplication)
+  },
+  async approveQuotaApplication (context, apply_id: string) {
+    const api = apiBase + '/apply/quota/' + apply_id + '/pass/'
+    const response = await axios.post(api)
+    return response
+  },
+  /* 通过配额申请 */
+
+  /* 拒绝配额申请 */
+  async rejectAndUpdateAdminQuotaApplicationTable (context, apply_id: string) {
+    const respReject = await context.dispatch('rejectQuotaApplication', apply_id)
+    const service = new schema.Entity('service')
+    const quotaApplication = new schema.Entity('quotaApplication', { service })
+    const normalizedData = normalize(respReject.data, quotaApplication)
+    context.commit('storeAdminQuotaApplicationTable', normalizedData.entities.quotaApplication)
+  },
+  async rejectQuotaApplication (context, apply_id: string) {
+    const api = apiBase + '/apply/quota/' + apply_id + '/reject/'
+    const response = await axios.post(api)
+    return response
+  },
+  /* 拒绝配额申请 */
+
   /* 删除配额申请记录 */
-  async deleteAndUpdateQuotaApplication (context, apply_id: string) {
+  async deleteAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
     const respDelete = await context.dispatch('deleteQuotaApplication', apply_id)
     if (respDelete.status === 204) {
       context.commit('deleteUserQuotaApplicationTable', apply_id)
     }
   },
-  async deleteQuotaApplication (context, apply_id:string) {
+  async deleteQuotaApplication (context, apply_id: string) {
     const api = apiBase + '/apply/quota/' + apply_id + '/'
     const response = await axios.delete(api)
     return response
@@ -34,7 +122,7 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   /* 删除配额申请记录 */
 
   /* 取消配额申请 */
-  async cancelAndUpdateQuotaApplication (context, apply_id: string) {
+  async cancelAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
     const respCancel = await context.dispatch('cancelQuotaApplication', apply_id)
     const service = new schema.Entity('service')
     const quotaApplication = new schema.Entity('quotaApplication', { service })
@@ -58,8 +146,9 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   /*  提交配额申请 */
 
   /* adminQuotaApplicationTable */
+  // 只保存undeleted的application
   async updateAdminQuotaApplicationTable (context) {
-    const respApply = await context.dispatch('fetchAdminApplication')
+    const respApply = await context.dispatch('fetchAdminApplication', { deleted: false })
     const service = new schema.Entity('service')
     const quotaApplication = new schema.Entity('quotaApplication', { service })
     respApply.data.results.forEach((data: Record<string, unknown>) => {
@@ -67,9 +156,17 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
       context.commit('storeAdminQuotaApplicationTable', normalizedData.entities.quotaApplication)
     })
   },
-  async fetchAdminApplication (context) {
+  async fetchAdminApplication (context, payload?: { page?: number; page_size?: number; deleted?: boolean; service?: string; status?: string[] }) {
     const api = apiBase + '/apply/quota/admin/'
-    const response = await axios.get(api)
+    let response
+    if (payload) {
+      const config = {
+        params: payload
+      }
+      response = await axios.get(api, config)
+    } else {
+      response = await axios.get(api)
+    }
     return response
   },
   /* adminQuotaApplicationTable */

@@ -377,6 +377,7 @@ export default defineComponent({
         void await $store.dispatch('applyQuota/updateUserQuotaApplicationTableSingleApplication', respQuotaApplication.data)
 
         isCreating.value = false
+        void $router.push('/my/quota/application')
       }
     }
 

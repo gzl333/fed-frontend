@@ -19,7 +19,10 @@ export interface ApplicationQuotaInterface {
 export interface ApplyQuotaInterface {
   // eslint-disable-next-line @typescript-eslint/ban-types
   pages: {
-    applicationList: { filter: string }
+    applicationList: {
+      filter: string
+    }
+    manage: { filter: string }
   }
   // eslint-disable-next-line @typescript-eslint/ban-types
   tables: {
@@ -47,7 +50,10 @@ export interface ApplyQuotaInterface {
 function state (): ApplyQuotaInterface {
   return {
     pages: {
-      applicationList: { filter: '0' }
+      applicationList: {
+        filter: '0'
+      },
+      manage: { filter: '0' }
     },
     tables: {
       userQuotaApplicationTable: {
