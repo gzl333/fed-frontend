@@ -1,14 +1,14 @@
 <template>
   <div class="VmDetail">
-    <div class="column items-center justify-center">
+    <div class="column items-center justify-center ">
       <div class="col">
 
         <div class="row">
 
           <div class="col title-area">
-            云主机详情
-            <q-btn class="back-btn" icon="arrow_back_ios_new" color="primary" flat unelevated dense
+            <q-btn icon="arrow_back_ios_new" color="primary" flat unelevated dense
                    @click="goBack"/>
+            云主机详情
           </div>
 
         </div>
@@ -208,6 +208,7 @@
                   <div class="col-shrink">
                     <!--                    <quota-card :quota="quota"/>-->
                     {{ quota.display }}
+                    <q-btn label="配额详情" flat dense color="primary" padding="none" :to="{path: `/my/quota/detail/${quota.id}`}"/>
                   </div>
                 </div>
 
@@ -438,27 +439,15 @@ export default defineComponent({
 }
 
 .title-area {
-  width: 1280px; // prod
-  //margin-left: 140px;
-  //margin-bottom: calc((100vh - 114px) / 24);
-  //line-height: calc((100vh - 114px) / 10);
+  width: 1339px;
   text-align: left;
   color: $primary;
   font-size: large;
   font-weight: bold;
-  //border-bottom: $primary 2px solid;
-}
-
-.back-btn {
-  left: -130px;
 }
 
 .content-area {
-  //margin-left: 140px;
-  //width: calc(100vw - 200px);
-}
-
-.button-area {
+  width: 1339px;
 }
 
 .ip-title {

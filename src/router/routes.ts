@@ -103,6 +103,13 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/Quota/QuotaList.vue')
           },
           {
+            path: 'detail/:id', // quotaId 动态路由匹配
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Quota/QuotaDetail.vue')
+          },
+          {
             path: 'application',
             meta: {
               requireLogin: true

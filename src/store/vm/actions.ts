@@ -1,6 +1,6 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
-import { VmInterface } from './state'
+import { ServerInterface, VmInterface } from './state'
 import axios from 'axios'
 import { normalize, schema } from 'normalizr'
 
@@ -63,12 +63,22 @@ const actions: ActionTree<VmInterface, StateInterface> = {
 
   /* userQuotaTable */
   async updateUserQuotaTable (context) {
+    // 先清空table，避免多次更新时数据累加
+    context.commit('clearUserQuotaTable')
     // 将响应normalize
     const service = new schema.Entity('service')
     const quota = new schema.Entity('quota', { service })
     for (const serviceId of context.state.tables.userServiceTable.allIds) {
       const respQuota = await context.dispatch('fetchUserQuota', serviceId)
       for (const data of respQuota.data.results) {
+        // 获取quota下对应的server列表
+        const respQuotaServers = await context.dispatch('fetchUserQuotaServers', data.id)
+        const servers: string[] = []
+        respQuotaServers.data.results.forEach((server: ServerInterface) => {
+          servers.push(server.id)
+        })
+        // 先把servers字段赋给data再normalize
+        Object.assign(data, { servers })
         const normalizedData = normalize(data, quota)
         context.commit('storeUserQuotaTable', normalizedData.entities.quota)
       }
@@ -86,7 +96,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     return response
   },
   async fetchUserQuotaServers (context, serviceId: string) {
-    const api = apiBase + 'u-quota/' + serviceId + '/servers/'
+    const api = apiBase + '/u-quota/' + serviceId + '/servers/'
     const response = await axios.get(api)
     return response
   },

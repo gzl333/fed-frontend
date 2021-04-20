@@ -12,9 +12,16 @@ import {
 } from './state'
 
 const mutation: MutationTree<VmInterface> = {
+
   // 保存VmCreate页面中所选择的serviceId
   storeVmCreatePageServiceId (state, serviceId: string) {
     state.pages.vmCreate.serviceId = serviceId
+  },
+  clearUserQuotaTable (state) {
+    state.tables.userQuotaTable.byId = {}
+    state.tables.userQuotaTable.allIds = []
+    state.tables.userQuotaTable.isLoaded = false
+    // 不清空filter值，保持serviceId的选择
   },
   storeUserQuotaTable (state, tableObj: Record<string, QuotaInterface>) {
     Object.assign(state.tables.userQuotaTable.byId, tableObj)

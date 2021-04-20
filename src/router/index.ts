@@ -64,7 +64,7 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
       next({ path: '/my' })
     }
     if (to.meta.title) {
-      document.title = to.meta.title
+      document.title = to.meta.title as string
     }
     next()
   })

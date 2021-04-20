@@ -101,12 +101,11 @@
             </div>
             <div v-if="props.row.status === 'wait'">
               <q-btn label="取消申请" flat dense padding="none" color="primary"
-                     @click="$store.dispatch('applyQuota/cancelAndUpdateUserQuotaApplicationTable', props.row.id)"
-              />
+                     @click="showCancel(props.row.id)"/>
             </div>
             <div v-if="props.row.status !== 'wait'">
               <q-btn label="删除记录" flat dense padding="none" color="grey-7"
-                     @click="$store.dispatch('applyQuota/deleteAndUpdateUserQuotaApplicationTable', props.row.id)"
+                     @click="showDelete(props.row.id)"
               />
             </div>
           </q-td>
@@ -130,7 +129,7 @@
 
         <q-card-section>
 
-          <div class="row q-py-md">
+          <div class="row q-py-lg">
             <div class="col-3 text-grey-7">服务节点</div>
             <div class="col">
               {{
@@ -261,6 +260,42 @@
       </q-card>
     </q-dialog>
 
+    <q-dialog v-model="isShowCancel">
+      <q-card>
+
+        <q-card-section>
+          <div>
+            取消后的申请无法恢复。 确认取消此申请？
+          </div>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn v-close-popup flat color="primary" label="确认"
+                 @click="$store.dispatch('applyQuota/cancelAndUpdateUserQuotaApplicationTable', cancelId)"/>
+          <q-btn v-close-popup flat color="primary" label="放弃"/>
+        </q-card-actions>
+
+      </q-card>
+    </q-dialog>
+
+    <q-dialog v-model="isShowDelete">
+      <q-card>
+
+        <q-card-section>
+          <div>
+            删除后的申请记录无法恢复。 确认删除此记录？
+          </div>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn v-close-popup flat color="primary" label="确认"
+                 @click="$store.dispatch('applyQuota/deleteAndUpdateUserQuotaApplicationTable', deleteId)"/>
+          <q-btn v-close-popup flat color="primary" label="放弃"/>
+        </q-card-actions>
+
+      </q-card>
+    </q-dialog>
+
   </div>
 </template>
 
@@ -276,7 +311,8 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
-    // todo 进入本页面强制更新userQuotaApplicationTable
+    // 进入本页面强制更新userQuotaApplicationTable
+    void $store.dispatch('applyQuota/updateUserQuotaApplicationTable')
 
     // application filter
     const filterSelection = ref({
@@ -402,7 +438,7 @@ export default defineComponent({
 
     // dialog modify
     const isShowModify = ref(false)
-    // 当前正在修改的application id
+    // 当前正在修改的application id， 要从tr里传参出来
     const apply_id = ref('0')
 
     const currentApplication = computed(() => $store.state.applyQuota.tables.userQuotaApplicationTable.byId[apply_id.value])
@@ -430,6 +466,22 @@ export default defineComponent({
       newApplication.service_id = currentApplication.service
     })
 
+    // dialog cancel warning
+    const isShowCancel = ref(false)
+    const cancelId = ref('')
+    const showCancel = (id: string) => {
+      cancelId.value = id
+      isShowCancel.value = true
+    }
+
+    // dialog delete warning
+    const isShowDelete = ref(false)
+    const deleteId = ref('')
+    const showDelete = (id: string) => {
+      deleteId.value = id
+      isShowDelete.value = true
+    }
+
     return {
       $store,
       paginationTable,
@@ -441,7 +493,13 @@ export default defineComponent({
       showModify,
       apply_id,
       currentApplication,
-      newApplication
+      newApplication,
+      isShowCancel,
+      showCancel,
+      cancelId,
+      isShowDelete,
+      showDelete,
+      deleteId
     }
   }
 })

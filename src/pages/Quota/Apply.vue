@@ -9,9 +9,9 @@
 
       <div v-else>
         <div class="col title-area">
-          申请新配额
-          <q-btn class="back-btn" icon="arrow_back_ios_new" color="primary" flat unelevated dense
+          <q-btn icon="arrow_back_ios_new" color="primary" flat unelevated dense
                  @click="goBack"/>
+          申请新配额
         </div>
 
         <div class="col">
@@ -414,19 +414,15 @@ export default defineComponent({
 }
 
 .title-area {
-  width: 1280px;
+  width: 1339px;
   text-align: left;
   color: $primary;
   font-size: large;
   font-weight: bold;
 }
 
-.back-btn {
-  left: -130px;
-}
-
 .stepper {
-  width: 1330px;
+  width: 1319px;
 }
 
 .section {

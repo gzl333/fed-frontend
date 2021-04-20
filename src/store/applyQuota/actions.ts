@@ -148,6 +148,9 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   /* adminQuotaApplicationTable */
   // 只保存undeleted的application
   async updateAdminQuotaApplicationTable (context) {
+    // 先清空table，避免多次更新时数据累加
+    context.commit('clearAdminQuotaApplicationTable')
+    // 再获取数据并更新table
     const respApply = await context.dispatch('fetchAdminApplication', { deleted: false })
     const service = new schema.Entity('service')
     const quotaApplication = new schema.Entity('quotaApplication', { service })
@@ -181,6 +184,9 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   },
   // 默认userQuotaApplicationTable只保存undeleted的application
   async updateUserQuotaApplicationTable (context) {
+    // 先清空table，避免多次更新时数据累加
+    context.commit('clearUserQuotaApplicationTable')
+    // 再获取数据并更新table
     const respApply = await context.dispatch('fetchUserApplication', { deleted: false })
     const service = new schema.Entity('service')
     const quotaApplication = new schema.Entity('quotaApplication', { service })

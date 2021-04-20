@@ -25,6 +25,7 @@
                 <q-tabs
                   v-model="activeTab"
                   indicator-color="primary"
+                  active-color="primary"
                   align="left"
                   inline-label
                 >
@@ -101,7 +102,7 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
     // 根据adminQuotaApplicationTable是否为空来判断当前用户是否有权限审批quota，是否显示审批tab
-    const isQuotaAdmin = computed(() => !!$store.state.applyQuota.tables.adminQuotaApplicationTable.allIds.length)
+    const isQuotaAdmin = computed(() => $store.state.applyQuota.tables.adminQuotaApplicationTable.isLoaded)
     return {
       activeTab: ref('list'),
       isQuotaAdmin

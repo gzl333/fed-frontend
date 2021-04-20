@@ -10,9 +10,10 @@
       <div v-else>
 
         <div v-if="!isShowJumper" class="col title-area">
-          新建云主机
-          <q-btn class="back-btn" icon="arrow_back_ios_new" color="primary" flat unelevated dense
+
+          <q-btn icon="arrow_back_ios_new" color="primary" flat unelevated dense
                  @click="goBack"/>
+          新建云主机
           <!--        <q-btn @click="quickJump" label="quickjump"/>-->
         </div>
 
@@ -389,26 +390,30 @@ export default defineComponent({
           quota_id: radioQuota.value,
           remarks: inputRemarks.value
         }
-        const respCreateVM = await $store.dispatch('vm/createServer', selection)
-        // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
-        void await $store.dispatch('vm/updateUserServerTableSingleServer', respCreateVM.data.id)
+        try {
+          const respCreateVM = await $store.dispatch('vm/createServer', selection)
+          // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
+          void await $store.dispatch('vm/updateUserServerTableSingleServer', respCreateVM.data.id)
 
-        newIP.value = $store.state.vm.tables.userServerTable.byId[respCreateVM.data.id].ipv4
-        $q.notify({
-          color: 'nord14',
-          message: `成功创建id为${newIP.value}的云主机`,
-          position: 'bottom-right',
-          closeBtn: false,
-          timeout: 15000
-        })
-        isCreating.value = false
-        isShowJumper.value = true
+          newIP.value = $store.state.vm.tables.userServerTable.byId[respCreateVM.data.id].ipv4
+          $q.notify({
+            color: 'nord14',
+            message: `成功创建id为${newIP.value}的云主机`,
+            position: 'bottom-right',
+            closeBtn: false,
+            timeout: 15000
+          })
+          isCreating.value = false
+          isShowJumper.value = true
 
-        console.log($store.state.vm)
-        setTimeout(() => {
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          void $router.push(`/my/usage/vmdetail/${respCreateVM.data.id}`)
-        }, 3000)
+          setTimeout(() => {
+            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+            void $router.push(`/my/usage/vmdetail/${respCreateVM.data.id}`)
+          }, 3000)
+        } catch {
+          // 创建vm失败，将按钮状态改回，错误由axios统一提示
+          isCreating.value = false
+        }
       }
     }
     // 刷新本页
@@ -459,19 +464,15 @@ export default defineComponent({
 }
 
 .title-area {
-  width: 1280px;
+  width: 1339px;
   text-align: left;
   color: $primary;
   font-size: large;
   font-weight: bold;
 }
 
-.back-btn {
-  left: -130px;
-}
-
 .stepper {
-  width: 1330px;
+  width: 1319px;
 }
 
 .section {

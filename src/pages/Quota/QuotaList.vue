@@ -154,6 +154,12 @@
           <q-td key="expiration_time" :props="props">
             {{ props.row.expiration_time }}
           </q-td>
+          <q-td key="resource" :props="props">
+            <div v-if="props.row.servers.length > 0">
+              <q-btn label="关联资源列表" flat padding="none" color="primary" :to="{path: `/my/quota/detail/${props.row.id}`}"/>
+            </div>
+            <div v-else>无</div>
+          </q-td>
         </q-tr>
       </template>
 
@@ -175,7 +181,9 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    // todo userQuotaApplicationTable数据更新来自后台，进入页面后应强制更新table,刷新quota状态
+
+    // 进入本页面强制更新vm/userQuotaTable,数据更新来自后台，进入页面后应强制更新table,刷新quota状态
+    void $store.dispatch('vm/updateUserQuotaTable')
 
     // quota列表分栏定义
     const columns = [
@@ -225,6 +233,12 @@ export default defineComponent({
         name: 'expiration_time',
         label: '配额过期时间',
         field: 'expiration_time',
+        align: 'center'
+      },
+      {
+        name: 'resource',
+        label: '关联资源',
+        field: 'resource',
         align: 'center'
       }
     ]

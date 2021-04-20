@@ -212,8 +212,8 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
-    // todo adminQuotaApplicationTable数据更新来自后台，进入页面后应强制更新table
-    // void $store.dispatch('applyQuota/updateAdminQuotaApplicationTable')
+    // adminQuotaApplicationTable数据更新来自后台，进入页面后应强制更新table
+    void $store.dispatch('applyQuota/updateAdminQuotaApplicationTable')
 
     // list filter
     const filterSelection = ref({

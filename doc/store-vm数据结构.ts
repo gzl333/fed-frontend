@@ -1,4 +1,6 @@
 const vm = {
+  // 组件本地数据
+  components: {},
   // 页面本地数据
   pages: {},
   // 扁平结构的表数据
@@ -151,6 +153,7 @@ const vm = {
           display: '[普通配额](vCPU: 100, RAM: 102400Mb, Disk: 1000Gb, PublicIP: 100, PrivateIP: 100)',
           expiration_time: null, // 过期时间。 和deleted共同决定该配额是否可用：其中一项即可决定该配额是否有效
           deleted: false, // 用户或管理员删除配额
+
           // 以下来自quota-server接口
           servers: ['id1', 'id2'] // 关联serverTable，该配额下创建的云主机id
         }

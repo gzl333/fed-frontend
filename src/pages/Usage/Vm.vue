@@ -260,9 +260,6 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const $q = useQuasar()
 
-    // 云主机状态按钮
-    const isStatusLoading = ref(true)
-
     // service_id下拉列表
     const serviceOptions = computed(() => $store.getters['vm/getServiceOptions'])
     const serviceSelection = ref({
@@ -434,7 +431,6 @@ export default defineComponent({
       columns,
       rows,
       vmOperation,
-      isStatusLoading,
       gotoVNC,
       isShowDelConfirm,
       vmToDel,
