@@ -2,6 +2,7 @@
   <div class="row routerview-area">
     <div class="col-2"></div>
     <div class="col column">
+      当前无可用VPN
       <div v-for="vpn in vpns" :key="vpn.id" class="col-3 section q-gutter-sm">
         <div class="row">
           <div class="col-2 q-pb-lg text-primary">
@@ -75,11 +76,11 @@
         </div>
       </div>
     </div>
-    <div class="col-3 section">
-      vpn使用说明：
-      待补充
-      <pre>{{ $store.state.vm.tables.userVpnTable.byId }}</pre>
-    </div>
+<!--    <div class="col-3 section">-->
+<!--      vpn使用说明：-->
+<!--      待补充-->
+<!--      <pre>{{ $store.state.vm.tables.userVpnTable.byId }}</pre>-->
+<!--    </div>-->
     <div class="col-2"></div>
   </div>
 </template>
@@ -122,7 +123,7 @@ export default defineComponent({
     // 修改密码loading状态
     const isLoading = ref(false)
     // vpn 修改密码
-    const popEdit = (vpn: VpnInterface) => {
+    const popEditVpn = (vpn: VpnInterface) => {
       $q.dialog({
         title: `修改${$store.state.vm.tables.userServiceTable.byId[vpn.id].name}的VPN密码`,
         message: '新密码长度为6-64位',
@@ -172,7 +173,7 @@ export default defineComponent({
       vpns,
       isPwd,
       isLoading,
-      popEdit,
+      popEditVpn,
       fetchCa,
       fetchConfig,
       clickToCopy

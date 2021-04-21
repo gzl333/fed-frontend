@@ -237,7 +237,7 @@
                   </div>
                   <div class="row item-row">
                     <div class="col">
-                      <q-input class="input-remarks" v-model="inputRemarks" maxlength="15" dense counter></q-input>
+                      <q-input class="input-remarks" v-model="inputRemarks" maxlength="30" dense counter></q-input>
                     </div>
                   </div>
                 </div>
@@ -479,7 +479,7 @@ export default defineComponent({
   margin-bottom: 30px;
   padding: 10px 20px;
   border: 1px solid $grey-4;
-  border-radius: 5px;
+  //border-radius: 5px;
 }
 
 .section-title {

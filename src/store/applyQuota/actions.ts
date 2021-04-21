@@ -151,6 +151,7 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
     // 先清空table，避免多次更新时数据累加
     context.commit('clearAdminQuotaApplicationTable')
     // 再获取数据并更新table
+    // todo 当前只请求了一次，若超过200项，应多次请求至最后，待完成此逻辑
     const respApply = await context.dispatch('fetchAdminApplication', { deleted: false })
     const service = new schema.Entity('service')
     const quotaApplication = new schema.Entity('quotaApplication', { service })

@@ -178,17 +178,30 @@
 
                 <div class="row q-pb-md">
                   <div class="col-2 text-grey-7">创建时间</div>
-                  <div class="col"> {{ server.creation_time }}</div>
+                  <div class="col"> {{ new Date(server.creation_time).toLocaleString() }}</div>
                 </div>
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">过期时间</div>
-                  <div class="col"> {{ server.expiration_time || '永久有效' }}</div>
+                  <div class="col-2 text-grey-7">失效时间</div>
+                  <div class="col">
+                    {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString() : '永久有效' }}
+                  </div>
                 </div>
 
                 <div class="row q-pb-md">
                   <div class="col-2 text-grey-7">备注</div>
-                  <div class="col"> {{ server.remarks }}</div>
+                  <div class="col">
+
+                    <q-btn class="col-shrink q-px-xs" flat dense icon="edit" size="xs" color="primary"
+                           @click="popEditNote(server.id)">
+                      <q-tooltip>
+                        编辑备注
+                      </q-tooltip>
+                    </q-btn>
+
+                    {{ server.remarks }}
+
+                  </div>
                 </div>
 
               </div>
@@ -206,9 +219,12 @@
                 <div class="row q-pb-md">
                   <div class="col-2 text-grey-7">所用配额</div>
                   <div class="col-shrink">
-                    <!--                    <quota-card :quota="quota"/>-->
+
+                    <q-btn label="配额详情" flat dense color="primary" padding="none"
+                           :to="{path: `/my/quota/detail/${quota.id}`}"/>
+
                     {{ quota.display }}
-                    <q-btn label="配额详情" flat dense color="primary" padding="none" :to="{path: `/my/quota/detail/${quota.id}`}"/>
+
                   </div>
                 </div>
 
@@ -255,7 +271,7 @@
                     </q-btn>
 
                     <q-btn label="修改密码" padding="none" dense flat color="primary"
-                           @click="popEdit(vpn)"/>
+                           @click="popEditVpn(vpn)"/>
                   </div>
                 </div>
 
@@ -327,7 +343,7 @@ export default defineComponent({
     // 修改密码loading状态
     const isLoading = ref(false)
     // vpn 修改密码
-    const popEdit = (vpn: VpnInterface) => {
+    const popEditVpn = (vpn: VpnInterface) => {
       $q.dialog({
         title: `修改${server.value.service}的VPN密码`,
         message: '新密码长度为6-64位',
@@ -408,6 +424,33 @@ export default defineComponent({
       window.open(url)
     }
 
+    // 编辑备注
+    const popEditNote = (id: string) => {
+      $q.dialog({
+        title: `编辑${$store.state.vm.tables.userServerTable.byId[id].ipv4}的备注信息`,
+        // message: '长度限制为30个字',
+        prompt: {
+          model: `${$store.state.vm.tables.userServerTable.byId[id].remarks}`,
+          counter: true,
+          maxlength: 30,
+          type: 'text' // optional
+        },
+        color: 'primary',
+        cancel: true
+      }).onOk((data: string) => {
+        const payload: { id: string; remark: string; } = {
+          id,
+          remark: data.trim()
+        }
+        void $store.dispatch('vm/patchRemarks', payload).then(() =>
+          $store.commit('vm/storeUserServerTableSingleRemarks', {
+            serverId: id,
+            remarks: data.trim()
+          })
+        )
+      })
+    }
+
     // 返回上一页
     const goBack = () => {
       $router.go(-1)
@@ -420,7 +463,7 @@ export default defineComponent({
       quota,
       vpn,
       isPwd,
-      popEdit,
+      popEditVpn,
       fetchCa,
       fetchConfig,
       isLoading,
@@ -428,7 +471,8 @@ export default defineComponent({
       vmOperation,
       gotoVNC,
       goBack,
-      $route
+      $route,
+      popEditNote
     }
   }
 })

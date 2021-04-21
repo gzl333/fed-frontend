@@ -55,6 +55,26 @@ const getters: GetterTree<VmInterface, StateInterface> = {
   },
   /* vmlist 使用 */
 
+  /* quotaList使用 */
+  // 根据用户选择的filter来返回application数组
+  getUserQuotasByFilter (state): QuotaInterface[] {
+    // 当前选择的filter位于state.applyQuota.applicationList.filter，利用applicationList页面中的watch来修改
+    if (state.pages.quotaList.filter === '0') {
+      return Object.values(state.tables.userQuotaTable.byId)
+    } else {
+      const rows: QuotaInterface[] = []
+      for (const quota of Object.values(state.tables.userQuotaTable.byId)) {
+        if (state.pages.quotaList.filter === 'valid' && !!(new Date(quota.expiration_time).getTime() - new Date().getTime())) { // 筛选出未过期的quota
+          rows.push(quota)
+        } else if (state.pages.quotaList.filter === 'invalid' && !(new Date(quota.expiration_time).getTime() - new Date().getTime())) { // 筛选出过期的quota
+          rows.push(quota)
+        }
+      }
+      return rows
+    }
+  },
+  /* quotaList使用 */
+
   /* vmcreate使用 */
   getPublicNetworksByServiceId (state): NetworkInterface[] {
     const serviceId = state.pages.vmCreate.serviceId
@@ -68,16 +88,14 @@ const getters: GetterTree<VmInterface, StateInterface> = {
     const serviceId = state.pages.vmCreate.serviceId
     return Object.values(state.tables.userImageTable.byLocalId).filter(image => image.service === serviceId)
   },
-  // 只返回有效guota
+  // 只返回未过期guota
   getQuotasByServiceId (state): QuotaInterface[] {
     const serviceId = state.pages.vmCreate.serviceId
     return Object.values(state.tables.userQuotaTable.byId).filter(quota => {
       if (!quota.deleted && quota.service === serviceId) {
         // 有过期时间则判断是否过期
         if (quota.expiration_time) {
-          const diff = Math.abs(new Date(quota.expiration_time).getTime() - new Date().getTime()) // 差=过期时间 - 当前时间
-          const days = Math.ceil(diff / (1000 * 3600 * 24)) // 差换算成天数
-          return days > 1
+          return Boolean(new Date(quota.expiration_time).getTime() - new Date().getTime())
         } else {
           // 没有过期时间则quota可用
           return true

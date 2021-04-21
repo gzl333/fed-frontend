@@ -281,7 +281,7 @@
                 <div class="row item-row">
                   <div class="col-1">工作单位</div>
                   <div class="col-8">
-                    <q-input class="input-remarks" v-model="inputUnit" maxlength="30" dense counter/>
+                    <q-input class="input-remarks" v-model="inputUnit" maxlength="20" dense counter/>
                   </div>
                 </div>
 

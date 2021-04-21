@@ -12,7 +12,10 @@ import {
 } from './state'
 
 const mutation: MutationTree<VmInterface> = {
-
+  // QuotaList页面使用filter
+  storeQuotaListFilter (state, filter: string) {
+    state.pages.quotaList.filter = filter
+  },
   // 保存VmCreate页面中所选择的serviceId
   storeVmCreatePageServiceId (state, serviceId: string) {
     state.pages.vmCreate.serviceId = serviceId

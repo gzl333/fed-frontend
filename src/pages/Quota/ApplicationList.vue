@@ -1,10 +1,37 @@
 <template>
   <div class="ApplicationList">
+
+    <div class="row items-center justify-between q-pa-md">
+
+      <div class="col-3">
+        <div class="row justify-start">
+          <div class="col">
+            <q-input disable outlined v-model="text" stack-label label="搜索">
+              <template v-slot:append>
+                <!--                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>-->
+                <q-icon name="search"/>
+              </template>
+            </q-input>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-2">
+        <div class="row justify-end">
+          <div class="col">
+            <q-select outlined stack-label label="筛选" v-model="filterSelection"
+                      :options="filterOptions"/>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
     <q-table
       flat
       card-class=""
-      table-class="text-nord0"
-      table-header-class="bg-grey-2"
+      table-class=""
+      table-header-class="bg-grey-1 text-grey"
       :rows="rows"
       :columns="columns"
       row-key="name"
@@ -12,37 +39,6 @@
       hide-pagination
       :pagination="paginationTable"
     >
-
-      <template v-slot:top>
-        <!--slot外有一层row，需要用col接一下，再新建row-->
-        <div class="col">
-
-          <div class="row items-center justify-between q-pa-none">
-            <div class="col-3">
-              <div class="row justify-start">
-                <div class="col">
-                  <q-input disable outlined v-model="text" stack-label label="搜索">
-                    <template v-slot:append>
-                      <!--                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>-->
-                      <q-icon name="search"/>
-                    </template>
-                  </q-input>
-                </div>
-              </div>
-            </div>
-
-            <div class="col-2">
-              <div class="row justify-end">
-                <div class="col">
-                  <q-select outlined stack-label label="筛选" v-model="filterSelection"
-                            :options="filterOptions"/>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        </div>
-      </template>
 
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -56,7 +52,7 @@
           </q-td>
 
           <q-td key="creation_time" :props="props">
-            {{ props.row.creation_time }}
+            {{ new Date(props.row.creation_time).toLocaleString() }}
           </q-td>
 
           <q-td key="service" :props="props">
@@ -104,7 +100,7 @@
                      @click="showCancel(props.row.id)"/>
             </div>
             <div v-if="props.row.status !== 'wait'">
-              <q-btn label="删除记录" flat dense padding="none" color="grey-7"
+              <q-btn label="删除记录" flat dense padding="none" color="primary"
                      @click="showDelete(props.row.id)"
               />
             </div>
@@ -122,7 +118,7 @@
         <q-card-section class="row items-center justify-center q-pb-sm">
           <div class="text-primary">修改申请</div>
           <q-space/>
-          <q-btn icon="close" flat dense v-close-popup/>
+          <q-btn icon="close" flat dense size="sm" v-close-popup/>
         </q-card-section>
 
         <q-separator/>
@@ -245,7 +241,7 @@
           <div class="row q-pb-md">
             <div class="col-3 text-grey-7">工作单位</div>
             <div class="col">
-              <q-input v-model="newApplication.company" maxlength="30" dense counter/>
+              <q-input v-model="newApplication.company" maxlength="20" dense counter/>
             </div>
           </div>
 
@@ -412,13 +408,17 @@ export default defineComponent({
         name: 'purpose',
         label: '用途',
         field: 'purpose',
-        align: 'center'
+        align: 'center',
+        classes: 'ellipsis',
+        style: 'max-width: 200px'
       },
       {
         name: 'applicant',
         label: '申请人',
         field: 'applicant',
-        align: 'center'
+        align: 'center',
+        classes: 'ellipsis',
+        style: 'max-width: 150px'
       },
       {
         name: 'operation',
@@ -512,4 +512,5 @@ export default defineComponent({
 .application-card {
   width: 900px;
 }
+
 </style>

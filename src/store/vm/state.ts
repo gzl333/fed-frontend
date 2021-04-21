@@ -272,6 +272,9 @@ export interface ArchivedServerInterface {
 // Vm总接口
 export interface VmInterface {
   pages: { // 各个页面所需vuex数据
+    quotaList: { // 配额管理的配额列表使用
+      filter: string
+    }
     vmList: {
       filter: string // serviceId 用于筛选显示server列表，'0'为显示全部
     }
@@ -347,6 +350,9 @@ function state ():
   VmInterface {
   return {
     pages: {
+      quotaList: {
+        filter: '0'
+      },
       vmList: {
         filter: '0'
       },
