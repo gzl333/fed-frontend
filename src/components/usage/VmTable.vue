@@ -23,19 +23,20 @@
             <div class="row">
               <div class="col">
                 <q-btn v-show="hoverRow === props.row.name"
-                       class="col-shrink q-px-xs " flat dense icon="content_copy" size="xs" color="primary"
+                       class="col-shrink q-px-xs q-ma-none" flat dense icon="content_copy" size="xs" color="primary"
                        @click="clickToCopy(props.row.ipv4)">
                   <q-tooltip>
                     复制
                   </q-tooltip>
                 </q-btn>
                 <q-btn v-show="hoverRow !== props.row.name"
-                       class="col-shrink q-px-xs invisible" flat dense icon="content_copy" size="xs"
+                       class="col-shrink q-px-xs q-ma-none invisible" flat dense icon="content_copy" size="xs"
                 >
                 </q-btn>
 
-                <q-btn :label="props.row.ipv4" :to="{path: `/my/usage/vmdetail/${props.row.id}`}"
-                       color="primary" flat dense unelevated>
+                <q-btn
+                  class="q-ma-none" :label="props.row.ipv4" color="primary" flat dense unelevated
+                  :to="{path: `/my/usage/vmdetail/${props.row.id}`}">
                   <q-tooltip>
                     进入详情页面
                   </q-tooltip>
@@ -57,7 +58,7 @@
             {{ props.row.vcpus }}核
           </q-td>
           <q-td key="ram" :props="props">
-            {{ props.row.ram }}MB
+            {{ props.row.ram / 1024 }}GB
           </q-td>
           <q-td key="expiration" :props="props">
             {{ new Date(props.row.expiration_time).toLocaleString() }}
@@ -65,16 +66,16 @@
           <q-td key="note" :props="props">
             <div class="row">
               <q-btn v-show="hoverRow === props.row.name"
-                     class="col-shrink q-px-xs" flat dense icon="edit" size="xs" color="primary"
+                     class="col-shrink q-px-xs q-ma-none" flat dense icon="edit" size="xs" color="primary"
                      @click="popEditNote(props.row.id)">
                 <q-tooltip>
                   编辑备注
                 </q-tooltip>
               </q-btn>
               <q-btn v-show="hoverRow !== props.row.name"
-                     class="col-shrink q-px-xs invisible" flat dense icon="edit" size="xs"
+                     class="col-shrink q-px-xs q-ma-none invisible" flat dense icon="edit" size="xs"
               />
-              <div class="col">
+              <div class="col q-ma-none">
                 {{ props.row.remarks }}
               </div>
 
