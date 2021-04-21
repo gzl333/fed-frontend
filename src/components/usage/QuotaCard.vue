@@ -165,11 +165,11 @@
                   >
                     <div v-if="props.quota.disk_size_total === 0">无</div>
                     <div v-else-if="props.quota.disk_size_total===props.quota.disk_size_used" class="text-red">
-                      共{{ props.quota.disk_size_total }}个用尽
+                      共{{ props.quota.disk_size_total }}GB用尽
                     </div>
                     <div v-else>{{ props.quota.disk_size_total - props.quota.disk_size_used }}/{{
                         props.quota.disk_size_total
-                      }}个
+                      }}GB
                     </div>
                   </q-circular-progress>
                 </div>
