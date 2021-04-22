@@ -1,7 +1,7 @@
 <template>
   <div class="ApplicationList">
 
-    <div class="row items-center justify-between q-pa-md">
+    <div class="row items-center justify-between q-py-md">
 
       <div class="col-3">
         <div class="row justify-start">

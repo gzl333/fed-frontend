@@ -22,6 +22,15 @@
           <q-td key="ip" :props="props">
             <div class="row">
               <div class="col">
+
+                <q-btn
+                  class="q-ma-none" :label="props.row.ipv4" color="primary" flat dense unelevated
+                  :to="{path: `/my/usage/vmdetail/${props.row.id}`}">
+                  <q-tooltip>
+                    进入详情页面
+                  </q-tooltip>
+                </q-btn>
+
                 <q-btn v-show="hoverRow === props.row.name"
                        class="col-shrink q-px-xs q-ma-none" flat dense icon="content_copy" size="xs" color="primary"
                        @click="clickToCopy(props.row.ipv4)">
@@ -34,15 +43,7 @@
                 >
                 </q-btn>
 
-                <q-btn
-                  class="q-ma-none" :label="props.row.ipv4" color="primary" flat dense unelevated
-                  :to="{path: `/my/usage/vmdetail/${props.row.id}`}">
-                  <q-tooltip>
-                    进入详情页面
-                  </q-tooltip>
-                </q-btn>
               </div>
-
             </div>
           </q-td>
           <q-td key="dataCenterName" :props="props">
@@ -61,7 +62,10 @@
             {{ props.row.ram / 1024 }}GB
           </q-td>
           <q-td key="expiration" :props="props">
-            {{ new Date(props.row.expiration_time).toLocaleString() }}
+            <div>{{ new Date(props.row.expiration_time).toLocaleString() }}</div>
+            <div v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0" class="text-red">
+              已到期
+            </div>
           </q-td>
           <q-td key="note" :props="props">
             <div class="row">
