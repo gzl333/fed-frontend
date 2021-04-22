@@ -13,173 +13,198 @@
       <div class="col-auto">
         <div class="row justify-center">
           <div class="content-fixed-width">
-            <div class="row q-mt-md  text-h5 ">
-              <div class="q-pb-xs text-h6 ">联邦机构</div>
-            </div>
-            <q-separator/>
-            <div class="row justify-center q-my-xs">
-              <div class="card">
-                <div class="row text-h6 q-ma-lg justify-center items-center text-grey ">
-                  <q-icon name="foundation" size="1.5em" class="q-mr-md"/>
-                  接入数据中心
+
+            <div class="column">
+              <div class="col">
+                <div class="row q-mt-md  text-h5 ">
+                  <div class="q-pb-xs text-h6 ">联邦机构</div>
                 </div>
-                <div class="row text-h4 q-ma-xl justify-center items-center">
-                  {{ $store.state.vm.tables.globalDataCenterTable.allIds.length }}个
+                <q-separator/>
+                <div class="row justify-center q-my-xs">
+                  <div class="card">
+                    <div class="row text-h6 q-ma-lg justify-center items-center ">
+                      <q-icon name="foundation" size="1.5em" class="q-mr-md"/>
+                      接入数据中心
+                    </div>
+                    <div class="row text-h4 q-ma-xl justify-center items-center text-bold text-primary">
+                      {{ $store.state.vm.tables.globalDataCenterTable.allIds.length }}个
+                    </div>
+                  </div>
+                  <div class="card">
+                    <div class="row text-h6 q-ma-lg justify-center items-center ">
+                      <q-icon name="timeline" size="1.5em" class="q-mr-md"/>
+                      接入服务
+                    </div>
+                    <div class="row text-h4 q-ma-xl justify-center text-bold text-primary  ">{{ serviceNum }}个</div>
+                  </div>
                 </div>
               </div>
-              <div class="card">
-                <div class="row text-h6 q-ma-lg justify-center items-center text-grey ">
-                  <q-icon name="timeline" size="1.5em" class="q-mr-md"/>
-                  接入服务
+
+              <div class="col">
+                <div class="row q-mt-md justify-between ">
+                  <div class="q-pa-sm text-h6">在用云主机资源</div>
+                  <q-btn label="更多云主机..." color="primary" flat dense padding="none" :to="{ path: '/my/usage/vm' }"/>
                 </div>
-                <div class="row text-h4 q-ma-xl justify-center ">{{serviceNum}}个</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <div class="col-auto">
-        <div class="row justify-center">
-          <div class="content-fixed-width">
+                <q-separator/>
 
-            <div class="row q-mt-md  text-h5 justify-between ">
-              <div class="q-pa-sm text-h6">在用云主机资源</div>
-              <q-btn label="更多云主机..." class="" color="primary" flat dense padding="none"   :to="{ path: '/my/usage/vm' }"/>
-            </div>
+                <div v-if="!servers">
+                  所选择节点中无可供使用的云主机
+                </div>
 
-            <q-separator/>
+                <div v-else class="row justify-start " v-for="server in servers" :key="server">
 
-            <div class="row justify-start q-mx-xl" v-for="server in servers" :key="server">
-              <!--一个云主机的card-->
-              <div class="row  server-card q-my-md q-mx-md">
-                <div class="col">
-                  <div class="row">
+                  <!--一个云主机的card-->
+                  <div class="row server-card q-my-md q-mx-md">
+
                     <div class="col-6">
+
                       <div v-if="server.status!=='运行中' && server.status!=='已关机'" class="row justify-center">
-                        <q-btn
-                          color="nord4" loading label="......" icon="hourglass_bottom" size="2em">
+                        <q-btn loading label="......" icon="hourglass_bottom" size="2em">
                           <q-tooltip>
                             远程执行中，请稍候
                           </q-tooltip>
                         </q-btn>
                       </div>
+
                       <div v-if="server.status === '运行中'" class="row justify-center">
-                        <q-btn
-                          flat
-                          v-if="server.status === '运行中'"
-                          @click="gotoVNC(server.id)"
-                        >
-                          <q-icon name="computer" size="6em"><q-tooltip>点击进入远程控制</q-tooltip></q-icon></q-btn>
+                        <q-btn v-if="server.status === '运行中'" flat @click="gotoVNC(server.id)">
+                          <q-icon name="computer" size="4em" class="q-mx-md q-py-md">
+                            <q-tooltip>点击进入远程控制</q-tooltip>
+                          </q-icon>
+                        </q-btn>
                       </div>
+
                       <div v-if="server.status === '已关机'" class="row justify-center">
-                        <q-icon name="close" size="6em"><q-tooltip>请开机以使用远程控制</q-tooltip></q-icon>
+                        <q-icon name="computer" disabled size="4em" class="q-mx-md q-py-md">
+                          <q-tooltip>请开机以使用远程控制</q-tooltip>
+                        </q-icon>
                       </div>
 
                     </div>
-                    <div class="column justify-evenly q-mt-xs">
-                      <div class="row justify-center">{{ server.ipv4 }}</div>
-                      <q-btn
-                        v-if="server.status!=='运行中' && server.status!=='已关机'"
-                        color="nord4" loading label="......">
-                        <q-tooltip>
-                          远程执行中，请稍候
-                        </q-tooltip>
-                      </q-btn>
-                      <div v-if="server.status === '已关机'" class="row bg-nord6">
-                        <q-btn flat label="开机" icon="play_arrow" size="md" class="q-mx-md"
-                               @click="vmOperation({
+
+                    <div class="col-6">
+                      <div class="column justify-center  q-mt-xs">
+
+                        <div class="col">
+                          <div class="row justify-center">
+                            <q-btn
+                              class="col"
+                              :label="server.ipv4" flat dense padding="none" color="primary"
+                              :to="{path:'/my/usage/vmdetail/' + server.id}"/>
+                          </div>
+                        </div>
+
+                        <div class="col">
+                          <div class="row justify-center">
+
+                            <q-btn
+                              class="col q-mx-md"
+                              v-if="server.status!=='运行中' && server.status!=='已关机'"
+                              color="nord4" loading label="......">
+                              <q-tooltip>
+                                远程执行中，请稍候
+                              </q-tooltip>
+                            </q-btn>
+
+                            <q-btn
+                              class="col q-mx-md"
+                              v-if="server.status === '已关机'"
+                              outline color="primary"  icon="play_arrow" size="md"
+                              @click="vmOperation({
                             endPoint: server.endpoint_url,
                             id: server.id,
-                            action: 'start',
-                          })
-                        "/>
-                      </div>
-                      <div v-if="server.status === '运行中'" class="row bg-nord6">
-                        <q-btn flat label="关机" icon="power_settings_new" size="md" class="q-mx-md"
-                               @click="vmOperation({
+                            action: 'start',})"/>
+
+                            <q-btn
+                              class="col q-mx-md"
+                              v-if="server.status === '运行中'"
+                              outline color="primary" icon="power_settings_new" size="md"
+
+                              @click="vmOperation({
                             endPoint: server.endpoint_url,
                             id: server.id,
                             action: 'shutdown',
-                          })
-                        "/>
+                          })"/>
+
+                          </div>
+
+                        </div>
+
                       </div>
                     </div>
                   </div>
-                </div>
-              </div>
-              <!--一个云主机的card-->
-            </div>
+                  <!--一个云主机的card-->
 
-          </div>
-
-        </div>
-      </div>
-    </div>
-
-    <div class="col-auto">
-      <div class="row justify-center">
-        <div class="content-fixed-width">
-          <div class="row q-mt-md  text-h5 ">
-            <div class="q-pa-sm text-h6 ">快捷入口</div>
-          </div>
-          <q-separator/>
-          <div class="row justify-start">
-            <!-- 云主机card-->
-            <div class="quick-card q-my-lg q-mr-lg">
-              <div class="row">
-                <div class="col">
-                  <q-icon name="laptop" size="6em" class="q-mx-lg q-mt-lg q-mb-md"/>
-                </div>
-                <div class="col q-py-lg text-subtitle1 text-c-blue1">云主机
-                  <q-badge color="primary">计算服务</q-badge>
                 </div>
               </div>
 
-              <q-separator/>
+              <div class="col">
+                <div class="row q-mt-md  text-h5 ">
+                  <div class="q-pa-sm text-h6 ">快捷入口</div>
+                </div>
+                <q-separator/>
+                <div class="row justify-start">
+                  <!-- 云主机card-->
+                  <div class="quick-card q-my-lg q-mr-lg">
+                    <div class="row">
+                      <div class="col">
+                        <q-icon name="laptop" size="6em" class="q-mx-lg q-mt-lg q-mb-md"/>
+                      </div>
+                      <div class="col q-py-lg text-subtitle1 text-c-blue1">云主机
+                        <q-badge color="primary">计算服务</q-badge>
+                      </div>
+                    </div>
 
-              <div class="row q-mt-md">
-                <div class="col ">
-                  <q-btn flat label="新建云主机" icon="control_point" size="md" class="q-mx-md"
-                         :to="{ path: '/my/usage/vmcreate' }"/>
-                </div>
-                <div class="col">
-                  <q-btn flat label="VPN配置" icon="vpn_lock" class="q-mx-md" :to="{ path: '/my/usage/vpn' }"/>
-                </div>
-              </div>
-            </div>
-            <!-- 云主机card-->
+                    <q-separator/>
 
-            <!-- 资源配额申请单card-->
-            <div class="quick-card q-my-lg q-mr-lg">
-              <div class="row">
-                <div class="col">
-                  <q-icon name="format_list_numbered" size="5.9em" class="q-mx-lg q-mt-lg q-mb-md"/>
-                </div>
-                <div class="col q-py-lg text-subtitle1 text-c-blue1">资源配额申请单
-                </div>
-              </div>
+                    <div class="row q-mt-md">
+                      <div class="col">
+                        <q-btn flat stack label="新建云主机" icon="control_point" class="q-mx-md"
+                               :to="{ path: '/my/usage/vmcreate' }"/>
+                      </div>
+                      <div class="col">
+                        <q-btn flat stack label="VPN配置" icon="vpn_lock" class="q-mx-md"
+                               :to="{ path: '/my/usage/vpn' }"/>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 云主机card-->
 
-              <q-separator/>
+                  <!-- 资源配额申请单card-->
+                  <div class="quick-card q-my-lg q-mr-lg">
+                    <div class="row">
+                      <div class="col">
+                        <q-icon name="format_list_numbered" size="5.9em" class="q-mx-lg q-mt-lg q-mb-md"/>
+                      </div>
+                      <div class="col q-py-lg text-subtitle1 text-c-blue1">资源配额申请单
+                      </div>
+                    </div>
 
-              <div class="row q-mt-md">
-                <div class="col ">
-                  <q-btn flat label="申请资源配额" icon="add_task" size="md" class="q-mx-md"
-                         :to="{ path: '/my/usage/vmcreate' }"/>
-                </div>
-                <div class="col">
-                  <q-btn flat label="审核申请单" icon="checklist_rtl" class="q-mx-md" :to="{ path: '/my/usage/vpn' }"/>
+                    <q-separator/>
+
+                    <div class="row q-mt-md">
+                      <div class="col-shrink">
+                        <q-btn flat stack label="申请资源配额" icon="add_task" class="q-mx-md"
+                               :to="{ path: '/my/quota/apply' }"/>
+                      </div>
+                      <div v-if="isQuotaAdmin" class="col">
+                        <q-btn flat stack label="审核申请单" icon="checklist_rtl" class="q-mx-md"
+                               :to="{ path: '/my/quota/manage' }"/>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- 资源配额申请单card-->
                 </div>
               </div>
             </div>
-            <!-- 资源配额申请单card-->
+
           </div>
         </div>
       </div>
-    </div>
 
+    </div>
   </div>
-
 </template>
 
 <script lang="ts">
@@ -215,13 +240,17 @@ export default defineComponent({
       const url = response.data.vnc.url
       window.open(url)
     }
+
+    // 根据adminQuotaApplicationTable是否为空来判断当前用户是否有权限审批quota，是否显示审批tab
+    const isQuotaAdmin = computed(() => $store.state.applyQuota.tables.adminQuotaApplicationTable.isLoaded)
+
     return {
       currentUser,
       servers,
       vmOperation,
       gotoVNC,
-      serviceNum
-
+      serviceNum,
+      isQuotaAdmin
     }
   }
 })
@@ -237,8 +266,9 @@ export default defineComponent({
 }
 
 .server-card {
-  height: 100px;
-  width: 300px;
+  //height: 100px;
+  //width: 300px;
+  border: $grey-4 1px solid;
 }
 
 .quick-card {

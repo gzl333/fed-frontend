@@ -131,7 +131,7 @@ const getters: GetterTree<VmInterface, StateInterface> = {
   getServicesNumber (state) :number {
     let num = 0
     for (const dataCenter of Object.values(state.tables.globalDataCenterTable.byId)) {
-      num = num + dataCenter.services.length
+      num = num + dataCenter.globalServices.length
     }
     const servicesNum = num
     return servicesNum

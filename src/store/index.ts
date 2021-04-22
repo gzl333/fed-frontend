@@ -12,10 +12,6 @@ import { VmInterface } from 'src/store/vm/state'
 import applyQuota from './applyQuota'
 import { ApplyQuotaInterface } from 'src/store/applyQuota/state'
 
-// to delete
-import quota from './quota'
-import { QuotaInterface } from 'src/store/quota/state'
-
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
@@ -33,10 +29,7 @@ export interface StateInterface {
 
   account: AccountInterface,
   vm: VmInterface,
-  applyQuota: ApplyQuotaInterface,
-
-  // to delete
-  quota: QuotaInterface
+  applyQuota: ApplyQuotaInterface
 }
 
 const store = createStore<StateInterface>({
@@ -44,10 +37,7 @@ const store = createStore<StateInterface>({
     // example
     account,
     vm,
-    applyQuota,
-
-    // to delete
-    quota
+    applyQuota
   },
 
   // enable strict mode (adds overhead!)
