@@ -346,11 +346,12 @@ export default defineComponent({
     const isCreating = ref(false)
 
     const applyQuota = async () => {
+      // todo --> actions
       // 如果没有选择ip地址，则弹出通知
       if (!sliderPublic.value && !sliderPrivate.value) {
         $q.notify({
           color: 'red',
-          message: '请至少选择1个IP地址',
+          message: '请至少选择1个IP地址数量',
           position: 'center',
           closeBtn: false,
           timeout: 3000
@@ -376,7 +377,7 @@ export default defineComponent({
         // 根据响应，更新userQuotaApplicationTable
         void await $store.dispatch('applyQuota/updateUserQuotaApplicationTableSingleApplication', respQuotaApplication.data)
 
-        isCreating.value = false
+        isCreating.value = false // todo  如果进入actions，则可以不要按钮状态
         void $router.push('/my/quota/application')
       }
     }
@@ -414,7 +415,7 @@ export default defineComponent({
 }
 
 .title-area {
-  width: 1339px;
+  width: $general-width-no-padding;
   text-align: left;
   color: $primary;
   font-size: large;
@@ -422,7 +423,7 @@ export default defineComponent({
 }
 
 .stepper {
-  width: 1319px;
+  width: $general-width-no-padding;
 }
 
 .section {

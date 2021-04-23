@@ -85,7 +85,7 @@
                 <q-btn :disable="!server.status || server.status === '运行中'"
                        color="nord4" icon="play_arrow" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="vmOperation({endPoint: server.endpoint_url, id: server.id, action: 'start'})">
+                       @click="$store.dispatch('vm/vmOperation',{id: server.id, action: 'start'})">
                   <q-tooltip>
                     开机
                   </q-tooltip>
@@ -94,7 +94,7 @@
                 <q-btn :disable="!server.status || server.status === '已关机'"
                        color="nord4" icon="power_settings_new" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="vmOperation({endPoint: server.endpoint_url, id: server.id, action: 'shutdown'})">
+                       @click="$store.dispatch('vm/vmOperation',{ id: server.id, action: 'shutdown'})">
                   <q-tooltip>
                     关机
                   </q-tooltip>
@@ -103,7 +103,7 @@
                 <q-btn :disable="!server.status || server.status === '已关机'"
                        color="nord4" icon="restart_alt" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="vmOperation({endPoint: server.endpoint_url, id: server.id, action: 'reboot'})">
+                       @click="$store.dispatch('vm/vmOperation',{ id: server.id, action: 'reboot'})">
                   <q-tooltip>
                     重启
                   </q-tooltip>
@@ -112,7 +112,7 @@
                 <q-btn :disable="!server.status || server.status === '已关机'"
                        color="nord4" icon="power_off" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="vmOperation({endPoint: server.endpoint_url, id: server.id, action: 'poweroff'})">
+                       @click="$store.dispatch('vm/vmOperation',{id: server.id, action: 'poweroff'})">
                   <q-tooltip>
                     强制断电
                   </q-tooltip>
@@ -121,7 +121,7 @@
                 <q-btn :disable="!server.status || server.status === '运行中'"
                        color="nord4" icon="delete" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="vmOperation({endPoint: server.endpoint_url, id: server.id, action: 'delete'})">
+                       @click="$store.dispatch('vm/vmOperation',{ id: server.id, action: 'delete'})">
                   <q-tooltip>
                     删除
                   </q-tooltip>
@@ -130,19 +130,19 @@
                 <q-btn :disable="!server.status"
                        color="nord4" icon="delete_forever" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="vmOperation({endPoint: server.endpoint_url, id: server.id, action: 'delete_force'})">
+                       @click="$store.dispatch('vm/vmOperation',{ id: server.id, action: 'delete_force'})">
                   <q-tooltip>
                     强制删除
                   </q-tooltip>
                 </q-btn>
               </div>
             </div>
-            <!--            空行-->
+            <!--空行开始-->
             <div class="row justify-center items-center q-py-xl ">
               <div class="button-area q-gutter-lg">
               </div>
             </div>
-
+            <!--空行结束-->
             <div class="row justify-center">
               <div class="col-4">
 
@@ -158,7 +158,7 @@
 
                 <div class="row q-pb-md">
                   <div class="col-2 text-grey-7">内存</div>
-                  <div class="col"> {{ server.ram }}MB</div>
+                  <div class="col"> {{ server.ram / 1024 }}GB</div>
                 </div>
 
                 <div class="row q-pb-md">
@@ -167,8 +167,8 @@
                 </div>
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">公网IP</div>
-                  <div class="col"> {{ server.public_ip ? '是' : '否' }}</div>
+                  <div class="col-2 text-grey-7">IP类型</div>
+                  <div class="col"> {{ server.public_ip ? '公网' : '私网' }}</div>
                 </div>
 
                 <div class="row q-pb-md">
@@ -221,7 +221,11 @@
                   <div class="col-shrink">
 
                     <q-btn label="配额详情" flat dense color="primary" padding="none"
-                           :to="{path: `/my/quota/detail/${quota.id}`}"/>
+                           :to="{path: `/my/quota/detail/${quota.id}`}">
+                      <q-tooltip>
+                        进入配额详情页面
+                      </q-tooltip>
+                    </q-btn>
 
                     {{ quota.display }}
 
@@ -342,7 +346,8 @@ export default defineComponent({
     const isPwd = ref(true)
     // 修改密码loading状态
     const isLoading = ref(false)
-    // vpn 修改密码
+
+    // vpn 修改密码 todo 整合进actions
     const popEditVpn = (vpn: VpnInterface) => {
       $q.dialog({
         title: `修改${server.value.service}的VPN密码`,
@@ -369,6 +374,7 @@ export default defineComponent({
           password: data.trim()
         }
         void $store.dispatch('vm/patchVpnPassword', payload).then((value) => {
+          // todo 能否利用响应内容更新
           $store.commit('vm/storeUserVpnTable', Object.assign(vpn, { password: value.data.vpn.password }))
           isLoading.value = false
         }
@@ -378,7 +384,7 @@ export default defineComponent({
         )
       })
     }
-    // download vpn ca
+    // download vpn ca todo ---> actions
     const fetchCa = () => {
       const url = 'https://vms.cstcloud.cn/api/vpn/' + server.value.service + '/ca/'
       window.open(url)
@@ -389,7 +395,7 @@ export default defineComponent({
       window.open(url)
     }
 
-    // 复制信息到剪切板
+    // 复制信息到剪切板 todo ---> actions
     const clickToCopy = async (text: string) => {
       void await copyToClipboard(text).then(() => {
         $q.notify({
@@ -402,29 +408,14 @@ export default defineComponent({
       })
     }
 
-    // 云主机操作 todo 与actions中的操作函数合并逻辑
-    const vmOperation = async (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
-      void await $store.dispatch('vm/vmOperation', payload)
-      // console.log('in vmops', payload) todo 跳转流程优化
-      if (payload.action === 'delete' || payload.action === 'delete_force') {
-        $q.notify({
-          spinner: true,
-          timeout: 4000,
-          color: 'nord9',
-          message: `正在删除IP地址为：${payload.ip || ''} 的云主机，请稍候`,
-          closeBtn: false
-        })
-        void await $router.push({ path: '/my/usage/' })
-      }
-    }
-    // VNC
+    // VNC todo ---> actions
     const gotoVNC = async (payload: string) => {
       const response = await $store.dispatch('vm/fetchServerVNC', payload)
       const url = response.data.vnc.url
       window.open(url)
     }
 
-    // 编辑备注
+    // 编辑备注 todo ---> actions
     const popEditNote = (id: string) => {
       $q.dialog({
         title: `编辑${$store.state.vm.tables.userServerTable.byId[id].ipv4}的备注信息`,
@@ -455,8 +446,6 @@ export default defineComponent({
     const goBack = () => {
       $router.go(-1)
     }
-
-    // console.log(server, service, quota, vpn)
     return {
       server,
       service,
@@ -468,7 +457,6 @@ export default defineComponent({
       fetchConfig,
       isLoading,
       clickToCopy,
-      vmOperation,
       gotoVNC,
       goBack,
       $route,
@@ -483,7 +471,7 @@ export default defineComponent({
 }
 
 .title-area {
-  width: 1339px;
+  width: $general-width-no-padding;
   text-align: left;
   color: $primary;
   font-size: large;
@@ -491,7 +479,7 @@ export default defineComponent({
 }
 
 .content-area {
-  width: 1339px;
+  width: $general-width-no-padding;
 }
 
 .ip-title {

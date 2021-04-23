@@ -140,13 +140,13 @@
                 </q-tooltip>
               </q-btn>
               <q-btn v-if="props.row.status=='已关机'" color="nord4" icon="play_arrow" text-color="primary"
-                     @click="vmOperation({endPoint: props.row.endpoint_url, id: props.row.id, action: 'start'})">
+                     @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'start'})">
                 <q-tooltip>
                   开机
                 </q-tooltip>
               </q-btn>
               <q-btn v-if="props.row.status=='运行中'" color="nord4" icon="power_settings_new" text-color="primary"
-                     @click="vmOperation({endPoint: props.row.endpoint_url, id: props.row.id, action: 'shutdown'})">
+                     @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'shutdown'})">
                 <q-tooltip>
                   关机
                 </q-tooltip>
@@ -155,37 +155,37 @@
               <q-btn-dropdown color="primary" label="操作">
                 <q-list separator dense style="text-align:center">
                   <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-nord14"
-                          @click="vmOperation({endPoint: props.row.endpoint_url, id: props.row.id, action: 'start'})">
+                          @click="$store.dispatch('vm/vmOperation',{ id: props.row.id, action: 'start'})">
                     <q-item-section>
                       <q-item-label>开机</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
-                          @click="vmOperation({endPoint: props.row.endpoint_url, id: props.row.id, action: 'reboot'})">
+                          @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'reboot'})">
                     <q-item-section>
                       <q-item-label>重启</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
-                          @click="vmOperation({endPoint: props.row.endpoint_url, id: props.row.id, action: 'shutdown'})">
+                          @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'shutdown'})">
                     <q-item-section>
                       <q-item-label>关机</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
-                          @click="vmOperation({endPoint: props.row.endpoint_url, id: props.row.id, action: 'poweroff'})">
+                          @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'poweroff'})">
                     <q-item-section>
                       <q-item-label>强制断电</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-nord11"
-                          @click="isShowDelConfirm = true; vmToDel.id=props.row.id; vmToDel.ip=props.row.ipv4; vmToDel.endPoint=props.row.endpoint_url; vmToDel.action='delete'">
+                          @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'delete'})">
                     <q-item-section>
                       <q-item-label>删除</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-item clickable v-close-popup class="bg-nord11"
-                          @click="isShowDelConfirm = true; vmToDel.id=props.row.id; vmToDel.ip=props.row.ipv4; vmToDel.endPoint=props.row.endpoint_url; vmToDel.action='delete_force'">
+                          @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'delete_force'})">
                     <q-item-section>
                       <q-item-label>强制删除</q-item-label>
                     </q-item-section>
@@ -203,21 +203,6 @@
 
     </q-table>
 
-    <q-dialog v-model="isShowDelConfirm">
-      <q-card>
-        <q-card-section class="row items-center">
-          <q-avatar icon="warning" color="nord11" text-color="white"/>
-          <span v-if="vmToDel.action==='delete'" class="q-ml-sm">正在删除云主机: {{ vmToDel.ip }}</span>
-          <span v-if="vmToDel.action==='delete_force'" class="q-ml-sm">正在强制删除云主机: {{ vmToDel.ip }}</span>
-          <div class="q-ml-sm">被删除的云主机将无法自行恢复，如需恢复请联系云联邦管理员</div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn flat label="删除" color="nord11" v-close-popup @click="vmOperation(vmToDel)"/>
-          <q-btn flat label="取消" color="nord10" v-close-popup/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
@@ -248,43 +233,50 @@ export default defineComponent({
         label: 'IP地址',
         field: 'ip',
         align: 'center',
-        style: 'max-width: 150px'
+        style: 'max-width: 150px;padding: 15px 5px'
       },
       {
         name: 'dataCenterName',
-        label: '数据中心',
+        label: '服务节点',
         field: 'dataCenterName',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'serviceType',
         label: '服务种类',
         field: 'serviceType',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'image',
         label: '系统镜像',
         field: 'image',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'cpu',
         label: 'CPU',
         field: 'cpu',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'ram',
         label: '内存',
         field: 'ram',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'expiration',
         label: '到期时间',
         field: 'expiration',
-        align: 'center'
+        align: 'center',
+        classes: 'ellipsis',
+        style: 'padding: 15px 5px'
       },
       // { name: 'source', label: '资源来源', field: 'source', sortable: true,align: 'center' },
       {
@@ -293,25 +285,29 @@ export default defineComponent({
         field: 'note',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 200px'
+        style: 'max-width: 200px;padding: 15px 5px'
       },
       {
         name: 'vnc',
         label: '远程控制',
         field: 'vnc',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'status',
         label: '状态',
         field: 'status',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
+
       },
       {
         name: 'operation',
         label: '操作',
         field: 'operation',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       }
     ]
 
@@ -323,34 +319,12 @@ export default defineComponent({
       rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
     })
 
-    // 云主机操作
-    const vmOperation = (payload: { endPoint: string; id: string; action: string; ip?: string }) => {
-      void $store.dispatch('vm/vmOperation', payload)
-      // console.log('in vmops', payload)
-      if (payload.action === 'delete' || payload.action === 'delete_force') {
-        $q.notify({
-          spinner: true,
-          timeout: 4000,
-          color: 'primary',
-          message: `正在删除IP地址为：${payload.ip || ''} 的云主机，请稍候`,
-          closeBtn: false
-        })
-      }
-    }
     // VNC 不保存在vuex里，vnc图标根据云主机状态变化，开机时可以点击vnc按钮，点击后再获取vnc地址并打开新窗口跳转
     const gotoVNC = async (payload: string) => {
       const response = await $store.dispatch('vm/fetchServerVNC', payload)
       const url = response.data.vnc.url
       window.open(url)
     }
-    // 删除提示
-    const isShowDelConfirm = ref(false)
-    const vmToDel = ref({
-      id: '',
-      ip: '',
-      endPoint: '',
-      action: ''
-    })
     // 编辑备注
     const popEditNote = (id: string) => {
       $q.dialog({
@@ -402,10 +376,7 @@ export default defineComponent({
       props,
       $store,
       columns,
-      vmOperation,
       gotoVNC,
-      isShowDelConfirm,
-      vmToDel,
       paginationTable,
       popEditNote: popEditNote,
       clickToCopy,

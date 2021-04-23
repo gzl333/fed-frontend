@@ -231,55 +231,64 @@ export default defineComponent({
         name: 'service',
         label: '服务节点',
         field: 'service',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'duration_days',
         label: '资源有效期',
         field: 'duration_days',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'cpu',
         label: 'CPU',
         field: 'cpu',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'ram',
         label: '内存',
         field: 'ram',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'private_ip',
         label: '私网IP',
         field: 'private_ip',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'public_ip',
         label: '公网IP',
         field: 'public_ip',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'disk',
         label: '云硬盘',
         field: 'disk',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'expiration_time',
         label: '配额过期时间',
         field: 'expiration_time',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'resource',
         label: '关联资源',
         field: 'resource',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       }
     ]
     // 获取quota列表数据

@@ -114,6 +114,7 @@ export interface QuotaInterface {
   expiration_time: never // null 待细化
   deleted: boolean
   display: string
+  duration_days: number
   // 来自server接口补充
   servers?: string[] // serverId
 }

@@ -97,11 +97,11 @@
             </div>
             <div v-if="props.row.status === 'wait'">
               <q-btn label="取消申请" flat dense padding="none" color="primary"
-                     @click="showCancel(props.row.id)"/>
+                     @click="$store.dispatch('applyQuota/cancelAndUpdateUserQuotaApplicationTable',props.row.id)"/>
             </div>
             <div v-if="props.row.status !== 'wait'">
               <q-btn label="删除记录" flat dense padding="none" color="primary"
-                     @click="showDelete(props.row.id)"
+                     @click="$store.dispatch('applyQuota/deleteAndUpdateUserQuotaApplicationTable', props.row.id)"
               />
             </div>
           </q-td>
@@ -250,45 +250,10 @@
         <q-separator/>
 
         <q-card-actions align="right">
-          <q-btn v-close-popup flat color="primary" label="保存修改"
+          <q-btn v-close-popup flat color="primary" label="保存"
                  @click="$store.dispatch('applyQuota/patchAndUpdateUserQuotaApplicationTable', {apply_id, data: newApplication})"/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="isShowCancel">
-      <q-card>
-
-        <q-card-section>
-          <div>
-            取消后的申请无法恢复。 确认取消此申请？
-          </div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn v-close-popup flat color="primary" label="确认"
-                 @click="$store.dispatch('applyQuota/cancelAndUpdateUserQuotaApplicationTable', cancelId)"/>
           <q-btn v-close-popup flat color="primary" label="放弃"/>
         </q-card-actions>
-
-      </q-card>
-    </q-dialog>
-
-    <q-dialog v-model="isShowDelete">
-      <q-card>
-
-        <q-card-section>
-          <div>
-            删除后的申请记录无法恢复。 确认删除此记录？
-          </div>
-        </q-card-section>
-
-        <q-card-actions align="right">
-          <q-btn v-close-popup flat color="primary" label="确认"
-                 @click="$store.dispatch('applyQuota/deleteAndUpdateUserQuotaApplicationTable', deleteId)"/>
-          <q-btn v-close-popup flat color="primary" label="放弃"/>
-        </q-card-actions>
-
       </q-card>
     </q-dialog>
 
@@ -354,55 +319,64 @@ export default defineComponent({
         name: 'status',
         label: '申请状态',
         field: 'status',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'creation_time',
         label: '申请时间',
         field: 'creation_time',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'service',
         label: '服务节点',
         field: 'service',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'duration_days',
         label: '资源有效期',
         field: 'duration_days',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'cpu',
         label: 'CPU',
         field: 'cpu',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'ram',
         label: '内存',
         field: 'ram',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'private_ip',
         label: '私网IP',
         field: 'private_ip',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'public_ip',
         label: '公网IP',
         field: 'public_ip',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'disk',
         label: '云硬盘',
         field: 'disk',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'purpose',
@@ -410,7 +384,7 @@ export default defineComponent({
         field: 'purpose',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 200px'
+        style: 'max-width: 200px;padding: 15px 5px'
       },
       {
         name: 'applicant',
@@ -418,7 +392,7 @@ export default defineComponent({
         field: 'applicant',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 150px'
+        style: 'max-width: 150px;padding: 15px 5px'
       },
       {
         name: 'operation',
@@ -466,22 +440,6 @@ export default defineComponent({
       newApplication.service_id = currentApplication.service
     })
 
-    // dialog cancel warning
-    const isShowCancel = ref(false)
-    const cancelId = ref('')
-    const showCancel = (id: string) => {
-      cancelId.value = id
-      isShowCancel.value = true
-    }
-
-    // dialog delete warning
-    const isShowDelete = ref(false)
-    const deleteId = ref('')
-    const showDelete = (id: string) => {
-      deleteId.value = id
-      isShowDelete.value = true
-    }
-
     return {
       $store,
       paginationTable,
@@ -493,13 +451,7 @@ export default defineComponent({
       showModify,
       apply_id,
       currentApplication,
-      newApplication,
-      isShowCancel,
-      showCancel,
-      cancelId,
-      isShowDelete,
-      showDelete,
-      deleteId
+      newApplication
     }
   }
 })

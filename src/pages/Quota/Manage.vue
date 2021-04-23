@@ -254,55 +254,64 @@ export default defineComponent({
         name: 'status',
         label: '申请状态',
         field: 'status',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'creation_time',
         label: '申请时间',
         field: 'creation_time',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'service',
         label: '服务节点',
         field: 'service',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'duration_days',
         label: '资源有效期',
         field: 'duration_days',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'cpu',
         label: 'CPU',
         field: 'cpu',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'ram',
         label: '内存',
         field: 'ram',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'private_ip',
         label: '私网IP',
         field: 'private_ip',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'public_ip',
         label: '公网IP',
         field: 'public_ip',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'disk',
         label: '云硬盘',
         field: 'disk',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       },
       {
         name: 'purpose',
@@ -310,7 +319,7 @@ export default defineComponent({
         field: 'purpose',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 200px'
+        style: 'max-width: 200px;padding: 15px 5px'
       },
       {
         name: 'applicant',
@@ -318,13 +327,14 @@ export default defineComponent({
         field: 'applicant',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 150px'
+        style: 'max-width: 150px;padding: 15px 5px'
       },
       {
         name: 'operation',
         label: '操作',
         field: 'operation',
-        align: 'center'
+        align: 'center',
+        style: 'padding: 15px 5px'
       }
     ]
 

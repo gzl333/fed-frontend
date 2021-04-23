@@ -40,7 +40,7 @@
                 <div class="column">
                   <div class="col section">
                     <div class="text-h7 text-primary section-title">
-                      1 - 服务节点
+                      服务节点
                     </div>
                     <div v-for="dataCenter in dataCenters" :key="dataCenter.id" class="row item-row">
                       <div class="col-shrink item-title text-bold">
@@ -72,7 +72,7 @@
               >
                 <div class="col section">
                   <div class="text-h7 text-primary section-title">
-                    2 - 网络类型
+                    网络类型
                   </div>
                   <div v-if="privateNetworks.length > 0" class="row item-row">
                     <div class="col-shrink item-title-narrow text-bold">
@@ -101,7 +101,7 @@
 
                 <div class="col section">
                   <div class="text-h7 text-primary section-title">
-                    3 - 系统镜像
+                    系统镜像
                   </div>
                   <div v-if="images.length > 0" class="row item-row">
                     <div class="col item-radios">
@@ -114,7 +114,7 @@
 
                 <div class="col section">
                   <div class="text-h7 text-primary section-title">
-                    4 - CPU/内存
+                    CPU/内存
                   </div>
                   <div v-if="flavors.length > 0" class="row item-row">
                     <div class="col item-radios">
@@ -127,7 +127,7 @@
 
                 <div class="col section">
                   <div class="text-h7 text-primary section-title">
-                    5 - 配额
+                    配额
                   </div>
                   <div v-if="quotas.length > 0" class="row item-row">
                     <!--                  <div class="col-shrink item-title-narrow text-bold">-->
@@ -464,7 +464,7 @@ export default defineComponent({
 }
 
 .title-area {
-  width: 1339px;
+  width: $general-width-no-padding;
   text-align: left;
   color: $primary;
   font-size: large;
@@ -472,7 +472,7 @@ export default defineComponent({
 }
 
 .stepper {
-  width: 1319px;
+  width: $general-width-no-padding;
 }
 
 .section {

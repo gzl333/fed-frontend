@@ -3,6 +3,7 @@ import { StateInterface } from '../index'
 import { ApplyQuotaInterface } from './state'
 import axios from 'axios'
 import { normalize, schema } from 'normalizr'
+import { Dialog } from 'quasar'
 
 // const apiBase = 'https://vms.cstcloud.cn/api'
 const apiBase = 'http://223.193.2.211:88/api'
@@ -108,11 +109,32 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   /* 拒绝配额申请 */
 
   /* 删除配额申请记录 */
-  async deleteAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
-    const respDelete = await context.dispatch('deleteQuotaApplication', apply_id)
-    if (respDelete.status === 204) {
-      context.commit('deleteUserQuotaApplicationTable', apply_id)
-    }
+  deleteAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
+    // 操作的确认提示
+    Dialog.create({
+      title: '将要删除配额申请记录',
+      message:
+        '删除后的申请记录无法恢复。 确认删除此记录？',
+      ok: {
+        label: '确认',
+        push: false,
+        flat: true,
+        unelevated: true,
+        color: 'primary'
+      },
+      cancel: {
+        label: '放弃',
+        push: false,
+        flat: true,
+        unelevated: true,
+        color: 'primary'
+      }
+    }).onOk(async () => {
+      const respDelete = await context.dispatch('deleteQuotaApplication', apply_id)
+      if (respDelete.status === 204) {
+        context.commit('deleteUserQuotaApplicationTable', apply_id)
+      }
+    })
   },
   async deleteQuotaApplication (context, apply_id: string) {
     const api = apiBase + '/apply/quota/' + apply_id + '/'
@@ -122,12 +144,33 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   /* 删除配额申请记录 */
 
   /* 取消配额申请 */
-  async cancelAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
-    const respCancel = await context.dispatch('cancelQuotaApplication', apply_id)
-    const service = new schema.Entity('service')
-    const quotaApplication = new schema.Entity('quotaApplication', { service })
-    const normalizedData = normalize(respCancel.data, quotaApplication)
-    context.commit('storeUserQuotaApplicationTable', normalizedData.entities.quotaApplication)
+  cancelAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
+    // 操作的确认提示
+    Dialog.create({
+      title: '将要取消配额申请',
+      message:
+        '取消后的申请无法恢复。 确认取消此申请？',
+      ok: {
+        label: '确认',
+        push: false,
+        flat: true,
+        unelevated: true,
+        color: 'primary'
+      },
+      cancel: {
+        label: '放弃',
+        push: false,
+        flat: true,
+        unelevated: true,
+        color: 'primary'
+      }
+    }).onOk(async () => {
+      const respCancel = await context.dispatch('cancelQuotaApplication', apply_id)
+      const service = new schema.Entity('service')
+      const quotaApplication = new schema.Entity('quotaApplication', { service })
+      const normalizedData = normalize(respCancel.data, quotaApplication)
+      context.commit('storeUserQuotaApplicationTable', normalizedData.entities.quotaApplication)
+    })
   },
   async cancelQuotaApplication (context, apply_id: string) {
     const api = apiBase + '/apply/quota/' + apply_id + '/cancel/'
@@ -146,7 +189,7 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   /*  提交配额申请 */
 
   /* adminQuotaApplicationTable */
-  // 只保存undeleted的application
+  // 只保存undeleted的application todo 应该保存全部，显示时筛选
   async updateAdminQuotaApplicationTable (context) {
     // 先清空table，避免多次更新时数据累加
     context.commit('clearAdminQuotaApplicationTable')
@@ -187,7 +230,7 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   async updateUserQuotaApplicationTable (context) {
     // 先清空table，避免多次更新时数据累加
     context.commit('clearUserQuotaApplicationTable')
-    // 再获取数据并更新table
+    // 再获取数据并更新table todo 应该保存全部，显示时筛选
     const respApply = await context.dispatch('fetchUserApplication', { deleted: false })
     const service = new schema.Entity('service')
     const quotaApplication = new schema.Entity('quotaApplication', { service })

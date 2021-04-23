@@ -3,6 +3,7 @@ import { StateInterface } from '../index'
 import { ServerInterface, VmInterface } from './state'
 import axios from 'axios'
 import { normalize, schema } from 'normalizr'
+import { Dialog, Notify } from 'quasar'
 
 // const apiBase = 'https://vms.cstcloud.cn/api'
 const apiBase = 'http://223.193.2.211:88/api'
@@ -20,6 +21,16 @@ const statusCodeMap = new Map<number, string>(
     [10, '已丢失'],
     [11, '正在创建'],
     [12, '创建失败']
+  ]
+)
+const actionMap = new Map<string, string>(
+  [
+    ['start', '开机'],
+    ['reboot', '重启'],
+    ['shutdown', '关机'],
+    ['poweroff', '强制断电'],
+    ['delete', '删除'],
+    ['delete_force', '强制删除']
   ]
 )
 
@@ -202,35 +213,64 @@ const actions: ActionTree<VmInterface, StateInterface> = {
   /* userNetworkTable */
 
   /* vmlist页面中的云主机操作 */
-  async vmOperation (context, payload: { endPoint: string; id: string; action: string }) {
-    // 将主机状态清空，界面将显示loading
-    context.commit('storeUserServerTableSingleStatus', {
-      serverId: payload.id,
-      status_code: ''
+  vmOperation (context, payload: { id: string; action: string }) {
+    // 操作的确认提示 todo 删除输入删除两个字
+    Dialog.create({
+      title: `将要执行：${actionMap.get(payload.action) || ''}`,
+      message:
+        `${payload.action === 'delete' || payload.action === 'delete_force' ? '被删除的云主机将无法自行恢复，如需恢复请联系云联邦管理员。' : ''}确认执行？`,
+      ok: {
+        label: '确认',
+        push: false,
+        flat: true,
+        unelevated: true,
+        color: 'primary'
+      },
+      cancel: {
+        label: '放弃',
+        push: false,
+        flat: true,
+        unelevated: true,
+        color: 'primary'
+      }
+    }).onOk(async () => {
+      // 将主机状态清空，界面将显示loading
+      context.commit('storeUserServerTableSingleStatus', {
+        serverId: payload.id,
+        status_code: ''
+      })
+      // 发送请求
+      const server = context.state.tables.userServerTable.byId[payload.id]
+      const api = server.endpoint_url.endsWith('/') ? server.endpoint_url + 'api/server/' + payload.id + '/action/' : server.endpoint_url + '/api/server/' + payload.id + '/action/'
+      const data = { action: payload.action }
+      const response = await axios.post(api, data)
+
+      // 如果删除主机，重新获取userServerTable
+      if (payload.action === 'delete' || payload.action === 'delete_force') {
+        Notify.create({
+          spinner: true,
+          timeout: 3000,
+          color: 'primary',
+          message: `正在删除IP地址为：${server.ipv4 || ''} 的云主机，请稍候`,
+          closeBtn: false
+        })
+        // 应延时
+        void await new Promise(resolve => (
+          setTimeout(resolve, 5000)
+        ))
+        // 更新userServerTable
+        void await context.dispatch('updateUserServerTable')
+      } else {
+        // 其它操作只更新该主机状态
+        // 应延时
+        void await new Promise(resolve => (
+          setTimeout(resolve, 5000)
+        ))
+        // 更新单个server status
+        void await context.dispatch('updateUserServerTableSingleStatus', payload.id)
+      }
+      return response
     })
-
-    const api = payload.endPoint.endsWith('/') ? payload.endPoint + 'api/server/' + payload.id + '/action/' : payload.endPoint + '/api/server/' + payload.id + '/action/'
-    const data = { action: payload.action }
-    const response = await axios.post(api, data)
-
-    // 如果删除主机，重新获取userServerTable
-    if (payload.action === 'delete' || payload.action === 'delete_force') {
-      // 状态更新应延时获取
-      void await new Promise(resolve => (
-        setTimeout(resolve, 3000)
-      ))
-      // 更新userServerTable
-      void await context.dispatch('updateUserServerTable')
-    } else {
-      // 其它操作只更新该主机状态
-      // 状态更新应延时获取
-      void await new Promise(resolve => (
-        setTimeout(resolve, 3000)
-      ))
-      // 更新单个server status
-      void await context.dispatch('updateUserServerTableSingleStatus', payload.id)
-    }
-    return response
   },
   /* vmlist页面中的云主机操作 */
 

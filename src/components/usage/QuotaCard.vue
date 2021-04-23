@@ -4,9 +4,10 @@
     <q-card flat bordered square>
       <q-card-section class="q-pa-sm">
         <div class="text-center">
-          有效期至{{ new Date(props.quota.expiration_time).toLocaleString() }}
-          <q-btn label="详情" flat dense padding="none" color="primary"
+          <!--          todo 配额用途应加入吗？去application里取-->
+          <q-btn label="配额详情" flat dense padding="none" color="primary"
                  :to="{path: `/my/quota/detail/${props.quota.id}`}"/>
+          资源有效期{{props.quota.duration_days}}天 - 配额可用至{{ new Date(props.quota.expiration_time).toLocaleString() }}
         </div>
       </q-card-section>
 

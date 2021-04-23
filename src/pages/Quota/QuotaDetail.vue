@@ -3,8 +3,8 @@
     <div class="column items-center justify-center">
       <div class="col q-pa-none">
 
-        <div class="row">
-          <div class="col title-area">
+        <div class="row title-area">
+          <div class="col">
             <q-btn icon="arrow_back_ios_new" color="primary" flat unelevated dense
                    @click="goBack"/>
             配额详情
@@ -12,12 +12,12 @@
         </div>
 
         <!--直接从url进入本页面时，tables尚未载入，应显示loading界面。对取属性进行缓冲，不出现undefined错误-->
-        <div class="row">
+        <div class="row content-area">
           <div v-if="!quota || !vms" class="col">
             正在加载，请稍候
           </div>
 
-          <div v-else class="col content-area">
+          <div v-else class="col ">
             <!--            配额详情开始-->
             <div class="row items-center justify-evenly quota-area">
 
@@ -289,7 +289,7 @@ export default defineComponent({
 }
 
 .title-area {
-  width: 1339px;
+  width: $general-width-no-padding;
   text-align: left;
   color: $primary;
   font-size: large;
@@ -297,7 +297,7 @@ export default defineComponent({
 }
 
 .content-area {
-  width: 1339px;
+  width: $general-width-no-padding;
 }
 
 .quota-area {
