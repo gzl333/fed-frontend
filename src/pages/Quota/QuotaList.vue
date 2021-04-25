@@ -59,14 +59,14 @@
             <q-circular-progress v-else
                                  show-value
                                  font-size="12px"
-                                 :value=" props.row.vcpu_total && (1 - props.row.vcpu_used/ props.row.vcpu_total) * 100 "
+                                 :value="props.row.vcpu_total && (1 - props.row.vcpu_used/ props.row.vcpu_total) * 100"
                                  size="80px"
                                  :thickness="0.22"
-                                 color="light-green"
+                                 :color="(1 - props.row.vcpu_used/ props.row.vcpu_total)>=.4 ? 'light-green' : (1 - props.row.vcpu_used/ props.row.vcpu_total)>=.2 ? 'orange' : 'red' "
                                  track-color="grey-3"
                                  class="q-ma-sm"
             >
-              <div v-if="props.row.vcpu_total===props.row.vcpu_used" class="text-red">
+              <div v-if="props.row.vcpu_total===props.row.vcpu_used" class="text-grey">
                 共{{ props.row.vcpu_total }}核用尽
               </div>
               <div v-else>{{ props.row.vcpu_total - props.row.vcpu_used }}/{{ props.row.vcpu_total }}核</div>
@@ -77,14 +77,14 @@
             <q-circular-progress v-else
                                  show-value
                                  font-size="12px"
-                                 :value=" props.row.ram_total && (1 - props.row.ram_used/ props.row.ram_total) * 100 "
+                                 :value="props.row.ram_total && (1 - props.row.ram_used/ props.row.ram_total) * 100"
                                  size="80px"
                                  :thickness="0.22"
-                                 color="light-green"
+                                 :color="(1 - props.row.ram_used/ props.row.ram_total)>=.4 ? 'light-green' : (1 - props.row.ram_used/ props.row.ram_total)>=.2 ? 'orange' : 'red' "
                                  track-color="grey-3"
                                  class="q-ma-sm"
             >
-              <div v-if="props.row.ram_total===props.row.ram_used" class="text-red">
+              <div v-if="props.row.ram_total===props.row.ram_used" class="text-grey">
                 共{{ props.row.ram_total / 1024 }}GB用尽
               </div>
               <div v-else>
@@ -100,7 +100,7 @@
                                  :value=" props.row.private_ip_total && (1 - props.row.private_ip_used/ props.row.private_ip_total) * 100 "
                                  size="80px"
                                  :thickness="0.22"
-                                 color="light-green"
+                                 :color="(1 - props.row.private_ip_used/ props.row.private_ip_total)>=.4 ? 'light-green' : (1 - props.row.private_ip_used/ props.row.private_ip_total)>=.2 ? 'orange' : 'red' "
                                  track-color="grey-3"
                                  class="q-ma-sm"
             >
@@ -121,11 +121,11 @@
                                  :value=" props.row.public_ip_total && (1 - props.row.public_ip_used/ props.row.public_ip_total) * 100 "
                                  size="80px"
                                  :thickness="0.22"
-                                 color="light-green"
+                                 :color="(1 - props.row.public_ip_used/ props.row.public_ip_total)>=.4 ? 'light-green' : (1 - props.row.public_ip_used/ props.row.public_ip_total)>=.2 ? 'orange' : 'red' "
                                  track-color="grey-3"
                                  class="q-ma-sm"
             >
-              <div v-if="props.row.public_ip_total===props.row.public_ip_used" class="text-red">
+              <div v-if="props.row.public_ip_total===props.row.public_ip_used" class="text-grey">
                 共{{ props.row.public_ip_total }}个用尽
               </div>
               <div v-else>{{ props.row.public_ip_total - props.row.public_ip_used }}/{{
@@ -142,11 +142,11 @@
                                  :value=" props.row.disk_size_total && (1 - props.row.disk_size_used/ props.row.disk_size_total) * 100 "
                                  size="80px"
                                  :thickness="0.22"
-                                 color="light-green"
+                                 :color="(1 - props.row.disk_size_used/ props.row.disk_size_total)>=.4 ? 'light-green' : (1 - props.row.disk_size_used/ props.row.disk_size_total)>=.2 ? 'orange' : 'red' "
                                  track-color="grey-3"
                                  class="q-ma-sm"
             >
-              <div v-if="props.row.disk_size_total===props.row.disk_size_used" class="text-red">
+              <div v-if="props.row.disk_size_total===props.row.disk_size_used" class="text-grey">
                 共{{ props.row.disk_size_total }}GB用尽
               </div>
               <div v-else>{{ props.row.disk_size_total - props.row.disk_size_used }}/{{
@@ -156,10 +156,11 @@
             </q-circular-progress>
           </q-td>
           <q-td key="expiration_time" :props="props">
-            {{ new Date(props.row.expiration_time).toLocaleString() }}
-            <div v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0" class="text-red">
-              已过期
+            <div v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0" class="text-grey">
+              <div>{{ new Date(props.row.expiration_time).toLocaleString() }}</div>
+              <div>已过期</div>
             </div>
+            <div v-else>{{ new Date(props.row.expiration_time).toLocaleString() }}</div>
           </q-td>
           <q-td key="resource" :props="props">
             <div v-if="props.row.servers.length > 0">

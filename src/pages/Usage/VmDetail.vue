@@ -147,49 +147,49 @@
               <div class="col-4">
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">ID</div>
+                  <div class="col-2 text-grey">ID</div>
                   <div class="col"> {{ server.id }}</div>
                 </div>
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">CPU</div>
+                  <div class="col-2 text-grey">CPU</div>
                   <div class="col"> {{ server.vcpus }}核</div>
                 </div>
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">内存</div>
+                  <div class="col-2 text-grey">内存</div>
                   <div class="col"> {{ server.ram / 1024 }}GB</div>
                 </div>
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">CPU</div>
+                  <div class="col-2 text-grey">CPU</div>
                   <div class="col"> {{ server.vcpus }}核</div>
                 </div>
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">IP类型</div>
+                  <div class="col-2 text-grey">IP类型</div>
                   <div class="col"> {{ server.public_ip ? '公网' : '私网' }}</div>
                 </div>
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">系统镜像</div>
+                  <div class="col-2 text-grey">系统镜像</div>
                   <div class="col"> {{ server.image }}</div>
                 </div>
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">创建时间</div>
+                  <div class="col-2 text-grey">创建时间</div>
                   <div class="col"> {{ new Date(server.creation_time).toLocaleString() }}</div>
                 </div>
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">失效时间</div>
+                  <div class="col-2 text-grey">失效时间</div>
                   <div class="col">
                     {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString() : '永久有效' }}
                   </div>
                 </div>
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">备注</div>
+                  <div class="col-2 text-grey">备注</div>
                   <div class="col">
 
                     <q-btn class="col-shrink q-px-xs" flat dense icon="edit" size="xs" color="primary"
@@ -208,16 +208,16 @@
               <div class="col-8">
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">服务节点</div>
+                  <div class="col-2 text-grey">服务节点</div>
                   <div class="col"> {{ service.name }}</div>
                 </div>
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">服务类型</div>
+                  <div class="col-2 text-grey">服务类型</div>
                   <div class="col"> {{ service.service_type }}</div>
                 </div>
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">所用配额</div>
+                  <div class="col-2 text-grey">所用配额</div>
                   <div class="col-shrink">
 
                     <q-btn label="配额详情" flat dense color="primary" padding="none"
@@ -233,12 +233,12 @@
                 </div>
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey-7">需要VPN</div>
+                  <div class="col-2 text-grey">需要VPN</div>
                   <div class="col"> {{ service.need_vpn ? '是' : '否' }}</div>
                 </div>
 
                 <div v-if="service.need_vpn" class="row q-pb-md">
-                  <div class="col-2 text-grey-7">VPN用户名</div>
+                  <div class="col-2 text-grey">VPN用户名</div>
                   <div class="col">
                     {{ vpn.username }}
                     <q-btn
@@ -252,7 +252,7 @@
                 </div>
 
                 <div v-if="service.need_vpn" class="row q-pb-md">
-                  <div class="col-2 text-grey-7">VPN密码</div>
+                  <div class="col-2 text-grey">VPN密码</div>
                   <div class="col">
                     <q-input class="password-input"
                              :loading="isLoading"
@@ -267,7 +267,7 @@
                     </q-input>
 
                     <q-btn
-                      class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
+                      class="col-shrink q-px-xs text-grey" flat icon="content_copy" size="xs"
                       @click="clickToCopy(vpn.password)">
                       <q-tooltip>
                         复制
@@ -280,14 +280,14 @@
                 </div>
 
                 <div v-if="service.need_vpn" class="row q-pb-md">
-                  <div class="col-2 text-grey-7">VPN配置文件</div>
+                  <div class="col-2 text-grey">VPN配置文件</div>
                   <div class="col">
                     <q-btn label="下载" class=" " color="primary" padding="none" dense flat @click="fetchConfig"/>
                   </div>
                 </div>
 
                 <div v-if="service.need_vpn" class="row q-pb-md">
-                  <div class="col-2 text-grey-7">VPN CA证书</div>
+                  <div class="col-2 text-grey">VPN CA证书</div>
                   <div class="col">
                     <q-btn label="下载" class="" color="primary" padding="none" dense flat @click="fetchCa"/>
                   </div>
@@ -307,7 +307,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref } from 'vue'
+import { defineComponent, computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter, useRoute } from 'vue-router'

@@ -5,7 +5,7 @@ const vm = {
   pages: {},
   // 扁平结构的表数据
   tables: {
-    statusMap: new Map(), // todo 云主机状态的映射关系，硬写进去，一般不变
+    statusMap: new Map(), // 云主机状态的映射关系，硬写进去，一般不变
     // 以下均为object结构。 不可写为map结构！因vuex不支持对map结构mutation的探测，只支持proxy object
     /*
     table分为两种：global table，保存系统内部全部相关数据；user table，只保存与当前用户相关的table

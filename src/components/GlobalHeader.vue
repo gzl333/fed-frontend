@@ -3,21 +3,18 @@
     <div class="row">
       <q-toolbar class="q-pa-none">
         <q-toolbar-title>
-          <!--          <q-btn :ripple="false" flat to="/my" dense>-->
-          <!--            <div class="text-h5">中国科技云联邦</div>-->
-          <!--          </q-btn>-->
-          <img src="title.png" alt="中国科技云联邦" class="title q-pt-xs">
+          <img src="title.png" alt="中国科技云联邦" class="title q-pt-sm">
         </q-toolbar-title>
 
         <q-space/>
         <div class="q-gutter-md row items-center no-wrap">
 
-          <!--          <q-btn  :ripple="false" round flat color="grey-5" icon="library_books" v-if="$q.screen.gt.sm"-->
-          <!--                 @click="toggleRightDrawer">-->
-          <!--            <q-tooltip>使用手册</q-tooltip>-->
-          <!--          </q-btn>-->
+          <q-btn disable :ripple="false" flat dense color="grey" icon="library_books"
+                 @click="toggleRightDrawer">
+            <q-tooltip>使用手册</q-tooltip>
+          </q-btn>
 
-          <q-btn disable :ripple="false" round flat color="grey-5" icon="notifications">
+          <q-btn disable :ripple="false" flat dense color="grey" icon="notifications">
             <q-badge color="c-blue-3" text-color="white" floating>
               0
             </q-badge>
@@ -40,7 +37,8 @@
               <q-item clickable disable>
                 <q-item-section>账户设置</q-item-section>
               </q-item>
-              <q-item clickable tag="a" href="https://passport.escience.cn/user/password.do?act=showChangePassword" target="_blank">
+              <q-item clickable tag="a" href="https://passport.escience.cn/user/password.do?act=showChangePassword"
+                      target="_blank">
                 <q-item-section>修改密码</q-item-section>
               </q-item>
               <q-item clickable @click="toLogout" class="bg-grey-2">
@@ -67,15 +65,18 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const currentUser = $store.state.account
 
+    const currentUser = $store.state.account
+    const toggleRightDrawer = () => {
+      $store.commit('account/storeIsRightDrawerOpen')
+    }
     const toLogout = () => {
       void $store.dispatch('account/logoutCstUser')
     }
     return {
       currentUser,
-      toLogout
-
+      toLogout,
+      toggleRightDrawer
     }
   }
 })

@@ -1,13 +1,14 @@
 <template>
   <div class="QuotaCard">
 
-    <q-card flat bordered square>
+    <q-card flat square class="bg-grey-1">
       <q-card-section class="q-pa-sm">
         <div class="text-center">
           <!--          todo 配额用途应加入吗？去application里取-->
           <q-btn label="配额详情" flat dense padding="none" color="primary"
                  :to="{path: `/my/quota/detail/${props.quota.id}`}"/>
-          资源有效期{{props.quota.duration_days}}天 - 配额可用至{{ new Date(props.quota.expiration_time).toLocaleString() }}
+          <div v-if="new Date(props.quota.expiration_time).getTime() < new Date().getTime()" class="text-red">已过期</div>
+          <div v-else>资源有效期{{props.quota.duration_days}}天 - 配额有效至{{ new Date(props.quota.expiration_time).toLocaleString() }}</div>
         </div>
       </q-card-section>
 
@@ -28,12 +29,12 @@
                     :value="props.quota.vcpu_total && ( 1 - props.quota.vcpu_used / props.quota.vcpu_total) * 100 "
                     size="80px"
                     :thickness="0.22"
-                    color="light-green"
+                    :color="(1 - props.quota.vcpu_used/ props.quota.vcpu_total)>=.4 ? 'light-green' : (1 - props.quota.vcpu_used/ props.quota.vcpu_total)>=.2 ? 'orange' : 'red' "
                     track-color="grey-3"
                     class="q-ma-sm"
                   >
                     <div v-if="props.quota.vcpu_total === 0">无</div>
-                    <div v-else-if="props.quota.vcpu_total===props.quota.vcpu_used" class="text-red">
+                    <div v-else-if="props.quota.vcpu_total===props.quota.vcpu_used" class="text-grey">
                       共{{ props.quota.vcpu_total }}核用尽
                     </div>
                     <div v-else>{{ props.quota.vcpu_total - props.quota.vcpu_used }}/{{ props.quota.vcpu_total }}核</div>
@@ -59,12 +60,12 @@
                     :value="props.quota.ram_total && (1 - props.quota.ram_used / props.quota.ram_total) * 100 "
                     size="80px"
                     :thickness="0.22"
-                    color="light-green"
+                    :color="(1 - props.quota.ram_used/ props.quota.ram_total)>=.4 ? 'light-green' : (1 - props.quota.ram_used/ props.quota.ram_total)>=.2 ? 'orange' : 'red' "
                     track-color="grey-3"
                     class="q-ma-sm"
                   >
                     <div v-if="props.quota.ram_total === 0">无</div>
-                    <div v-else-if="props.quota.ram_total===props.quota.ram_used" class="text-red">
+                    <div v-else-if="props.quota.ram_total===props.quota.ram_used" class="text-grey">
                       共{{ props.quota.ram_total / 1024 }}GB用尽
                     </div>
                     <div v-else>
@@ -92,12 +93,12 @@
                     :value="props.quota.private_ip_total && (1 -props.quota.private_ip_used / props.quota.private_ip_total) * 100 "
                     size="80px"
                     :thickness="0.22"
-                    color="light-green"
+                    :color="(1 - props.quota.private_ip_used/ props.quota.private_ip_total)>=.4 ? 'light-green' : (1 - props.quota.private_ip_used/ props.quota.private_ip_total)>=.2 ? 'orange' : 'red' "
                     track-color="grey-3"
                     class="q-ma-sm"
                   >
                     <div v-if="props.quota.private_ip_total === 0">无</div>
-                    <div v-else-if="props.quota.private_ip_total===props.quota.private_ip_used" class="text-red">
+                    <div v-else-if="props.quota.private_ip_total===props.quota.private_ip_used" class="text-grey">
                       {{ props.quota.private_ip_total }}个用尽
                     </div>
                     <div v-else>{{ props.quota.private_ip_total - props.quota.private_ip_used }}/{{
@@ -126,12 +127,12 @@
                     :value="props.quota.public_ip_total && (1 - props.quota.public_ip_used/ props.quota.public_ip_total) * 100 "
                     size="80px"
                     :thickness="0.22"
-                    color="light-green"
+                    :color="(1 - props.quota.public_ip_used/ props.quota.public_ip_total)>=.4 ? 'light-green' : (1 - props.quota.public_ip_used/ props.quota.public_ip_total)>=.2 ? 'orange' : 'red' "
                     track-color="grey-3"
                     class="q-ma-sm"
                   >
                     <div v-if="props.quota.public_ip_total === 0">无</div>
-                    <div v-else-if="props.quota.public_ip_total===props.quota.public_ip_used" class="text-red">
+                    <div v-else-if="props.quota.public_ip_total===props.quota.public_ip_used" class="text-grey">
                       共{{ props.quota.public_ip_total }}个用尽
                     </div>
                     <div v-else>{{ props.quota.public_ip_total - props.quota.public_ip_used }}/{{
@@ -160,12 +161,12 @@
                     :value="props.quota.disk_size_total && (1 - props.quota.disk_size_used/ props.quota.disk_size_total) * 100 "
                     size="80px"
                     :thickness="0.22"
-                    color="light-green"
+                    :color="(1 - props.quota.disk_size_used/ props.quota.disk_size_total)>=.4 ? 'light-green' : (1 - props.quota.disk_size_used/ props.quota.disk_size_total)>=.2 ? 'orange' : 'red' "
                     track-color="grey-3"
                     class="q-ma-sm"
                   >
                     <div v-if="props.quota.disk_size_total === 0">无</div>
-                    <div v-else-if="props.quota.disk_size_total===props.quota.disk_size_used" class="text-red">
+                    <div v-else-if="props.quota.disk_size_total===props.quota.disk_size_used" class="text-grey">
                       共{{ props.quota.disk_size_total }}GB用尽
                     </div>
                     <div v-else>{{ props.quota.disk_size_total - props.quota.disk_size_used }}/{{

@@ -1,53 +1,38 @@
-
 export interface TokenInterface {
-  access: string;
-  refresh: string;
-}
-export interface LoginReqInterface {
-  username: string;
-  password: string;
-}
-export interface RefreshTokenInterface {
+  access: string
   refresh: string
 }
-export interface JwtPayloadInterface {
-  iss?: string;
-  sub?: string;
-  aud?: string[] | string;
-  exp?: number;
-  nbf?: number;
-  iat?: number;
-  jti?: string;
-  username?: string;
-  // eslint-disable-next-line camelcase
-  token_type?: string;
-}
+
 export interface CstJwtInterface {
-  trueName: string;
-  type: string;
-  umtId: string;
-  securityEmail: string;
-  cstnetIdStatus: string;
-  cstnetId: string;
-  exp:number;
-  iss: string;
-  iat: number;
+  trueName: string
+  type: string
+  umtId: string
+  securityEmail: string
+  cstnetIdStatus: string
+  cstnetId: string
+  exp: number
+  iss: string
+  iat: number
 }
 
 export interface AccountInterface {
-  isLogin: boolean;
-  cstTrueName?: string;
-  cstEmail?: string;
-  cstId?: string;
+  isLogin: boolean
+  cstTrueName?: string
+  cstEmail?: string
+  cstId?: string
   token?: {
-    access: string;
-    refresh: string;
+    access: string
+    refresh: string
   }
+
+  // myLaylou rightDrawer open
+  isRightDrawerOpen: boolean
 }
 
 function state () {
   return {
-    isLogin: false
+    isLogin: false,
+    isRightDrawerOpen: false
   }
 }
 

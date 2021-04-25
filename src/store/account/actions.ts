@@ -92,14 +92,6 @@ const actions: ActionTree<AccountInterface, StateInterface> = {
     context.commit('deleteUser')
     window.location.href = cstApiBase + '/open/api/UMTOauthLogin/loginOut?loginOutUrl=' + window.location.origin
   },
-  // async fetchCstLogoutUrl () {
-  //   const api = cstApiBase + '/open/api/UMTOauthLogin/loginOut'
-  //   // redirect是从通行证退出后重定向的地址
-  //   const redirect = window.location.origin // 从通行证返回后的跳转url
-  //   const config = { params: { loginOutUrl: redirect } }
-  //   const response = await axios.post(api, null, config)
-  //   return response
-  // },
   async loginCstUser (context, code: string) {
     // 获取token
     const respFetchCstToken = await context.dispatch('fetchCstToken', code)

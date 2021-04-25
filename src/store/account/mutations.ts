@@ -5,6 +5,10 @@ import jwtDecode from 'jwt-decode'
 
 // 注意此时state是store.state.account，而不是store.state
 const mutation: MutationTree<AccountInterface> = {
+  // myLayout rightDrawer
+  storeIsRightDrawerOpen (state) {
+    state.isRightDrawerOpen = !state.isRightDrawerOpen
+  },
   storeUser (/* this: rightType, */state, payload: { access: string; refresh: string; }) {
     // vuex
     state.isLogin = true

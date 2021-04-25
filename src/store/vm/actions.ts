@@ -216,7 +216,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
   vmOperation (context, payload: { id: string; action: string }) {
     // 操作的确认提示 todo 删除输入删除两个字
     Dialog.create({
-      title: `将要执行：${actionMap.get(payload.action) || ''}`,
+      title: `${actionMap.get(payload.action) || ''}`,
       message:
         `${payload.action === 'delete' || payload.action === 'delete_force' ? '被删除的云主机将无法自行恢复，如需恢复请联系云联邦管理员。' : ''}确认执行？`,
       ok: {

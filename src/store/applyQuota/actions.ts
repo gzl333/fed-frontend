@@ -112,7 +112,7 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   deleteAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
     // 操作的确认提示
     Dialog.create({
-      title: '将要删除配额申请记录',
+      title: '删除配额申请记录',
       message:
         '删除后的申请记录无法恢复。 确认删除此记录？',
       ok: {
@@ -147,7 +147,7 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   cancelAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
     // 操作的确认提示
     Dialog.create({
-      title: '将要取消配额申请',
+      title: '取消配额申请',
       message:
         '取消后的申请无法恢复。 确认取消此申请？',
       ok: {

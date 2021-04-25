@@ -3,7 +3,7 @@
 
     <global-leftdrawer/>
 
-    <q-drawer v-model="rightDrawerOpen" side="right" bordered :width="300">
+    <q-drawer v-model="isRightDrawerOpen" side="right" :width="500" bordered>
       <global-rightdrawer/>
     </q-drawer>
 
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from '../store'
 import GlobalRightdrawer from 'components/GlobalRightdrawer.vue'
@@ -51,16 +51,13 @@ export default defineComponent({
     /* my内页所有table加载起始点 */
 
     const currentUser = $store.state.account
-    const rightDrawerOpen = ref(false)
-    const toggleRightDrawer = () => {
-      rightDrawerOpen.value = !rightDrawerOpen.value
-    }
+    const isRightDrawerOpen = computed(() => $store.state.account.isRightDrawerOpen)
+
     const toLogout = () => {
       void $store.dispatch('account/logoutCstUser')
     }
     return {
-      rightDrawerOpen,
-      toggleRightDrawer,
+      isRightDrawerOpen,
       currentUser,
       toLogout
     }

@@ -2,15 +2,15 @@
   <div class="GlobalAddButton">
 
     <q-fab
-      class="btn-add shadow-10"
+      class="btn-add"
       v-model="fabButton"
       vertical-actions-align="right"
       color="primary"
       icon="add"
       direction="down"
     >
-      <q-fab-action color="primary" icon="computer" label="新建云主机" :to="{ path: '/my/usage/vmcreate' }"/>
-      <q-fab-action color="primary" icon="description" label="申请新配额" :to="{ path: '/my/quota/apply' }"/>
+      <q-fab-action label="新建云主机" unelevated color="primary" icon="computer" :to="{ path: '/my/usage/vmcreate' }"/>
+      <q-fab-action label="申请新配额" unelevated color="primary" icon="description" :to="{ path: '/my/quota/apply' }"/>
     </q-fab>
 
   </div>

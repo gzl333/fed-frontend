@@ -70,9 +70,9 @@ const getters: GetterTree<VmInterface, StateInterface> = {
     } else {
       const rows: QuotaInterface[] = []
       for (const quota of Object.values(state.tables.userQuotaTable.byId)) {
-        if (state.pages.quotaList.filter === 'valid' && !!(new Date(quota.expiration_time).getTime() - new Date().getTime())) { // 筛选出未过期的quota
+        if (state.pages.quotaList.filter === 'valid' && (new Date(quota.expiration_time).getTime() - new Date().getTime()) > 0) { // 筛选出未过期的quota
           rows.push(quota)
-        } else if (state.pages.quotaList.filter === 'invalid' && !(new Date(quota.expiration_time).getTime() - new Date().getTime())) { // 筛选出过期的quota
+        } else if (state.pages.quotaList.filter === 'invalid' && (new Date(quota.expiration_time).getTime() - new Date().getTime()) <= 0) { // 筛选出过期的quota
           rows.push(quota)
         }
       }

@@ -92,7 +92,6 @@
           </q-td>
           <q-td key="operation" :props="props">
             <div v-if="props.row.status === 'wait'">
-              <!-- todo-->
               <q-btn label="修改申请" flat dense padding="none" color="primary" @click="showModify(props.row.id)"/>
             </div>
             <div v-if="props.row.status === 'wait'">

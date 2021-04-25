@@ -1,6 +1,7 @@
 <template>
   <div class="GlobalRightdrawer">
-    this is GlobalRightdrawer
+    云联邦使用手册
+    建设中...
   </div>
 </template>
 

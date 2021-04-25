@@ -346,7 +346,6 @@ export default defineComponent({
     const isCreating = ref(false)
 
     const applyQuota = async () => {
-      // todo --> actions
       // 如果没有选择ip地址，则弹出通知
       if (!sliderPublic.value && !sliderPrivate.value) {
         $q.notify({
@@ -377,7 +376,7 @@ export default defineComponent({
         // 根据响应，更新userQuotaApplicationTable
         void await $store.dispatch('applyQuota/updateUserQuotaApplicationTableSingleApplication', respQuotaApplication.data)
 
-        isCreating.value = false // todo  如果进入actions，则可以不要按钮状态
+        isCreating.value = false
         void $router.push('/my/quota/application')
       }
     }
