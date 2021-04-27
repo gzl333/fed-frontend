@@ -44,7 +44,7 @@
           <q-td key="status" :props="props">
             <div v-if="props.row.status === 'wait'">待审批</div>
             <div v-if="props.row.status === 'pending'" class="text-primary">审批中</div>
-            <div v-if="props.row.status === 'pass'" class="text-green">已通过</div>
+            <div v-if="props.row.status === 'pass'" class="text-light-green">已通过</div>
             <div v-if="props.row.status === 'reject'" class="text-red">已拒绝</div>
             <div v-if="props.row.status === 'cancel'" class="text-grey">已取消</div>
           </q-td>

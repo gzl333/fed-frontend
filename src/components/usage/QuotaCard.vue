@@ -3,13 +3,42 @@
 
     <q-card flat square class="bg-grey-1">
       <q-card-section class="q-pa-sm">
-        <div class="text-center">
-          <!--          todo 配额用途应加入吗？去application里取-->
-          <q-btn label="配额详情" flat dense padding="none" color="primary"
-                 :to="{path: `/my/quota/detail/${props.quota.id}`}"/>
-          <div v-if="new Date(props.quota.expiration_time).getTime() < new Date().getTime()" class="text-red">已过期</div>
-          <div v-else>资源有效期{{props.quota.duration_days}}天 - 配额有效至{{ new Date(props.quota.expiration_time).toLocaleString() }}</div>
+
+        <div class="row justify-end text-center">
+
+          <div class="col-8 text-left">
+            <span class="text-grey q-px-sm">资源有效期</span>
+            <span>{{ props.quota.duration_days }}天</span>
+          </div>
+
+          <div class="col text-right q-px-sm ">
+            <q-btn label="配额详情" flat dense padding="none" color="primary"
+                   :to="{path: `/my/quota/detail/${props.quota.id}`}"/>
+          </div>
+
         </div>
+
+        <div class="row justify-end text-center">
+
+          <div class="col-8 text-left">
+            <span class="text-grey q-px-sm">配额可用至</span>
+            <span>{{ new Date(props.quota.expiration_time).toLocaleString() }}</span>
+          </div>
+          <div class="col text-right q-px-sm">
+            <span v-if="new Date(props.quota.expiration_time).getTime() < new Date().getTime()" class="text-red">已过期</span>
+            <span v-if="props.quota.vcpu_used===props.quota.vcpu_total ||
+                                       props.quota.ram_used===props.quota.ram_total ||
+                                       (props.quota.private_ip_used===props.quota.private_ip_total &&
+                                       props.quota.public_ip_used===props.quota.public_ip_total)" class="text-red">
+              余量不足
+            </span>
+          </div>
+        </div>
+
+        <!--        <div v-else>资源有效期{{ props.quota.duration_days }}天 - -->
+        <!--          配额有效至{{ new Date(props.quota.expiration_time).toLocaleString() }}-->
+        <!--        </div>-->
+
       </q-card-section>
 
       <q-separator color="grey-2"/>
@@ -35,7 +64,7 @@
                   >
                     <div v-if="props.quota.vcpu_total === 0">无</div>
                     <div v-else-if="props.quota.vcpu_total===props.quota.vcpu_used" class="text-grey">
-                      共{{ props.quota.vcpu_total }}核用尽
+                      {{ props.quota.vcpu_total }}核用尽
                     </div>
                     <div v-else>{{ props.quota.vcpu_total - props.quota.vcpu_used }}/{{ props.quota.vcpu_total }}核</div>
                   </q-circular-progress>
@@ -66,7 +95,7 @@
                   >
                     <div v-if="props.quota.ram_total === 0">无</div>
                     <div v-else-if="props.quota.ram_total===props.quota.ram_used" class="text-grey">
-                      共{{ props.quota.ram_total / 1024 }}GB用尽
+                      {{ props.quota.ram_total / 1024 }}GB用尽
                     </div>
                     <div v-else>
                       {{ (props.quota.ram_total - props.quota.ram_used) / 1024 }}/{{ props.quota.ram_total / 1024 }}GB
@@ -133,7 +162,7 @@
                   >
                     <div v-if="props.quota.public_ip_total === 0">无</div>
                     <div v-else-if="props.quota.public_ip_total===props.quota.public_ip_used" class="text-grey">
-                      共{{ props.quota.public_ip_total }}个用尽
+                      {{ props.quota.public_ip_total }}个用尽
                     </div>
                     <div v-else>{{ props.quota.public_ip_total - props.quota.public_ip_used }}/{{
                         props.quota.public_ip_total
@@ -167,7 +196,7 @@
                   >
                     <div v-if="props.quota.disk_size_total === 0">无</div>
                     <div v-else-if="props.quota.disk_size_total===props.quota.disk_size_used" class="text-grey">
-                      共{{ props.quota.disk_size_total }}GB用尽
+                      {{ props.quota.disk_size_total }}GB用尽
                     </div>
                     <div v-else>{{ props.quota.disk_size_total - props.quota.disk_size_used }}/{{
                         props.quota.disk_size_total

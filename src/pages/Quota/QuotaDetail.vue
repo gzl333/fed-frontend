@@ -72,7 +72,7 @@
                                            class="q-ma-sm"
                       >
                         <div v-if="quota.vcpu_total===quota.vcpu_used" class="text-grey">
-                          共{{ quota.vcpu_total }}核用尽
+                          {{ quota.vcpu_total }}核用尽
                         </div>
                         <div v-else>{{ quota.vcpu_total - quota.vcpu_used }}/{{ quota.vcpu_total }}核</div>
                       </q-circular-progress>
@@ -101,7 +101,7 @@
                                            class="q-ma-sm"
                       >
                         <div v-if="quota.ram_total===quota.ram_used" class="text-grey">
-                          共{{ quota.ram_total / 1024 }}GB用尽
+                          {{ quota.ram_total / 1024 }}GB用尽
                         </div>
                         <div v-else>
                           {{ (quota.ram_total - quota.ram_used) / 1024 }}/{{ quota.ram_total / 1024 }}GB
@@ -131,7 +131,7 @@
                                            class="q-ma-sm"
                       >
                         <div v-if="quota.private_ip_total===quota.private_ip_used" class="text-grey">
-                          共{{ quota.private_ip_total }}个用尽
+                          {{ quota.private_ip_total }}个用尽
                         </div>
                         <div v-else>
                           {{ quota.private_ip_total - quota.private_ip_used }}/{{ quota.private_ip_total }}个
@@ -161,7 +161,7 @@
                                            class="q-ma-sm"
                       >
                         <div v-if="quota.public_ip_total===quota.public_ip_used" class="text-grey">
-                          共{{ quota.public_ip_total }}个用尽
+                          {{ quota.public_ip_total }}个用尽
                         </div>
                         <div v-else>
                           {{ quota.public_ip_total - quota.public_ip_used }}/{{ quota.public_ip_total }}个
@@ -191,7 +191,7 @@
                                            class="q-ma-sm"
                       >
                         <div v-if="quota.disk_size_total===quota.disk_size_used" class="text-grey">
-                          共{{ quota.disk_size_total }}GB用尽
+                          {{ quota.disk_size_total }}GB用尽
                         </div>
                         <div v-else>
                           {{ quota.disk_size_total - quota.disk_size_used }}/{{ quota.disk_size_total }}GB
@@ -215,6 +215,21 @@
                         <div>已过期</div>
                       </div>
                       <div v-else>{{ new Date(quota.expiration_time).toLocaleString() }}</div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-auto ">
+                <div class="column justify-start items-center" style="height: 120px">
+                  <div class="col-2 text-grey">
+                    操作
+                  </div>
+                  <div class="col-10">
+                    <div class="column justify-center items-center" style="height: 100px">
+
+                      <q-btn label="删除配额" flat dense padding="none" color="primary"/>
 
                     </div>
                   </div>

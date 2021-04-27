@@ -40,7 +40,7 @@
                   </q-chip>
                   <q-chip v-if="server.status === '无法获取状态'" outline color="nord11" text-color="white"
                           label="无法获取状态" class="text-bold"/>
-                  <q-chip v-if="server.status === '运行中'" outline color="nord14" text-color="white"
+                  <q-chip v-if="server.status === '运行中'" outline color="light-green" text-color="white"
                           label="运行中" class="text-bold"/>
                   <q-chip v-if="server.status === '已屏蔽'" outline color="nord3" text-color="white"
                           label="已屏蔽" class="text-bold"/>
@@ -307,7 +307,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, computed, ref, watch } from 'vue'
+import { defineComponent, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter, useRoute } from 'vue-router'

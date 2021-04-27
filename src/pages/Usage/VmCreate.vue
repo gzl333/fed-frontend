@@ -119,7 +119,7 @@
                   <div v-if="flavors.length > 0" class="row item-row">
                     <div class="col item-radios">
                       <q-radio v-for="flavor in flavors" dense v-model="radioFlavor" :val="flavor.id"
-                               :label="`${flavor.vcpus}核/${flavor.ram}MB`" :key="flavor.id" class="radio"/>
+                               :label="`${flavor.vcpus}核/${flavor.ram/1024}GB`" :key="flavor.id" class="radio"/>
                     </div>
                   </div>
                   <div v-else>该服务节点暂无可用配置，请选择其它服务节点</div>
@@ -130,16 +130,13 @@
                     配额
                   </div>
                   <div v-if="quotas.length > 0" class="row item-row">
-                    <!--                  <div class="col-shrink item-title-narrow text-bold">-->
-                    <!--                    通用配额-->
-                    <!--                  </div>-->
                     <div class="col item-radios">
                       <q-radio v-for="quota in quotas" dense v-model="radioQuota" :val="quota.id"
                                :key="quota.id" class="radio"
                                :disable="quota.vcpu_used===quota.vcpu_total ||
                                        quota.ram_used===quota.ram_total ||
                                        (quota.private_ip_used===quota.private_ip_total &&
-                                       quota.public_ip_used===quota.public_ip_total)">
+                                       quota.public_ip_used===quota.public_ip_total) || new Date(quota.expiration_time).getTime() < new Date().getTime()">
                         <quota-card :quota="quota"/>
                       </q-radio>
                     </div>

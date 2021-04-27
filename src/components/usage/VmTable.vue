@@ -86,9 +86,10 @@
             </div>
           </q-td>
           <q-td key="vnc" :props="props" class="non-selectable">
-            <q-btn v-if="props.row.status=='运行中'" unelevated flat padding="none" size="lg" color="nord14"
+            <q-btn v-if="props.row.status=='运行中'" unelevated flat padding="none" size="lg" color="light-green"
                    icon="computer"
                    @click="gotoVNC(props.row.id)">
+              <q-tooltip>进入远程控制</q-tooltip>
             </q-btn>
             <q-btn v-else unelevated flat padding="none" size="lg" color="grey-5" icon="computer">
               <q-tooltip>
@@ -99,15 +100,17 @@
           <q-td key="status" :props="props" class="non-selectable">
 
             <q-chip v-if="!props.row.status" label="操作中" color="nord4">
-              <q-inner-loading showing style="background-color:transparent">
-                <q-spinner size="30px" color="nord9"/>
-              </q-inner-loading>
+              <!--              <q-inner-loading showing style="background-color:transparent">-->
+              <!--                <q-spinner size="30px" color="nord9"/>-->
+              <!--              </q-inner-loading>-->
             </q-chip>
 
             <q-chip v-if="props.row.status === '无法获取状态'" outline color="nord11" text-color="white"
                     label="无法获取状态" class="text-bold"/>
-            <q-chip v-if="props.row.status === '运行中'" outline color="nord14" text-color="white"
-                    label="运行中" class="text-bold"/>
+            <q-chip v-if="props.row.status === '运行中'" outline color="light-green" text-color="white"
+                    label="运行中" class="text-bold">
+              <q-tooltip>刷新状态</q-tooltip>
+            </q-chip>
             <q-chip v-if="props.row.status === '已屏蔽'" outline color="nord3" text-color="white"
                     label="已屏蔽" class="text-bold"/>
             <q-chip v-if="props.row.status === '已暂停'" outline color="nord3" text-color="white"
@@ -128,6 +131,7 @@
                     label="正在创建" class="text-bold"/>
             <q-chip v-if="props.row.status === '创建失败'" outline color="nord11" text-color="white"
                     label="创建失败" class="text-bold"/>
+
           </q-td>
           <q-td key="operation" :props="props" class="non-selectable">
             <q-btn-group unelevated>
@@ -154,37 +158,37 @@
 
               <q-btn-dropdown color="primary" label="操作">
                 <q-list separator dense style="text-align:center">
-                  <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-nord14"
+                  <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-light-green"
                           @click="$store.dispatch('vm/vmOperation',{ id: props.row.id, action: 'start'})">
                     <q-item-section>
                       <q-item-label>开机</q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
+                  <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-amber"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'reboot'})">
                     <q-item-section>
                       <q-item-label>重启</q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
+                  <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-amber"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'shutdown'})">
                     <q-item-section>
                       <q-item-label>关机</q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-nord13"
+                  <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-amber"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'poweroff'})">
                     <q-item-section>
                       <q-item-label>强制断电</q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-nord11"
+                  <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-red-9"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'delete'})">
                     <q-item-section>
                       <q-item-label>删除</q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item clickable v-close-popup class="bg-nord11"
+                  <q-item clickable v-close-popup class="bg-red-9"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'delete_force'})">
                     <q-item-section>
                       <q-item-label>强制删除</q-item-label>

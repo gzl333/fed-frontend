@@ -67,7 +67,7 @@
                                  class="q-ma-sm"
             >
               <div v-if="props.row.vcpu_total===props.row.vcpu_used" class="text-grey">
-                共{{ props.row.vcpu_total }}核用尽
+                {{ props.row.vcpu_total }}核用尽
               </div>
               <div v-else>{{ props.row.vcpu_total - props.row.vcpu_used }}/{{ props.row.vcpu_total }}核</div>
             </q-circular-progress>
@@ -85,7 +85,7 @@
                                  class="q-ma-sm"
             >
               <div v-if="props.row.ram_total===props.row.ram_used" class="text-grey">
-                共{{ props.row.ram_total / 1024 }}GB用尽
+                {{ props.row.ram_total / 1024 }}GB用尽
               </div>
               <div v-else>
                 {{ (props.row.ram_total - props.row.ram_used) / 1024 }}/{{ props.row.ram_total / 1024 }}GB
@@ -105,7 +105,7 @@
                                  class="q-ma-sm"
             >
               <div v-if="props.row.private_ip_total===props.row.private_ip_used" class="text-red">
-                共{{ props.row.private_ip_total }}个用尽
+                {{ props.row.private_ip_total }}个用尽
               </div>
               <div v-else>{{ props.row.private_ip_total - props.row.private_ip_used }}/{{
                   props.row.private_ip_total
@@ -126,7 +126,7 @@
                                  class="q-ma-sm"
             >
               <div v-if="props.row.public_ip_total===props.row.public_ip_used" class="text-grey">
-                共{{ props.row.public_ip_total }}个用尽
+                {{ props.row.public_ip_total }}个用尽
               </div>
               <div v-else>{{ props.row.public_ip_total - props.row.public_ip_used }}/{{
                   props.row.public_ip_total
@@ -147,7 +147,7 @@
                                  class="q-ma-sm"
             >
               <div v-if="props.row.disk_size_total===props.row.disk_size_used" class="text-grey">
-                共{{ props.row.disk_size_total }}GB用尽
+                {{ props.row.disk_size_total }}GB用尽
               </div>
               <div v-else>{{ props.row.disk_size_total - props.row.disk_size_used }}/{{
                   props.row.disk_size_total
@@ -168,6 +168,9 @@
                      :to="{path: `/my/quota/detail/${props.row.id}`}"/>
             </div>
             <div v-else>无</div>
+          </q-td>
+          <q-td key="operation" :props="props">
+              <q-btn label="删除配额" flat dense padding="none" color="primary"/>
           </q-td>
         </q-tr>
       </template>
@@ -288,6 +291,13 @@ export default defineComponent({
         name: 'resource',
         label: '关联资源',
         field: 'resource',
+        align: 'center',
+        style: 'padding: 15px 5px'
+      },
+      {
+        name: 'operation',
+        label: '操作',
+        field: 'operation',
         align: 'center',
         style: 'padding: 15px 5px'
       }
