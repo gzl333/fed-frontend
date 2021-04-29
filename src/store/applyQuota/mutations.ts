@@ -2,6 +2,10 @@ import { MutationTree } from 'vuex'
 import { ApplicationQuotaInterface, ApplyQuotaInterface } from './state'
 
 const mutation: MutationTree<ApplyQuotaInterface> = {
+  // 保存apply页面中所选择的serviceId
+  storeApplyPageServiceId (state, serviceId: string) {
+    state.pages.apply.serviceId = serviceId
+  },
   // 删除单一user quota application
   deleteUserQuotaApplicationTable (state, apply_id: string) {
     const currentTable = state.tables.userQuotaApplicationTable

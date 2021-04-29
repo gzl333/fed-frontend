@@ -19,6 +19,9 @@ export interface ApplicationQuotaInterface {
 export interface ApplyQuotaInterface {
   // eslint-disable-next-line @typescript-eslint/ban-types
   pages: {
+    apply: {
+      serviceId: string
+    }
     applicationList: {
       filter: string
     }
@@ -52,6 +55,9 @@ export interface ApplyQuotaInterface {
 function state (): ApplyQuotaInterface {
   return {
     pages: {
+      apply: {
+        serviceId: '0'
+      },
       applicationList: {
         filter: '0'
       },

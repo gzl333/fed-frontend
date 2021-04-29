@@ -7,75 +7,102 @@
       </div>
 
       <div v-else class="col column">
-        <div v-for="vpn in vpns" :key="vpn.id" class="col-3 section">
-          <div class="row">
-            <div class="col-2 q-pb-lg text-primary">
-              {{ $store.state.vm.tables.userServiceTable.byId[vpn.id]?.name }}
-            </div>
-            <div class="col"></div>
-          </div>
-          <div class="row">
-            <div class="col-2 text-grey-7">
-              VPN 用户名
-            </div>
-            <div class="col">
-              {{ vpn.username }}
-              <q-btn
-                class="col-shrink q-px-xs text-primary" flat icon="content_copy" size="xs"
-                @click="clickToCopy(vpn.username)">
-                <q-tooltip>
-                  复制
-                </q-tooltip>
-              </q-btn>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-2 text-grey-7">
-              VPN 密码
-            </div>
-            <div class="col row q-gutter-sm">
-              <q-input class="password-input"
-                       :loading="isLoading"
-                       v-model="vpn.password"
-                       :type="isPwd ? 'password' : 'text'"
-                       readonly borderless dense square outlined>
-                <template v-slot:prepend>
-                  <q-icon
-                    :name="isPwd ? 'visibility' : 'visibility_off'"
-                    @click="isPwd = !isPwd"
-                  />
-                </template>
-              </q-input>
-              <!--            {{ vpn[1].password }}-->
-              <q-btn
-                class="col-shrink q-px-xs text-primary" flat icon="content_copy" size="xs"
-                @click="clickToCopy(vpn.password)">
-                <q-tooltip>
-                  复制
-                </q-tooltip>
-              </q-btn>
 
-              <q-btn label="修改密码" padding="none" dense flat color="primary"
-                     @click="popEdit(vpn)"/>
-            </div>
+        <div class="row">
+          <div class="col-2">
+            <q-tabs
+              v-model="tab"
+              vertical
+              active-color="primary"
+              active-bg-color="grey-1"
+            >
+              <q-tab v-for="vpn in vpns" :key="vpn.id" :name="vpn.id" :ripple="false"
+                     :label="$store.state.vm.tables.userServiceTable.byId[vpn.id]?.name"/>
+            </q-tabs>
           </div>
-          <div class="row">
-            <div class="col-2 text-grey-7">
-              VPN 配置文件
-            </div>
-            <div class="col">
-              <q-btn label="下载" class=" " color="primary" padding="none" dense flat
-                     @click="fetchConfig(vpn.id)"/>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-2 text-grey-7">
-              VPN CA证书
-            </div>
-            <div class="col">
-              <q-btn label="下载" class="" color="primary" padding="none" dense flat
-                     @click="fetchCa(vpn.id)"/>
-            </div>
+
+          <div class="col-10">
+            <q-tab-panels
+              v-model="tab"
+              animated
+              vertical
+              transition-prev="jump-up"
+              transition-next="jump-up"
+            >
+
+              <q-tab-panel v-for="vpn in vpns" :key="vpn.id" :name="vpn.id"  class="bg-grey-1">
+                <div class="row">
+                  <div class="col-2 q-pb-lg text-primary">
+                    {{ $store.state.vm.tables.userServiceTable.byId[vpn.id]?.name }}VPN信息
+                  </div>
+                  <div class="col"></div>
+                </div>
+                <div class="row">
+                  <div class="col-2 q-pb-md text-grey">
+                    VPN 用户名
+                  </div>
+                  <div class="col">
+                    {{ vpn.username }}
+                    <q-btn
+                      class="col-shrink q-px-xs text-primary" flat icon="content_copy" size="xs"
+                      @click="clickToCopy(vpn.username)">
+                      <q-tooltip>
+                        复制
+                      </q-tooltip>
+                    </q-btn>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-2 q-pb-md text-grey">
+                    VPN 密码
+                  </div>
+                  <div class="col row q-gutter-sm">
+                    <q-input class="password-input"
+                             :loading="isLoading"
+                             v-model="vpn.password"
+                             :type="isPwd ? 'password' : 'text'"
+                             readonly borderless dense square outlined>
+                      <template v-slot:prepend>
+                        <q-icon
+                          :name="isPwd ? 'visibility' : 'visibility_off'"
+                          @click="isPwd = !isPwd"
+                        />
+                      </template>
+                    </q-input>
+                    <!--            {{ vpn[1].password }}-->
+                    <q-btn
+                      class="col-shrink q-px-xs text-primary" flat icon="content_copy" size="xs"
+                      @click="clickToCopy(vpn.password)">
+                      <q-tooltip>
+                        复制
+                      </q-tooltip>
+                    </q-btn>
+
+                    <q-btn label="修改密码" padding="none" dense flat color="primary"
+                           @click="popEditVpn(vpn)"/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-2 q-pb-md text-grey">
+                    VPN 配置文件
+                  </div>
+                  <div class="col">
+                    <q-btn label="下载" class=" " color="primary" padding="none" dense flat
+                           @click="fetchConfig(vpn.id)"/>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-2 q-pb-md text-grey">
+                    VPN CA证书
+                  </div>
+                  <div class="col">
+                    <q-btn label="下载" class="" color="primary" padding="none" dense flat
+                           @click="fetchCa(vpn.id)"/>
+                  </div>
+                </div>
+              </q-tab-panel>
+
+            </q-tab-panels>
           </div>
         </div>
       </div>
@@ -100,6 +127,8 @@ export default defineComponent({
     const $q = useQuasar()
 
     const vpns = computed(() => Object.values($store.state.vm.tables.userVpnTable.byId))
+
+    const tab = ref('1')
 
     // 复制信息到剪切板
     const clickToCopy = async (text: string) => {
@@ -168,6 +197,7 @@ export default defineComponent({
     return {
       $store,
       vpns,
+      tab,
       isPwd,
       isLoading,
       popEditVpn,

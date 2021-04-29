@@ -258,18 +258,9 @@ function state ():
         isLoaded: false
       },
       userVpnTable: {
-        byId: { // fake data
-          '063d5f32-98d2-11eb-8e7b-90b11c0c7353': {
-            id: '063d5f32-98d2-11eb-8e7b-90b11c0c7353',
-            username: 'testuser',
-            password: 'password',
-            active: true,
-            create_time: '2020-07-29T15:12:08.715731+08:00',
-            modified_time: '2020-07-29T15:12:08.715998+08:00'
-          }
-        },
-        allIds: ['063d5f32-98d2-11eb-8e7b-90b11c0c7353'],
-        isLoaded: true
+        byId: {},
+        allIds: [],
+        isLoaded: false
       },
       userServerTable: {
         byId: {},

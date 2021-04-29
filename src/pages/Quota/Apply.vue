@@ -300,7 +300,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter } from 'vue-router'
@@ -318,7 +318,19 @@ export default defineComponent({
     // radio选项数据
     const dataCenters = computed(() => Object.values($store.state.vm.tables.globalDataCenterTable.byId))
     // radio状态
-    const radioService = ref(computed(() => $store.state.vm.tables.globalServiceTable.allIds[0]))
+    const radioService = computed({
+      get: () => $store.state.applyQuota.pages.apply.serviceId,
+      set: (value) => $store.commit('applyQuota/storeApplyPageServiceId', value)
+    })
+
+    const chooseRadioService = () => {
+      if ($store.state.vm.tables.globalServiceTable.isLoaded) {
+        radioService.value = $store.state.vm.tables.globalServiceTable.allIds[0]
+      }
+    }
+    chooseRadioService()
+    watch($store.state.vm.tables.globalServiceTable, chooseRadioService)
+
     // slider状态
     const sliderDuration = ref(1)
     const sliderCpu = ref(1)

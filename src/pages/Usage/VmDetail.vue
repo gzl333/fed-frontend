@@ -254,7 +254,8 @@
                 <div v-if="service.need_vpn" class="row q-pb-md">
                   <div class="col-2 text-grey">VPN密码</div>
                   <div class="col">
-                    <q-input class="password-input"
+                    <div class="row">
+                    <q-input class="password-input "
                              :loading="isLoading"
                              v-model="vpn.password" :type="isPwd ? 'password' : 'text'"
                              readonly borderless dense square outlined>
@@ -276,6 +277,8 @@
 
                     <q-btn label="修改密码" padding="none" dense flat color="primary"
                            @click="popEditVpn(vpn)"/>
+
+                    </div>
                   </div>
                 </div>
 
@@ -492,7 +495,8 @@ export default defineComponent({
 }
 
 .password-input {
+  top: -10px;
   height: 20px;
-  width: 280px;
+  width: 250px;
 }
 </style>

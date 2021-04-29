@@ -5,8 +5,8 @@ import axios from 'axios'
 import { normalize, schema } from 'normalizr'
 import { Dialog } from 'quasar'
 
-// const apiBase = 'https://vms.cstcloud.cn/api'
-const apiBase = 'http://223.193.2.211:88/api'
+const apiBase = 'https://vms.cstcloud.cn/api'
+// const apiBase = 'http://223.193.2.211:88/api'
 
 const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   /* 初次获取全部applyQuota模块Table，已有则自动忽略 */

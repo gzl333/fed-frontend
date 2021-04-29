@@ -175,7 +175,10 @@
 
           <div class="row q-py-sm">
             <div class="col-3 text-grey-7">申请人</div>
-            <div class="col"><div>{{ currentApplication.contact }}</div> <div>{{ currentApplication.company }}</div></div>
+            <div class="col">
+              <div>{{ currentApplication.contact }}</div>
+              <div>{{ currentApplication.company }}</div>
+            </div>
           </div>
 
         </q-card-section>

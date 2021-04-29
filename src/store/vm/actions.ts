@@ -5,8 +5,8 @@ import axios from 'axios'
 import { normalize, schema } from 'normalizr'
 import { Dialog, Notify } from 'quasar'
 
-// const apiBase = 'https://vms.cstcloud.cn/api'
-const apiBase = 'http://223.193.2.211:88/api'
+const apiBase = 'https://vms.cstcloud.cn/api'
+// const apiBase = 'http://223.193.2.211:88/api'
 const statusCodeMap = new Map<number, string>(
   [
     [0, '无法获取状态'],

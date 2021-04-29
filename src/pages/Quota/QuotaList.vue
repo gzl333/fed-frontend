@@ -156,11 +156,11 @@
             </q-circular-progress>
           </q-td>
           <q-td key="expiration_time" :props="props">
-            <div v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0" class="text-grey">
+            <div v-if="!props.row.expiration_time">长期有效</div>
+            <div v-else>
               <div>{{ new Date(props.row.expiration_time).toLocaleString() }}</div>
-              <div>已过期</div>
+              <div v-if="new Date(props.row.expiration_time).getTime() < new Date().getTime()" class="text-red">已过期</div>
             </div>
-            <div v-else>{{ new Date(props.row.expiration_time).toLocaleString() }}</div>
           </q-td>
           <q-td key="resource" :props="props">
             <div v-if="props.row.servers.length > 0">
@@ -170,7 +170,7 @@
             <div v-else>无</div>
           </q-td>
           <q-td key="operation" :props="props">
-              <q-btn label="删除配额" flat dense padding="none" color="primary"/>
+            <q-btn disable label="删除配额" flat dense padding="none" color="primary"/>
           </q-td>
         </q-tr>
       </template>

@@ -23,11 +23,13 @@
           <div class="col-8 text-left">
             <span class="text-grey q-px-sm">配额过期</span>
             <span v-if="props.quota.expiration_time">{{ new Date(props.quota.expiration_time).toLocaleString() }}</span>
-            <span v-else>永久有效</span>
+            <span v-else>长期有效</span>
           </div>
           <div class="col text-right q-px-sm">
-            <span v-if="new Date(props.quota.expiration_time).getTime() < new Date().getTime()" class="text-red">已过期</span>
-            <span v-if="props.quota.vcpu_used===props.quota.vcpu_total ||
+            <span
+              v-if="props.quota.expiration_time && (new Date(props.quota.expiration_time).getTime() < new Date().getTime())"
+              class="text-red">已过期</span>
+            <span v-if=" props.quota.vcpu_used===props.quota.vcpu_total ||
                                        props.quota.ram_used===props.quota.ram_total ||
                                        (props.quota.private_ip_used===props.quota.private_ip_total &&
                                        props.quota.public_ip_used===props.quota.public_ip_total)" class="text-red">

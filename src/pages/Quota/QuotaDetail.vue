@@ -205,17 +205,15 @@
               <div class="col-auto ">
                 <div class="column justify-start items-center" style="height: 120px">
                   <div class="col-2 text-grey">
-                    配额创建时间
+                    配额过期时间
                   </div>
                   <div class="col-10">
                     <div class="column justify-center items-center" style="height: 100px">
-
-                      <div v-if="(new Date(quota.expiration_time).getTime() - new Date().getTime()) < 0" class="text-grey column items-center">
+                      <div v-if="!quota.expiration_time">长期有效</div>
+                      <div v-else>
                         <div>{{ new Date(quota.expiration_time).toLocaleString() }}</div>
-                        <div>已过期</div>
+                        <div v-if="new Date(quota.expiration_time).getTime() < new Date().getTime()" class="text-red">已过期</div>
                       </div>
-                      <div v-else>{{ new Date(quota.expiration_time).toLocaleString() }}</div>
-
                     </div>
                   </div>
                 </div>
@@ -229,7 +227,7 @@
                   <div class="col-10">
                     <div class="column justify-center items-center" style="height: 100px">
 
-                      <q-btn label="删除配额" flat dense padding="none" color="primary"/>
+                      <q-btn disable label="删除配额" flat dense padding="none" color="primary"/>
 
                     </div>
                   </div>

@@ -136,7 +136,7 @@
                                :disable="quota.vcpu_used===quota.vcpu_total ||
                                        quota.ram_used===quota.ram_total ||
                                        (quota.private_ip_used===quota.private_ip_total &&
-                                       quota.public_ip_used===quota.public_ip_total) || new Date(quota.expiration_time).getTime() < new Date().getTime()">
+                                       quota.public_ip_used===quota.public_ip_total) || (!!quota.expiration_time && new Date(quota.expiration_time).getTime() < new Date().getTime())">
                         <quota-card :quota="quota"/>
                       </q-radio>
                     </div>
@@ -344,9 +344,7 @@ export default defineComponent({
     // // setup时调用一次
     chooseRadioService()
     // // watch根据tables的变化情况，再调用
-    watch($store.state.vm.tables, () => {
-      chooseRadioService()
-    })
+    watch($store.state.vm.tables, chooseRadioService)
 
     // stepper
     const step = ref(1)

@@ -42,8 +42,9 @@
 
               <div class="col">
                 <div class="row q-mt-md justify-between ">
-                  <div class="q-pa-sm text-h6">在用云主机资源</div>
-                  <q-btn label="更多云主机..." color="primary" flat dense padding="none" :to="{ path: '/my/usage/vm' }"/>
+                  <div class=" col q-pa-sm text-h6">在用云主机资源</div>
+                  <q-btn class="col-1" label="更多云主机..." color="primary" flat dense padding="none"
+                         :to="{ path: '/my/usage/vm' }"/>
                 </div>
 
                 <q-separator/>
@@ -52,85 +53,88 @@
                   所选择节点中无可供使用的云主机
                 </div>
 
-                <div v-else class="row justify-start " v-for="server in servers" :key="server">
+                <div v-else class="row justify-start ">
 
                   <!--一个云主机的card-->
-                  <div class="row server-card q-my-md q-mx-md">
+                  <div class="col"  v-for="server in servers.slice(0,4)" :key="server">
 
-                    <div class="col-6">
+                    <div class="row server-card q-my-md q-mx-md">
 
-                      <div v-if="server.status!=='运行中' && server.status!=='已关机'" class="row justify-center">
-                        <q-btn loading label="......" icon="hourglass_bottom" size="2em">
-                          <q-tooltip>
-                            远程执行中，请稍候
-                          </q-tooltip>
-                        </q-btn>
-                      </div>
+                      <div class="col-6">
 
-                      <div v-if="server.status === '运行中'" class="row justify-center">
-                        <q-btn v-if="server.status === '运行中'" flat @click="gotoVNC(server.id)">
-                          <q-icon name="computer" size="4em" class="q-mx-md q-py-md">
-                            <q-tooltip>点击进入远程控制</q-tooltip>
-                          </q-icon>
-                        </q-btn>
-                      </div>
-
-                      <div v-if="server.status === '已关机'" class="row justify-center">
-                        <q-icon name="computer" disabled size="4em" class="q-mx-md q-py-md">
-                          <q-tooltip>请开机以使用远程控制</q-tooltip>
-                        </q-icon>
-                      </div>
-
-                    </div>
-
-                    <div class="col-6">
-                      <div class="column justify-center  q-mt-xs">
-
-                        <div class="col">
-                          <div class="row justify-center">
-                            <q-btn
-                              class="col"
-                              :label="server.ipv4" flat dense padding="none" color="primary"
-                              :to="{path:'/my/usage/vmdetail/' + server.id}"/>
-                          </div>
+                        <div v-if="server.status!=='运行中' && server.status!=='已关机'" class="row justify-center">
+                          <q-btn loading flat label="......" icon="hourglass_bottom" size="2em">
+                            <q-tooltip>
+                              远程执行中，请稍候
+                            </q-tooltip>
+                          </q-btn>
                         </div>
 
-                        <div class="col">
-                          <div class="row justify-center">
+                        <div v-if="server.status === '运行中'" class="row justify-center">
+                          <q-btn v-if="server.status === '运行中'" flat @click="gotoVNC(server.id)">
+                            <q-icon name="computer" size="4em" class="q-mx-md q-py-md">
+                              <q-tooltip>点击进入远程控制</q-tooltip>
+                            </q-icon>
+                          </q-btn>
+                        </div>
 
-                            <q-btn
-                              class="col q-mx-md"
-                              v-if="server.status!=='运行中' && server.status!=='已关机'"
-                              color="nord4" loading label="......">
-                              <q-tooltip>
-                                远程执行中，请稍候
-                              </q-tooltip>
-                            </q-btn>
+                        <div v-if="server.status === '已关机'" class="row justify-center">
+                          <q-icon name="computer" disabled size="4em" class="q-mx-md q-py-md">
+                            <q-tooltip>请开机以使用远程控制</q-tooltip>
+                          </q-icon>
+                        </div>
 
-                            <q-btn
-                              class="col q-mx-md"
-                              v-if="server.status === '已关机'"
-                              outline color="primary"  icon="play_arrow" size="md"
-                              @click="vmOperation({
+                      </div>
+
+                      <div class="col-6">
+                        <div class="column justify-center  q-mt-xs">
+
+                          <div class="col q-mx-md">
+                            <div class="row justify-center">
+                              <q-btn
+                                class="col"
+                                :label="server.ipv4" flat dense padding="none" color="primary"
+                                :to="{path:'/my/usage/vmdetail/' + server.id}"/>
+                            </div>
+                          </div>
+
+                          <div class="col">
+                            <div class="row justify-center">
+
+                              <q-btn
+                                class="col q-mx-md" flat
+                                v-if="server.status!=='运行中' && server.status!=='已关机'"
+                                color="nord4" loading label="......">
+                                <q-tooltip>
+                                  远程执行中，请稍候
+                                </q-tooltip>
+                              </q-btn>
+
+                              <q-btn
+                                class="col q-mx-md"
+                                v-if="server.status === '已关机'"
+                                outline color="primary" icon="play_arrow" size="md"
+                                @click="vmOperation({
                             endPoint: server.endpoint_url,
                             id: server.id,
                             action: 'start',})"/>
 
-                            <q-btn
-                              class="col q-mx-md"
-                              v-if="server.status === '运行中'"
-                              outline color="primary" icon="power_settings_new" size="md"
+                              <q-btn
+                                class="col q-mx-md"
+                                v-if="server.status === '运行中'"
+                                outline color="primary" icon="power_settings_new" size="md"
 
-                              @click="vmOperation({
+                                @click="vmOperation({
                             endPoint: server.endpoint_url,
                             id: server.id,
                             action: 'shutdown',
                           })"/>
 
+                            </div>
+
                           </div>
 
                         </div>
-
                       </div>
                     </div>
                   </div>
@@ -151,9 +155,7 @@
                       <div class="col">
                         <q-icon name="laptop" size="6em" class="q-mx-lg q-mt-lg q-mb-md"/>
                       </div>
-                      <div class="col q-py-lg text-subtitle1 text-c-blue1">云主机
-                        <q-badge color="primary">计算服务</q-badge>
-                      </div>
+                      <div class="col q-py-lg text-subtitle1 text-c-blue1">云主机</div>
                     </div>
 
                     <q-separator/>
@@ -268,7 +270,8 @@ export default defineComponent({
 .server-card {
   //height: 100px;
   //width: 300px;
-  border: $grey-4 1px solid;
+  //border: $grey-4 1px solid;
+  background-color: $grey-1;
 }
 
 .quick-card {

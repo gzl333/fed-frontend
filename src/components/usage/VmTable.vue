@@ -62,9 +62,12 @@
             {{ props.row.ram / 1024 }}GB
           </q-td>
           <q-td key="expiration" :props="props">
-            <div>{{ new Date(props.row.expiration_time).toLocaleString() }}</div>
-            <div v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0" class="text-red">
-              已到期
+            <div v-if="!props.row.expiration_time">
+              长期
+            </div>
+            <div v-else>
+              <div>{{ new Date(props.row.expiration_time).toLocaleString() }}</div>
+              <div v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0" class="text-red">已到期</div>
             </div>
           </q-td>
           <q-td key="note" :props="props">
