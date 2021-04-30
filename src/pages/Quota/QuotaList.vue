@@ -212,6 +212,10 @@ export default defineComponent({
         value: '0'
       },
       {
+        label: '长期',
+        value: null
+      },
+      {
         label: '未过期',
         value: 'valid'
       },

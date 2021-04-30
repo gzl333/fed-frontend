@@ -70,9 +70,12 @@ const getters: GetterTree<VmInterface, StateInterface> = {
     } else {
       const rows: QuotaInterface[] = []
       for (const quota of Object.values(state.tables.userQuotaTable.byId)) {
-        if (state.pages.quotaList.filter === 'valid' && (new Date(quota.expiration_time).getTime() - new Date().getTime()) > 0) { // 筛选出未过期的quota
+        if (state.pages.quotaList.filter === null && quota.expiration_time === null) { // 筛选出长期的quota
+          console.log(quota)
           rows.push(quota)
-        } else if (state.pages.quotaList.filter === 'invalid' && (new Date(quota.expiration_time).getTime() - new Date().getTime()) <= 0) { // 筛选出过期的quota
+        } else if (state.pages.quotaList.filter === 'valid' && !!quota.expiration_time && (new Date(quota.expiration_time).getTime() - new Date().getTime()) > 0) { // 筛选出未过期的quota
+          rows.push(quota)
+        } else if (state.pages.quotaList.filter === 'invalid' && !!quota.expiration_time && (new Date(quota.expiration_time).getTime() - new Date().getTime()) <= 0) { // 筛选出过期的quota
           rows.push(quota)
         }
       }
@@ -128,7 +131,7 @@ const getters: GetterTree<VmInterface, StateInterface> = {
   /* 首页-在用云主机资源展示 */
 
   /* 首页-获取所有数据中心下的服务的数量 */
-  getServicesNumber (state) :number {
+  getServicesNumber (state): number {
     let num = 0
     for (const dataCenter of Object.values(state.tables.globalDataCenterTable.byId)) {
       num = num + dataCenter.globalServices.length

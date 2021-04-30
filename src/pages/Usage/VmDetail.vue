@@ -16,7 +16,7 @@
         <!--直接从url进入本页面时，tables尚未载入，应显示loading界面。对取属性进行缓冲，不出现undefined错误-->
         <div class="row">
 
-          <div v-if="!server || !service || !quota" class="col">
+          <div v-if="!server || !service" class="col">
             正在加载，请稍候
           </div>
 
@@ -220,14 +220,17 @@
                   <div class="col-2 text-grey">所用配额</div>
                   <div class="col-shrink">
 
-                    <q-btn label="配额详情" flat dense color="primary" padding="none"
-                           :to="{path: `/my/quota/detail/${quota.id}`}">
-                      <q-tooltip>
-                        进入配额详情页面
-                      </q-tooltip>
-                    </q-btn>
+                    <div v-if="quota">
+                      <q-btn label="配额详情" flat dense color="primary" padding="none"
+                             :to="{path: `/my/quota/detail/${quota?.id}`}">
+                        <q-tooltip>
+                          进入配额详情页面
+                        </q-tooltip>
+                      </q-btn>
+                      {{ quota?.display }}
+                    </div>
 
-                    {{ quota.display }}
+                    <div v-else>未使用配额创建</div>
 
                   </div>
                 </div>
