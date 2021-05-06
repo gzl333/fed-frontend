@@ -9,7 +9,7 @@
 
       <div v-else>
         <div class="col title-area">
-          <q-btn icon="arrow_back_ios_new" color="primary" flat unelevated dense
+          <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                  @click="goBack"/>
           申请新配额
         </div>

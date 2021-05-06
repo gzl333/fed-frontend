@@ -122,13 +122,82 @@ const routes: RouteRecordRaw[] = [
               requireLogin: true
             },
             component: () => import('pages/Quota/Apply.vue')
+          }
+        ]
+      },
+      {
+        path: 'provider',
+        component: () => import('pages/Provider/Provider.vue'),
+        redirect: '/my/provider/detail',
+        meta: {
+          title: '资源提供-中国科技云联邦'
+        },
+        children: [
+          {
+            path: 'detail',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Provider/Detail.vue')
           },
           {
             path: 'manage',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Quota/Manage.vue')
+            component: () => import('pages/Provider/Manage.vue')
+          },
+          {
+            path: 'join',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Provider/Join.vue')
+          },
+          {
+            path: 'quit',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Provider/Quit.vue')
+          }
+        ]
+      },
+      {
+        path: 'federation',
+        component: () => import('pages/Federation/Federation.vue'),
+        redirect: '/my/federation/member_list',
+        meta: {
+          title: '联邦管理-中国科技云联邦'
+        },
+        children: [
+          {
+            path: 'member_list',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Federation/MemberList.vue')
+          },
+          {
+            path: 'join_list',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Federation/JoinList.vue')
+          },
+          {
+            path: 'adjust_list',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Federation/AdjustList.vue')
+          },
+          {
+            path: 'quit_list',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Federation/QuitList.vue')
           }
         ]
       }

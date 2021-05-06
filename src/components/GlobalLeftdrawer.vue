@@ -60,69 +60,76 @@
 
           <q-separator/>
 
-          <q-item clickable disable class="text-center">
-            <q-item-section class="column items-center">
-              <q-icon name="group" size="lg"/>
-              <div class="text-c-blue5">我的群组</div>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable disable>
-            <q-item-section class="column items-center">
-              <q-icon name="paid" size="lg"/>
-              <div class="text-c-blue5">结算计费</div>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable disable>
+          <q-item
+            clickable
+            :active="activeItem === 'provider'"
+            @click="activeItem = 'provider'"
+            active-class="active-item"
+            to='/my/provider'
+          >
             <q-item-section class="column items-center">
               <q-icon name="cloud_upload" size="lg"/>
-              <div class="text-c-blue5">已供资源</div>
+              <div class="text-c-blue5">资源提供</div>
             </q-item-section>
           </q-item>
 
-          <q-item clickable disable>
-            <q-item-section class="column items-center">
-              <q-icon name="help_center" size="lg"/>
-              <div class="text-c-blue5">工单服务</div>
-            </q-item-section>
-          </q-item>
-
-          <!--          <q-item clickable disable>-->
-          <!--            <q-item-section class="column items-center">-->
-          <!--              <q-icon name="build_circle" size="lg"/>-->
-          <!--              <div class="text-c-blue5">资源管理</div>-->
-          <!--            </q-item-section>-->
-          <!--          </q-item>-->
-
-          <q-item clickable disable>
-            <q-item-section class="column items-center">
-              <q-icon name="visibility" size="lg"/>
-              <div class="text-c-blue5">计量监测</div>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable disable>
-            <q-item-section class="column items-center">
-              <q-icon name="analytics" size="lg"/>
-              <div class="text-c-blue5">统计报表</div>
-            </q-item-section>
-          </q-item>
-
-          <q-item clickable disable>
+          <q-item
+            clickable
+            :active="activeItem === 'federation'"
+            @click="activeItem = 'federation'"
+            active-class="active-item"
+            to='/my/federation'
+          >
             <q-item-section class="column items-center">
               <q-icon name="construction" size="lg"/>
-              <div class="text-c-blue5">联邦维护</div>
+              <div class="text-c-blue5">联邦管理</div>
             </q-item-section>
           </q-item>
 
-          <q-item clickable disable>
-            <q-item-section class="column items-center">
-              <q-icon name="switch_account" size="lg"/>
-              <div class="text-c-blue5">用户管理</div>
+          <q-separator/>
 
-            </q-item-section>
-          </q-item>
+<!--          <q-item clickable disable class="text-center">-->
+<!--            <q-item-section class="column items-center">-->
+<!--              <q-icon name="group" size="lg"/>-->
+<!--              <div class="text-c-blue5">我的群组</div>-->
+<!--            </q-item-section>-->
+<!--          </q-item>-->
+
+<!--          <q-item clickable disable>-->
+<!--            <q-item-section class="column items-center">-->
+<!--              <q-icon name="paid" size="lg"/>-->
+<!--              <div class="text-c-blue5">结算计费</div>-->
+<!--            </q-item-section>-->
+<!--          </q-item>-->
+
+<!--          <q-item clickable disable>-->
+<!--            <q-item-section class="column items-center">-->
+<!--              <q-icon name="help_center" size="lg"/>-->
+<!--              <div class="text-c-blue5">工单服务</div>-->
+<!--            </q-item-section>-->
+<!--          </q-item>-->
+
+<!--          <q-item clickable disable>-->
+<!--            <q-item-section class="column items-center">-->
+<!--              <q-icon name="visibility" size="lg"/>-->
+<!--              <div class="text-c-blue5">计量监测</div>-->
+<!--            </q-item-section>-->
+<!--          </q-item>-->
+
+<!--          <q-item clickable disable>-->
+<!--            <q-item-section class="column items-center">-->
+<!--              <q-icon name="analytics" size="lg"/>-->
+<!--              <div class="text-c-blue5">统计报表</div>-->
+<!--            </q-item-section>-->
+<!--          </q-item>-->
+
+<!--          <q-item clickable disable>-->
+<!--            <q-item-section class="column items-center">-->
+<!--              <q-icon name="switch_account" size="lg"/>-->
+<!--              <div class="text-c-blue5">用户管理</div>-->
+<!--            </q-item-section>-->
+<!--          </q-item>-->
+
         </q-list>
       </q-scroll-area>
     </div>

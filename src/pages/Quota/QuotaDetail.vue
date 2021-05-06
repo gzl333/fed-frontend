@@ -5,7 +5,7 @@
 
         <div class="row title-area">
           <div class="col">
-            <q-btn icon="arrow_back_ios_new" color="primary" flat unelevated dense
+            <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                    @click="goBack"/>
             配额详情
           </div>

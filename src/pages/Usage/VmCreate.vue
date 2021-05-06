@@ -11,7 +11,7 @@
 
         <div v-if="!isShowJumper" class="col title-area">
 
-          <q-btn icon="arrow_back_ios_new" color="primary" flat unelevated dense
+          <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                  @click="goBack"/>
           新建云主机
           <!--        <q-btn @click="quickJump" label="quickjump"/>-->
@@ -46,14 +46,14 @@
                       <div class="col-shrink item-title text-bold">
                         {{ dataCenter.name }}
                       </div>
-                      <div class="col item-radios">
-                        <q-radio
-                          v-for="service in dataCenter.userServices.map((serviceId) => $store.state.vm.tables.userServiceTable.byId[serviceId])"
-                          dense v-model="radioService"
-                          :val="service.id" :label="service.name" :key="service.id" class="radio"/>
+                      <div v-if="dataCenter.userServices" class="col item-radios">
+                          <q-radio
+                            v-for="service in dataCenter.userServices.map((serviceId) => $store.state.vm.tables.userServiceTable.byId[serviceId])"
+                            dense v-model="radioService"
+                            :val="service.id" :label="service.name" :key="service.id" class="radio"/>
                       </div>
+                      <div v-else>暂无配额</div>
                     </div>
-
                   </div>
 
                 </div>

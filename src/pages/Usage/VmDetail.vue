@@ -6,7 +6,7 @@
         <div class="row">
 
           <div class="col title-area">
-            <q-btn icon="arrow_back_ios_new" color="primary" flat unelevated dense
+            <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                    @click="goBack"/>
             云主机详情
           </div>
@@ -159,11 +159,6 @@
                 <div class="row q-pb-md">
                   <div class="col-2 text-grey">内存</div>
                   <div class="col"> {{ server.ram / 1024 }}GB</div>
-                </div>
-
-                <div class="row q-pb-md">
-                  <div class="col-2 text-grey">CPU</div>
-                  <div class="col"> {{ server.vcpus }}核</div>
                 </div>
 
                 <div class="row q-pb-md">

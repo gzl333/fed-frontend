@@ -1,5 +1,5 @@
 <template>
-  <div class="Quota">
+  <div class="Federation">
     <div class="column">
 
       <div class="col-auto">
@@ -12,11 +12,10 @@
 
       <div class="col-auto">
         <div class="row justify-center">
-          <!--          <div class="col"/>-->
           <div class="content-fixed-width">
             <div class="row">
               <div class="text-h6 q-pt-lg q-px-none">
-                资源配额
+                联邦管理
               </div>
             </div>
 
@@ -31,41 +30,49 @@
                 >
                   <q-route-tab
                     class="q-px-none q-py-md q-mr-md"
-                    name="list"
+                    name="member"
                     icon="task_alt"
-                    label="现有配额"
+                    label="成员列表"
                     :ripple="false"
-                    to="/my/quota/list"
+                    to="/my/federation/member_list"
                     exact
                   />
                   <q-route-tab
                     class="q-px-none q-py-md q-mx-md"
-                    name="application"
-                    icon="description"
-                    label="申请记录"
+                    name="join"
+                    icon="task_alt"
+                    label="加入申请列表"
                     :ripple="false"
-                    to="/my/quota/application"
+                    to="/my/federation/join_list"
                     exact
                   />
-<!--                  <q-route-tab-->
-<!--                    v-if="isQuotaAdmin"-->
-<!--                    class="q-px-none q-py-md q-mx-md"-->
-<!--                    name="manage"-->
-<!--                    icon="rule"-->
-<!--                    label="配额审批"-->
-<!--                    :ripple="false"-->
-<!--                    to="/my/quota/manage"-->
-<!--                    exact-->
-<!--                  />-->
+                  <q-route-tab
+                    class="q-px-none q-py-md q-mx-md"
+                    name="adjust"
+                    icon="task_alt"
+                    label="调整申请列表"
+                    :ripple="false"
+                    to="/my/federation/adjust_list"
+                    exact
+                  />
+                  <q-route-tab
+                    class="q-px-none q-py-md q-mx-md"
+                    name="quit"
+                    icon="task_alt"
+                    label="退出申请列表"
+                    :ripple="false"
+                    to="/my/federation/quit_list"
+                    exact
+                  />
                 </q-tabs>
               </div>
 
               <div class="col-1">
                 <global-add-button/>
               </div>
+
             </div>
           </div>
-          <!--          <div class="col"/>-->
         </div>
       </div>
 
@@ -84,32 +91,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader.vue'
 import GlobalAddButton from 'components/GlobalAddButton.vue'
-// import { useStore } from 'vuex'
-// import { StateInterface } from 'src/store'
 
 export default defineComponent({
-  name: 'Quota',
+  name: 'Federation',
   components: {
     GlobalHeader,
     GlobalAddButton
   },
   props: {},
   setup () {
-    // const $store = useStore<StateInterface>()
-    // // 根据adminQuotaApplicationTable是否为空来判断当前用户是否有权限审批quota，是否显示审批tab
-    // const isQuotaAdmin = computed(() => $store.state.applyQuota.tables.adminQuotaApplicationTable.isLoaded)
     return {
-      activeTab: ref('list')
-      // isQuotaAdmin
+      activeTab: ref('member_list')
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.Quota {
+.Federation {
 }
 </style>

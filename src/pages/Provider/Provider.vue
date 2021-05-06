@@ -1,5 +1,5 @@
 <template>
-  <div class="Quota">
+  <div class="Provider">
     <div class="column">
 
       <div class="col-auto">
@@ -16,7 +16,7 @@
           <div class="content-fixed-width">
             <div class="row">
               <div class="text-h6 q-pt-lg q-px-none">
-                资源配额
+                资源提供
               </div>
             </div>
 
@@ -31,41 +31,49 @@
                 >
                   <q-route-tab
                     class="q-px-none q-py-md q-mr-md"
-                    name="list"
+                    name="detail"
                     icon="task_alt"
-                    label="现有配额"
+                    label="已供资源"
                     :ripple="false"
-                    to="/my/quota/list"
+                    to="/my/provider/detail"
                     exact
                   />
                   <q-route-tab
                     class="q-px-none q-py-md q-mx-md"
-                    name="application"
-                    icon="description"
-                    label="申请记录"
+                    name="manage"
+                    icon="rule"
+                    label="配额审批"
                     :ripple="false"
-                    to="/my/quota/application"
+                    to="/my/provider/manage"
                     exact
                   />
-<!--                  <q-route-tab-->
-<!--                    v-if="isQuotaAdmin"-->
-<!--                    class="q-px-none q-py-md q-mx-md"-->
-<!--                    name="manage"-->
-<!--                    icon="rule"-->
-<!--                    label="配额审批"-->
-<!--                    :ripple="false"-->
-<!--                    to="/my/quota/manage"-->
-<!--                    exact-->
-<!--                  />-->
+                  <q-route-tab
+                    class="q-px-none q-py-md q-mx-md"
+                    name="join"
+                    icon="task_alt"
+                    label="加入联邦"
+                    :ripple="false"
+                    to="/my/provider/join"
+                    exact
+                  />
+                  <q-route-tab
+                    class="q-px-none q-py-md q-mx-md"
+                    name="quit"
+                    icon="description"
+                    label="退出联邦"
+                    :ripple="false"
+                    to="/my/provider/quit"
+                    exact
+                  />
                 </q-tabs>
               </div>
 
               <div class="col-1">
                 <global-add-button/>
               </div>
+
             </div>
           </div>
-          <!--          <div class="col"/>-->
         </div>
       </div>
 
@@ -84,32 +92,26 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed } from 'vue'
+import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader.vue'
 import GlobalAddButton from 'components/GlobalAddButton.vue'
-// import { useStore } from 'vuex'
-// import { StateInterface } from 'src/store'
 
 export default defineComponent({
-  name: 'Quota',
+  name: 'Provider',
   components: {
     GlobalHeader,
     GlobalAddButton
   },
   props: {},
   setup () {
-    // const $store = useStore<StateInterface>()
-    // // 根据adminQuotaApplicationTable是否为空来判断当前用户是否有权限审批quota，是否显示审批tab
-    // const isQuotaAdmin = computed(() => $store.state.applyQuota.tables.adminQuotaApplicationTable.isLoaded)
     return {
-      activeTab: ref('list')
-      // isQuotaAdmin
+      activeTab: ref('detail')
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.Quota {
+.Provider {
 }
 </style>
