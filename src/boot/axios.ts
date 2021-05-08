@@ -1,6 +1,6 @@
 import { boot } from 'quasar/wrappers'
 import axios, { AxiosInstance, AxiosError } from 'axios'
-import { Loading, Notify } from 'quasar'
+import { Loading/*, Notify */ } from 'quasar'
 
 const errorNotifier = (error: AxiosError) => {
   const errorRespMap: Map<number, string> = new Map([
@@ -15,25 +15,34 @@ const errorNotifier = (error: AxiosError) => {
     [503, '服务不可用'],
     [505, 'HTTP版本不受支持']
   ])
-  let notifyMsg: Record<string, string | number>
+  // let notifyMsg: Record<string, string | number>
+  // if (error.response && error.response.data) { // 有响应时
+  //   const errorStatus = error.response.status
+  //   const errorInfo = errorRespMap.get(errorStatus) || ''
+  //   const errorMsg: string = error.response.data.message
+  //   // const errorCode:string = error.response.data.code
+  //   notifyMsg = {
+  //     type: 'negative',
+  //     message: errorStatus,
+  //     caption: `${errorInfo}
+  //               ${errorMsg}`
+  //   }
+  // } else { // 没有响应时
+  //   notifyMsg = {
+  //     type: 'negative',
+  //     message: error.message
+  //   }
+  // }
+  // Notify.create(notifyMsg)
+
   if (error.response && error.response.data) { // 有响应时
     const errorStatus = error.response.status
     const errorInfo = errorRespMap.get(errorStatus) || ''
-    const errorMsg: string = error.response.data.message
-    // const errorCode:string = error.response.data.code
-    notifyMsg = {
-      type: 'negative',
-      message: errorStatus,
-      caption: `${errorInfo}
-                ${errorMsg}`
-    }
+    console.log('error status: ', errorInfo)
+    console.log('error message: ', error.response.data.message)
   } else { // 没有响应时
-    notifyMsg = {
-      type: 'negative',
-      message: error.message
-    }
+    console.log(error.message)
   }
-  Notify.create(notifyMsg)
 }
 
 axios.interceptors.request.use(config => {
@@ -53,14 +62,9 @@ axios.interceptors.response.use(config => {
   Loading.hide()
   return config
 }, (error: AxiosError) => {
-  // 从小尺寸页面变成大尺寸页面时，如果选中了最后一页，会请求一个不存在的页面，此时的请求错误不该显示出来
-  // if (error.config.url!.includes('server') && error.config.method === 'get') {
-  //   return error
-  // } else {
   Loading.hide()
   errorNotifier(error)
   throw error
-  // }
 })
 
 declare module '@vue/runtime-core' {
