@@ -351,7 +351,7 @@ export default defineComponent({
     // vpn 修改密码 todo 整合进actions
     const popEditVpn = (vpn: VpnInterface) => {
       $q.dialog({
-        title: `修改${server.value.service}的VPN密码`,
+        title: `修改${$store.state.vm.tables.globalServiceTable.byId[server.value.service].name}的VPN密码`,
         message: '新密码长度为6-64位',
         prompt: {
           model: `${vpn.password}`,

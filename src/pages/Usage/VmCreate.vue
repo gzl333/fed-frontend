@@ -43,16 +43,19 @@
                       服务节点
                     </div>
                     <div v-for="dataCenter in dataCenters" :key="dataCenter.id" class="row item-row">
+
                       <div class="col-shrink item-title text-bold">
                         {{ dataCenter.name }}
                       </div>
-                      <div v-if="dataCenter.userServices" class="col item-radios">
+
+                      <div v-if="dataCenter.userServices.length" class="col item-radios">
                           <q-radio
                             v-for="service in dataCenter.userServices.map((serviceId) => $store.state.vm.tables.userServiceTable.byId[serviceId])"
-                            dense v-model="radioService"
-                            :val="service.id" :label="service.name" :key="service.id" class="radio"/>
+                            dense v-model="radioService" :val="service.id" :label="service.name" :key="service.id" class="radio"/>
                       </div>
-                      <div v-else>暂无配额</div>
+
+                      <div v-else class="col item-radios">暂不可用，可在申请配额后使用该节点。</div>
+
                     </div>
                   </div>
 

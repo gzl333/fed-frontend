@@ -31,15 +31,6 @@
                 >
                   <q-route-tab
                     class="q-px-none q-py-md q-mr-md"
-                    name="detail"
-                    icon="task_alt"
-                    label="已供资源"
-                    :ripple="false"
-                    to="/my/provider/detail"
-                    exact
-                  />
-                  <q-route-tab
-                    class="q-px-none q-py-md q-mx-md"
                     name="manage"
                     icon="rule"
                     label="配额审批"
@@ -47,6 +38,16 @@
                     to="/my/provider/manage"
                     exact
                   />
+                  <q-route-tab
+                    class="q-px-none q-py-md q-mx-md"
+                    name="detail"
+                    icon="task_alt"
+                    label="已供资源"
+                    :ripple="false"
+                    to="/my/provider/detail"
+                    exact
+                  />
+
                   <q-route-tab
                     class="q-px-none q-py-md q-mx-md"
                     name="join"
@@ -105,7 +106,7 @@ export default defineComponent({
   props: {},
   setup () {
     return {
-      activeTab: ref('detail')
+      activeTab: ref('manage')
     }
   }
 })
