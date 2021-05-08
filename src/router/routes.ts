@@ -128,24 +128,24 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'provider',
         component: () => import('pages/Provider/Provider.vue'),
-        redirect: '/my/provider/detail',
+        redirect: '/my/provider/manage',
         meta: {
           title: '资源提供-中国科技云联邦'
         },
         children: [
-          {
-            path: 'detail',
-            meta: {
-              requireLogin: true
-            },
-            component: () => import('pages/Provider/Detail.vue')
-          },
           {
             path: 'manage',
             meta: {
               requireLogin: true
             },
             component: () => import('pages/Provider/Manage.vue')
+          },
+          {
+            path: 'detail',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Provider/Detail.vue')
           },
           {
             path: 'join',
