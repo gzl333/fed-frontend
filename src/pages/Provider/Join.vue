@@ -40,35 +40,37 @@
                   <div class="text-h7 text-primary section-title">
                     数据中心
                   </div>
+                  <div class="row items-center q-pb-sm">
+                    <div class="col-auto">请选择服务所在的数据中心</div>
+                    <div class="col-auto q-pl-lg">
+                      <q-select
+                        outlined
+                        dense
+                        square
+                        clearable
+                        v-model="selection"
+                        :options="options"
+                        style="width: 350px"
+                      >
+                        <template v-slot:no-option>
+                          <q-item>
+                            <q-item-section class="text-grey">
+                              未找到该数据中心
+                            </q-item-section>
+                          </q-item>
+                        </template>
+                      </q-select>
 
-                  <q-option-group
-                    v-model="group"
-                    :options="[{label: '加入现有数据中心',value: '1'},{label: '新建数据中心',value: '2'}]"
-                    color="primary"
-                  />
-
-<!--                  <q-radio-->
-<!--                    dense v-model="radioDatacenter" :val="1" :key="1"-->
-<!--                    class="radio">-->
-<!--                    <div class="row">-->
-<!--                      <div class="col-auto text-bold">加入现有数据中心</div>-->
-<!--                      <div class="col">selection</div>-->
-<!--                    </div>-->
-<!--                  </q-radio>-->
-
-<!--                  <q-radio-->
-<!--                    dense v-model="radioDatacenter" :val="1" :key="1"-->
-<!--                    class="radio">-->
-<!--                    <div class="row">-->
-<!--                      <div class="col-auto text-bold">新建数据中心</div>-->
-<!--                      <div class="col">selection</div>-->
-<!--                    </div>-->
-<!--                  </q-radio>-->
+                    </div>
+                  </div>
+                  <div>没有找到？
+                    <q-btn label="创建新的数据中心" padding="none" dense flat color="primary"/>
+                  </div>
 
                 </div>
               </div>
               <q-stepper-navigation>
-                <q-btn @click="() => { done1 = true; step = 2 }" unelevated color="primary" label="继续"/>
+                <q-btn :disabled="!selection" @click="() => { done1 = true; step = 2 }" unelevated color="primary" label="继续"/>
               </q-stepper-navigation>
 
             </q-step>
@@ -83,6 +85,78 @@
               <div class="col section">
                 <div class="text-h7 text-primary section-title">
                   服务信息
+                </div>
+
+                <div class="row items-center q-pb-md">
+                  <div class="col-1">服务名称</div>
+                  <div class="col-4 q-pr-md">
+                    <q-input filled square dense v-model="text"/>
+                  </div>
+                </div>
+
+                <div class="row items-center q-pb-md">
+                  <div class="col-1">服务类型</div>
+                  <div class="col-4 q-pr-md">
+                    <q-select outlined square dense v-model="model" :options="options"  />
+                  </div>
+                </div>
+
+                <div class="row items-center q-pb-md">
+                  <div class="col-1">服务URL</div>
+                  <div class="col-4 q-pr-md">
+                    <q-input filled square dense v-model="text"/>
+                  </div>
+                  <div class="col-1 text-center">服务用户名</div>
+                  <div class="col-2 q-pr-md">
+                    <q-input filled square dense v-model="text"/>
+                  </div>
+                  <div class="col-1 text-center ">服务密码</div>
+                  <div class="col-2 q-pr-md">
+                    <q-input filled square dense v-model="text"/>
+                  </div>
+                </div>
+
+                <div class="row items-center q-pb-md">
+                  <div class="col-1">VPN URL</div>
+                  <div class="col-4 q-pr-md">
+                    <q-input filled square dense v-model="text"/>
+                  </div>
+                  <div class="col-1 text-center">VPN用户名</div>
+                  <div class="col-2 q-pr-md">
+                    <q-input filled square dense v-model="text"/>
+                  </div>
+                  <div class="col-1 text-center">VPN密码</div>
+                  <div class="col-2 q-pr-md">
+                    <q-input filled square dense v-model="text"/>
+                  </div>
+                </div>
+
+                <div class="row items-center q-pb-md">
+                  <div class="col-1">地理位置</div>
+                  <div class="col-2 q-pr-md">
+                    <q-input filled square dense v-model="text" label="经度"/>
+                  </div>
+                  <div class="col-2 q-pr-md">
+                    <q-input filled square dense v-model="text" label="纬度"/>
+                  </div>
+                </div>
+
+                <div class="row items-center q-pb-md">
+                  <div class="col-1">上传附件</div>
+                  <div class="col-7 q-pr-md">
+                    <q-uploader
+                      style=""
+                      flat
+                      bordered
+                      square
+                      color="grey"
+                      url="http://localhost:4444/upload"
+                      label="选择上传文件"
+                      multiple
+                      max-file-size="20480"
+                      @rejected="onRejected"
+                    />
+                  </div>
                 </div>
 
               </div>
@@ -102,6 +176,41 @@
               <div class="col section">
                 <div class="text-h7 text-primary section-title">
                   联系方式
+                </div>
+
+                <div class="row items-center q-pb-md">
+                  <div class="col-1">姓名</div>
+                  <div class="col-4 q-pr-md">
+                    <q-input filled square dense v-model="text"/>
+                  </div>
+                </div>
+
+                <div class="row items-center q-pb-md">
+                  <div class="col-1">邮箱</div>
+                  <div class="col-4 q-pr-md">
+                    <q-input filled square dense v-model="text"/>
+                  </div>
+                </div>
+
+                <div class="row items-center q-pb-md">
+                  <div class="col-1">手机</div>
+                  <div class="col-4 q-pr-md">
+                    <q-input filled square dense v-model="text"/>
+                  </div>
+                </div>
+
+                <div class="row items-center q-pb-md">
+                  <div class="col-1">座机</div>
+                  <div class="col-4 q-pr-md">
+                    <q-input filled square dense v-model="text"/>
+                  </div>
+                </div>
+
+                <div class="row items-center q-pb-md">
+                  <div class="col-1">地址</div>
+                  <div class="col-4 q-pr-md">
+                    <q-input filled square dense v-model="text"/>
+                  </div>
                 </div>
 
               </div>
@@ -125,8 +234,134 @@
                 </div>
 
                 <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-bold">
-                    服务中心名称
+                  <div class="col-shrink item-title-narrow text-grey">
+                    数据中心
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    服务名称
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    服务类型
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    服务URL
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    服务用户名
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    服务密码
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    VPN URL
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    VPN用户名
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    VPN密码
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    服务经纬度
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    联系人姓名
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    邮箱
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    手机
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    座机
+                  </div>
+                  <div class="col item-radios">
+                    service name
+                  </div>
+                </div>
+
+                <div class="row item-row">
+                  <div class="col-shrink item-title-narrow text-grey">
+                    通讯地址
                   </div>
                   <div class="col item-radios">
                     service name
@@ -148,9 +383,9 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-// import { useStore } from 'vuex'
-// import { StateInterface } from 'src/store'
+import { computed, defineComponent, ref } from 'vue'
+import { useStore } from 'vuex'
+import { StateInterface } from 'src/store'
 import { useRouter } from 'vue-router'
 // import { useQuasar } from 'quasar'
 
@@ -159,7 +394,7 @@ export default defineComponent({
   components: {},
   props: {},
   setup () {
-    // const $store = useStore<StateInterface>()
+    const $store = useStore<StateInterface>()
     const $router = useRouter()
     // const $q = useQuasar()
 
@@ -182,10 +417,9 @@ export default defineComponent({
       step.value = 1
     }
 
-    // radio
-    const group = ref('1')
-    const radioDatacenter = ref('')
-
+    const dataCenterOptions = computed(() => $store.getters['vm/getDataCenterOptions'])
+    const options = ref(dataCenterOptions)
+    const selection = ref(null)
     return {
       goBack,
       step,
@@ -194,8 +428,8 @@ export default defineComponent({
       done3,
       done4,
       reset,
-      group,
-      radioDatacenter
+      selection,
+      options
     }
   }
 })
@@ -221,7 +455,7 @@ export default defineComponent({
   margin-bottom: 30px;
   padding: 10px 20px;
   border: 1px solid $grey-4;
-  border-radius: 5px;
+  //border-radius: 5px;
 }
 
 .section-title {

@@ -9,6 +9,22 @@ import {
 } from './state'
 
 const getters: GetterTree<VmInterface, StateInterface> = {
+
+  /* join federation使用 */
+  getDataCenterOptions (state): { value: string; label: string; }[] {
+    const dataCenterOptions = []
+    for (const dataCenter of Object.values(state.tables.globalDataCenterTable.byId)) {
+      dataCenterOptions.push(
+        {
+          value: dataCenter.id,
+          label: dataCenter.name
+        }
+      )
+    }
+    return dataCenterOptions
+  },
+  /* join federation使用 */
+
   /* vmlist 使用 */
   getServiceOptions (state): { value: string; label: string; }[] {
     /*    数据结构如下

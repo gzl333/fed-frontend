@@ -210,7 +210,7 @@
                   <div class="col-10">
                     <div class="column justify-center items-center" style="height: 100px">
                       <div v-if="!quota.expiration_time">长期有效</div>
-                      <div v-else>
+                      <div v-else class="column justify-center items-center">
                         <div>{{ new Date(quota.expiration_time).toLocaleString() }}</div>
                         <div v-if="new Date(quota.expiration_time).getTime() < new Date().getTime()" class="text-red">已过期</div>
                       </div>
