@@ -155,6 +155,13 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/Provider/Join.vue')
           },
           {
+            path: 'create',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Provider/CreateDatacenter.vue')
+          },
+          {
             path: 'quit',
             meta: {
               requireLogin: true

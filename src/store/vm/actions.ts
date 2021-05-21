@@ -234,16 +234,17 @@ const actions: ActionTree<VmInterface, StateInterface> = {
         color: 'primary'
       }
     }).onOk(async () => {
-      // 将主机状态清空，界面将显示loading
-      context.commit('storeUserServerTableSingleStatus', {
-        serverId: payload.id,
-        status_code: ''
-      })
       // 发送请求
       const server = context.state.tables.userServerTable.byId[payload.id]
       const api = server.endpoint_url.endsWith('/') ? server.endpoint_url + 'api/server/' + payload.id + '/action/' : server.endpoint_url + '/api/server/' + payload.id + '/action/'
       const data = { action: payload.action }
       const response = await axios.post(api, data)
+
+      // 将主机状态清空，界面将显示loading
+      context.commit('storeUserServerTableSingleStatus', {
+        serverId: payload.id,
+        status_code: ''
+      })
 
       // 如果删除主机，重新获取userServerTable
       if (payload.action === 'delete' || payload.action === 'delete_force') {

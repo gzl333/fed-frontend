@@ -1,13 +1,6 @@
 <template>
   <div class="Join">
     <div class="column items-center justify-center">
-      <!--      <div v-if="!dataCenters">-->
-      <!--        <q-inner-loading>-->
-      <!--          <q-spinner size="50px" color="primary"/>-->
-      <!--        </q-inner-loading>-->
-      <!--      </div>-->
-
-      <!--      <div v-else>-->
       <div>
         <div class="col title-area">
           <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
@@ -64,13 +57,14 @@
                     </div>
                   </div>
                   <div>没有找到？
-                    <q-btn label="创建新的数据中心" padding="none" dense flat color="primary"/>
+                    <q-btn label="创建新的数据中心" padding="none" dense flat color="primary" :to="{ path: '/my/provider/create' }"/>
                   </div>
 
                 </div>
               </div>
               <q-stepper-navigation>
-                <q-btn :disabled="!selection" @click="() => { done1 = true; step = 2 }" unelevated color="primary" label="继续"/>
+                <q-btn :disabled="!selection" @click="() => { done1 = true; step = 2 }" unelevated color="primary"
+                       label="继续"/>
               </q-stepper-navigation>
 
             </q-step>
@@ -97,7 +91,7 @@
                 <div class="row items-center q-pb-md">
                   <div class="col-1">服务类型</div>
                   <div class="col-4 q-pr-md">
-                    <q-select outlined square dense v-model="model" :options="options"  />
+                    <q-select outlined square dense v-model="model" :options="options"/>
                   </div>
                 </div>
 
@@ -232,139 +226,149 @@
                 <div class="text-h7 text-primary section-title">
                   所填信息
                 </div>
+                <div class="row">
+                  <div class="col-auto column justify-center q-pr-xl">
+                    <div class="col">
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          数据中心
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    数据中心
-                  </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          服务名称
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    服务名称
-                  </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          服务类型
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    服务类型
-                  </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          服务URL
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    服务URL
-                  </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          服务用户名
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    服务用户名
-                  </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          服务密码
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    服务密码
-                  </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          VPN URL
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    VPN URL
-                  </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          VPN用户名
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    VPN用户名
-                  </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          VPN密码
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    VPN密码
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          地理经纬度
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    服务经纬度
-                  </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
+                  <div class="col-auto column justify-center q-pr-xl">
+                    <div class="col">
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    联系人姓名
-                  </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          联系人姓名
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    邮箱
-                  </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          邮箱
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    手机
-                  </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          手机
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    座机
-                  </div>
-                  <div class="col item-radios">
-                    service name
-                  </div>
-                </div>
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          座机
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
 
-                <div class="row item-row">
-                  <div class="col-shrink item-title-narrow text-grey">
-                    通讯地址
-                  </div>
-                  <div class="col item-radios">
-                    service name
+                      <div class="row item-row">
+                        <div class="col-shrink item-title-narrow text-grey">
+                          通讯地址
+                        </div>
+                        <div class="col item-radios">
+                          service name
+                        </div>
+                      </div>
+                    </div>
                   </div>
                 </div>
 
