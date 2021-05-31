@@ -41,27 +41,9 @@
                     class="q-px-none q-py-md q-mx-md"
                     name="join"
                     icon="task_alt"
-                    label="加入申请列表"
+                    label="审批列表"
                     :ripple="false"
-                    to="/my/federation/join_list"
-                    exact
-                  />
-                  <q-route-tab
-                    class="q-px-none q-py-md q-mx-md"
-                    name="adjust"
-                    icon="task_alt"
-                    label="调整申请列表"
-                    :ripple="false"
-                    to="/my/federation/adjust_list"
-                    exact
-                  />
-                  <q-route-tab
-                    class="q-px-none q-py-md q-mx-md"
-                    name="quit"
-                    icon="task_alt"
-                    label="退出申请列表"
-                    :ripple="false"
-                    to="/my/federation/quit_list"
+                    to="/my/federation/audit_list"
                     exact
                   />
                 </q-tabs>
@@ -93,7 +75,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader.vue'
-import GlobalAddButton from 'components/GlobalAddButton.vue'
+import GlobalAddButton from 'components/usage/UsageAddButton.vue'
 
 export default defineComponent({
   name: 'Federation',

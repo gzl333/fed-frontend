@@ -44,33 +44,15 @@
                     icon="task_alt"
                     label="已供资源"
                     :ripple="false"
-                    to="/my/provider/detail"
+                    to="/my/provider/provided"
                     exact
                   />
 
-                  <q-route-tab
-                    class="q-px-none q-py-md q-mx-md"
-                    name="join"
-                    icon="task_alt"
-                    label="加入联邦"
-                    :ripple="false"
-                    to="/my/provider/join"
-                    exact
-                  />
-                  <q-route-tab
-                    class="q-px-none q-py-md q-mx-md"
-                    name="quit"
-                    icon="description"
-                    label="退出联邦"
-                    :ripple="false"
-                    to="/my/provider/quit"
-                    exact
-                  />
                 </q-tabs>
               </div>
 
               <div class="col-1">
-                <global-add-button/>
+                <provider-add-button/>
               </div>
 
             </div>
@@ -95,13 +77,13 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader.vue'
-import GlobalAddButton from 'components/GlobalAddButton.vue'
+import ProviderAddButton from 'components/provider/ProviderAddButton.vue'
 
 export default defineComponent({
   name: 'Provider',
   components: {
     GlobalHeader,
-    GlobalAddButton
+    ProviderAddButton
   },
   props: {},
   setup () {

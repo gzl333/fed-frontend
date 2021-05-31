@@ -141,21 +141,21 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/Provider/Manage.vue')
           },
           {
-            path: 'detail',
+            path: 'provided',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Provider/Detail.vue')
+            component: () => import('pages/Provider/ProvidedResource.vue')
           },
           {
-            path: 'join',
+            path: 'join_federation',
             meta: {
               requireLogin: true
             },
             component: () => import('pages/Provider/Join.vue')
           },
           {
-            path: 'create',
+            path: 'create_datacenter',
             meta: {
               requireLogin: true
             },
@@ -186,25 +186,11 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/Federation/MemberList.vue')
           },
           {
-            path: 'join_list',
+            path: 'audit_list',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Federation/JoinList.vue')
-          },
-          {
-            path: 'adjust_list',
-            meta: {
-              requireLogin: true
-            },
-            component: () => import('pages/Federation/AdjustList.vue')
-          },
-          {
-            path: 'quit_list',
-            meta: {
-              requireLogin: true
-            },
-            component: () => import('pages/Federation/QuitList.vue')
+            component: () => import('pages/Federation/AuditList.vue')
           }
         ]
       }

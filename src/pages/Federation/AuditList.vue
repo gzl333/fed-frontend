@@ -1,6 +1,6 @@
 <template>
-  <div class="Detail">
-    this is Detail
+  <div class="AuditList">
+    this is AuditList
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'Detail',
+  name: 'AuditList',
   components: {},
   props: {},
   setup () {
@@ -18,6 +18,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.Detail {
+.AuditList {
 }
 </style>

@@ -55,10 +55,10 @@
 
           <q-td key="service" :props="props">
             <div>{{
-                $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.userServiceTable.byId[props.row.service]?.data_center]?.name
+                $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[props.row.service]?.data_center]?.name
               }}
             </div>
-            <div>{{ $store.state.vm.tables.userServiceTable.byId[props.row.service]?.name }}</div>
+            <div>{{ $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name }}</div>
           </q-td>
 
           <q-td key="duration_days" :props="props">

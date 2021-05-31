@@ -107,7 +107,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader.vue'
-import GlobalAddButton from 'components/GlobalAddButton.vue'
+import GlobalAddButton from 'components/usage/UsageAddButton.vue'
 
 export default defineComponent({
   name: 'UsageLayout',

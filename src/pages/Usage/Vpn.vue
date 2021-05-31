@@ -32,7 +32,7 @@
 
               <q-tab-panel v-for="vpn in vpns" :key="vpn.id" :name="vpn.id"  class="bg-grey-1">
                 <div class="row">
-                  <div class="col-2 q-pb-lg text-primary">
+                  <div class="col q-pb-lg text-primary">
                     {{ $store.state.vm.tables.userServiceTable.byId[vpn.id]?.name }}VPN信息
                   </div>
                   <div class="col"></div>
