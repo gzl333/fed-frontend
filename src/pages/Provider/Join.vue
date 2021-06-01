@@ -23,7 +23,7 @@
             <q-step
               class="overflow-hidden"
               :name="1"
-              title="数据中心"
+              title="机构"
               icon="settings"
               :done="done1"
             >
@@ -31,10 +31,10 @@
               <div class="column">
                 <div class="col section">
                   <div class="text-h7 text-primary section-title">
-                    数据中心
+                    机构
                   </div>
                   <div class="row items-center q-pb-sm">
-                    <div class="col-auto">请选择服务所在的数据中心</div>
+                    <div class="col-auto">请选择服务所在的机构</div>
                     <div class="col-auto q-pl-lg">
                       <q-select
                         outlined
@@ -48,7 +48,7 @@
                         <template v-slot:no-option>
                           <q-item>
                             <q-item-section class="text-grey">
-                              未找到该数据中心
+                              未找到该机构
                             </q-item-section>
                           </q-item>
                         </template>
@@ -57,7 +57,7 @@
                     </div>
                   </div>
                   <div>没有找到？
-                    <q-btn label="创建新的数据中心" padding="none" dense flat color="primary" :to="{ path: '/my/provider/create' }"/>
+                    <q-btn label="创建新的机构" padding="none" dense flat color="primary" :to="{ path: '/my/provider/create' }"/>
                   </div>
 
                 </div>
@@ -231,7 +231,7 @@
                     <div class="col">
                       <div class="row item-row">
                         <div class="col-shrink item-title-narrow text-grey">
-                          数据中心
+                          机构
                         </div>
                         <div class="col item-radios">
                           service name

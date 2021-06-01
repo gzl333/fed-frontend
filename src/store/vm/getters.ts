@@ -146,7 +146,7 @@ const getters: GetterTree<VmInterface, StateInterface> = {
   },
   /* 首页-在用云主机资源展示 */
 
-  /* 首页-获取所有数据中心下的服务的数量 */
+  /* 首页-获取所有机构下的服务的数量 */
   getServicesNumber (state): number {
     let num = 0
     for (const dataCenter of Object.values(state.tables.globalDataCenterTable.byId)) {
@@ -155,7 +155,7 @@ const getters: GetterTree<VmInterface, StateInterface> = {
     const servicesNum = num
     return servicesNum
   }
-  /* 首页-获取所有数据中心下的服务的数量 */
+  /* 首页-获取所有机构下的服务的数量 */
 
 }
 

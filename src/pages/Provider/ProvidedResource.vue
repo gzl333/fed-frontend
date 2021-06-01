@@ -1,30 +1,30 @@
 <template>
   <div class="ProvidedResource">
 
-    <div class="row items-center justify-between q-py-md">
+<!--    <div class="row items-center justify-between q-py-md">-->
 
-      <div class="col-3">
-        <div class="row justify-start">
-          <div class="col">
-            <q-input disable outlined v-model="text" stack-label label="搜索">
-              <template v-slot:append>
-                <!--                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>-->
-                <q-icon name="search"/>
-              </template>
-            </q-input>
-          </div>
-        </div>
-      </div>
+<!--      <div class="col-3">-->
+<!--        <div class="row justify-start">-->
+<!--          <div class="col">-->
+<!--            <q-input disable outlined v-model="text" stack-label label="搜索">-->
+<!--              <template v-slot:append>-->
+<!--                &lt;!&ndash;                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>&ndash;&gt;-->
+<!--                <q-icon name="search"/>-->
+<!--              </template>-->
+<!--            </q-input>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <div class="col-2">
-        <div class="row justify-end">
-          <div class="col">
-            <q-select outlined stack-label label="筛选" v-model="filterSelection"
-                      :options="filterOptions"/>
-          </div>
-        </div>
-      </div>
-    </div>
+<!--      <div class="col-2">-->
+<!--        <div class="row justify-end">-->
+<!--          <div class="col">-->
+<!--            <q-select outlined stack-label label="筛选" v-model="filterSelection"-->
+<!--                      :options="filterOptions"/>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
 
     <q-table
       flat
@@ -50,29 +50,86 @@
           </q-td>
 
           <q-td key="status" :props="props">
-            <div class="column bg-grey-2">
-              <div class="col">
+            <div class="column q-py-lg bg-grey-2">
 
+              <div v-if="props.row.status === '1'" class="col">
                 <div class="row">
-                  <div class="col">初步审核</div>
-                  <div class="col">服务测试</div>
-                  <div class="col">接入成功</div>
-                  <div class="col">配置服务</div>
-                  <div class="col">审核配置</div>
+                  <div class="col">审核信息(进行中)</div>
+                  <div class="col text-grey">测试服务</div>
+                  <div class="col text-grey">配置资源</div>
+                  <div class="col text-grey">审核资源</div>
+                  <div class="col text-grey">上线运行</div>
+                </div>
+                <div class="row">
+                  <q-linear-progress :value="0.08" color="light-green" class="q-ma-sm" />
+                </div>
+              </div>
+
+              <div v-if="props.row.status === '2'" class="col">
+                <div class="row">
+                  <div class="col text-light-green">审核信息</div>
+                  <div class="col">测试服务(进行中)</div>
+                  <div class="col text-grey">配置资源</div>
+                  <div class="col text-grey">审核资源</div>
+                  <div class="col text-grey">上线运行</div>
+                </div>
+                <div class="row">
+                  <q-linear-progress :value="0.28" color="light-green" class="q-ma-sm" />
+                </div>
+              </div>
+
+              <div v-if="props.row.status === '3'" class="col">
+                <div class="row">
+                  <div class="col text-light-green">审核信息</div>
+                  <div class="col text-light-green">测试服务</div>
+                  <div class="col">配置资源(进行中)</div>
+                  <div class="col text-grey">审核资源</div>
+                  <div class="col text-grey">上线运行</div>
+                </div>
+                <div class="row">
+                  <q-linear-progress :value="0.5" color="light-green" class="q-ma-sm" />
+                </div>
+              </div>
+
+              <div v-if="props.row.status === '4'" class="col">
+                <div class="row">
+                  <div class="col text-light-green">审核信息</div>
+                  <div class="col text-light-green">测试服务</div>
+                  <div class="col text-light-green">配置资源</div>
+                  <div class="col">审核资源(进行中)</div>
+                  <div class="col text-grey">上线运行</div>
+                </div>
+                <div class="row">
+                  <q-linear-progress :value="0.7" color="light-green" class="q-ma-sm" />
+                </div>
+              </div>
+
+              <div v-if="props.row.status === '5'" class="col">
+                <div class="row">
+                  <div class="col text-light-green">审核信息</div>
+                  <div class="col text-light-green">测试服务</div>
+                  <div class="col text-light-green">接入服务</div>
+                  <div class="col text-light-green">配置资源</div>
+                  <div class="col text-light-green">审核资源</div>
                   <div class="col">上线运行</div>
                 </div>
-
                 <div class="row">
-                  <q-linear-progress :value="progress" color="secondary" class="q-mt-sm" />
+                  <q-linear-progress :value="1" color="light-green" class="q-ma-sm" />
                 </div>
-
               </div>
-            </div>
 
+            </div>
           </q-td>
 
           <q-td key="operation" :props="props">
-            取消申请
+            <div v-if="props.row.status === '1'|| props.row.status ==='2'">
+              <q-btn flat unelevated padding="none" label="取消申请" color="primary" />
+            </div>
+
+            <div v-if="props.row.status === '3' || props.row.status ==='4' || props.row.status ==='5'">
+              <q-btn flat unelevated padding="none" label="配置资源" color="primary" />
+            </div>
+
           </q-td>
 
         </q-tr>
@@ -142,27 +199,27 @@ export default defineComponent({
       {
         name: '测试服务1',
         time: '2021-06-06',
-        status: 'test'
+        status: '1'
       },
       {
         name: '测试服务2',
         time: '2021-06-07',
-        status: 'test'
+        status: '2'
       },
       {
         name: '测试服务3',
         time: '2021-06-08',
-        status: 'test'
+        status: '3'
       },
       {
         name: '测试服务4',
         time: '2021-06-09',
-        status: 'test'
+        status: '4'
       },
       {
         name: '测试服务5',
         time: '2021-06-10',
-        status: 'test'
+        status: '5'
       }
     ]
 
@@ -184,7 +241,7 @@ export default defineComponent({
       },
       {
         name: 'status',
-        label: '审批状态',
+        label: '申请状态',
         field: 'status',
         align: 'center',
         style: 'padding: 15px 5px; width: 800px;'
@@ -206,16 +263,13 @@ export default defineComponent({
       rowsPerPage: 9999 // 此为能显示的最大行数
     })
 
-    const progress = ref(0.41)
-
     return {
       $store,
       paginationTable,
       columns,
       rows,
       filterOptions,
-      filterSelection,
-      progress
+      filterSelection
     }
   }
 })

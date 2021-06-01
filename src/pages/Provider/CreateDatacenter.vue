@@ -5,20 +5,20 @@
         <div class="col title-area q-pb-lg">
           <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                  @click="goBack"/>
-          创建数据中心
+          创建机构
         </div>
 
         <div class="col">
 
           <div class="row items-center q-pb-md">
-            <div class="col-2">数据中心全称</div>
+            <div class="col-2">机构全称</div>
             <div class="col-4 q-pr-md">
               <q-input filled square dense v-model="text"/>
             </div>
           </div>
 
           <div class="row items-center q-pb-md">
-            <div class="col-2">数据中心简称</div>
+            <div class="col-2">机构简称</div>
             <div class="col-4 q-pr-md">
               <q-input filled square dense v-model="text"/>
             </div>

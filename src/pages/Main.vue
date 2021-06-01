@@ -24,7 +24,7 @@
                   <div class="card">
                     <div class="row text-h6 q-ma-lg justify-center items-center ">
                       <q-icon name="foundation" size="1.5em" class="q-mr-md"/>
-                      接入数据中心
+                      接入机构
                     </div>
                     <div class="row text-h4 q-ma-xl justify-center items-center text-bold text-primary">
                       {{ $store.state.vm.tables.globalDataCenterTable.allIds.length }}个
@@ -226,7 +226,7 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const currentUser = $store.state.account.cstTrueName
 
-    // 获取所有数据中心的服务的数量
+    // 获取所有机构的服务的数量
     const serviceNum = computed(() => $store.getters['vm/getServicesNumber'])
 
     // 获取云主机列表数据
