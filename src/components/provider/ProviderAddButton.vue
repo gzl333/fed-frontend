@@ -8,7 +8,7 @@
       icon="add"
       direction="down"
     >
-      <q-fab-action label="加入联邦" unelevated color="primary" icon="computer" :to="{ path: '/my/provider/join_federation' }"/>
+      <q-fab-action label="接入服务" unelevated color="primary" icon="computer" :to="{ path: '/my/provider/join_service' }"/>
       <q-fab-action label="新建机构" unelevated color="primary" icon="computer" :to="{ path: '/my/provider/create_datacenter' }"/>
     </q-fab>
   </div>

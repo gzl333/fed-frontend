@@ -145,10 +145,17 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Provider/ProvidedResource.vue')
+            component: () => import('pages/Provider/Provided.vue')
           },
           {
-            path: 'join_federation',
+            path: 'service',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Provider/Service.vue')
+          },
+          {
+            path: 'join_service',
             meta: {
               requireLogin: true
             },
@@ -160,6 +167,13 @@ const routes: RouteRecordRaw[] = [
               requireLogin: true
             },
             component: () => import('pages/Provider/CreateDatacenter.vue')
+          },
+          {
+            path: 'configuration',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Provider/Configuration.vue')
           },
           {
             path: 'quit',

@@ -33,18 +33,27 @@
                     class="q-px-none q-py-md q-mr-md"
                     name="manage"
                     icon="rule"
-                    label="配额审批"
+                    label="用户配额审批"
                     :ripple="false"
                     to="/my/provider/manage"
                     exact
                   />
                   <q-route-tab
                     class="q-px-none q-py-md q-mx-md"
-                    name="detail"
+                    name="provided"
                     icon="task_alt"
-                    label="已供资源"
+                    label="已供资源列表"
                     :ripple="false"
                     to="/my/provider/provided"
+                    exact
+                  />
+                  <q-route-tab
+                    class="q-px-none q-py-md q-mx-md"
+                    name="service"
+                    icon="task_alt"
+                    label="接入服务列表"
+                    :ripple="false"
+                    to="/my/provider/service"
                     exact
                   />
 
