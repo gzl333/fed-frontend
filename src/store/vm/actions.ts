@@ -139,6 +139,12 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     const response = await axios.patch(api, data)
     return response
   },
+  // 暂时没有启用
+  async fetchVpnCa (context, serviceId: string) {
+    const api = apiBase + '/vpn/' + serviceId + '/ca/'
+    const response = await axios.get(api)
+    return response
+  },
   /* userVpnTable */
 
   /* globalFlavorTable */
