@@ -69,7 +69,7 @@
           >
             <q-item-section class="column items-center">
               <q-icon name="cloud_upload" size="lg"/>
-              <div class="text-c-blue5">资源提供</div>
+              <div class="text-c-blue5">资源提供-dev</div>
             </q-item-section>
           </q-item>
 
@@ -82,7 +82,7 @@
           >
             <q-item-section class="column items-center">
               <q-icon name="construction" size="lg"/>
-              <div class="text-c-blue5">联邦管理</div>
+              <div class="text-c-blue5">联邦管理-dev</div>
             </q-item-section>
           </q-item>
 

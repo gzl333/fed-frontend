@@ -187,17 +187,24 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'federation',
         component: () => import('pages/Federation/Federation.vue'),
-        redirect: '/my/federation/member_list',
+        redirect: '/my/federation/service_list',
         meta: {
           title: '联邦管理-中国科技云联邦'
         },
         children: [
           {
-            path: 'member_list',
+            path: 'service_list',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Federation/MemberList.vue')
+            component: () => import('pages/Federation/ServiceList.vue')
+          },
+          {
+            path: 'institution_list',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Federation/InstitutionList.vue')
           },
           {
             path: 'audit_list',

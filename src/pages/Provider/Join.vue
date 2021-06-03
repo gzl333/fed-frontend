@@ -5,7 +5,7 @@
         <div class="col title-area">
           <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                  @click="goBack"/>
-          加入联邦
+          接入服务
         </div>
 
         <div class="col">

@@ -30,16 +30,25 @@
                 >
                   <q-route-tab
                     class="q-px-none q-py-md q-mr-md"
-                    name="member"
+                    name="service"
                     icon="task_alt"
-                    label="成员列表"
+                    label="服务列表"
                     :ripple="false"
-                    to="/my/federation/member_list"
+                    to="/my/federation/service_list"
                     exact
                   />
                   <q-route-tab
                     class="q-px-none q-py-md q-mx-md"
-                    name="join"
+                    name="institution"
+                    icon="task_alt"
+                    label="机构列表"
+                    :ripple="false"
+                    to="/my/federation/institution_list"
+                    exact
+                  />
+                  <q-route-tab
+                    class="q-px-none q-py-md q-mx-md"
+                    name="audit"
                     icon="task_alt"
                     label="审批列表"
                     :ripple="false"

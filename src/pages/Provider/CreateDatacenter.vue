@@ -5,7 +5,7 @@
         <div class="col title-area q-pb-lg">
           <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                  @click="goBack"/>
-          创建机构
+          新建机构
         </div>
 
         <div class="col">

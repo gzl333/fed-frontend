@@ -1,6 +1,6 @@
 <template>
-  <div class="MemberList">
-    this is MemberList
+  <div class="InstitutionList">
+    this is InstitutionList
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'MemberList',
+  name: 'InstitutionList',
   components: {},
   props: {},
   setup () {
@@ -18,6 +18,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.MemberList {
+.InstitutionList {
 }
 </style>
