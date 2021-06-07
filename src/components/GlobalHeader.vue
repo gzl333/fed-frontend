@@ -21,6 +21,16 @@
             <q-tooltip>系统消息</q-tooltip>
           </q-btn>
 
+          <q-select
+            v-model="localeModel"
+            :options="localeOptions"
+            dense
+            borderless
+            emit-value
+            map-options
+            options-dense
+          />
+
           <q-btn-dropdown :ripple="false" flat class="q-py-sm q-px-none" :label="currentUser.cstEmail" no-caps>
 
             <div class="row justify-center no-wrap q-pa-md dropdown-content non-selectable">
@@ -55,8 +65,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { defineComponent, ref, watch } from 'vue'
 import { useStore } from 'vuex'
+import { useI18n } from 'vue-i18n'
+
 import { StateInterface } from 'src/store'
 
 export default defineComponent({
@@ -65,6 +77,15 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
+    const { locale } = useI18n({ useScope: 'global' })
+
+    // i18n
+    const localeModel = ref('Language')
+    const localeOptions = [
+      { value: 'zh', label: '中文' },
+      { value: 'en', label: 'English' }
+    ]
+    watch(localeModel, newVal => { locale.value = newVal })
 
     const currentUser = $store.state.account
     const toggleRightDrawer = () => {
@@ -74,6 +95,8 @@ export default defineComponent({
       void $store.dispatch('account/logoutCstUser')
     }
     return {
+      localeModel,
+      localeOptions,
       currentUser,
       toLogout,
       toggleRightDrawer

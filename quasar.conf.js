@@ -6,6 +6,9 @@
 // Configuration for your app
 // https://quasar.dev/quasar-cli/quasar-conf-js
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const path = require('path')
+
 /* eslint-env node */
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { configure } = require('quasar/wrappers')
@@ -79,6 +82,36 @@ module.exports = configure(function (/* ctx */) {
       // "chain" is a webpack-chain object https://github.com/neutrinojs/webpack-chain
       chainWebpack (/* chain */) {
         //
+      },
+
+      extendWebpack (cfg, { isServer, isClient }) {
+        // alias
+        cfg.resolve.alias = {
+          ...cfg.resolve.alias, // This adds the existing alias
+          // Add your own alias like this
+          css: path.resolve(__dirname, './src/css'),
+          hooks: path.resolve(__dirname, './src/hooks'),
+          store: path.resolve(__dirname, './src/store'),
+          router: path.resolve(__dirname, './src/router')
+        }
+
+        // for i18n resources (json/json5/yaml)
+        cfg.module.rules.push({
+          test: /\.(json5?|ya?ml)$/, // target json, json5, yaml and yml files
+          type: 'javascript/auto',
+          // Use `Rule.include` to specify the files of locale messages to be pre-compiled
+          include: [
+            path.resolve(__dirname, './src/i18n')
+          ],
+          loader: '@intlify/vue-i18n-loader'
+        })
+
+        // for i18n custom block
+        cfg.module.rules.push({
+          resourceQuery: /blockType=i18n/,
+          type: 'javascript/auto',
+          loader: '@intlify/vue-i18n-loader'
+        })
       }
 
     },
@@ -219,17 +252,9 @@ module.exports = configure(function (/* ctx */) {
       // More info: https://quasar.dev/quasar-cli/developing-electron-apps/node-integration
       nodeIntegration: true,
 
-      extendWebpack (cfg, { isServer, isClient }) {
+      extendWebpack (cfg) {
         // do something with Electron main process Webpack cfg
         // chainWebpack also available besides this extendWebpack
-        cfg.resolve.alias = {
-          ...cfg.resolve.alias, // This adds the existing alias
-          // Add your own alias like this
-          css: path.resolve(__dirname, './src/css'),
-          hooks: path.resolve(__dirname, './src/hooks'),
-          store: path.resolve(__dirname, './src/store'),
-          router: path.resolve(__dirname, './src/router')
-        }
       }
     }
   }
