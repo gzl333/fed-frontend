@@ -17,11 +17,12 @@
     "core-js": "^3.12.0",
     "jwt-decode": "^3.1.2",
     "normalizr": "^3.6.1",
-    "quasar": "^2.0.0-beta.19",
-    "vue-i18n": "^9.1.6"
+    "quasar": "^2.0.0-rc.1",
+    "vue-i18n": "^9.1.6",
+    "vuex": "^4.0.1"
   },
   "devDependencies": {
-    "@quasar/app": "^3.0.0-beta.28",
+    "@quasar/app": "^3.0.0-rc.1",
     "@types/node": "^10.17.59",
     "@typescript-eslint/eslint-plugin": "^4.22.1",
     "@typescript-eslint/parser": "^4.22.1",
