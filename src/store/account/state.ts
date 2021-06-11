@@ -15,6 +15,7 @@ export interface CstJwtInterface {
   iat: number
 }
 
+// Account总体类型
 export interface AccountInterface {
   isLogin: boolean
   cstTrueName?: string

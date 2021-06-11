@@ -1,7 +1,7 @@
 <template>
   <div class="ServiceList">
 <!--    this is ServiceList-->
-    {{ $t('message.test') }}
+    {{ $t('message.测试') }}
   </div>
 </template>
 

@@ -17,32 +17,41 @@
             <div class="column">
               <div class="col">
                 <div class="row q-mt-md  text-h5 ">
-                  <div class="q-pb-xs text-h6 ">联邦机构</div>
+                  <div class="q-pb-xs text-h6 ">{{ $t('联邦机构') }}</div>
                 </div>
                 <q-separator/>
                 <div class="row justify-center q-my-xs">
+
                   <div class="card">
                     <div class="row text-h6 q-ma-lg justify-center items-center ">
-                      <q-icon name="foundation" size="1.5em" class="q-mr-md"/>
-                      接入机构
+<!--                      <div>-->
+<!--                        <q-icon name="foundation" size="1.5em" class="q-mr-md"/>-->
+<!--                      </div>-->
+                      <div>{{ $t('接入机构') }}</div>
                     </div>
                     <div class="row text-h4 q-ma-xl justify-center items-center text-bold text-primary">
-                      {{ $store.state.vm.tables.globalDataCenterTable.allIds.length }}个
+                      {{ $store.state.vm.tables.globalDataCenterTable.allIds.length }}
                     </div>
                   </div>
+
                   <div class="card">
                     <div class="row text-h6 q-ma-lg justify-center items-center ">
-                      <q-icon name="timeline" size="1.5em" class="q-mr-md"/>
-                      接入服务
+<!--                      <div>-->
+<!--                        <q-icon name="timeline" size="1.5em" class="q-mr-md"/>-->
+<!--                      </div>-->
+                      <div>{{ $t('接入服务') }}</div>
                     </div>
-                    <div class="row text-h4 q-ma-xl justify-center text-bold text-primary  ">{{ serviceNum }}个</div>
+                    <div class="row text-h4 q-ma-xl justify-center items-center text-bold text-primary">
+                      {{ serviceNum }}
+                    </div>
                   </div>
+
                 </div>
               </div>
 
               <div class="col">
                 <div class="row q-mt-md justify-between ">
-                  <div class=" col q-pa-sm text-h6">在用云主机资源</div>
+                  <div class=" col q-pa-sm text-h6">{{ $t('在用资源') }}</div>
                   <q-btn class="col-1" label="更多云主机..." color="primary" flat dense padding="none"
                          :to="{ path: '/my/usage/vm' }"/>
                 </div>
@@ -56,7 +65,7 @@
                 <div v-else class="row justify-start ">
 
                   <!--一个云主机的card-->
-                  <div class="col"  v-for="server in servers.slice(0,4)" :key="server">
+                  <div class="col" v-for="server in servers.slice(0,4)" :key="server">
 
                     <div class="row server-card q-my-md q-mx-md">
 
@@ -145,7 +154,7 @@
 
               <div class="col">
                 <div class="row q-mt-md  text-h5 ">
-                  <div class="q-pa-sm text-h6 ">快捷入口</div>
+                  <div class="q-pa-sm text-h6 ">{{ $t('快捷入口') }}</div>
                 </div>
                 <q-separator/>
                 <div class="row justify-start">

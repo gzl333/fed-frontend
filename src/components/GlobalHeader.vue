@@ -3,11 +3,25 @@
     <div class="row">
       <q-toolbar class="q-pa-none">
         <q-toolbar-title>
-          <img src="title.png" alt="中国科技云联邦" class="title q-pt-sm">
+          <!--中英文静态资源的替换-->
+          <img :src="$t('resource.title')" alt="中国科技云联邦" class="title q-pt-sm">
         </q-toolbar-title>
 
         <q-space/>
         <div class="q-gutter-md row items-center no-wrap">
+          <q-select
+            v-model="localeModel"
+            :options="localeOptions"
+            dense
+            borderless
+            emit-value
+            map-options
+            options-dense
+          >
+            <template v-slot:prepend>
+              <q-icon name="language"/>
+            </template>
+          </q-select>
 
           <q-btn disable :ripple="false" flat dense color="grey" icon="library_books"
                  @click="toggleRightDrawer">
@@ -20,16 +34,6 @@
             </q-badge>
             <q-tooltip>系统消息</q-tooltip>
           </q-btn>
-
-          <q-select
-            v-model="localeModel"
-            :options="localeOptions"
-            dense
-            borderless
-            emit-value
-            map-options
-            options-dense
-          />
 
           <q-btn-dropdown :ripple="false" flat class="q-py-sm q-px-none" :label="currentUser.cstEmail" no-caps>
 
@@ -65,7 +69,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { useI18n } from 'vue-i18n'
 
@@ -80,12 +84,24 @@ export default defineComponent({
     const { locale } = useI18n({ useScope: 'global' })
 
     // i18n
-    const localeModel = ref('Language')
+    // 保持selection与i18n模块同步
+    const localeModel = computed({
+      get: () => locale.value,
+      set: newVal => {
+        locale.value = newVal
+      }
+    })
+
     const localeOptions = [
-      { value: 'zh', label: '中文' },
-      { value: 'en', label: 'English' }
+      {
+        value: 'zh',
+        label: '中文'
+      },
+      {
+        value: 'en',
+        label: 'English'
+      }
     ]
-    watch(localeModel, newVal => { locale.value = newVal })
 
     const currentUser = $store.state.account
     const toggleRightDrawer = () => {
@@ -111,7 +127,7 @@ export default defineComponent({
 
 .title {
   opacity: .7;
-  width: 250px;
+  height: 40px;
 }
 
 .dropdown-content {
