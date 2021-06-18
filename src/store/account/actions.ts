@@ -11,7 +11,7 @@ import jwtDecode from 'jwt-decode'
 
 // 科技云通行证登录的api地址，当前为测试环境，上线后需要修改
 const cstApiBase = 'https://gosc-login.cstcloud.cn'
-// const cstApiBase = 'http://223.193.2.213:88'
+// const cstApiBase = 'https://159.226.235.50'
 // 注意此时context.state是store.state.account，而不是store.state
 const actions: ActionTree<AccountInterface, StateInterface> = {
   retainCstToken (context) {

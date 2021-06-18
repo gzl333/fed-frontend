@@ -99,7 +99,7 @@ export default defineComponent({
       },
       {
         value: 'en',
-        label: 'English'
+        label: 'English(dev)'
       }
     ]
 

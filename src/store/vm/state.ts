@@ -189,7 +189,10 @@ export interface VmInterface {
     userVpnTable: {
       byId: Record<string, VpnInterface> // 后端没有id，自加id，与serviceId同。service不一定有vpn
       allIds: string[]
-      isLoaded: boolean
+      isLoaded: {
+        service: boolean
+        server: boolean
+      }
     }
     // 用户可用的userQuota -> 依赖userServiceTable
     userQuotaTable: {
@@ -260,7 +263,10 @@ function state ():
       userVpnTable: {
         byId: {},
         allIds: [],
-        isLoaded: false
+        isLoaded: {
+          service: false,
+          server: false
+        }
       },
       userServerTable: {
         byId: {},

@@ -33,7 +33,7 @@
                           $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.userServiceTable.byId[quota.service]?.data_center]?.name
                         }}
                       </div>
-                      <div>{{ $store.state.vm.tables.userServiceTable.byId[quota.service]?.name }}</div>
+                      <div>{{ $store.state.vm.tables.globalServiceTable.byId[quota.service]?.name }}</div>
 
                     </div>
                   </div>
@@ -227,7 +227,8 @@
                   <div class="col-10">
                     <div class="column justify-center items-center" style="height: 100px">
 
-                      <q-btn disable label="删除配额" flat dense padding="none" color="primary"/>
+                      <q-btn icon="delete" flat dense padding="none" color="primary"
+                             @click="$store.dispatch('vm/deleteAndUpdateUserQuotaTable', quota.id)"/>
 
                     </div>
                   </div>

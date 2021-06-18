@@ -105,6 +105,7 @@ const vm = {
     },
 
     // 来源： 查询vpn -> query:service_id
+    // vpn table应有两个依赖，user service和user server，任何一个出现了某个service，都应把该service的vpn补充进来
     // 注意： service可以没有VPN ！！！
     userVpnTable: {
       byId: {
@@ -121,7 +122,10 @@ const vm = {
         }
       },
       allIds: ['id1'],
-      isLoaded: true
+      isLoaded: {
+        server: true, // 是否根据userServerTable更新过
+        service: true // 是否根据userServiceTable更新过
+      }
     },
 
     // 来源: 列举uquota -> query1:service_id/query2: usable

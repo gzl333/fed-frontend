@@ -35,11 +35,8 @@ const actionMap = new Map<string, string>(
 )
 
 const actions: ActionTree<VmInterface, StateInterface> = {
-  /* 初次获取全部Vm模块Table，已有则自动忽略 */
+  /* 初次获取全部Vm模块Table，已loaded则自动忽略 */
   updateVmTable (context) {
-    if (!context.state.tables.userServerTable.isLoaded) {
-      void context.dispatch('updateUserServerTable')
-    }
     if (!context.state.tables.globalFlavorTable.isLoaded) {
       void context.dispatch('updateGlobalFlavorTable')
     }
@@ -53,9 +50,19 @@ const actions: ActionTree<VmInterface, StateInterface> = {
         if (!context.state.tables.userServiceTable.isLoaded) {
           void context.dispatch('updateUserServiceTable').then(() => {
             // 获取依赖userServiceTable的表
-            if (!context.state.tables.userVpnTable.isLoaded) {
-              void context.dispatch('updateUserVpnTable')
+            // userServerTable虽然不依赖userServiceTable，但是userVpnTable的更新依赖userServiceTable
+            if (!context.state.tables.userServerTable.isLoaded) {
+              void context.dispatch('updateUserServerTable').then(() => {
+                if (!context.state.tables.userVpnTable.isLoaded.server) {
+                  void context.dispatch('updateUserVpnTableFromServer')
+                }
+              })
             }
+
+            if (!context.state.tables.userVpnTable.isLoaded.service) {
+              void context.dispatch('updateUserVpnTableFromService')
+            }
+
             if (!context.state.tables.userNetworkTable.isLoaded) {
               void context.dispatch('updateUserNetworkTable')
             }
@@ -73,6 +80,39 @@ const actions: ActionTree<VmInterface, StateInterface> = {
   /* 初次获取全部Vm模块Table，已有则自动忽略 */
 
   /* userQuotaTable */
+  deleteAndUpdateUserQuotaTable (context, quotaId: string) {
+    // 操作的确认提示
+    Dialog.create({
+      title: '删除配额',
+      message:
+        '删除后的配额无法恢复。 确认删除此配额？',
+      ok: {
+        label: '确认',
+        push: false,
+        flat: true,
+        unelevated: true,
+        color: 'primary'
+      },
+      cancel: {
+        label: '放弃',
+        push: false,
+        flat: true,
+        unelevated: true,
+        color: 'primary'
+      }
+    }).onOk(async () => {
+      const respDelete = await context.dispatch('deleteUserQuota', quotaId)
+      if (respDelete.status === 204) {
+        context.commit('deleteUserQuotaTable', quotaId)
+      }
+    })
+  },
+  async deleteUserQuota (context, quotaId: string) {
+    const api = apiBase + '/u-quota/' + quotaId + '/'
+    const response = await axios.delete(api)
+    return response
+  },
+  // todo 当前根据userServiceTable更新quotatable，应改为直接列举userQuota
   async updateUserQuotaTable (context) {
     // 先清空table，避免多次更新时数据累加
     context.commit('clearUserQuotaTable')
@@ -94,7 +134,6 @@ const actions: ActionTree<VmInterface, StateInterface> = {
         context.commit('storeUserQuotaTable', normalizedData.entities.quota)
       }
     }
-    // console.log(context.state.userQuotaTable)
   },
   async fetchUserQuota (context, serviceId: string) {
     const api = apiBase + '/u-quota/'
@@ -114,17 +153,32 @@ const actions: ActionTree<VmInterface, StateInterface> = {
   /* userQuotaTable */
 
   /* userVpnTable */
-  async updateUserVpnTable (context) {
-    for (const serviceId of context.state.tables.userServiceTable.allIds) {
-      // service不一定需要vpn访问，需要的service才去取vpn信息
-      if (context.state.tables.userServiceTable.byId[serviceId].need_vpn) {
+  // 根据userServerTable补充vpn列表，共补充两次
+  async updateUserVpnTableFromServer (context) {
+    for (const server of Object.values(context.state.tables.userServerTable.byId)) {
+      const serviceId = server.service
+      // service不一定需要vpn访问，需要的service才去取vpn信息 && 并且table中没有该serviceId时
+      if (context.state.tables.globalServiceTable.byId[serviceId].need_vpn && !context.state.tables.userVpnTable.allIds.includes(serviceId)) {
         const respVpn = await context.dispatch('fetchVpn', serviceId)
         // 将id补充进vpn对象
         Object.assign(respVpn.data.vpn, { id: serviceId })
-        context.commit('storeUserVpnTable', respVpn.data.vpn)
+        context.commit('storeUserVpnTableFromServer', respVpn.data.vpn)
       }
     }
-    // console.log(context.state.userVpnTable)
+    // console.log(context.state.tables.userVpnTable)
+  },
+  // 根据userServiceTable补充vpn列表，共补充两次
+  async updateUserVpnTableFromService (context) {
+    for (const serviceId of context.state.tables.userServiceTable.allIds) {
+      // service不一定需要vpn访问，需要的service才去取vpn信息 && 并且table中没有该serviceId时
+      if (context.state.tables.globalServiceTable.byId[serviceId].need_vpn && !context.state.tables.userVpnTable.allIds.includes(serviceId)) {
+        const respVpn = await context.dispatch('fetchVpn', serviceId)
+        // 将id补充进vpn对象
+        Object.assign(respVpn.data.vpn, { id: serviceId })
+        context.commit('storeUserVpnTableFromService', respVpn.data.vpn)
+      }
+    }
+    // console.log(context.state.tables.userVpnTable)
   },
   async fetchVpn (context, serviceId: string) {
     const api = apiBase + '/vpn/' + serviceId + '/'
@@ -220,7 +274,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
 
   /* vmlist页面中的云主机操作 */
   vmOperation (context, payload: { id: string; action: string }) {
-    // 操作的确认提示 todo 删除输入删除两个字
+    // 操作的确认提示 todo 输入删除两个字
     Dialog.create({
       title: `${actionMap.get(payload.action) || ''}`,
       message:

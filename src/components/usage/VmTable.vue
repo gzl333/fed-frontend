@@ -47,10 +47,10 @@
             </div>
           </q-td>
           <q-td key="dataCenterName" :props="props">
-            {{ $store.state.vm.tables.userServiceTable.byId[props.row.service]?.name }}
+            {{ $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name }}
           </q-td>
           <q-td key="serviceType" :props="props">
-            {{ $store.state.vm.tables.userServiceTable.byId[props.row.service]?.service_type }}
+            {{ $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.service_type }}
           </q-td>
           <q-td key="image" :props="props">
             {{ props.row.image }}

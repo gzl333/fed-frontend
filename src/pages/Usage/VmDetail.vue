@@ -225,7 +225,7 @@
                       {{ quota?.display }}
                     </div>
 
-                    <div v-else>未使用配额创建</div>
+                    <div v-else>所用配额已删除或未使用配额创建</div>
 
                   </div>
                 </div>
@@ -338,7 +338,7 @@ export default defineComponent({
     // server info
     const server = computed(() => $store.state.vm.tables.userServerTable.byId[serverId])
     // service info
-    const service = computed(() => $store.state.vm.tables.userServiceTable.byId[server.value.service])
+    const service = computed(() => $store.state.vm.tables.globalServiceTable.byId[server.value.service])
     // quota info
     const quota = computed(() => $store.state.vm.tables.userQuotaTable.byId[server.value.user_quota])
     // vpn info

@@ -159,7 +159,8 @@
             <div v-if="!props.row.expiration_time">长期有效</div>
             <div v-else>
               <div>{{ new Date(props.row.expiration_time).toLocaleString() }}</div>
-              <div v-if="new Date(props.row.expiration_time).getTime() < new Date().getTime()" class="text-red">已过期</div>
+              <div v-if="new Date(props.row.expiration_time).getTime() < new Date().getTime()" class="text-red">已过期
+              </div>
             </div>
           </q-td>
           <q-td key="resource" :props="props">
@@ -170,7 +171,8 @@
             <div v-else>无</div>
           </q-td>
           <q-td key="operation" :props="props">
-            <q-btn disable label="删除配额" flat dense padding="none" color="primary"/>
+            <q-btn icon="delete" flat dense padding="none" color="primary"
+                   @click="$store.dispatch('vm/deleteAndUpdateUserQuotaTable', props.row.id)"/>
           </q-td>
         </q-tr>
       </template>

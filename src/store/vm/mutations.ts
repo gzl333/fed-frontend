@@ -26,6 +26,15 @@ const mutation: MutationTree<VmInterface> = {
     state.tables.userQuotaTable.isLoaded = false
     // 不清空filter值，保持serviceId的选择
   },
+  // 删除单一user quota
+  deleteUserQuotaTable (state, quotaId: string) {
+    const currentTable = state.tables.userQuotaTable
+    currentTable.allIds = currentTable.allIds.filter(id => id !== quotaId)
+    delete currentTable.byId[quotaId]
+    if (currentTable.allIds.length === 0) {
+      currentTable.isLoaded = false
+    }
+  },
   storeUserQuotaTable (state, tableObj: Record<string, QuotaInterface>) {
     Object.assign(state.tables.userQuotaTable.byId, tableObj)
     state.tables.userQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
@@ -33,11 +42,17 @@ const mutation: MutationTree<VmInterface> = {
     // userServerTable.isLoaded,每次都更新，可以优化
     state.tables.userQuotaTable.isLoaded = true
   },
-  storeUserVpnTable (state, vpn: VpnInterface) {
+  storeUserVpnTableFromServer (state, vpn: VpnInterface) {
     Object.assign(state.tables.userVpnTable.byId, { [vpn.id]: vpn })
     state.tables.userVpnTable.allIds.unshift(vpn.id)
     state.tables.userVpnTable.allIds = [...new Set(state.tables.userVpnTable.allIds)]
-    state.tables.userVpnTable.isLoaded = true
+    state.tables.userVpnTable.isLoaded.server = true
+  },
+  storeUserVpnTableFromService (state, vpn: VpnInterface) {
+    Object.assign(state.tables.userVpnTable.byId, { [vpn.id]: vpn })
+    state.tables.userVpnTable.allIds.unshift(vpn.id)
+    state.tables.userVpnTable.allIds = [...new Set(state.tables.userVpnTable.allIds)]
+    state.tables.userVpnTable.isLoaded.service = true
   },
   storeGlobalFlavorTable (state, flavor: FlavorInterface) {
     Object.assign(state.tables.globalFlavorTable.byId, { [flavor.id]: flavor })
