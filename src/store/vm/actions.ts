@@ -40,6 +40,9 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     if (!context.state.tables.globalFlavorTable.isLoaded) {
       void context.dispatch('updateGlobalFlavorTable')
     }
+    if (!context.state.tables.userQuotaTable.isLoaded) {
+      void context.dispatch('updateUserQuotaTable')
+    }
     if (!context.state.tables.globalDataCenterTable.isLoaded) {
       void context.dispatch('updateGlobalDataCenterTable').then(() => {
         // globalServiceTable依赖globalDataCenterTable。更新serviceTable时会补充globalServices内容
@@ -66,11 +69,9 @@ const actions: ActionTree<VmInterface, StateInterface> = {
             if (!context.state.tables.userNetworkTable.isLoaded) {
               void context.dispatch('updateUserNetworkTable')
             }
+
             if (!context.state.tables.userImageTable.isLoaded) {
               void context.dispatch('updateUserImageTable')
-            }
-            if (!context.state.tables.userQuotaTable.isLoaded) {
-              void context.dispatch('updateUserQuotaTable')
             }
           })
         }
@@ -112,37 +113,29 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     const response = await axios.delete(api)
     return response
   },
-  // todo 当前根据userServiceTable更新quotatable，应改为直接列举userQuota
   async updateUserQuotaTable (context) {
     // 先清空table，避免多次更新时数据累加
     context.commit('clearUserQuotaTable')
     // 将响应normalize
     const service = new schema.Entity('service')
     const quota = new schema.Entity('quota', { service })
-    for (const serviceId of context.state.tables.userServiceTable.allIds) {
-      const respQuota = await context.dispatch('fetchUserQuota', serviceId)
-      for (const data of respQuota.data.results) {
-        // 获取quota下对应的server列表
-        const respQuotaServers = await context.dispatch('fetchUserQuotaServers', data.id)
-        const servers: string[] = []
-        respQuotaServers.data.results.forEach((server: ServerInterface) => {
-          servers.push(server.id)
-        })
-        // 先把servers字段赋给data再normalize
-        Object.assign(data, { servers })
-        const normalizedData = normalize(data, quota)
-        context.commit('storeUserQuotaTable', normalizedData.entities.quota)
-      }
+    const respQuota = await context.dispatch('fetchUserQuota')
+    for (const data of respQuota.data.results) {
+      // 获取quota下对应的server列表
+      const respQuotaServers = await context.dispatch('fetchUserQuotaServers', data.id)
+      const servers: string[] = []
+      respQuotaServers.data.results.forEach((server: ServerInterface) => {
+        servers.push(server.id)
+      })
+      // 先把servers字段赋给data再normalize
+      Object.assign(data, { servers })
+      const normalizedData = normalize(data, quota)
+      context.commit('storeUserQuotaTable', normalizedData.entities.quota)
     }
   },
-  async fetchUserQuota (context, serviceId: string) {
+  async fetchUserQuota () {
     const api = apiBase + '/u-quota/'
-    const config = {
-      params: {
-        service: serviceId
-      }
-    }
-    const response = await axios.get(api, config)
+    const response = await axios.get(api)
     return response
   },
   async fetchUserQuotaServers (context, serviceId: string) {
@@ -194,11 +187,11 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     return response
   },
   // 暂时没有启用
-  async fetchVpnCa (context, serviceId: string) {
-    const api = apiBase + '/vpn/' + serviceId + '/ca/'
-    const response = await axios.get(api)
-    return response
-  },
+  // async fetchVpnCa (context, serviceId: string) {
+  //   const api = apiBase + '/vpn/' + serviceId + '/ca/'
+  //   const response = await axios.get(api)
+  //   return response
+  // },
   /* userVpnTable */
 
   /* globalFlavorTable */
@@ -274,7 +267,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
 
   /* vmlist页面中的云主机操作 */
   vmOperation (context, payload: { id: string; action: string }) {
-    // 操作的确认提示 todo 输入删除两个字
+    // 操作的确认提示 todo 输入删除两个字以确认
     Dialog.create({
       title: `${actionMap.get(payload.action) || ''}`,
       message:

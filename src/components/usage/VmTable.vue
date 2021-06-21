@@ -102,7 +102,7 @@
           </q-td>
           <q-td key="status" :props="props" class="non-selectable">
 
-            <q-chip v-if="!props.row.status" label="操作中" color="nord4">
+            <q-chip v-if="!props.row.status" label="获取中" color="nord4">
               <!--              <q-inner-loading showing style="background-color:transparent">-->
               <!--                <q-spinner size="30px" color="nord9"/>-->
               <!--              </q-inner-loading>-->

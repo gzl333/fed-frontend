@@ -5,7 +5,7 @@ import { Loading/*, Notify */ } from 'quasar'
 const errorNotifier = (error: AxiosError) => {
   const errorRespMap: Map<number, string> = new Map([
     [400, '请求错误'],
-    [401, '认证失败，请核实电子邮箱地址或密码后重新登录'],
+    [401, '认证失败，请重新登录'],
     [403, '拒绝访问'],
     [404, '请求地址出错'],
     [408, '请求超时'],
