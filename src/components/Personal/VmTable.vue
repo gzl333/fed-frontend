@@ -25,7 +25,7 @@
 
                 <q-btn
                   class="q-ma-none" :label="props.row.ipv4" color="primary" flat dense unelevated
-                  :to="{path: `/my/usage/vmdetail/${props.row.id}`}">
+                  :to="{path: `/my/personal/vmdetail/${props.row.id}`}">
                   <q-tooltip>
                     进入详情页面
                   </q-tooltip>

@@ -36,9 +36,9 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
-        path: 'usage',
-        component: () => import('pages/Usage/Usage.vue'),
-        redirect: '/my/usage/vm',
+        path: 'personal',
+        component: () => import('pages/Personal/PersonalIndex.vue'),
+        redirect: '/my/personal/vm',
         meta: {
           title: '在用资源-中国科技云联邦'
         },
@@ -48,42 +48,97 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Usage/Vm.vue')
+            component: () => import('pages/Personal/Vm.vue')
           },
           {
             path: 'vmcreate',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Usage/VmCreate.vue')
+            component: () => import('pages/Personal/VmCreate.vue')
           },
           {
             path: 'vmdetail/:id', // serverId 动态路由匹配
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Usage/VmDetail.vue')
+            component: () => import('pages/Personal/VmDetail.vue')
           },
           {
             path: 'vd',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Usage/Vd.vue')
+            component: () => import('pages/Personal/Vd.vue')
           },
           {
             path: 'obs',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Usage/Obs.vue')
+            component: () => import('pages/Personal/Obs.vue')
+          },
+          {
+            path: 'quota',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Personal/PersonalQuota.vue'),
+            redirect: '/my/personal/quota/list',
+            children: [
+              {
+                path: 'list',
+                meta: {
+                  requireLogin: true
+                },
+                component: () => import('pages/Quota/QuotaList.vue')
+              },
+              {
+                path: 'application',
+                meta: {
+                  requireLogin: true
+                },
+                component: () => import('pages/Quota/QuotaApplication.vue')
+              }
+            ]
           },
           {
             path: 'vpn',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Usage/Vpn.vue')
+            component: () => import('pages/Personal/Vpn.vue')
+          }
+        ]
+      },
+      {
+        path: 'group',
+        component: () => import('pages/Group/GroupIndex.vue'),
+        redirect: '/my/group/resource',
+        meta: {
+          title: '小组资源-中国科技云联邦'
+        },
+        children: [
+          {
+            path: 'resource', // 组资源
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Group/GroupResource.vue')
+          },
+          {
+            path: 'quota', // 组配额
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Group/GroupQuota.vue')
+          },
+          {
+            path: 'list', // 组列表
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Group/GroupList.vue')
           }
         ]
       },
@@ -114,14 +169,14 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Quota/ApplicationList.vue')
+            component: () => import('pages/Quota/QuotaApplication.vue')
           },
           {
             path: 'apply',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Quota/Apply.vue')
+            component: () => import('pages/Quota/QuotaApply.vue')
           }
         ]
       },

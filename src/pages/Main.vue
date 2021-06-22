@@ -53,7 +53,7 @@
                 <div class="row q-mt-md justify-between ">
                   <div class=" col q-pa-sm text-h6">{{ $t('在用资源') }}</div>
                   <q-btn class="col-1" label="更多云主机..." color="primary" flat dense padding="none"
-                         :to="{ path: '/my/usage/vm' }"/>
+                         :to="{ path: '/my/Personal/vm' }"/>
                 </div>
 
                 <q-separator/>
@@ -103,7 +103,7 @@
                               <q-btn
                                 class="col"
                                 :label="server.ipv4" flat dense padding="none" color="primary"
-                                :to="{path:'/my/usage/vmdetail/' + server.id}"/>
+                                :to="{path:'/my/Personal/vmdetail/' + server.id}"/>
                             </div>
                           </div>
 
@@ -172,11 +172,11 @@
                     <div class="row q-mt-md">
                       <div class="col">
                         <q-btn flat stack label="新建云主机" icon="control_point" class="q-mx-md"
-                               :to="{ path: '/my/usage/vmcreate' }"/>
+                               :to="{ path: '/my/Personal/vmcreate' }"/>
                       </div>
                       <div class="col">
                         <q-btn flat stack label="VPN配置" icon="vpn_lock" class="q-mx-md"
-                               :to="{ path: '/my/usage/vpn' }"/>
+                               :to="{ path: '/my/Personal/vpn' }"/>
                       </div>
                     </div>
                   </div>

@@ -266,7 +266,7 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRoute, useRouter } from 'vue-router'
 
-import VmTable from 'components/usage/VmTable.vue'
+import VmTable from 'components/Personal/VmTable.vue'
 
 export default defineComponent({
   name: 'QuotaDetail',

@@ -1,5 +1,5 @@
 <template>
-  <div class="Usage">
+  <div class="PersonalIndex">
     <div class="column">
 
       <div class="col-auto">
@@ -16,7 +16,7 @@
           <div class="content-fixed-width">
             <div class="row">
               <div class="text-h6 q-pt-lg q-px-none">
-                在用资源
+                个人资源
               </div>
             </div>
 
@@ -35,8 +35,7 @@
                     icon="computer"
                     label="云主机"
                     :ripple="false"
-                    to="/my/usage/vm"
-                    exact
+                    to="/my/personal/vm"
                   />
                   <q-route-tab
                     disable
@@ -45,7 +44,7 @@
                     icon="fas fa-compact-disc"
                     label="云硬盘"
                     :ripple="false"
-                    to="/my/usage/vd"
+                    to="/my/personal/vd"
                     exact
                   />
                   <q-route-tab
@@ -55,8 +54,15 @@
                     icon="fas fa-database"
                     label="对象存储"
                     :ripple="false"
-                    to="/my/usage/obs"
-                    exact
+                    to="/my/personal/obs"
+                  />
+                  <q-route-tab
+                    class="q-px-none q-py-md q-mx-md"
+                    name="quota"
+                    icon="fas fa-file-alt"
+                    label="个人配额"
+                    :ripple="false"
+                    to="/my/personal/quota"
                   />
                   <q-route-tab
                     class="q-px-none q-py-md q-mx-sm"
@@ -64,22 +70,13 @@
                     icon="vpn_lock"
                     label="VPN"
                     :ripple="false"
-                    to="/my/usage/vpn"
-                    exact
+                    to="/my/personal/vpn"
                   />
                 </q-tabs>
               </div>
 
               <div class="col-1">
-                <!--                <q-btn class="btn-add q-pa-none q-ma-none shadow-10" round :ripple="false" size="lg" icon="add"-->
-                <!--                       color="primary" :to="{ path: '/my/usage/vmcreate' }">-->
-                <!--                  <q-tooltip>-->
-                <!--                    新建云主机-->
-                <!--                  </q-tooltip>-->
-                <!--                </q-btn>-->
-
                 <global-add-button />
-
               </div>
             </div>
           </div>
@@ -107,10 +104,10 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader.vue'
-import GlobalAddButton from 'components/usage/UsageAddButton.vue'
+import GlobalAddButton from 'components/Personal/UsageAddButton.vue'
 
 export default defineComponent({
-  name: 'UsageLayout',
+  name: 'PersonalIndex',
   components: {
     GlobalHeader,
     GlobalAddButton
@@ -126,7 +123,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.Usage {
+.PersonalIndex {
 }
 
 .btn-add {

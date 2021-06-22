@@ -7,21 +7,22 @@
       </div>
 
       <div v-else class="col column">
-
         <div class="row">
-          <div class="col-2">
+          <div class="col-auto">
             <q-tabs
               v-model="tab"
               vertical
               active-color="primary"
-              active-bg-color="grey-1"
             >
-              <q-tab v-for="vpn in vpns" :key="vpn.id" :name="vpn.id" :ripple="false"
-                     :label="$store.state.vm.tables.globalServiceTable.byId[vpn.id]?.name"/>
+              <q-tab :ripple="false"
+                     v-for="vpn in vpns" :key="vpn.id" :name="vpn.id"
+              >
+                <div class="text-left">{{ $store.state.vm.tables.globalServiceTable.byId[vpn.id]?.name }}</div>
+              </q-tab>
             </q-tabs>
           </div>
 
-          <div class="col-10">
+          <div class="col">
             <q-tab-panels
               v-model="tab"
               animated
@@ -30,7 +31,7 @@
               transition-next="jump-up"
             >
 
-              <q-tab-panel v-for="vpn in vpns" :key="vpn.id" :name="vpn.id"  class="bg-grey-1">
+              <q-tab-panel v-for="vpn in vpns" :key="vpn.id" :name="vpn.id" class="bg-grey-1">
                 <div class="row">
                   <div class="col q-pb-lg text-primary">
                     {{ $store.state.vm.tables.globalServiceTable.byId[vpn.id]?.name }}VPN信息
@@ -108,6 +109,7 @@
       </div>
 
     </div>
+
   </div>
 </template>
 

@@ -9,7 +9,7 @@
       icon="add"
       direction="down"
     >
-      <q-fab-action label="新建云主机" unelevated color="primary" icon="computer" :to="{ path: '/my/usage/vmcreate' }"/>
+      <q-fab-action label="新建云主机" unelevated color="primary" icon="computer" :to="{ path: '/my/Personal/vmcreate' }"/>
       <q-fab-action label="申请新配额" unelevated color="primary" icon="description" :to="{ path: '/my/quota/apply' }"/>
     </q-fab>
 

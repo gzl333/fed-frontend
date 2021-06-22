@@ -86,7 +86,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader.vue'
-import GlobalAddButton from 'components/usage/UsageAddButton.vue'
+import GlobalAddButton from 'components/Personal/UsageAddButton.vue'
 // import { useStore } from 'vuex'
 // import { StateInterface } from 'src/store'
 

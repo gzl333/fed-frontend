@@ -274,7 +274,7 @@ import { StateInterface } from 'src/store'
 import { useQuasar } from 'quasar'
 import { QuotaInterface } from 'src/store/vm/state'
 
-import QuotaCard from 'components/usage/QuotaCard.vue'
+import QuotaCard from 'components/Personal/QuotaCard.vue'
 
 export default defineComponent({
   name: 'VmCreate',

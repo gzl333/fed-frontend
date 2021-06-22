@@ -6,7 +6,7 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-            <q-input disable outlined v-model="text" stack-label label="搜索">
+            <q-input disable dense outlined v-model="text" stack-label label="搜索">
               <template v-slot:append>
                 <q-icon name="search"/>
               </template>
@@ -18,7 +18,7 @@
       <div class="col-3">
         <div class="row justify-end">
           <div class="col">
-            <q-select outlined stack-label label="筛选" v-model="serviceSelection"
+            <q-select outlined dense stack-label label="筛选" v-model="serviceSelection"
                       :options="serviceOptions"/>
           </div>
         </div>
@@ -36,7 +36,7 @@ import { defineComponent, ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
-import VmTable from 'components/usage/VmTable.vue'
+import VmTable from 'components/Personal/VmTable.vue'
 
 export default defineComponent({
   name: 'Vm',

@@ -315,7 +315,7 @@ import { useRouter, useRoute } from 'vue-router'
 import { copyToClipboard, useQuasar } from 'quasar'
 import { VpnInterface } from 'src/store/vm/state'
 
-// import QuotaCard from 'components/usage/QuotaCard.vue'
+// import QuotaCard from 'components/Personal/QuotaCard.vue'
 
 export default defineComponent({
   name: 'VmDetail',
@@ -332,7 +332,7 @@ export default defineComponent({
 
     // todo url未传参id时，跳转处理
     // if (!serverId) {
-    //   void $router.push({ path: '/my/usage/vm' })
+    //   void $router.push({ path: '/my/Personal/vm' })
     // }
 
     // server info

@@ -6,7 +6,7 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-            <q-input disable outlined v-model="text" stack-label label="搜索">
+            <q-input disable dense outlined v-model="text" stack-label label="搜索">
               <template v-slot:append>
                 <!--                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>-->
                 <q-icon name="search"/>
@@ -19,11 +19,12 @@
       <div class="col-2">
         <div class="row justify-end">
           <div class="col">
-            <q-select outlined stack-label label="筛选" v-model="filterSelection"
+            <q-select outlined dense stack-label label="筛选" v-model="filterSelection"
                       :options="filterOptions"/>
           </div>
         </div>
       </div>
+
     </div>
 
     <q-table

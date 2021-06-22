@@ -26,21 +26,35 @@
           >
             <q-item-section class="column items-center">
               <q-icon name="home" size="lg"/>
-              <div class="text-c-blue5"> 我的首页</div>
+              <div class="text-c-blue5">我的首页</div>
             </q-item-section>
           </q-item>
 
           <q-item
             clickable
-            :active="activeItem === 'usage'"
-            @click="activeItem = 'usage'"
+            :active="activeItem === 'personal'"
+            @click="activeItem = 'personal'"
             active-class="active-item"
-            to='/my/usage'
+            to='/my/personal'
           >
 
             <q-item-section class="column items-center">
               <q-icon name="cloud_done" size="lg"/>
-              <div class="text-c-blue5">在用资源</div>
+              <div class="text-c-blue5">个人资源</div>
+            </q-item-section>
+          </q-item>
+
+          <q-item
+            clickable
+            :active="activeItem === 'group'"
+            @click="activeItem = 'group'"
+            active-class="active-item"
+            to='/my/group'
+          >
+
+            <q-item-section class="column items-center">
+              <q-icon name="cloud_done" size="lg"/>
+              <div class="text-c-blue5">组资源</div>
             </q-item-section>
           </q-item>
 
