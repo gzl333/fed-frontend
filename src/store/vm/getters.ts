@@ -7,6 +7,7 @@ import {
   ImageInterface,
   QuotaInterface
 } from './state'
+import { i18n } from '../../boot/i18n' // vue组件外取i18n对象的方法
 
 const getters: GetterTree<VmInterface, StateInterface> = {
 
@@ -43,12 +44,20 @@ const getters: GetterTree<VmInterface, StateInterface> = {
           }
         ]
     */
-    const serviceOptions = [
+    // vue组件外取i18n中locale字段的方法
+    const serviceOptions = i18n.global.locale === 'zh' ? [
       {
         value: '0',
         label: '全部服务节点'
       }
+    ] : [
+      {
+        value: '0',
+        label: 'All Service Nodes'
+      }
     ]
+
+    // const serviceOptions = []
     for (const service of Object.values(state.tables.userServiceTable.byId)) {
       serviceOptions.push(
         {

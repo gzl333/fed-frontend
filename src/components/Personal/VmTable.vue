@@ -67,7 +67,9 @@
             </div>
             <div v-else>
               <div>{{ new Date(props.row.expiration_time).toLocaleString() }}</div>
-              <div v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0" class="text-red">已到期</div>
+              <div v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0" class="text-red">
+                已到期
+              </div>
             </div>
           </q-td>
           <q-td key="note" :props="props">
@@ -89,7 +91,7 @@
             </div>
           </q-td>
           <q-td key="vnc" :props="props" class="non-selectable">
-            <q-btn v-if="props.row.status=='运行中'" unelevated flat padding="none" size="lg" color="light-green"
+            <q-btn v-if="props.row.status === 1" unelevated flat padding="none" size="lg" color="light-green"
                    icon="computer"
                    @click="gotoVNC(props.row.id)">
               <q-tooltip>进入远程控制</q-tooltip>
@@ -102,57 +104,57 @@
           </q-td>
           <q-td key="status" :props="props" class="non-selectable">
 
-            <q-chip v-if="!props.row.status" label="获取中" color="nord4">
+            <q-chip v-if="!props.row.status" :label="$t('获取中')" color="nord4">
               <!--              <q-inner-loading showing style="background-color:transparent">-->
               <!--                <q-spinner size="30px" color="nord9"/>-->
               <!--              </q-inner-loading>-->
             </q-chip>
 
-            <q-chip v-if="props.row.status === '无法获取状态'" outline color="nord11" text-color="white"
-                    label="无法获取状态" class="text-bold"/>
-            <q-chip v-if="props.row.status === '运行中'" outline color="light-green" text-color="white"
-                    label="运行中" class="text-bold">
-              <q-tooltip>刷新状态</q-tooltip>
+            <q-chip v-if="props.row.status === 0" outline color="nord11" text-color="white"
+                    :label="$t('无法获取状态')" class="text-bold"/>
+            <q-chip v-if="props.row.status === 1" outline color="light-green" text-color="white"
+                    :label="$t('运行中')" class="text-bold">
+              <q-tooltip>点击刷新状态</q-tooltip>
             </q-chip>
-            <q-chip v-if="props.row.status === '已屏蔽'" outline color="nord3" text-color="white"
-                    label="已屏蔽" class="text-bold"/>
-            <q-chip v-if="props.row.status === '已暂停'" outline color="nord3" text-color="white"
-                    label="已暂停" class="text-bold"/>
-            <q-chip v-if="props.row.status === '正在关机'" outline color="nord9" text-color="white"
-                    label="正在关机" class="text-bold"/>
-            <q-chip v-if="props.row.status === '已关机'" outline color="nord3" text-color="white"
-                    label="已关机" class="text-bold"/>
-            <q-chip v-if="props.row.status === '已崩溃'" outline color="nord11" text-color="white"
-                    label="已崩溃" class="text-bold"/>
-            <q-chip v-if="props.row.status === '被电源管理器挂起'" outline color="nord3" text-color="white"
-                    label="被电源管理器挂起" class="text-bold"/>
-            <q-chip v-if="props.row.status === '与宿主机通讯失败'" outline color="nord11" text-color="white"
-                    label="与宿主机通讯失败" class="text-bold"/>
-            <q-chip v-if="props.row.status === '已丢失'" outline color="nord11" text-color="white"
-                    label="已丢失" class="text-bold"/>
-            <q-chip v-if="props.row.status === '正在创建'" outline color="nord9" text-color="white"
-                    label="正在创建" class="text-bold"/>
-            <q-chip v-if="props.row.status === '创建失败'" outline color="nord11" text-color="white"
-                    label="创建失败" class="text-bold"/>
+            <q-chip v-if="props.row.status === 2" outline color="nord3" text-color="white"
+                    :label="$t('已屏蔽')" class="text-bold"/>
+            <q-chip v-if="props.row.status === 3" outline color="nord3" text-color="white"
+                    :label="$t('已暂停')" class="text-bold"/>
+            <q-chip v-if="props.row.status === 4" outline color="nord9" text-color="white"
+                    :label="$t('正在关机')" class="text-bold"/>
+            <q-chip v-if="props.row.status === 5" outline color="nord3" text-color="white"
+                    :label="$t('已关机')" class="text-bold"/>
+            <q-chip v-if="props.row.status === 6" outline color="nord11" text-color="white"
+                    :label="$t('已崩溃')" class="text-bold"/>
+            <q-chip v-if="props.row.status === 7" outline color="nord3" text-color="white"
+                    :label="$t('被电源管理器挂起')" class="text-bold"/>
+            <q-chip v-if="props.row.status === 9" outline color="nord11" text-color="white"
+                    :label="$t('与宿主机通讯失败')" class="text-bold"/>
+            <q-chip v-if="props.row.status === 10" outline color="nord11" text-color="white"
+                    :label="$t('已丢失')" class="text-bold"/>
+            <q-chip v-if="props.row.status === 11" outline color="nord9" text-color="white"
+                    :label="$t('正在创建')" class="text-bold"/>
+            <q-chip v-if="props.row.status === 12" outline color="nord11" text-color="white"
+                    :label="$t('创建失败')" class="text-bold"/>
 
           </q-td>
           <q-td key="operation" :props="props" class="non-selectable">
             <q-btn-group unelevated>
 
               <q-btn
-                v-if="props.row.status!=='运行中' && props.row.status!=='已关机'"
+                v-if="props.row.status!==1 && props.row.status!==5"
                 color="nord4" loading label="......">
                 <q-tooltip>
                   远程执行中，请稍候
                 </q-tooltip>
               </q-btn>
-              <q-btn v-if="props.row.status=='已关机'" color="nord4" icon="play_arrow" text-color="primary"
+              <q-btn v-if="props.row.status==5" color="nord4" icon="play_arrow" text-color="primary"
                      @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'start'})">
                 <q-tooltip>
                   开机
                 </q-tooltip>
               </q-btn>
-              <q-btn v-if="props.row.status=='运行中'" color="nord4" icon="power_settings_new" text-color="primary"
+              <q-btn v-if="props.row.status==1" color="nord4" icon="power_settings_new" text-color="primary"
                      @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'shutdown'})">
                 <q-tooltip>
                   关机
@@ -161,31 +163,31 @@
 
               <q-btn-dropdown color="primary" label="操作">
                 <q-list separator dense style="text-align:center">
-                  <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-light-green"
+                  <q-item :disable="props.row.status===1" clickable v-close-popup class="bg-light-green"
                           @click="$store.dispatch('vm/vmOperation',{ id: props.row.id, action: 'start'})">
                     <q-item-section>
                       <q-item-label>开机</q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-amber"
+                  <q-item :disable="props.row.status===5" clickable v-close-popup class="bg-amber"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'reboot'})">
                     <q-item-section>
                       <q-item-label>重启</q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-amber"
+                  <q-item :disable="props.row.status===5" clickable v-close-popup class="bg-amber"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'shutdown'})">
                     <q-item-section>
                       <q-item-label>关机</q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item :disable="props.row.status==='已关机'" clickable v-close-popup class="bg-amber"
+                  <q-item :disable="props.row.status===5" clickable v-close-popup class="bg-amber"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'poweroff'})">
                     <q-item-section>
                       <q-item-label>强制断电</q-item-label>
                     </q-item-section>
                   </q-item>
-                  <q-item :disable="props.row.status==='运行中'" clickable v-close-popup class="bg-red-9"
+                  <q-item :disable="props.row.status===1" clickable v-close-popup class="bg-red-9"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'delete'})">
                     <q-item-section>
                       <q-item-label>删除</q-item-label>
@@ -214,11 +216,12 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, PropType, ref } from 'vue'
+import { computed, defineComponent, PropType, ref } from 'vue'
 import { VmInterface } from 'src/store/vm/state'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { copyToClipboard, useQuasar } from 'quasar'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'VmTable',
@@ -232,9 +235,10 @@ export default defineComponent({
   setup (props) {
     const $store = useStore<StateInterface>()
     const $q = useQuasar()
+    const { locale } = useI18n({ useScope: 'global' })
 
     // 云主机列表分栏定义
-    const columns = [
+    const columnsZH = [
       {
         name: 'ip',
         label: 'IP地址',
@@ -317,6 +321,91 @@ export default defineComponent({
         style: 'padding: 15px 5px'
       }
     ]
+    const columnsEN = [
+      {
+        name: 'ip',
+        label: 'IP Address',
+        field: 'ip',
+        align: 'center',
+        style: 'max-width: 150px;padding: 15px 5px'
+      },
+      {
+        name: 'dataCenterName',
+        label: 'Service Node',
+        field: 'dataCenterName',
+        align: 'center',
+        style: 'padding: 15px 5px'
+      },
+      {
+        name: 'serviceType',
+        label: 'Service Type',
+        field: 'serviceType',
+        align: 'center',
+        style: 'padding: 15px 5px'
+      },
+      {
+        name: 'image',
+        label: 'OS',
+        field: 'image',
+        align: 'center',
+        style: 'padding: 15px 5px'
+      },
+      {
+        name: 'cpu',
+        label: 'CPU',
+        field: 'cpu',
+        align: 'center',
+        style: 'padding: 15px 5px'
+      },
+      {
+        name: 'ram',
+        label: 'Memory',
+        field: 'ram',
+        align: 'center',
+        style: 'padding: 15px 5px'
+      },
+      {
+        name: 'expiration',
+        label: 'Expiration Time',
+        field: 'expiration',
+        align: 'center',
+        classes: 'ellipsis',
+        style: 'padding: 15px 5px'
+      },
+      // { name: 'source', label: '资源来源', field: 'source', sortable: true,align: 'center' },
+      {
+        name: 'note',
+        label: 'Notes',
+        field: 'note',
+        align: 'center',
+        classes: 'ellipsis',
+        style: 'max-width: 200px;padding: 15px 5px'
+      },
+      {
+        name: 'vnc',
+        label: 'Remote Control',
+        field: 'vnc',
+        align: 'center',
+        style: 'padding: 15px 5px'
+      },
+      {
+        name: 'status',
+        label: 'Status',
+        field: 'status',
+        align: 'center',
+        style: 'padding: 15px 5px'
+
+      },
+      {
+        name: 'operation',
+        label: 'Operations',
+        field: 'operation',
+        align: 'center',
+        style: 'padding: 15px 5px'
+      }
+    ]
+    // i18n影响该配置对象取值
+    const columns = computed(() => locale.value === 'zh' ? columnsZH : columnsEN)
 
     // q-pagination 所需配置对象
     const paginationTable = ref({

@@ -4,10 +4,11 @@ import { ServerInterface, VmInterface } from './state'
 import axios from 'axios'
 import { normalize, schema } from 'normalizr'
 import { Dialog, Notify } from 'quasar'
+import { i18n } from '../../boot/i18n' // vue组件外取i18n对象的方法
 
 const apiBase = 'https://vms.cstcloud.cn/api'
 // const apiBase = 'http://223.193.2.211:88/api'
-const statusCodeMap = new Map<number, string>(
+/* const statusCodeMap = new Map<number, string>(
   [
     [0, '无法获取状态'],
     [1, '运行中'],
@@ -22,7 +23,7 @@ const statusCodeMap = new Map<number, string>(
     [11, '正在创建'],
     [12, '创建失败']
   ]
-)
+) */
 const actionMap = new Map<string, string>(
   [
     ['start', '开机'],
@@ -269,18 +270,18 @@ const actions: ActionTree<VmInterface, StateInterface> = {
   vmOperation (context, payload: { id: string; action: string }) {
     // 操作的确认提示 todo 输入删除两个字以确认
     Dialog.create({
-      title: `${actionMap.get(payload.action) || ''}`,
+      title: `${i18n.global.tc(actionMap.get(payload.action) as string) || ''}`,
       message:
         `${payload.action === 'delete' || payload.action === 'delete_force' ? '被删除的云主机将无法自行恢复，如需恢复请联系云联邦管理员。' : ''}确认执行？`,
       ok: {
-        label: '确认',
+        label: i18n.global.tc('确认'),
         push: false,
         flat: true,
         unelevated: true,
         color: 'primary'
       },
       cancel: {
-        label: '放弃',
+        label: i18n.global.tc('放弃'),
         push: false,
         flat: true,
         unelevated: true,
@@ -381,7 +382,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     const respStatus = await context.dispatch('fetchServerStatus', serverId)
     context.commit('storeUserServerTableSingleStatus', {
       serverId,
-      status_code: statusCodeMap.get(respStatus.data.status.status_code)
+      status_code: respStatus.data.status.status_code
     })
   },
   async fetchServerStatus (context, serverId: string) {

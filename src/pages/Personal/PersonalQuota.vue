@@ -3,7 +3,6 @@
     <div class="column items-start q-py-none q-px-none">
       <div class="col-auto">
         <q-tabs
-          style="padding-right: 165px"
           v-model="tab"
           active-color="primary"
           align="left"
@@ -20,9 +19,10 @@
                        label="申请记录"
                        to="/my/personal/quota/application"/>
         </q-tabs>
-        <q-separator/>
+
       </div>
       <div class="col-auto">
+        <q-separator/>
         <router-view class="router-view"/>
       </div>
 

@@ -6,7 +6,7 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-            <q-input disable dense outlined v-model="text" stack-label label="搜索">
+            <q-input disable dense outlined v-model="text" stack-label :label="$t('搜索')">
               <template v-slot:append>
                 <q-icon name="search"/>
               </template>
@@ -18,7 +18,7 @@
       <div class="col-3">
         <div class="row justify-end">
           <div class="col">
-            <q-select outlined dense stack-label label="筛选" v-model="serviceSelection"
+            <q-select outlined dense stack-label :label="$t('筛选服务节点')" v-model="serviceSelection"
                       :options="serviceOptions"/>
           </div>
         </div>
@@ -37,6 +37,7 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
 import VmTable from 'components/Personal/VmTable.vue'
+// import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'Vm',
@@ -44,13 +45,15 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
+    // const { locale } = useI18n({ useScope: 'global' })
 
     // service_id下拉列表
     const serviceOptions = computed(() => $store.getters['vm/getServiceOptions'])
-    const serviceSelection = ref({
-      label: '全部服务节点',
+    const serviceSelection = ref(/* {
+      label: '$t("全部服务节点")',
       value: '0'
-    })
+    } */)
+
     $store.commit('vm/storeVmListFilter', '0') // 不能去掉！从其它界面重新进入时必须设置这个值
     watch(serviceSelection, () => {
       $store.commit('vm/storeVmListFilter', serviceSelection.value.value)
