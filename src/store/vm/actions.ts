@@ -152,7 +152,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     for (const server of Object.values(context.state.tables.userServerTable.byId)) {
       const serviceId = server.service
       // service不一定需要vpn访问，需要的service才去取vpn信息 && 并且table中没有该serviceId时
-      if (context.state.tables.globalServiceTable.byId[serviceId].need_vpn && !context.state.tables.userVpnTable.allIds.includes(serviceId)) {
+      if (!context.state.tables.userVpnTable.allIds.includes(serviceId) && context.state.tables.globalServiceTable.byId[serviceId].need_vpn) {
         const respVpn = await context.dispatch('fetchVpn', serviceId)
         // 将id补充进vpn对象
         Object.assign(respVpn.data.vpn, { id: serviceId })
@@ -165,7 +165,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
   async updateUserVpnTableFromService (context) {
     for (const serviceId of context.state.tables.userServiceTable.allIds) {
       // service不一定需要vpn访问，需要的service才去取vpn信息 && 并且table中没有该serviceId时
-      if (context.state.tables.globalServiceTable.byId[serviceId].need_vpn && !context.state.tables.userVpnTable.allIds.includes(serviceId)) {
+      if (!context.state.tables.userVpnTable.allIds.includes(serviceId) && context.state.tables.globalServiceTable.byId[serviceId].need_vpn) {
         const respVpn = await context.dispatch('fetchVpn', serviceId)
         // 将id补充进vpn对象
         Object.assign(respVpn.data.vpn, { id: serviceId })

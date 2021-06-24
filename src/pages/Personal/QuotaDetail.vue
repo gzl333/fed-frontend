@@ -1,6 +1,6 @@
 <template>
   <div class="QuotaDetail">
-    <div class="column items-center justify-center">
+    <div class="column items-center justify-center q-py-md">
       <div class="col q-pa-none">
 
         <div class="row title-area">

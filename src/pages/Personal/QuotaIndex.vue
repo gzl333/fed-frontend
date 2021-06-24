@@ -22,7 +22,7 @@
 
       </div>
       <div class="col-auto">
-        <q-separator/>
+        <q-separator />
         <router-view class="router-view"/>
       </div>
 

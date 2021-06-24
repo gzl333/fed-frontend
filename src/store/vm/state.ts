@@ -1,17 +1,18 @@
 export interface DataCenterInterface {
   // 来自registry接口
-  'id': string
-  'name': string
-  'endpoint_vms': string
-  'endpoint_object': never // null 待细化
-  'endpoint_compute': never // null 待细化
-  'endpoint_monitor': never // null 待细化
-  'creation_time': string
-  'status': {
-    'code': number
-    'message': string
+  id: string
+  name: string
+  name_en: string
+  endpoint_vms: string
+  endpoint_object: never // null 待细化
+  endpoint_compute: never // null 待细化
+  endpoint_monitor: never // null 待细化
+  creation_time: string
+  status: {
+    code: number
+    message: string
   },
-  'desc': string
+  desc: string
 
   // 来自service接口
   userServices: string[] // 用户可用services
@@ -22,6 +23,7 @@ export interface ServiceInterface {
   // 来自service接口
   id: string
   name: string
+  name_en: string
   service_type: string
   add_time: string
   need_vpn: boolean

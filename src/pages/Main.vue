@@ -71,7 +71,7 @@
 
                       <div class="col-6">
 
-                        <div v-if="server.status!=='运行中' && server.status!=='已关机'" class="row justify-center">
+                        <div v-if="server.status!==1 && server.status!==5" class="row justify-center">
                           <q-btn loading flat label="......" icon="hourglass_bottom" size="2em">
                             <q-tooltip>
                               远程执行中，请稍候
@@ -79,15 +79,15 @@
                           </q-btn>
                         </div>
 
-                        <div v-if="server.status === '运行中'" class="row justify-center">
-                          <q-btn v-if="server.status === '运行中'" flat @click="gotoVNC(server.id)">
+                        <div v-if="server.status === 1" class="row justify-center">
+                          <q-btn v-if="server.status === 1" flat @click="gotoVNC(server.id)">
                             <q-icon name="computer" size="4em" class="q-mx-md q-py-md">
                               <q-tooltip>点击进入远程控制</q-tooltip>
                             </q-icon>
                           </q-btn>
                         </div>
 
-                        <div v-if="server.status === '已关机'" class="row justify-center">
+                        <div v-if="server.status === 5" class="row justify-center">
                           <q-icon name="computer" disabled size="4em" class="q-mx-md q-py-md">
                             <q-tooltip>请开机以使用远程控制</q-tooltip>
                           </q-icon>
@@ -112,7 +112,7 @@
 
                               <q-btn
                                 class="col q-mx-md" flat
-                                v-if="server.status!=='运行中' && server.status!=='已关机'"
+                                v-if="server.status!==1 && server.status!==5"
                                 color="nord4" loading label="......">
                                 <q-tooltip>
                                   远程执行中，请稍候
@@ -121,7 +121,7 @@
 
                               <q-btn
                                 class="col q-mx-md"
-                                v-if="server.status === '已关机'"
+                                v-if="server.status === 5"
                                 outline color="primary" icon="play_arrow" size="md"
                                 @click="vmOperation({
                             endPoint: server.endpoint_url,
@@ -130,7 +130,7 @@
 
                               <q-btn
                                 class="col q-mx-md"
-                                v-if="server.status === '运行中'"
+                                v-if="server.status === 1"
                                 outline color="primary" icon="power_settings_new" size="md"
 
                                 @click="vmOperation({

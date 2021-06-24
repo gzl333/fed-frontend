@@ -16,7 +16,7 @@
           <div class="content-fixed-width">
             <div class="row">
               <div class="text-h6 q-pt-lg q-px-none">
-                个人资源
+                {{ $t('个人资源') }}
               </div>
             </div>
 
@@ -30,41 +30,46 @@
                   inline-label
                 >
                   <q-route-tab
+                    no-caps
                     class="q-px-none q-py-md q-mr-md"
                     name="vm"
                     icon="computer"
-                    label="云主机"
+                    :label="$t('云主机')"
                     :ripple="false"
                     to="/my/personal/vm"
                   />
-<!--                  <q-route-tab-->
-<!--                    disable-->
-<!--                    class="q-px-none q-py-md q-mx-md"-->
-<!--                    name="disk"-->
-<!--                    icon="fas fa-compact-disc"-->
-<!--                    label="云硬盘"-->
-<!--                    :ripple="false"-->
-<!--                    to="/my/personal/vd"-->
-<!--                    exact-->
-<!--                  />-->
-<!--                  <q-route-tab-->
-<!--                    disable-->
-<!--                    class="q-px-none q-py-md q-mx-md"-->
-<!--                    name="obs"-->
-<!--                    icon="fas fa-database"-->
-<!--                    label="对象存储"-->
-<!--                    :ripple="false"-->
-<!--                    to="/my/personal/obs"-->
-<!--                  />-->
                   <q-route-tab
+                    disable
+                    no-caps
+                    class="q-px-none q-py-md q-mx-md"
+                    name="disk"
+                    icon="fas fa-compact-disc"
+                    label="云硬盘"
+                    :ripple="false"
+                    to="/my/personal/vd"
+                    exact
+                  />
+                  <q-route-tab
+                    disable
+                    no-caps
+                    class="q-px-none q-py-md q-mx-md"
+                    name="obs"
+                    icon="fas fa-database"
+                    label="对象存储"
+                    :ripple="false"
+                    to="/my/personal/obs"
+                  />
+                  <q-route-tab
+                    no-caps
                     class="q-px-none q-py-md q-mx-md"
                     name="quota"
                     icon="fas fa-file-alt"
-                    label="个人配额"
+                    :label="$t('个人配额')"
                     :ripple="false"
                     to="/my/personal/quota"
                   />
                   <q-route-tab
+                    no-caps
                     class="q-px-none q-py-md q-mx-sm"
                     name="vpn"
                     icon="vpn_lock"
@@ -76,7 +81,7 @@
               </div>
 
               <div class="col-1">
-                <global-add-button />
+                <global-add-button/>
               </div>
             </div>
           </div>
@@ -104,7 +109,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader.vue'
-import GlobalAddButton from 'components/Personal/UsageAddButton.vue'
+import GlobalAddButton from 'components/Personal/PersonalAddButton.vue'
 
 export default defineComponent({
   name: 'PersonalIndex',

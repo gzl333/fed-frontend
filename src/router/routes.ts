@@ -83,7 +83,7 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Personal/PersonalQuota.vue'),
+            component: () => import('pages/Personal/QuotaIndex.vue'),
             redirect: '/my/personal/quota/list',
             children: [
               {
@@ -91,16 +91,30 @@ const routes: RouteRecordRaw[] = [
                 meta: {
                   requireLogin: true
                 },
-                component: () => import('pages/Quota/QuotaList.vue')
+                component: () => import('pages/Personal/QuotaList.vue')
               },
               {
                 path: 'application',
                 meta: {
                   requireLogin: true
                 },
-                component: () => import('pages/Quota/QuotaApplication.vue')
+                component: () => import('pages/Personal/QuotaApplication.vue')
               }
             ]
+          },
+          {
+            path: 'quota_detail/:id', // quotaId 动态路由匹配
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Personal/QuotaDetail.vue')
+          },
+          {
+            path: 'quota_apply',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/Personal/QuotaApply.vue')
           },
           {
             path: 'vpn',
@@ -143,46 +157,8 @@ const routes: RouteRecordRaw[] = [
         ]
       },
       {
-        path: 'quota',
-        component: () => import('pages/Quota/Quota.vue'),
-        redirect: '/my/quota/list',
-        meta: {
-          title: '资源配额-中国科技云联邦'
-        },
-        children: [
-          {
-            path: 'list',
-            meta: {
-              requireLogin: true
-            },
-            component: () => import('pages/Quota/QuotaList.vue')
-          },
-          {
-            path: 'detail/:id', // quotaId 动态路由匹配
-            meta: {
-              requireLogin: true
-            },
-            component: () => import('pages/Quota/QuotaDetail.vue')
-          },
-          {
-            path: 'application',
-            meta: {
-              requireLogin: true
-            },
-            component: () => import('pages/Quota/QuotaApplication.vue')
-          },
-          {
-            path: 'apply',
-            meta: {
-              requireLogin: true
-            },
-            component: () => import('pages/Quota/QuotaApply.vue')
-          }
-        ]
-      },
-      {
         path: 'provider',
-        component: () => import('pages/Provider/Provider.vue'),
+        component: () => import('pages/Provider/ProviderIndex.vue'),
         redirect: '/my/provider/manage',
         meta: {
           title: '资源提供-中国科技云联邦'
@@ -241,7 +217,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'federation',
-        component: () => import('pages/Federation/Federation.vue'),
+        component: () => import('pages/Federation/FederationIndex.vue'),
         redirect: '/my/federation/service_list',
         meta: {
           title: '联邦管理-中国科技云联邦'

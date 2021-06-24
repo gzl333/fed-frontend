@@ -1,6 +1,6 @@
 <template>
   <div class="VmCreate">
-    <div class="column items-center justify-center">
+    <div class="column items-center justify-center q-py-md">
       <div v-if="!dataCenters">
         <q-inner-loading>
           <q-spinner size="50px" color="primary"/>
@@ -49,9 +49,18 @@
                       </div>
 
                       <div v-if="dataCenter.userServices.length" class="col item-radios">
-                          <q-radio
-                            v-for="service in dataCenter.userServices.map((serviceId) => $store.state.vm.tables.userServiceTable.byId[serviceId])"
-                            dense v-model="radioService" :val="service.id" :label="service.name" :key="service.id" class="radio"/>
+                        <!--                        根据已有配额显示-->
+                        <!--                          <q-radio-->
+                        <!--                            v-for="service in dataCenter.userServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"-->
+                        <!--                            dense v-model="radioService" :val="service.id" :label="service.name" :key="service.id" class="radio"/>-->
+                        <!-- 根据所有服务显示-->
+                        <q-radio
+                          v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"
+                          :disable="!dataCenter.userServices.includes(service.id)"
+                          dense v-model="radioService" :val="service.id" :label="service.name" :key="service.id"
+                          class="radio">
+                          <div> {{!dataCenter.userServices.includes(service.id) ? '(该服务下无云主机配额)':''}}</div>
+                        </q-radio>
                       </div>
 
                       <div v-else class="col item-radios">暂不可用，可在申请配额后使用该节点。</div>

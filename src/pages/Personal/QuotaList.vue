@@ -167,7 +167,7 @@
           <q-td key="resource" :props="props">
             <div v-if="props.row.servers.length > 0">
               <q-btn label="详情" flat dense padding="none" color="primary"
-                     :to="{path: `/my/quota/detail/${props.row.id}`}"/>
+                     :to="{path: `/my/personal/quota_detail/${props.row.id}`}"/>
             </div>
             <div v-else>无</div>
           </q-td>

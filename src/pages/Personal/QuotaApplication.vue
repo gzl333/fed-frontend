@@ -6,7 +6,7 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-            <q-input disable dense outlined v-model="text" stack-label label="搜索">
+            <q-input disable dense outlined v-model="text" stack-label :label="$t('搜索')">
               <template v-slot:append>
                 <!--                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>-->
                 <q-icon name="search"/>

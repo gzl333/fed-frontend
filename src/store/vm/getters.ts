@@ -45,15 +45,10 @@ const getters: GetterTree<VmInterface, StateInterface> = {
         ]
     */
     // vue组件外取i18n中locale字段的方法
-    const serviceOptions = i18n.global.locale === 'zh' ? [
+    const serviceOptions = [
       {
         value: '0',
-        label: '全部服务节点'
-      }
-    ] : [
-      {
-        value: '0',
-        label: 'All Service Nodes'
+        label: i18n.global.locale === 'zh' ? '全部服务节点' : 'All Service Nodes'
       }
     ]
 
@@ -62,7 +57,7 @@ const getters: GetterTree<VmInterface, StateInterface> = {
       serviceOptions.push(
         {
           value: service.id,
-          label: state.tables.globalDataCenterTable.byId[service.data_center].name + ' - ' + service.name
+          label: i18n.global.locale === 'zh' ? state.tables.globalDataCenterTable.byId[service.data_center].name + ' - ' + service.name : state.tables.globalDataCenterTable.byId[service.data_center].name_en + ' - ' + service.name_en
           // label: `${state.globalDataCenterTable.byId[service.id].name} - ${service.name}`
         }
       )

@@ -27,7 +27,7 @@
                   class="q-ma-none" :label="props.row.ipv4" color="primary" flat dense unelevated
                   :to="{path: `/my/personal/vmdetail/${props.row.id}`}">
                   <q-tooltip>
-                    进入详情页面
+                    {{ $t('进入详情页面') }}
                   </q-tooltip>
                 </q-btn>
 
@@ -35,7 +35,7 @@
                        class="col-shrink q-px-xs q-ma-none" flat dense icon="content_copy" size="xs" color="primary"
                        @click="clickToCopy(props.row.ipv4)">
                   <q-tooltip>
-                    复制
+                    {{ $t('复制到剪切板')}}
                   </q-tooltip>
                 </q-btn>
                 <q-btn v-show="hoverRow !== props.row.name"
@@ -47,7 +47,9 @@
             </div>
           </q-td>
           <q-td key="dataCenterName" :props="props">
-            {{ $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name }}
+            {{
+              locale === 'zh' ? $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name : $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name_en
+            }}
           </q-td>
           <q-td key="serviceType" :props="props">
             {{ $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.service_type }}
@@ -56,19 +58,20 @@
             {{ props.row.image }}
           </q-td>
           <q-td key="cpu" :props="props">
-            {{ props.row.vcpus }}核
+            {{ props.row.vcpus }} {{ locale === 'zh' ? '核' : props.row.vcpus > 1 ? 'cores' : 'core' }}
           </q-td>
           <q-td key="ram" :props="props">
             {{ props.row.ram / 1024 }}GB
           </q-td>
           <q-td key="expiration" :props="props">
             <div v-if="!props.row.expiration_time">
-              长期
+              {{ $t('长期') }}
             </div>
             <div v-else>
-              <div>{{ new Date(props.row.expiration_time).toLocaleString() }}</div>
+              <!--              日期时间格式根据locale值变化-->
+              <div>{{ new Date(props.row.expiration_time).toLocaleString(locale) }}</div>
               <div v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0" class="text-red">
-                已到期
+                {{ $t('已到期')}}
               </div>
             </div>
           </q-td>
@@ -78,7 +81,7 @@
                      class="col-shrink q-px-xs q-ma-none" flat dense icon="edit" size="xs" color="primary"
                      @click="popEditNote(props.row.id)">
                 <q-tooltip>
-                  编辑备注
+                  {{ $t('编辑备注')}}
                 </q-tooltip>
               </q-btn>
               <q-btn v-show="hoverRow !== props.row.name"
@@ -94,11 +97,11 @@
             <q-btn v-if="props.row.status === 1" unelevated flat padding="none" size="lg" color="light-green"
                    icon="computer"
                    @click="gotoVNC(props.row.id)">
-              <q-tooltip>进入远程控制</q-tooltip>
+              <q-tooltip>{{ $t('进入远程控制')}}</q-tooltip>
             </q-btn>
             <q-btn v-else unelevated flat padding="none" size="lg" color="grey-5" icon="computer">
               <q-tooltip>
-                请开机以使用远程控制
+                {{ $t('请开机以使用远程控制')}}
               </q-tooltip>
             </q-btn>
           </q-td>
@@ -145,58 +148,58 @@
                 v-if="props.row.status!==1 && props.row.status!==5"
                 color="nord4" loading label="......">
                 <q-tooltip>
-                  远程执行中，请稍候
+                  {{ $t('远程执行中')}}
                 </q-tooltip>
               </q-btn>
               <q-btn v-if="props.row.status==5" color="nord4" icon="play_arrow" text-color="primary"
                      @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'start'})">
                 <q-tooltip>
-                  开机
+                  {{ $t('开机')}}
                 </q-tooltip>
               </q-btn>
               <q-btn v-if="props.row.status==1" color="nord4" icon="power_settings_new" text-color="primary"
                      @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'shutdown'})">
                 <q-tooltip>
-                  关机
+                  {{ $t('关机')}}
                 </q-tooltip>
               </q-btn>
 
-              <q-btn-dropdown color="primary" label="操作">
+              <q-btn-dropdown color="primary" :label="$t('操作')" no-caps>
                 <q-list separator dense style="text-align:center">
                   <q-item :disable="props.row.status===1" clickable v-close-popup class="bg-light-green"
                           @click="$store.dispatch('vm/vmOperation',{ id: props.row.id, action: 'start'})">
                     <q-item-section>
-                      <q-item-label>开机</q-item-label>
+                      <q-item-label>{{$t('开机')}}</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-item :disable="props.row.status===5" clickable v-close-popup class="bg-amber"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'reboot'})">
                     <q-item-section>
-                      <q-item-label>重启</q-item-label>
+                      <q-item-label>{{$t('重启')}}</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-item :disable="props.row.status===5" clickable v-close-popup class="bg-amber"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'shutdown'})">
                     <q-item-section>
-                      <q-item-label>关机</q-item-label>
+                      <q-item-label>{{$t('关机')}}</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-item :disable="props.row.status===5" clickable v-close-popup class="bg-amber"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'poweroff'})">
                     <q-item-section>
-                      <q-item-label>强制断电</q-item-label>
+                      <q-item-label>{{ $t('强制断电')}}</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-item :disable="props.row.status===1" clickable v-close-popup class="bg-red-9"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'delete'})">
                     <q-item-section>
-                      <q-item-label>删除</q-item-label>
+                      <q-item-label>{{$t('删除')}}</q-item-label>
                     </q-item-section>
                   </q-item>
                   <q-item clickable v-close-popup class="bg-red-9"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'delete_force'})">
                     <q-item-section>
-                      <q-item-label>强制删除</q-item-label>
+                      <q-item-label>{{$t('强制删除')}}</q-item-label>
                     </q-item-section>
                   </q-item>
 
@@ -383,7 +386,7 @@ export default defineComponent({
       },
       {
         name: 'vnc',
-        label: 'Remote Control',
+        label: 'VNC',
         field: 'vnc',
         align: 'center',
         style: 'padding: 15px 5px'
@@ -394,7 +397,6 @@ export default defineComponent({
         field: 'status',
         align: 'center',
         style: 'padding: 15px 5px'
-
       },
       {
         name: 'operation',
@@ -414,7 +416,6 @@ export default defineComponent({
       page: 1,
       rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
     })
-
     // VNC 不保存在vuex里，vnc图标根据云主机状态变化，开机时可以点击vnc按钮，点击后再获取vnc地址并打开新窗口跳转
     const gotoVNC = async (payload: string) => {
       const response = await $store.dispatch('vm/fetchServerVNC', payload)
@@ -471,6 +472,7 @@ export default defineComponent({
     return {
       props,
       $store,
+      locale,
       columns,
       gotoVNC,
       paginationTable,

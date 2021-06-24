@@ -37,7 +37,7 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
 import VmTable from 'components/Personal/VmTable.vue'
-// import { useI18n } from 'vue-i18n'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'Vm',
@@ -45,14 +45,14 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    // const { locale } = useI18n({ useScope: 'global' })
+    const { locale } = useI18n({ useScope: 'global' })
 
     // service_id下拉列表
     const serviceOptions = computed(() => $store.getters['vm/getServiceOptions'])
-    const serviceSelection = ref(/* {
-      label: '$t("全部服务节点")',
+    const serviceSelection = ref({
+      label: locale.value === 'zh' ? '全部服务节点' : 'All Service Nodes',
       value: '0'
-    } */)
+    })
 
     $store.commit('vm/storeVmListFilter', '0') // 不能去掉！从其它界面重新进入时必须设置这个值
     watch(serviceSelection, () => {

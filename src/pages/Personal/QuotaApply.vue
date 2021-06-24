@@ -1,6 +1,6 @@
 <template>
   <div class="Apply">
-    <div class="column items-center justify-center">
+    <div class="column items-center justify-center q-py-md">
       <div v-if="!dataCenters">
         <q-inner-loading>
           <q-spinner size="50px" color="primary"/>
@@ -11,7 +11,7 @@
         <div class="col title-area">
           <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                  @click="goBack"/>
-          申请新配额
+          {{ $t('申请个人配额')}}
         </div>
 
         <div class="col">
@@ -29,7 +29,7 @@
             <q-step
               class="overflow-hidden"
               :name="1"
-              title="服务节点"
+              :title="$t('服务节点')"
               icon="settings"
               :done="done1"
             >
@@ -37,18 +37,18 @@
               <div class="column">
                 <div class="col section">
                   <div class="text-h7 text-primary section-title">
-                    服务节点
+                    {{$t('服务节点')}}
                   </div>
 
                   <div v-for="dataCenter in dataCenters" :key="dataCenter.id" class="row item-row">
                     <div class="col-shrink item-title text-bold">
-                      {{ dataCenter.name }}
+                      {{ locale==='zh' ? dataCenter.name : dataCenter.name_en }}
                     </div>
 
                     <div class="col">
                       <q-radio
                         v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"
-                        dense v-model="radioService" :val="service.id" :label="service.name" :key="service.id"
+                        dense v-model="radioService" :val="service.id" :label=" locale === 'zh' ? service.name : service.name_en" :key="service.id"
                         class="radio"/>
                     </div>
                   </div>
@@ -305,6 +305,7 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'Apply',
@@ -314,6 +315,7 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const $router = useRouter()
     const $q = useQuasar()
+    const { locale } = useI18n({ useScope: 'global' })
 
     // radio选项数据
     const dataCenters = computed(() => Object.values($store.state.vm.tables.globalDataCenterTable.byId))
@@ -398,6 +400,7 @@ export default defineComponent({
       $router.go(-1)
     }
     return {
+      locale,
       dataCenters,
       radioService,
       sliderDuration,
