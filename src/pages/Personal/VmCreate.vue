@@ -21,6 +21,7 @@
           <div v-if="!isShowJumper" class="stepper-area">
 
             <div class="column">
+
               <div class="col section">
                 <div class="text-h7 text-primary section-title">
                   服务节点
