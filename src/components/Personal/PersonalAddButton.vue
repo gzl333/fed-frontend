@@ -10,7 +10,7 @@
       direction="down"
     >
       <q-fab-action :label="$t('新建云主机')" unelevated color="primary" icon="computer" :to="{ path: '/my/personal/vmcreate' }"/>
-      <q-fab-action :label="$t('申请个人配额')" unelevated color="primary" icon="description" :to="{ path: '/my/personal/quota_apply' }"/>
+      <q-fab-action :label="$t('申请云主机配额')" unelevated color="primary" icon="description" :to="{ path: '/my/personal/quota_apply' }"/>
     </q-fab>
 
   </div>

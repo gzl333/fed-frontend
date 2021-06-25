@@ -9,7 +9,7 @@
       :rows="props.vms"
       :columns="columns"
       row-key="name"
-      no-data-label=""
+      no-data-label="暂无可用云主机，请创建后使用"
       hide-pagination
       :pagination="paginationTable"
     >

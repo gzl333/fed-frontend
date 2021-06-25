@@ -25,7 +25,7 @@ export default {
 
   // 个人资源
   云主机: 'Virtual Machine',
-  个人配额: 'Personal Quota',
+  云主机配额: 'Virtual Machine Quota',
 
   // vmtable
   长期: 'Long Term',
@@ -65,7 +65,7 @@ export default {
 
   // Personal Add Button
   新建云主机: 'Deploy VM',
-  申请个人配额: 'Apply for Personal Quota',
+  申请云主机配额: 'Apply for VM Quota',
 
   // 申请个人配额
   服务节点: 'Service Node'

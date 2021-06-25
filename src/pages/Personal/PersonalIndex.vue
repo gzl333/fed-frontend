@@ -38,17 +38,17 @@
                     :ripple="false"
                     to="/my/personal/vm"
                   />
-                  <q-route-tab
-                    disable
-                    no-caps
-                    class="q-px-none q-py-md q-mx-md"
-                    name="disk"
-                    icon="fas fa-compact-disc"
-                    label="云硬盘"
-                    :ripple="false"
-                    to="/my/personal/vd"
-                    exact
-                  />
+<!--                  <q-route-tab-->
+<!--                    disable-->
+<!--                    no-caps-->
+<!--                    class="q-px-none q-py-md q-mx-md"-->
+<!--                    name="disk"-->
+<!--                    icon="fas fa-compact-disc"-->
+<!--                    label="云硬盘"-->
+<!--                    :ripple="false"-->
+<!--                    to="/my/personal/vd"-->
+<!--                    exact-->
+<!--                  />-->
                   <q-route-tab
                     disable
                     no-caps
@@ -64,7 +64,7 @@
                     class="q-px-none q-py-md q-mx-md"
                     name="quota"
                     icon="fas fa-file-alt"
-                    :label="$t('个人配额')"
+                    :label="$t('云主机配额')"
                     :ripple="false"
                     to="/my/personal/quota"
                   />
