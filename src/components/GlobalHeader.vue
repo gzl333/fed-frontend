@@ -23,7 +23,7 @@
             </template>
           </q-select>
 
-          <q-btn :ripple="false" flat dense icon="library_books" label="使用手册"
+          <q-btn :ripple="false" disabled flat dense icon="library_books" label="使用手册"
                  @click="toggleRightDrawer">
             <q-tooltip>使用手册</q-tooltip>
           </q-btn>

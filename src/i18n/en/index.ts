@@ -34,9 +34,10 @@ export default {
   已到期: 'Expired',
   编辑备注: 'Edit Notes',
   进入远程控制: 'Enter VNC',
-  请开机以使用远程控制: 'Start VM before Using VNC',
+  请开机以使用远程控制: 'Start VM before using remote console',
   远程执行中: 'Executing',
   操作: 'Operations',
+  更多: 'More',
 
   // 云主机状态
   获取中: 'Requesting',

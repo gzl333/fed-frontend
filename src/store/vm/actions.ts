@@ -1,6 +1,6 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
-import { ServerInterface, VmInterface } from './state'
+import { ServerInterface, VmInterface, VpnInterface } from './state'
 import axios from 'axios'
 import { normalize, schema } from 'normalizr'
 import { Dialog, Notify } from 'quasar'
@@ -146,13 +146,57 @@ const actions: ActionTree<VmInterface, StateInterface> = {
   },
   /* userQuotaTable */
 
+  /* vpn操作 */
+  // 修改vpn密码
+  popEditVpnPass (context, vpn: VpnInterface) {
+    Dialog.create({
+      title: `修改${context.state.tables.globalServiceTable.byId[vpn.id].name}的VPN密码`,
+      message: '新密码长度为6-64位',
+      prompt: {
+        model: `${vpn.password}`,
+        counter: true,
+        maxlength: 64,
+        isValid: (val: string) => {
+          if (val.trim().length < 6 || val.trim().length > 64) {
+            return false
+          } else {
+            return true
+          }
+        },
+        type: 'text' // optional
+      },
+      color: 'primary',
+      cancel: true
+    }).onOk((data: string) => {
+      const payload = {
+        serviceId: vpn.id,
+        password: data.trim()
+      }
+      void context.dispatch('patchVpnPassword', payload).then((value) => {
+        // 把响应的新vpn信息补充id信息，并更新至table
+        context.commit('storeUserVpnTableSingle', Object.assign(value.data.vpn, { id: vpn.id }))
+      })
+    })
+  },
+  // 下载vpn ca
+  fetchCa (context, id: string) { // service id
+    const url = 'https://vms.cstcloud.cn/api/vpn/' + id + '/ca/'
+    window.open(url)
+  },
+  // 下载vpn config
+  fetchConfig (context, id: string) { // service id
+    const url = 'https://vms.cstcloud.cn/api/vpn/' + id + '/config/'
+    window.open(url)
+  },
+  /* vpn操作 */
+
   /* userVpnTable */
   // 根据userServerTable补充vpn列表，共补充两次
   async updateUserVpnTableFromServer (context) {
     for (const server of Object.values(context.state.tables.userServerTable.byId)) {
       const serviceId = server.service
       // service不一定需要vpn访问，需要的service才去取vpn信息 && 并且table中没有该serviceId时
-      if (!context.state.tables.userVpnTable.allIds.includes(serviceId) && context.state.tables.globalServiceTable.byId[serviceId].need_vpn) {
+      if (!context.state.tables.userVpnTable.allIds.includes(serviceId) && context.state.tables.globalServiceTable.byId[serviceId]?.need_vpn) {
         const respVpn = await context.dispatch('fetchVpn', serviceId)
         // 将id补充进vpn对象
         Object.assign(respVpn.data.vpn, { id: serviceId })
@@ -165,7 +209,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
   async updateUserVpnTableFromService (context) {
     for (const serviceId of context.state.tables.userServiceTable.allIds) {
       // service不一定需要vpn访问，需要的service才去取vpn信息 && 并且table中没有该serviceId时
-      if (!context.state.tables.userVpnTable.allIds.includes(serviceId) && context.state.tables.globalServiceTable.byId[serviceId].need_vpn) {
+      if (!context.state.tables.userVpnTable.allIds.includes(serviceId) && context.state.tables.globalServiceTable.byId[serviceId]?.need_vpn) {
         const respVpn = await context.dispatch('fetchVpn', serviceId)
         // 将id补充进vpn对象
         Object.assign(respVpn.data.vpn, { id: serviceId })
@@ -326,6 +370,38 @@ const actions: ActionTree<VmInterface, StateInterface> = {
       }
       return response
     })
+  },
+  // 编辑云主机备注
+  popEditVmNote (context, id: string) {
+    Dialog.create({
+      title: `编辑${context.state.tables.userServerTable.byId[id].ipv4}的备注信息`,
+      // message: '长度限制为30个字',
+      prompt: {
+        model: `${context.state.tables.userServerTable.byId[id].remarks}`,
+        counter: true,
+        maxlength: 30,
+        type: 'text' // optional
+      },
+      color: 'primary',
+      cancel: true
+    }).onOk((data: string) => {
+      const payload: { id: string; remark: string; } = {
+        id,
+        remark: data.trim()
+      }
+      void context.dispatch('patchRemarks', payload).then(() =>
+        context.commit('storeUserServerTableSingleRemarks', {
+          serverId: id,
+          remarks: data.trim()
+        })
+      )
+    })
+  },
+  // 打开vnc
+  async gotoVNC (context, id: string) {
+    const response = await context.dispatch('fetchServerVNC', id)
+    const url = response.data.vnc.url
+    window.open(url)
   },
   /* vmlist页面中的云主机操作 */
 

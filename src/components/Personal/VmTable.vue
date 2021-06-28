@@ -35,7 +35,7 @@
                        class="col-shrink q-px-xs q-ma-none" flat dense icon="content_copy" size="xs" color="primary"
                        @click="clickToCopy(props.row.ipv4)">
                   <q-tooltip>
-                    {{ $t('复制到剪切板')}}
+                    {{ $t('复制到剪切板') }}
                   </q-tooltip>
                 </q-btn>
                 <q-btn v-show="hoverRow !== props.row.name"
@@ -71,7 +71,7 @@
               <!--              日期时间格式根据locale值变化-->
               <div>{{ new Date(props.row.expiration_time).toLocaleString(locale) }}</div>
               <div v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0" class="text-red">
-                {{ $t('已到期')}}
+                {{ $t('已到期') }}
               </div>
             </div>
           </q-td>
@@ -79,9 +79,9 @@
             <div class="row">
               <q-btn v-show="hoverRow === props.row.name"
                      class="col-shrink q-px-xs q-ma-none" flat dense icon="edit" size="xs" color="primary"
-                     @click="popEditNote(props.row.id)">
+                     @click="$store.dispatch('vm/popEditVmNote',props.row.id)">
                 <q-tooltip>
-                  {{ $t('编辑备注')}}
+                  {{ $t('编辑备注') }}
                 </q-tooltip>
               </q-btn>
               <q-btn v-show="hoverRow !== props.row.name"
@@ -96,12 +96,12 @@
           <q-td key="vnc" :props="props" class="non-selectable">
             <q-btn v-if="props.row.status === 1" unelevated flat padding="none" size="lg" color="light-green"
                    icon="computer"
-                   @click="gotoVNC(props.row.id)">
-              <q-tooltip>{{ $t('进入远程控制')}}</q-tooltip>
+                   @click="$store.dispatch('vm/gotoVNC',props.row.id)">
+              <q-tooltip>{{ $t('进入远程控制') }}</q-tooltip>
             </q-btn>
             <q-btn v-else unelevated flat padding="none" size="lg" color="grey-5" icon="computer">
               <q-tooltip>
-                {{ $t('请开机以使用远程控制')}}
+                {{ $t('请开机以使用远程控制') }}
               </q-tooltip>
             </q-btn>
           </q-td>
@@ -148,59 +148,123 @@
                 v-if="props.row.status!==1 && props.row.status!==5"
                 color="nord4" loading label="......">
                 <q-tooltip>
-                  {{ $t('远程执行中')}}
+                  {{ $t('远程执行中') }}
                 </q-tooltip>
               </q-btn>
               <q-btn v-if="props.row.status==5" color="nord4" icon="play_arrow" text-color="primary"
                      @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'start'})">
                 <q-tooltip>
-                  {{ $t('开机')}}
+                  {{ $t('开机') }}
                 </q-tooltip>
               </q-btn>
               <q-btn v-if="props.row.status==1" color="nord4" icon="power_settings_new" text-color="primary"
                      @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'shutdown'})">
                 <q-tooltip>
-                  {{ $t('关机')}}
+                  {{ $t('关机') }}
                 </q-tooltip>
               </q-btn>
 
-              <q-btn-dropdown color="primary" :label="$t('操作')" no-caps>
-                <q-list separator dense style="text-align:center">
-                  <q-item :disable="props.row.status===1" clickable v-close-popup class="bg-light-green"
+              <q-btn-dropdown color="primary" icon="more_horiz" no-caps>
+
+                <q-list dense style="text-align:center">
+                  <q-item clickable v-close-popup class="bg-white text-primary"
+                          :to="{path: `/my/personal/vmdetail/${props.row.id}`}">
+                    <div class="row">
+                      <q-item-section class="col-auto">
+                        <q-icon name="info" size="sm"/>
+                      </q-item-section>
+                      <q-item-section class="col-auto">
+                        <q-item-label>
+                          {{ $t('云主机详情') }}
+                        </q-item-label>
+                      </q-item-section>
+                    </div>
+                  </q-item>
+
+                  <q-separator/>
+
+                  <q-item v-if="props.row.status!==1" clickable v-close-popup class="bg-white text-primary"
                           @click="$store.dispatch('vm/vmOperation',{ id: props.row.id, action: 'start'})">
-                    <q-item-section>
-                      <q-item-label>{{$t('开机')}}</q-item-label>
-                    </q-item-section>
+                    <div class="row">
+                      <q-item-section class="col-auto">
+                        <q-icon name="play_arrow" size="sm"/>
+                      </q-item-section>
+                      <q-item-section class="col-auto">
+                        <q-item-section>
+                          <q-item-label>{{ $t('开机') }}</q-item-label>
+                        </q-item-section>
+                      </q-item-section>
+                    </div>
                   </q-item>
-                  <q-item :disable="props.row.status===5" clickable v-close-popup class="bg-amber"
+
+                  <q-item v-if="props.row.status!==5" clickable v-close-popup class="bg-white text-primary"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'reboot'})">
-                    <q-item-section>
-                      <q-item-label>{{$t('重启')}}</q-item-label>
-                    </q-item-section>
+                    <div class="row">
+                      <q-item-section class="col-auto">
+                        <q-icon name="restart_alt" size="sm"/>
+                      </q-item-section>
+                      <q-item-section class="col-auto">
+                        <q-item-section>
+                          <q-item-label>{{ $t('重启') }}</q-item-label>
+                        </q-item-section>
+                      </q-item-section>
+                    </div>
                   </q-item>
-                  <q-item :disable="props.row.status===5" clickable v-close-popup class="bg-amber"
+
+                  <q-item v-if="props.row.status!==5" clickable v-close-popup class="bg-white text-primary"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'shutdown'})">
-                    <q-item-section>
-                      <q-item-label>{{$t('关机')}}</q-item-label>
-                    </q-item-section>
+                    <div class="row">
+                      <q-item-section class="col-auto">
+                        <q-icon name="power_settings_new" size="sm"/>
+                      </q-item-section>
+                      <q-item-section class="col-auto">
+                        <q-item-section>
+                          <q-item-label>{{ $t('关机') }}</q-item-label>
+                        </q-item-section>
+                      </q-item-section>
+                    </div>
                   </q-item>
-                  <q-item :disable="props.row.status===5" clickable v-close-popup class="bg-amber"
+
+                  <q-item v-if="props.row.status!==5" clickable v-close-popup class="bg-white text-primary"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'poweroff'})">
-                    <q-item-section>
-                      <q-item-label>{{ $t('强制断电')}}</q-item-label>
-                    </q-item-section>
+                    <div class="row">
+                      <q-item-section class="col-auto">
+                        <q-icon name="power_off" size="sm"/>
+                      </q-item-section>
+                      <q-item-section class="col-auto">
+                        <q-item-section>
+                          <q-item-label>{{ $t('强制断电') }}</q-item-label>
+                        </q-item-section>
+                      </q-item-section>
+                    </div>
                   </q-item>
-                  <q-item :disable="props.row.status===1" clickable v-close-popup class="bg-red-9"
+
+                  <q-item v-if="props.row.status!==1" clickable v-close-popup class="bg-white text-red"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'delete'})">
-                    <q-item-section>
-                      <q-item-label>{{$t('删除')}}</q-item-label>
-                    </q-item-section>
+                    <div class="row">
+                      <q-item-section class="col-auto">
+                        <q-icon name="delete" size="sm"/>
+                      </q-item-section>
+                      <q-item-section class="col-auto">
+                        <q-item-section>
+                          <q-item-label>{{ $t('删除') }}</q-item-label>
+                        </q-item-section>
+                      </q-item-section>
+                    </div>
                   </q-item>
-                  <q-item clickable v-close-popup class="bg-red-9"
+
+                  <q-item clickable v-close-popup class="bg-white text-red"
                           @click="$store.dispatch('vm/vmOperation',{id: props.row.id, action: 'delete_force'})">
-                    <q-item-section>
-                      <q-item-label>{{$t('强制删除')}}</q-item-label>
-                    </q-item-section>
+                    <div class="row">
+                      <q-item-section class="col-auto">
+                        <q-icon name="delete_forever" size="sm"/>
+                      </q-item-section>
+                      <q-item-section class="col-auto">
+                        <q-item-section>
+                          <q-item-label>{{ $t('强制删除') }}</q-item-label>
+                        </q-item-section>
+                      </q-item-section>
+                    </div>
                   </q-item>
 
                 </q-list>
@@ -299,7 +363,7 @@ export default defineComponent({
         field: 'note',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 200px;padding: 15px 5px'
+        style: 'max-width: 150px;padding: 15px 5px'
       },
       {
         name: 'vnc',
@@ -382,11 +446,11 @@ export default defineComponent({
         field: 'note',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 200px;padding: 15px 5px'
+        style: 'max-width: 150px;padding: 15px 5px'
       },
       {
         name: 'vnc',
-        label: 'VNC',
+        label: 'Console',
         field: 'vnc',
         align: 'center',
         style: 'padding: 15px 5px'
@@ -416,38 +480,7 @@ export default defineComponent({
       page: 1,
       rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
     })
-    // VNC 不保存在vuex里，vnc图标根据云主机状态变化，开机时可以点击vnc按钮，点击后再获取vnc地址并打开新窗口跳转
-    const gotoVNC = async (payload: string) => {
-      const response = await $store.dispatch('vm/fetchServerVNC', payload)
-      const url = response.data.vnc.url
-      window.open(url)
-    }
-    // 编辑备注
-    const popEditNote = (id: string) => {
-      $q.dialog({
-        title: `编辑${$store.state.vm.tables.userServerTable.byId[id].ipv4}的备注信息`,
-        // message: '长度限制为30个字',
-        prompt: {
-          model: `${$store.state.vm.tables.userServerTable.byId[id].remarks}`,
-          counter: true,
-          maxlength: 30,
-          type: 'text' // optional
-        },
-        color: 'primary',
-        cancel: true
-      }).onOk((data: string) => {
-        const payload: { id: string; remark: string; } = {
-          id,
-          remark: data.trim()
-        }
-        void $store.dispatch('vm/patchRemarks', payload).then(() =>
-          $store.commit('vm/storeUserServerTableSingleRemarks', {
-            serverId: id,
-            remarks: data.trim()
-          })
-        )
-      })
-    }
+
     // 复制信息到剪切板
     const clickToCopy = async (text: string) => {
       void await copyToClipboard(text).then(() => {
@@ -474,9 +507,7 @@ export default defineComponent({
       $store,
       locale,
       columns,
-      gotoVNC,
       paginationTable,
-      popEditNote: popEditNote,
       clickToCopy,
       hoverRow,
       onMouseEnterRow,

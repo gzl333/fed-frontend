@@ -53,7 +53,8 @@
                     </q-btn>
                   </div>
                 </div>
-                <div class="row">
+
+                <div class="row items-center">
                   <div class="col-2 q-pb-md text-grey">
                     VPN 密码
                   </div>
@@ -80,16 +81,17 @@
                     </q-btn>
 
                     <q-btn label="修改密码" padding="none" dense flat color="primary"
-                           @click="popEditVpn(vpn)"/>
+                           @click="$store.dispatch('vm/popEditVpnPass', vpn)"/>
                   </div>
                 </div>
+
                 <div class="row">
                   <div class="col-2 q-pb-md text-grey">
                     VPN 配置文件
                   </div>
                   <div class="col">
                     <q-btn label="下载" class=" " color="primary" padding="none" dense flat
-                           @click="fetchConfig(vpn.id)"/>
+                           @click="$store.dispatch('vm/fetchConfig', vpn.id)"/>
                   </div>
                 </div>
                 <div class="row">
@@ -98,7 +100,7 @@
                   </div>
                   <div class="col">
                     <q-btn label="下载" class="" color="primary" padding="none" dense flat
-                           @click="fetchCa(vpn.id)"/>
+                           @click="$store.dispatch('vm/fetchCa', vpn.id)"/>
                   </div>
                 </div>
               </q-tab-panel>
@@ -118,7 +120,6 @@ import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { copyToClipboard, useQuasar } from 'quasar'
-import { VpnInterface } from 'src/store/vm/state'
 
 export default defineComponent({
   name: 'Vpn',
@@ -150,61 +151,13 @@ export default defineComponent({
 
     // 修改密码loading状态
     const isLoading = ref(false)
-    // vpn 修改密码
-    const popEditVpn = (vpn: VpnInterface) => {
-      $q.dialog({
-        title: `修改${$store.state.vm.tables.userServiceTable.byId[vpn.id].name}的VPN密码`,
-        message: '新密码长度为6-64位',
-        prompt: {
-          model: `${vpn.password}`,
-          counter: true,
-          maxlength: 64,
-          isValid: (val: string) => {
-            if (val.trim().length < 6 || val.trim().length > 64) {
-              return false
-            } else {
-              return true
-            }
-          },
-          type: 'text' // optional
-        },
-        color: 'primary',
-        cancel: true
-      }).onOk((data: string) => {
-        isLoading.value = true
-        const payload = {
-          serviceId: vpn.id,
-          password: data.trim()
-        }
-        void $store.dispatch('vm/patchVpnPassword', payload).then((value) => {
-          $store.commit('vm/storeUserVpnTable', Object.assign(vpn, { password: value.data.vpn.password }))
-          isLoading.value = false
-        }
-        ).catch(() => {
-          isLoading.value = false
-        }
-        )
-      })
-    }
 
-    const fetchCa = (serviceId: string) => {
-      const url = 'https://vms.cstcloud.cn/api/vpn/' + serviceId + '/ca/'
-      window.open(url)
-    }
-    // download vpn config
-    const fetchConfig = (serviceId: string) => {
-      const url = 'https://vms.cstcloud.cn/api/vpn/' + serviceId + '/config/'
-      window.open(url)
-    }
     return {
       $store,
       vpns,
       tab,
       isPwd,
       isLoading,
-      popEditVpn,
-      fetchCa,
-      fetchConfig,
       clickToCopy
     }
   }
@@ -220,7 +173,7 @@ export default defineComponent({
 }
 
 .password-input {
-  height: 20px;
+  //height: 20px;
   width: 280px;
 }
 </style>

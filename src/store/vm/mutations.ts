@@ -42,6 +42,11 @@ const mutation: MutationTree<VmInterface> = {
     // userServerTable.isLoaded,每次都更新，可以优化
     state.tables.userQuotaTable.isLoaded = true
   },
+  storeUserVpnTableSingle (state, vpn: VpnInterface) {
+    Object.assign(state.tables.userVpnTable.byId, { [vpn.id]: vpn })
+    state.tables.userVpnTable.allIds.unshift(vpn.id)
+    state.tables.userVpnTable.allIds = [...new Set(state.tables.userVpnTable.allIds)]
+  },
   storeUserVpnTableFromServer (state, vpn: VpnInterface) {
     Object.assign(state.tables.userVpnTable.byId, { [vpn.id]: vpn })
     state.tables.userVpnTable.allIds.unshift(vpn.id)

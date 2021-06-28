@@ -16,7 +16,7 @@
         <!--直接从url进入本页面时，tables尚未载入，应显示loading界面。对取属性进行缓冲，不出现undefined错误-->
         <div class="row">
 
-          <div v-if="!server || !service" class="col">
+          <div v-if="!server || !service || !vpn" class="col">
             正在加载，请稍候
           </div>
 
@@ -33,43 +33,43 @@
                     </q-tooltip>
                   </q-btn>
 
-                  <q-chip v-if="!server.status" label="操作中" square color="nord4">
+                  <q-chip v-if="!server.status" label="获取中" square color="nord4">
                     <q-inner-loading showing class="inner-loading">
                       <q-spinner size="30px" color="nord9"/>
                     </q-inner-loading>
                   </q-chip>
-                  <q-chip v-if="server.status === '无法获取状态'" outline color="nord11" text-color="white"
+                  <q-chip v-if="server.status === 0" outline color="nord11" text-color="white"
                           label="无法获取状态" class="text-bold"/>
-                  <q-chip v-if="server.status === '运行中'" outline color="light-green" text-color="white"
+                  <q-chip v-if="server.status === 1" outline color="light-green" text-color="white"
                           label="运行中" class="text-bold"/>
-                  <q-chip v-if="server.status === '已屏蔽'" outline color="nord3" text-color="white"
+                  <q-chip v-if="server.status === 2" outline color="nord3" text-color="white"
                           label="已屏蔽" class="text-bold"/>
-                  <q-chip v-if="server.status === '已暂停'" outline color="nord3" text-color="white"
+                  <q-chip v-if="server.status === 3" outline color="nord3" text-color="white"
                           label="已暂停" class="text-bold"/>
-                  <q-chip v-if="server.status === '正在关机'" outline color="nord9" text-color="white"
+                  <q-chip v-if="server.status === 4" outline color="nord9" text-color="white"
                           label="正在关机" class="text-bold"/>
-                  <q-chip v-if="server.status === '已关机'" outline color="nord3" text-color="white"
+                  <q-chip v-if="server.status === 5" outline color="nord3" text-color="white"
                           label="已关机" class="text-bold"/>
-                  <q-chip v-if="server.status === '已崩溃'" outline color="nord11" text-color="white"
+                  <q-chip v-if="server.status === 6" outline color="nord11" text-color="white"
                           label="已崩溃" class="text-bold"/>
-                  <q-chip v-if="server.status === '被电源管理器挂起'" outline color="nord3" text-color="white"
+                  <q-chip v-if="server.status === 7" outline color="nord3" text-color="white"
                           label="被电源管理器挂起" class="text-bold"/>
-                  <q-chip v-if="server.status === '与宿主机通讯失败'" outline color="nord11" text-color="white"
+                  <q-chip v-if="server.status === 9" outline color="nord11" text-color="white"
                           label="与宿主机通讯失败" class="text-bold"/>
-                  <q-chip v-if="server.status === '已丢失'" outline color="nord11" text-color="white"
+                  <q-chip v-if="server.status === 10" outline color="nord11" text-color="white"
                           label="已丢失" class="text-bold"/>
-                  <q-chip v-if="server.status === '正在创建'" outline color="nord9" text-color="white"
+                  <q-chip v-if="server.status === 11" outline color="nord9" text-color="white"
                           label="正在创建" class="text-bold"/>
-                  <q-chip v-if="server.status === '创建失败'" outline color="nord11" text-color="white"
+                  <q-chip v-if="server.status === 12" outline color="nord11" text-color="white"
                           label="创建失败" class="text-bold"/>
                 </div>
               </div>
 
               <div class="col q-gutter-lg">
-                <q-btn v-if="server.status=='运行中'"
+                <q-btn v-if="server.status==1"
                        :disable="!server.status"
                        unelevated flat padding="none" size="lg" color="primary" icon="computer"
-                       @click="gotoVNC(server.id)">
+                       @click="$store.dispatch('vm/gotoVNC',server.id)">
                   <q-tooltip>
                     远程控制
                   </q-tooltip>
@@ -82,7 +82,7 @@
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn :disable="!server.status || server.status === '运行中'"
+                <q-btn v-if="server.status !== 1"
                        color="nord4" icon="play_arrow" text-color="primary"
                        unelevated flat padding="none" size="lg"
                        @click="$store.dispatch('vm/vmOperation',{id: server.id, action: 'start'})">
@@ -91,7 +91,7 @@
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn :disable="!server.status || server.status === '已关机'"
+                <q-btn v-if="server.status !== 5"
                        color="nord4" icon="power_settings_new" text-color="primary"
                        unelevated flat padding="none" size="lg"
                        @click="$store.dispatch('vm/vmOperation',{ id: server.id, action: 'shutdown'})">
@@ -100,7 +100,7 @@
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn :disable="!server.status || server.status === '已关机'"
+                <q-btn v-if="server.status !== 5"
                        color="nord4" icon="restart_alt" text-color="primary"
                        unelevated flat padding="none" size="lg"
                        @click="$store.dispatch('vm/vmOperation',{ id: server.id, action: 'reboot'})">
@@ -109,7 +109,7 @@
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn :disable="!server.status || server.status === '已关机'"
+                <q-btn v-if="server.status !== 5"
                        color="nord4" icon="power_off" text-color="primary"
                        unelevated flat padding="none" size="lg"
                        @click="$store.dispatch('vm/vmOperation',{id: server.id, action: 'poweroff'})">
@@ -118,8 +118,8 @@
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn :disable="!server.status || server.status === '运行中'"
-                       color="nord4" icon="delete" text-color="primary"
+                <q-btn v-if="server.status !== 1"
+                       color="nord4" icon="delete" text-color="red"
                        unelevated flat padding="none" size="lg"
                        @click="$store.dispatch('vm/vmOperation',{ id: server.id, action: 'delete'})">
                   <q-tooltip>
@@ -127,8 +127,8 @@
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn :disable="!server.status"
-                       color="nord4" icon="delete_forever" text-color="primary"
+                <q-btn v-if="server.status"
+                       color="nord4" icon="delete_forever" text-color="red"
                        unelevated flat padding="none" size="lg"
                        @click="$store.dispatch('vm/vmOperation',{ id: server.id, action: 'delete_force'})">
                   <q-tooltip>
@@ -188,7 +188,7 @@
                   <div class="col">
 
                     <q-btn class="col-shrink q-px-xs" flat dense icon="edit" size="xs" color="primary"
-                           @click="popEditNote(server.id)">
+                           @click="$store.dispatch('vm/popEditVmNote',server.id)">
                       <q-tooltip>
                         编辑备注
                       </q-tooltip>
@@ -217,7 +217,7 @@
 
                     <div v-if="quota">
                       <q-btn label="配额详情" flat dense color="primary" padding="none"
-                             :to="{path: `/my/quota/detail/${quota?.id}`}">
+                             :to="{path: `/my/personal/quota_detail/${quota?.id}`}">
                         <q-tooltip>
                           进入配额详情页面
                         </q-tooltip>
@@ -232,15 +232,15 @@
 
                 <div class="row q-pb-md">
                   <div class="col-2 text-grey">需要VPN</div>
-                  <div class="col"> {{ service.need_vpn ? '是' : '否' }}</div>
+                  <div class="col"> {{ service?.need_vpn ? '是' : '否' }}</div>
                 </div>
 
-                <div v-if="service.need_vpn" class="row q-pb-md">
+                <div v-if="service.need_vpn" class="row q-pb-md ">
                   <div class="col-2 text-grey">VPN用户名</div>
                   <div class="col">
                     {{ vpn.username }}
                     <q-btn
-                      class="col-shrink q-px-xs text-nord9" flat icon="content_copy" size="xs"
+                      class="col-shrink q-px-xs" flat color="primary" icon="content_copy" size="xs"
                       @click="clickToCopy(vpn.username)">
                       <q-tooltip>
                         复制
@@ -249,32 +249,31 @@
                   </div>
                 </div>
 
-                <div v-if="service.need_vpn" class="row q-pb-md">
+                <div v-if="service.need_vpn" class="row q-pb-md items-center">
                   <div class="col-2 text-grey">VPN密码</div>
                   <div class="col">
-                    <div class="row">
-                    <q-input class="password-input "
-                             :loading="isLoading"
-                             v-model="vpn.password" :type="isPwd ? 'password' : 'text'"
-                             readonly borderless dense square outlined>
-                      <template v-slot:prepend>
-                        <q-icon
-                          :name="isPwd ? 'visibility' : 'visibility_off'"
-                          @click="isPwd = !isPwd"
-                        />
-                      </template>
-                    </q-input>
+                    <div class="row ">
+                      <q-input class="password-input"
+                               v-model="vpn.password" :type="isPwd ? 'password' : 'text'"
+                               readonly borderless dense square outlined>
+                        <template v-slot:prepend>
+                          <q-icon
+                            :name="isPwd ? 'visibility' : 'visibility_off'"
+                            @click="isPwd = !isPwd"
+                          />
+                        </template>
+                      </q-input>
 
-                    <q-btn
-                      class="col-shrink q-px-xs text-grey" flat icon="content_copy" size="xs"
-                      @click="clickToCopy(vpn.password)">
-                      <q-tooltip>
-                        复制
-                      </q-tooltip>
-                    </q-btn>
+                      <q-btn
+                        class="col-shrink q-px-xs" flat color="primary" icon="content_copy" size="xs"
+                        @click="clickToCopy(vpn.password)">
+                        <q-tooltip>
+                          复制
+                        </q-tooltip>
+                      </q-btn>
 
-                    <q-btn label="修改密码" padding="none" dense flat color="primary"
-                           @click="popEditVpn(vpn)"/>
+                      <q-btn label="修改密码" padding="none" dense flat color="primary"
+                             @click="$store.dispatch('vm/popEditVpnPass',  vpn)"/>
 
                     </div>
                   </div>
@@ -283,14 +282,16 @@
                 <div v-if="service.need_vpn" class="row q-pb-md">
                   <div class="col-2 text-grey">VPN配置文件</div>
                   <div class="col">
-                    <q-btn label="下载" class=" " color="primary" padding="none" dense flat @click="fetchConfig"/>
+                    <q-btn label="下载" class=" " color="primary" padding="none" dense flat
+                           @click="$store.dispatch('vm/fetchConfig', server.service)"/>
                   </div>
                 </div>
 
                 <div v-if="service.need_vpn" class="row q-pb-md">
                   <div class="col-2 text-grey">VPN CA证书</div>
                   <div class="col">
-                    <q-btn label="下载" class="" color="primary" padding="none" dense flat @click="fetchCa"/>
+                    <q-btn label="下载" class="" color="primary" padding="none" dense flat
+                           @click="$store.dispatch('vm/fetchCa', server.service)"/>
                   </div>
                 </div>
 
@@ -313,7 +314,6 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter, useRoute } from 'vue-router'
 import { copyToClipboard, useQuasar } from 'quasar'
-import { VpnInterface } from 'src/store/vm/state'
 
 // import QuotaCard from 'components/Personal/QuotaCard.vue'
 
@@ -345,58 +345,8 @@ export default defineComponent({
     const vpn = computed(() => $store.state.vm.tables.userVpnTable.byId[server.value.service])
     // password可见性
     const isPwd = ref(true)
-    // 修改密码loading状态
-    const isLoading = ref(false)
 
-    // vpn 修改密码 todo 整合进actions
-    const popEditVpn = (vpn: VpnInterface) => {
-      $q.dialog({
-        title: `修改${$store.state.vm.tables.globalServiceTable.byId[server.value.service].name}的VPN密码`,
-        message: '新密码长度为6-64位',
-        prompt: {
-          model: `${vpn.password}`,
-          counter: true,
-          maxlength: 64,
-          isValid: (val: string) => {
-            if (val.trim().length < 6 || val.trim().length > 64) {
-              return false
-            } else {
-              return true
-            }
-          },
-          type: 'text' // optional
-        },
-        color: 'primary',
-        cancel: true
-      }).onOk((data: string) => {
-        isLoading.value = true
-        const payload = {
-          serviceId: server.value.service,
-          password: data.trim()
-        }
-        void $store.dispatch('vm/patchVpnPassword', payload).then((value) => {
-          // todo 能否利用响应内容更新
-          $store.commit('vm/storeUserVpnTable', Object.assign(vpn, { password: value.data.vpn.password }))
-          isLoading.value = false
-        }
-        ).catch(() => {
-          isLoading.value = false
-        }
-        )
-      })
-    }
-    // download vpn ca todo ---> actions
-    const fetchCa = () => {
-      const url = 'https://vms.cstcloud.cn/api/vpn/' + server.value.service + '/ca/'
-      window.open(url)
-    }
-    // download vpn config
-    const fetchConfig = () => {
-      const url = 'https://vms.cstcloud.cn/api/vpn/' + server.value.service + '/config/'
-      window.open(url)
-    }
-
-    // 复制信息到剪切板 todo ---> actions
+    // 复制信息到剪切板 todo ---> hooks
     const clickToCopy = async (text: string) => {
       void await copyToClipboard(text).then(() => {
         $q.notify({
@@ -406,40 +356,6 @@ export default defineComponent({
           closeBtn: false,
           timeout: 1500
         })
-      })
-    }
-
-    // VNC todo ---> actions
-    const gotoVNC = async (payload: string) => {
-      const response = await $store.dispatch('vm/fetchServerVNC', payload)
-      const url = response.data.vnc.url
-      window.open(url)
-    }
-
-    // 编辑备注 todo ---> actions
-    const popEditNote = (id: string) => {
-      $q.dialog({
-        title: `编辑${$store.state.vm.tables.userServerTable.byId[id].ipv4}的备注信息`,
-        // message: '长度限制为30个字',
-        prompt: {
-          model: `${$store.state.vm.tables.userServerTable.byId[id].remarks}`,
-          counter: true,
-          maxlength: 30,
-          type: 'text' // optional
-        },
-        color: 'primary',
-        cancel: true
-      }).onOk((data: string) => {
-        const payload: { id: string; remark: string; } = {
-          id,
-          remark: data.trim()
-        }
-        void $store.dispatch('vm/patchRemarks', payload).then(() =>
-          $store.commit('vm/storeUserServerTableSingleRemarks', {
-            serverId: id,
-            remarks: data.trim()
-          })
-        )
       })
     }
 
@@ -453,15 +369,9 @@ export default defineComponent({
       quota,
       vpn,
       isPwd,
-      popEditVpn,
-      fetchCa,
-      fetchConfig,
-      isLoading,
       clickToCopy,
-      gotoVNC,
       goBack,
-      $route,
-      popEditNote
+      $route
     }
   }
 })
@@ -493,8 +403,8 @@ export default defineComponent({
 }
 
 .password-input {
-  top: -10px;
-  height: 20px;
+  //top: -10px;
+  //height: 10px;
   width: 250px;
 }
 </style>
