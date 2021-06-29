@@ -157,11 +157,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
         counter: true,
         maxlength: 64,
         isValid: (val: string) => {
-          if (val.trim().length < 6 || val.trim().length > 64) {
-            return false
-          } else {
-            return true
-          }
+          return !(val.trim().length < 6 || val.trim().length > 64)
         },
         type: 'text' // optional
       },
@@ -179,13 +175,13 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     })
   },
   // 下载vpn ca
-  fetchCa (context, id: string) { // service id
-    const url = 'https://vms.cstcloud.cn/api/vpn/' + id + '/ca/'
+  fetchCa (context, serviceId: string) {
+    const url = 'https://vms.cstcloud.cn/api/vpn/' + serviceId + '/ca/'
     window.open(url)
   },
   // 下载vpn config
-  fetchConfig (context, id: string) { // service id
-    const url = 'https://vms.cstcloud.cn/api/vpn/' + id + '/config/'
+  fetchConfig (context, serviceId: string) {
+    const url = 'https://vms.cstcloud.cn/api/vpn/' + serviceId + '/config/'
     window.open(url)
   },
   /* vpn操作 */
@@ -231,12 +227,6 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     const response = await axios.patch(api, data)
     return response
   },
-  // 暂时没有启用
-  // async fetchVpnCa (context, serviceId: string) {
-  //   const api = apiBase + '/vpn/' + serviceId + '/ca/'
-  //   const response = await axios.get(api)
-  //   return response
-  // },
   /* userVpnTable */
 
   /* globalFlavorTable */
@@ -455,6 +445,11 @@ const actions: ActionTree<VmInterface, StateInterface> = {
   },
   // 获取并保存单个server的status
   async updateUserServerTableSingleStatus (context, serverId: string) {
+    // 先清空server status，让状态变为空，UI则显示为获取中
+    context.commit('storeUserServerTableSingleStatus', {
+      serverId,
+      status_code: '' // 有状态的状态码为integer
+    })
     const respStatus = await context.dispatch('fetchServerStatus', serverId)
     context.commit('storeUserServerTableSingleStatus', {
       serverId,

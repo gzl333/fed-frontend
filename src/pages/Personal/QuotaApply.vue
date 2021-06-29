@@ -32,7 +32,7 @@
                     v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"
                     dense v-model="radioService" :val="service.id"
                     :label=" locale === 'zh' ? service.name : service.name_en" :key="service.id"
-                    class="radio"/>
+                    class="q-pb-sm q-mr-lg"/>
                 </div>
               </div>
             </div>

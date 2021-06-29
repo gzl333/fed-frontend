@@ -33,35 +33,7 @@
                     </q-tooltip>
                   </q-btn>
 
-                  <q-chip v-if="!server.status" label="获取中" square color="nord4">
-                    <q-inner-loading showing class="inner-loading">
-                      <q-spinner size="30px" color="nord9"/>
-                    </q-inner-loading>
-                  </q-chip>
-                  <q-chip v-if="server.status === 0" outline color="nord11" text-color="white"
-                          label="无法获取状态" class="text-bold"/>
-                  <q-chip v-if="server.status === 1" outline color="light-green" text-color="white"
-                          label="运行中" class="text-bold"/>
-                  <q-chip v-if="server.status === 2" outline color="nord3" text-color="white"
-                          label="已屏蔽" class="text-bold"/>
-                  <q-chip v-if="server.status === 3" outline color="nord3" text-color="white"
-                          label="已暂停" class="text-bold"/>
-                  <q-chip v-if="server.status === 4" outline color="nord9" text-color="white"
-                          label="正在关机" class="text-bold"/>
-                  <q-chip v-if="server.status === 5" outline color="nord3" text-color="white"
-                          label="已关机" class="text-bold"/>
-                  <q-chip v-if="server.status === 6" outline color="nord11" text-color="white"
-                          label="已崩溃" class="text-bold"/>
-                  <q-chip v-if="server.status === 7" outline color="nord3" text-color="white"
-                          label="被电源管理器挂起" class="text-bold"/>
-                  <q-chip v-if="server.status === 9" outline color="nord11" text-color="white"
-                          label="与宿主机通讯失败" class="text-bold"/>
-                  <q-chip v-if="server.status === 10" outline color="nord11" text-color="white"
-                          label="已丢失" class="text-bold"/>
-                  <q-chip v-if="server.status === 11" outline color="nord9" text-color="white"
-                          label="正在创建" class="text-bold"/>
-                  <q-chip v-if="server.status === 12" outline color="nord11" text-color="white"
-                          label="创建失败" class="text-bold"/>
+                  <ServerStatus :server="server"/>
                 </div>
               </div>
 
@@ -314,12 +286,12 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter, useRoute } from 'vue-router'
 import { copyToClipboard, useQuasar } from 'quasar'
-
+import ServerStatus from 'components/Personal/ServerStatus.vue'
 // import QuotaCard from 'components/Personal/QuotaCard.vue'
 
 export default defineComponent({
   name: 'VmDetail',
-  components: { /* QuotaCard */ },
+  components: { ServerStatus/* , QuotaCard */ },
   props: {},
   setup () {
     const $store = useStore<StateInterface>()

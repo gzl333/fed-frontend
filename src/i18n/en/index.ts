@@ -2,7 +2,7 @@
 export default {
   // 静态资源
   resource: {
-    title: 'title_en.png'
+    title: 'title_en_2.png'
   },
   // 文字翻译
 
@@ -26,6 +26,7 @@ export default {
   // 个人资源
   云主机: 'Virtual Machine',
   云主机配额: 'Virtual Machine Quota',
+  新建: 'New',
 
   // vmtable
   长期: 'Long Term',
@@ -38,6 +39,8 @@ export default {
   远程执行中: 'Executing',
   操作: 'Operations',
   更多: 'More',
+  刷新云主机状态: 'Click to refresh server status',
+  云主机详情: 'Server detail',
 
   // 云主机状态
   获取中: 'Requesting',

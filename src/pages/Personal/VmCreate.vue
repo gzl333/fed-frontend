@@ -26,22 +26,37 @@
                 <div class="text-h7 text-primary section-title">
                   服务节点
                 </div>
-                <div v-for="dataCenter in dataCenters" :key="dataCenter.id" class="row item-row">
+                <div v-for="dataCenter in dataCenters" :key="dataCenter.id" class="row  item-row">
 
-                  <div class="col-shrink item-title text-bold">
+                  <div class="col-auto item-title text-bold">
                     {{ dataCenter.name }}
                   </div>
 
                   <div class="col item-radios">
-                    <q-radio
-                      v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"
-                      :disable="!dataCenter.userServices.includes(service.id)"
-                      dense v-model="radioService" :val="service.id" :label="service.name" :key="service.id"
-                      class="radio">
-                      <span v-if="!dataCenter.userServices.includes(service.id)">(暂无配额，<q-btn label="申请云主机配额" flat
-                                                                                         padding="none" color="primary"
-                                                                                         to="/my/personal/quota_apply"/>后可用)</span>
-                    </q-radio>
+<!--                                        <q-radio-->
+<!--                                          v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"-->
+<!--                                          :disable="!dataCenter.userServices.includes(service.id)"-->
+<!--                                          dense v-model="radioService" :val="service.id" :label="service.name" :key="service.id"-->
+<!--                                          class="radio">-->
+<!--                                          <span v-if="!dataCenter.userServices.includes(service.id)">(暂无配额，<q-btn label="申请云主机配额" flat-->
+<!--                                                                                                                  padding="none"-->
+<!--                                                                                                                  color="primary"-->
+<!--                                                                                                                  to="/my/personal/quota_apply"/>后可用)</span>-->
+<!--                                        </q-radio>-->
+
+                    <div class="row items-center q-pb-sm"
+                         v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"
+                         :key="service.id">
+                      <q-radio :disable="!dataCenter.userServices.includes(service.id)"
+                               dense v-model="radioService" :val="service.id" :label="service.name"
+                               class="col-auto"/>
+                      <div class="col-auto" v-if="!dataCenter.userServices.includes(service.id)">
+                        (
+                        <q-btn label="申请云主机配额" flat padding="none" color="primary" to="/my/personal/quota_apply"/>
+                        后可用)
+                      </div>
+                    </div>
+
                   </div>
 
                 </div>
@@ -216,6 +231,7 @@
             </div>
             <div class="q-pa-lg">
               3秒后跳转至详情页面
+              <!--              <q-btn flat padding="none" color="primary" label="详情页面" :to="'/my/personal/vmdetail/'+newId"/>-->
             </div>
             <q-btn label="继续创建云主机" @click="refresh" color="primary" unelevated/>
           </div>
@@ -312,6 +328,7 @@ export default defineComponent({
     // jumper 创建后跳转
     const isShowJumper = ref(false)
     const newIP = ref('')
+    const newId = ref('')
 
     // 创建云主机按钮状态
     const isCreating = ref(false)
@@ -342,19 +359,20 @@ export default defineComponent({
           void await $store.dispatch('vm/updateUserServerTableSingleServer', respCreateVM.data.id)
 
           newIP.value = $store.state.vm.tables.userServerTable.byId[respCreateVM.data.id].ipv4
+          newId.value = $store.state.vm.tables.userServerTable.byId[respCreateVM.data.id].id
           $q.notify({
-            color: 'nord14',
+            color: 'primary',
             message: `成功创建id为${newIP.value}的云主机`,
             position: 'bottom-right',
             closeBtn: false,
-            timeout: 15000
+            timeout: 10000
           })
           isCreating.value = false
           isShowJumper.value = true
 
           setTimeout(() => {
             // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            void $router.push(`/my/usage/vmdetail/${respCreateVM.data.id}`)
+            void $router.push(`/my/personal/vmdetail/${respCreateVM.data.id}`)
           }, 3000)
         } catch {
           // 创建vm失败，将按钮状态改回，错误由axios统一提示
