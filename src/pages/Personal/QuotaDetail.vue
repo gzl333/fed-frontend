@@ -19,7 +19,7 @@
 
           <div v-else class="col ">
             <!--            配额详情开始-->
-            <div class="row items-center justify-evenly quota-area bg-grey-1">
+            <div class="row items-center justify-evenly quota-area ">
 
               <div class="col-auto ">
                 <div class="column justify-start items-center" style="height: 120px">
@@ -330,7 +330,7 @@ export default defineComponent({
   margin-top: 10px;
   padding: 15px 0;
   height: 150px;
-  //border: $grey-4 1px solid;
+  border: $grey-4 1px solid;
   border-radius: 5px;
 }
 

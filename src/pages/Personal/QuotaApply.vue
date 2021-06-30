@@ -186,7 +186,6 @@
 
           </div>
 
-          <teleport to="#layout-footer">
             <div class="col section">
               <div class="text-h7 text-primary section-title">
                 所选参数
@@ -276,7 +275,6 @@
               </div>
 
             </div>
-          </teleport>
 
           <q-btn color="primary" @click="applyQuota" label="提交配额申请" unelevated :loading="isCreating"/>
 

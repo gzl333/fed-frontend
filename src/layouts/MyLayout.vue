@@ -22,14 +22,12 @@
     </q-page-container>
 
     <q-footer
-      id="layout-footer"
       v-model="isFooterOpen"
       elevated
-      reveal
     >
-      <q-toolbar>
-        footer content
-      </q-toolbar>
+      <div id="layout-footer" class="bg-white text-black">
+        footer
+      </div>
     </q-footer>
   </q-layout>
 </template>

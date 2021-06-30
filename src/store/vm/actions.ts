@@ -110,7 +110,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     })
   },
   async deleteUserQuota (context, quotaId: string) {
-    const api = apiBase + '/u-quota/' + quotaId + '/'
+    const api = apiBase + '/quota/' + quotaId + '/'
     const response = await axios.delete(api)
     return response
   },
@@ -148,12 +148,12 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     }
   },
   async fetchUserQuota () {
-    const api = apiBase + '/u-quota/'
+    const api = apiBase + '/quota/'
     const response = await axios.get(api)
     return response
   },
   async fetchUserQuotaServers (context, serviceId: string) {
-    const api = apiBase + '/u-quota/' + serviceId + '/servers/'
+    const api = apiBase + '/quota/' + serviceId + '/servers/'
     const response = await axios.get(api)
     return response
   },
