@@ -119,6 +119,9 @@ export interface QuotaInterface {
   duration_days: number
   // 来自server接口补充
   servers?: string[] // serverId
+  // 以下为根据上述字段自行判断填充
+  expired: boolean
+  exhausted: boolean
 }
 
 export interface ArchivedServerInterface {

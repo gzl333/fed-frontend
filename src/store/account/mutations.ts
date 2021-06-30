@@ -5,6 +5,13 @@ import jwtDecode from 'jwt-decode'
 
 // 注意此时state是store.state.account，而不是store.state
 const mutation: MutationTree<AccountInterface> = {
+  // toggle footer
+  openFooter (state) {
+    state.isFooterOpen = true
+  },
+  closeFooter (state) {
+    state.isFooterOpen = false
+  },
   // myLayout rightDrawer
   storeIsRightDrawerOpen (state) {
     state.isRightDrawerOpen = !state.isRightDrawerOpen

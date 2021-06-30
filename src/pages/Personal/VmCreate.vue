@@ -33,16 +33,16 @@
                   </div>
 
                   <div class="col item-radios">
-<!--                                        <q-radio-->
-<!--                                          v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"-->
-<!--                                          :disable="!dataCenter.userServices.includes(service.id)"-->
-<!--                                          dense v-model="radioService" :val="service.id" :label="service.name" :key="service.id"-->
-<!--                                          class="radio">-->
-<!--                                          <span v-if="!dataCenter.userServices.includes(service.id)">(暂无配额，<q-btn label="申请云主机配额" flat-->
-<!--                                                                                                                  padding="none"-->
-<!--                                                                                                                  color="primary"-->
-<!--                                                                                                                  to="/my/personal/quota_apply"/>后可用)</span>-->
-<!--                                        </q-radio>-->
+                    <!--                                        <q-radio-->
+                    <!--                                          v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"-->
+                    <!--                                          :disable="!dataCenter.userServices.includes(service.id)"-->
+                    <!--                                          dense v-model="radioService" :val="service.id" :label="service.name" :key="service.id"-->
+                    <!--                                          class="radio">-->
+                    <!--                                          <span v-if="!dataCenter.userServices.includes(service.id)">(暂无配额，<q-btn label="申请云主机配额" flat-->
+                    <!--                                                                                                                  padding="none"-->
+                    <!--                                                                                                                  color="primary"-->
+                    <!--                                                                                                                  to="/my/personal/quota_apply"/>后可用)</span>-->
+                    <!--                                        </q-radio>-->
 
                     <div class="row items-center q-pb-sm"
                          v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"
@@ -52,7 +52,8 @@
                                class="col-auto"/>
                       <div class="col-auto" v-if="!dataCenter.userServices.includes(service.id)">
                         (
-                        <q-btn label="申请云主机配额" flat padding="none" color="primary" to="/my/personal/quota_apply"/>
+                        <q-btn label="申请云主机配额" flat padding="none" color="primary"
+                               :to="{path: '/my/personal/quota_apply', query: {service: service.id}}"/>
                         后可用)
                       </div>
                     </div>
@@ -72,10 +73,7 @@
                 <div class="col item-radios">
                   <q-radio v-for="quota in quotas" dense v-model="radioQuota" :val="quota.id"
                            :key="quota.id" class="radio"
-                           :disable="quota.vcpu_used===quota.vcpu_total ||
-                                       quota.ram_used===quota.ram_total ||
-                                       (quota.private_ip_used===quota.private_ip_total &&
-                                       quota.public_ip_used===quota.public_ip_total) || (!!quota.expiration_time && new Date(quota.expiration_time).getTime() < new Date().getTime())">
+                           :disable="quota.expired || quota.exhausted">
                     <quota-card :quota="quota"/>
                   </q-radio>
                 </div>
@@ -147,11 +145,22 @@
 
             <div class="col section">
               <div class="text-h7 text-primary section-title">
+                备注(可选)
+              </div>
+              <div class="row item-row">
+                <div class="col">
+                  <q-input class="input-remarks" v-model="inputRemarks" maxlength="30" dense counter></q-input>
+                </div>
+              </div>
+            </div>
+
+            <div class="col section">
+              <div class="text-h7 text-primary section-title">
                 所选配置
               </div>
 
               <div class="row item-row">
-                <div class="col-shrink item-title-narrow text-bold">
+                <div class="col-shrink item-title-narrow text-grey">
                   服务节点
                 </div>
                 <div class="col item-radios">
@@ -163,7 +172,7 @@
               </div>
 
               <div class="row item-row">
-                <div class="col-shrink item-title-narrow text-bold">
+                <div class="col-shrink item-title-narrow text-grey">
                   云主机配额
                 </div>
                 <div class="col item-radios">
@@ -174,7 +183,7 @@
               </div>
 
               <div class="row item-row">
-                <div class="col-shrink item-title-narrow text-bold">
+                <div class="col-shrink item-title-narrow text-grey">
                   网络类型
                 </div>
                 <div class="col item-radios">
@@ -185,7 +194,7 @@
               </div>
 
               <div class="row item-row">
-                <div class="col-shrink item-title-narrow text-bold">
+                <div class="col-shrink item-title-narrow text-grey">
                   系统镜像
                 </div>
                 <div class="col item-radios">
@@ -196,7 +205,7 @@
               </div>
 
               <div class="row item-row">
-                <div class="col-shrink item-title-narrow text-bold">
+                <div class="col-shrink item-title-narrow text-grey">
                   CPU/内存
                 </div>
                 <div class="col item-radios">
@@ -208,17 +217,17 @@
                 </div>
               </div>
 
-            </div>
-
-            <div class="col section">
-              <div class="text-h7 text-primary section-title">
-                备注(可选)
-              </div>
               <div class="row item-row">
-                <div class="col">
-                  <q-input class="input-remarks" v-model="inputRemarks" maxlength="30" dense counter></q-input>
+                <div class="col-shrink item-title-narrow text-grey">
+                  备注
+                </div>
+                <div class="col item-radios">
+                  {{
+                    inputRemarks
+                  }}
                 </div>
               </div>
+
             </div>
 
             <q-btn color="primary" @click="createVM" label="创建云主机" unelevated :loading="isCreating"/>
@@ -245,12 +254,12 @@
 <script lang="ts">
 import { defineComponent, computed, ref, watch } from 'vue'
 import { useStore } from 'vuex'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { StateInterface } from 'src/store'
 import { useQuasar } from 'quasar'
 import { QuotaInterface } from 'src/store/vm/state'
 
-import QuotaCard from 'components/Personal/QuotaCard.vue'
+import QuotaCard from 'components/Personal/PersonalQuotaCard.vue'
 
 export default defineComponent({
   name: 'VmCreate',
@@ -260,6 +269,7 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const $router = useRouter()
     const $q = useQuasar()
+    const $route = useRoute()
 
     // 强制更新userQuotaTable，不顾isLoaded。因为quota可能在加载table后被批准更新。(前置serviceId等table已经存在。)
     void $store.dispatch('vm/updateUserQuotaTable')
@@ -307,6 +317,24 @@ export default defineComponent({
       })[0]?.id
     })
 
+    // 获取url所传参数.
+    /* 传参说明：
+    * 1. 都不传: 全部默认选择第一项
+    * 2. 只传quota: service根据quota算出，quota选择指定值
+    * 3. 只传service：service选择指定值，quota选择第一项
+    * 4. 同时传quota和service：则service被忽略
+    * */
+    let serviceDesignated = computed(() => '')
+    let quotaDesignated = ''
+    if ($route.query.quota) {
+      quotaDesignated = $route.query.quota as string
+      serviceDesignated = computed(() => $store.state.vm.tables.userQuotaTable.byId[quotaDesignated]?.service)
+    } else {
+      if ($route.query.service) {
+        serviceDesignated = computed(() => $route.query.service as string)
+      }
+    }
+
     // radioService的默认选择
     // // tables已经全部加载时，radioService选择第一项
     const chooseRadioService = () => {
@@ -317,9 +345,13 @@ export default defineComponent({
         $store.state.vm.tables.globalFlavorTable.isLoaded &&
         $store.state.vm.tables.userQuotaTable.isLoaded
       ) {
-        radioService.value = $store.state.vm.tables.userServiceTable.allIds[0]
+        // 如果有指定service,则默认选取指定值，没有则选择第一项
+        radioService.value = serviceDesignated.value ? serviceDesignated.value : $store.state.vm.tables.userServiceTable.allIds[0]
+        // 如果有指定的quota则默认选取指定值，没有则不变
+        radioQuota.value = quotaDesignated || radioQuota.value
       }
     }
+
     // // setup时调用一次
     chooseRadioService()
     // // watch根据tables的变化情况，再调用

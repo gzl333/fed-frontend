@@ -84,14 +84,17 @@ const getters: GetterTree<VmInterface, StateInterface> = {
   /* quotaList使用 */
   // 根据用户选择的filter来返回application数组
   getUserQuotasByFilter (state): QuotaInterface[] {
+    // expirtation_time字段为null时为长期配额，应视为最大时间
+    const sortFn = (a: QuotaInterface, b: QuotaInterface) => new Date(b.expiration_time || 9999999999999).getTime() - new Date(a.expiration_time || 9999999999999).getTime()
+
     // 当前选择的filter位于state.applyQuota.applicationList.filter，利用applicationList页面中的watch来修改
     if (state.pages.quotaList.filter === '0') {
-      return Object.values(state.tables.userQuotaTable.byId)
+      // 返回quota对象的数组，并以过期时间降序排序
+      return Object.values(state.tables.userQuotaTable.byId).sort(sortFn)
     } else {
       const rows: QuotaInterface[] = []
       for (const quota of Object.values(state.tables.userQuotaTable.byId)) {
         if (state.pages.quotaList.filter === null && quota.expiration_time === null) { // 筛选出长期的quota
-          console.log(quota)
           rows.push(quota)
         } else if (state.pages.quotaList.filter === 'valid' && !!quota.expiration_time && (new Date(quota.expiration_time).getTime() - new Date().getTime()) > 0) { // 筛选出未过期的quota
           rows.push(quota)
@@ -99,7 +102,7 @@ const getters: GetterTree<VmInterface, StateInterface> = {
           rows.push(quota)
         }
       }
-      return rows
+      return rows.sort(sortFn)
     }
   },
   /* quotaList使用 */

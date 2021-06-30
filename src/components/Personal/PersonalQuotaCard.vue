@@ -7,7 +7,8 @@
         <div class="row justify-end text-center">
 
           <div class="col-8 text-left">
-            <span class="text-grey q-px-sm">资源有效<q-tooltip>创建资源后可用的时间</q-tooltip></span>
+
+            <span class="text-grey q-px-sm">云主机时长<q-tooltip>云主机创建后可用的时间</q-tooltip></span>
             <span>{{ props.quota.duration_days }}天</span>
           </div>
 
@@ -21,26 +22,15 @@
         <div class="row justify-end text-center">
 
           <div class="col-8 text-left">
-            <span class="text-grey q-px-sm">配额过期</span>
+            <span class="text-grey q-px-sm">配额失效时间</span>
             <span v-if="props.quota.expiration_time">{{ new Date(props.quota.expiration_time).toLocaleString() }}</span>
             <span v-else>长期有效</span>
           </div>
           <div class="col text-right q-px-sm">
-            <span
-              v-if="props.quota.expiration_time && (new Date(props.quota.expiration_time).getTime() < new Date().getTime())"
-              class="text-red">已过期</span>
-            <span v-if=" props.quota.vcpu_used===props.quota.vcpu_total ||
-                                       props.quota.ram_used===props.quota.ram_total ||
-                                       (props.quota.private_ip_used===props.quota.private_ip_total &&
-                                       props.quota.public_ip_used===props.quota.public_ip_total)" class="text-red">
-              余量不足
-            </span>
+            <span v-if="props.quota.expired" class="text-red">已过期 </span>
+            <span v-if="props.quota.exhausted" class="text-red">已用尽</span>
           </div>
         </div>
-
-        <!--        <div v-else>资源有效期{{ props.quota.duration_days }}天 - -->
-        <!--          配额有效至{{ new Date(props.quota.expiration_time).toLocaleString() }}-->
-        <!--        </div>-->
 
       </q-card-section>
 

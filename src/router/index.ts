@@ -66,6 +66,14 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
     if (to.meta.title) {
       document.title = to.meta.title as string
     }
+    // 进入vmcreate和quota_apply前打开footer
+    if (to.fullPath.includes('/vmcreate') || to.fullPath.includes('/quota_apply')) {
+      store.commit('account/openFooter')
+    } else {
+      // 进入非上述两个页面时关闭footer
+      store.commit('account/closeFooter')
+    }
+
     next()
   })
 

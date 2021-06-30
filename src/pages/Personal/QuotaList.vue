@@ -160,20 +160,27 @@
             <div v-if="!props.row.expiration_time">长期有效</div>
             <div v-else>
               <div>{{ new Date(props.row.expiration_time).toLocaleString() }}</div>
-              <div v-if="new Date(props.row.expiration_time).getTime() < new Date().getTime()" class="text-red">已过期
+              <div v-if="props.row.expired" class="text-red">已过期
               </div>
             </div>
           </q-td>
-          <q-td key="resource" :props="props">
-            <div v-if="props.row.servers.length > 0">
-              <q-btn label="详情" flat dense padding="none" color="primary"
-                     :to="{path: `/my/personal/quota_detail/${props.row.id}`}"/>
-            </div>
-            <div v-else>无</div>
-          </q-td>
+
           <q-td key="operation" :props="props">
+            <q-btn icon="add_circle" flat dense padding="none" color="primary"
+                   :disable="props.row.expired || props.row.exhausted"
+                   :to="{path: `/my/personal/vmcreate`, query:{quota:props.row.id}}">
+              <q-tooltip>使用该配额创建云主机</q-tooltip>
+            </q-btn>
+
+            <q-btn icon="info" flat dense padding="none" color="primary"
+                   :to="{path: `/my/personal/quota_detail/${props.row.id}`}">
+              <q-tooltip>详情</q-tooltip>
+            </q-btn>
+
             <q-btn icon="delete" flat dense padding="none" color="primary"
-                   @click="$store.dispatch('vm/deleteAndUpdateUserQuotaTable', props.row.id)"/>
+                   @click="$store.dispatch('vm/deleteAndUpdateUserQuotaTable', props.row.id)">
+              <q-tooltip>删除</q-tooltip>
+            </q-btn>
           </q-td>
         </q-tr>
       </template>
@@ -226,6 +233,7 @@ export default defineComponent({
         label: '已过期',
         value: 'invalid'
       }
+      // 若添加以下两项则可能需在getter里修改逻辑
       // , {
       //   label: '未用尽',
       //   value: 'pass'
@@ -247,7 +255,7 @@ export default defineComponent({
       },
       {
         name: 'duration_days',
-        label: '资源有效期',
+        label: '云主机时长',
         field: 'duration_days',
         align: 'center',
         style: 'padding: 15px 5px'
@@ -289,17 +297,15 @@ export default defineComponent({
       },
       {
         name: 'expiration_time',
-        label: '配额过期时间',
+        label: '配额失效时间',
         field: 'expiration_time',
         align: 'center',
         style: 'padding: 15px 5px'
-      },
-      {
-        name: 'resource',
-        label: '关联资源',
-        field: 'resource',
-        align: 'center',
-        style: 'padding: 15px 5px'
+        // sortable: true,
+        // sort: (a: Date, b: Date) => {
+        //   console.log(a, b)
+        //   return new Date(a).getTime() - new Date(b).getTime()
+        // }
       },
       {
         name: 'operation',

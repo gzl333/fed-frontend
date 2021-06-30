@@ -1,5 +1,5 @@
 <template>
-  <q-layout view="hHh lpR fFf">
+  <q-layout view="hHh lpR lFr">
 
     <global-leftdrawer/>
 
@@ -19,8 +19,18 @@
           </div>
         </div>
       </q-page>
-
     </q-page-container>
+
+    <q-footer
+      id="layout-footer"
+      v-model="isFooterOpen"
+      elevated
+      reveal
+    >
+      <q-toolbar>
+        footer content
+      </q-toolbar>
+    </q-footer>
   </q-layout>
 </template>
 
@@ -52,12 +62,14 @@ export default defineComponent({
 
     const currentUser = $store.state.account
     const isRightDrawerOpen = computed(() => $store.state.account.isRightDrawerOpen)
+    const isFooterOpen = computed(() => $store.state.account.isFooterOpen)
 
     const toLogout = () => {
       void $store.dispatch('account/logoutCstUser')
     }
     return {
       isRightDrawerOpen,
+      isFooterOpen,
       currentUser,
       toLogout
     }
@@ -66,5 +78,4 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-
 </style>

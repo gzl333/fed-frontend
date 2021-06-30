@@ -121,15 +121,28 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     const service = new schema.Entity('service')
     const quota = new schema.Entity('quota', { service })
     const respQuota = await context.dispatch('fetchUserQuota')
+    // quota数组
     for (const data of respQuota.data.results) {
+      /* 增加补充字段 */
       // 获取quota下对应的server列表
       const respQuotaServers = await context.dispatch('fetchUserQuotaServers', data.id)
       const servers: string[] = []
       respQuotaServers.data.results.forEach((server: ServerInterface) => {
         servers.push(server.id)
       })
-      // 先把servers字段赋给data再normalize
+      // 给data增加servers字段
       Object.assign(data, { servers })
+      // 给data增加expired字段
+      const expired = !!data.expiration_time && (new Date(data.expiration_time).getTime() < new Date().getTime())
+      Object.assign(data, { expired })
+      // 给data增加exhausted字段,该字段的判断方式可能后期更改
+      const exhausted = data.vcpu_used === data.vcpu_total ||
+        data.ram_used === data.ram_total ||
+        (data.private_ip_used === data.private_ip_total && data.public_ip_used === data.public_ip_total)
+      Object.assign(data, { exhausted })
+      /* 增加补充字段 */
+
+      // normalize data
       const normalizedData = normalize(data, quota)
       context.commit('storeUserQuotaTable', normalizedData.entities.quota)
     }

@@ -19,7 +19,7 @@
 
           <div v-else class="col ">
             <!--            配额详情开始-->
-            <div class="row items-center justify-evenly quota-area">
+            <div class="row items-center justify-evenly quota-area bg-grey-1">
 
               <div class="col-auto ">
                 <div class="column justify-start items-center" style="height: 120px">
@@ -43,7 +43,7 @@
               <div class="col-auto ">
                 <div class="column justify-start items-center" style="height: 120px">
                   <div class="col-2 text-grey">
-                    资源有效期
+                    云主机时长
                   </div>
                   <div class="col-10">
                     <div class="column justify-center items-center" style="height: 100px">
@@ -205,14 +205,16 @@
               <div class="col-auto ">
                 <div class="column justify-start items-center" style="height: 120px">
                   <div class="col-2 text-grey">
-                    配额过期时间
+                    配额失效时间
                   </div>
                   <div class="col-10">
                     <div class="column justify-center items-center" style="height: 100px">
                       <div v-if="!quota.expiration_time">长期有效</div>
                       <div v-else class="column justify-center items-center">
                         <div>{{ new Date(quota.expiration_time).toLocaleString() }}</div>
-                        <div v-if="new Date(quota.expiration_time).getTime() < new Date().getTime()" class="text-red">已过期</div>
+                        <div v-if="new Date(quota.expiration_time).getTime() < new Date().getTime()" class="text-red">
+                          已过期
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -225,10 +227,17 @@
                     操作
                   </div>
                   <div class="col-10">
-                    <div class="column justify-center items-center" style="height: 100px">
+                    <div class="row justify-center items-center" style="height: 100px">
+                      <q-btn icon="add_circle" flat dense padding="none" color="primary"
+                             :disable="quota.expired || quota.exhausted"
+                             :to="{path: `/my/personal/vmcreate`, query:{quota:quota.id}}">
+                        <q-tooltip>使用该配额创建云主机</q-tooltip>
+                      </q-btn>
 
                       <q-btn icon="delete" flat dense padding="none" color="primary"
-                             @click="$store.dispatch('vm/deleteAndUpdateUserQuotaTable', quota.id)"/>
+                             @click="$store.dispatch('vm/deleteAndUpdateUserQuotaTable', quota.id)">
+                        <q-tooltip>删除</q-tooltip>
+                      </q-btn>
 
                     </div>
                   </div>
@@ -242,8 +251,8 @@
             <div class="row">
               <div class="col">
 
-                <div class="q-pa-md text-grey">
-                  配额关联资源
+                <div class="q-pt-lg q-pb-sm text-grey">
+                  关联云主机列表
                 </div>
 
                 <vm-table :vms="vms"/>
@@ -318,10 +327,11 @@ export default defineComponent({
 }
 
 .quota-area {
-  border: $grey-4 1px solid;
   margin-top: 10px;
   padding: 15px 0;
   height: 150px;
+  //border: $grey-4 1px solid;
+  border-radius: 5px;
 }
 
 .quota-column {

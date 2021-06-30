@@ -287,7 +287,7 @@ import { StateInterface } from 'src/store'
 import { useRouter, useRoute } from 'vue-router'
 import { copyToClipboard, useQuasar } from 'quasar'
 import ServerStatus from 'components/Personal/ServerStatus.vue'
-// import QuotaCard from 'components/Personal/QuotaCard.vue'
+// import QuotaCard from 'components/Personal/PersonalQuotaCard.vue'
 
 export default defineComponent({
   name: 'VmDetail',

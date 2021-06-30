@@ -159,7 +159,11 @@ const vm = {
           deleted: false, // 用户或管理员删除配额
 
           // 以下来自quota-server接口
-          servers: ['id1', 'id2'] // 关联serverTable，该配额下创建的云主机id
+          servers: ['id1', 'id2'], // 关联serverTable，该配额下创建的云主机id
+
+          // 以下为根据上述字段自行判断填充
+          expired: false,
+          exhausted: false
         }
       },
       allIds: ['id1'],

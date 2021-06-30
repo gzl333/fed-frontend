@@ -26,14 +26,16 @@ export interface AccountInterface {
     refresh: string
   }
 
-  // myLaylou rightDrawer open
+  // layout
   isRightDrawerOpen: boolean
+  isFooterOpen: boolean
 }
 
 function state () {
   return {
     isLogin: false,
-    isRightDrawerOpen: false
+    isRightDrawerOpen: false,
+    isFooterOpen: false
   }
 }
 

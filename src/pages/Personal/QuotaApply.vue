@@ -43,11 +43,11 @@
               配额参数
             </div>
 
-            <div class="row q-py-md">
+            <div class="row items-center q-py-md">
               <div class="col-1">
-                云主机有效期
+                云主机时长
               </div>
-              <div class="col-8">
+              <div class="col-6 q-mr-md">
                 <q-slider
                   v-model="sliderDuration"
                   :min="1"
@@ -59,13 +59,26 @@
                   color="primary"
                 />
               </div>
+              <!--              <div class="col-1">-->
+              <!--                <q-input-->
+              <!--                  v-model.number="sliderDuration"-->
+              <!--                  dense-->
+              <!--                  square-->
+              <!--                  type="number"-->
+              <!--                  filled-->
+              <!--                >-->
+              <!--                  <template v-slot:append>-->
+              <!--                    <div class="text-h5">天</div>-->
+              <!--                  </template>-->
+              <!--                </q-input>-->
+              <!--              </div>-->
             </div>
 
-            <div class="row q-py-md">
+            <div class="row  items-center q-py-md">
               <div class="col-1">
                 CPU
               </div>
-              <div class="col-8">
+              <div class="col-6">
                 <q-slider
                   v-model="sliderCpu"
                   :min="1"
@@ -79,11 +92,11 @@
               </div>
             </div>
 
-            <div class="row q-py-md">
+            <div class="row items-center q-py-md">
               <div class="col-1">
                 内存
               </div>
-              <div class="col-8">
+              <div class="col-6">
                 <q-slider
                   v-model="sliderRam"
                   :min="1024"
@@ -97,11 +110,11 @@
               </div>
             </div>
 
-            <div class="row q-py-md">
+            <div class="row items-center q-py-md">
               <div class="col-1">
                 私网IP
               </div>
-              <div class="col-8">
+              <div class="col-6">
                 <q-slider
                   v-model="sliderPrivate"
                   :min="0"
@@ -115,11 +128,11 @@
               </div>
             </div>
 
-            <div class="row q-py-md">
+            <div class="row items-center q-py-md">
               <div class="col-1">
                 公网IP
               </div>
-              <div class="col-8">
+              <div class="col-6">
                 <q-slider
                   v-model="sliderPublic"
                   :min="0"
@@ -133,11 +146,11 @@
               </div>
             </div>
 
-            <div class="row q-py-md">
+            <div class="row items-center q-py-md">
               <div class="col-1">
                 云硬盘
               </div>
-              <div class="col-8">
+              <div class="col-6">
                 <q-slider
                   v-model="sliderDisk"
                   :min="0"
@@ -154,96 +167,116 @@
 
           <div class="col section">
             <div class="text-h7 text-primary section-title">
-              所选配额
-            </div>
-
-            <div class="row item-row">
-              <div class="col-shrink item-title-narrow text-bold">
-                服务中心
-              </div>
-              <div class="col item-radios">
-                {{
-                  $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[radioService]?.data_center]?.name
-                }} - {{ $store.state.vm.tables.globalServiceTable.byId[radioService]?.name }}
-              </div>
-            </div>
-
-            <div class="row item-row">
-              <div class="col-shrink item-title-narrow text-bold">
-                资源有效期
-              </div>
-              <div class="col item-radios">
-                {{ sliderDuration }}天
-              </div>
-            </div>
-
-            <div class="row item-row">
-              <div class="col-shrink item-title-narrow text-bold">
-                CPU
-              </div>
-              <div class="col item-radios">
-                {{ sliderCpu }}核
-              </div>
-            </div>
-
-            <div class="row item-row">
-              <div class="col-shrink item-title-narrow text-bold">
-                内存
-              </div>
-              <div class="col item-radios">
-                {{ sliderRam / 1024 }}GB
-              </div>
-            </div>
-
-            <div class="row item-row">
-              <div class="col-shrink item-title-narrow text-bold">
-                私网IP
-              </div>
-              <div class="col item-radios">
-                {{ sliderPrivate }}个
-              </div>
-            </div>
-
-            <div class="row item-row">
-              <div class="col-shrink item-title-narrow text-bold">
-                公网IP
-              </div>
-              <div class="col item-radios">
-                {{ sliderPublic }}个
-              </div>
-            </div>
-
-            <div class="row item-row">
-              <div class="col-shrink item-title-narrow text-bold">
-                云硬盘
-              </div>
-              <div class="col item-radios">
-                {{ sliderDisk }}GB
-              </div>
-            </div>
-
-          </div>
-
-          <div class="col section">
-            <div class="text-h7 text-primary section-title">
               备注
             </div>
 
             <div class="row item-row items-center">
               <div class="col-1">配额用途</div>
-              <div class="col-8">
-                <q-input class="input-remarks" v-model="inputPurpose" maxlength="30" dense counter/>
+              <div class="col-6">
+                <q-input class="input-remarks" v-model="inputPurpose" maxlength="50" dense counter/>
               </div>
             </div>
 
             <div class="row item-row items-center">
               <div class="col-1">工作单位</div>
-              <div class="col-8">
-                <q-input class="input-remarks" v-model="inputUnit" maxlength="20" dense counter/>
+              <div class="col-6">
+                <q-input class="input-remarks" v-model="inputUnit" maxlength="50" dense counter/>
               </div>
             </div>
 
           </div>
+
+          <teleport to="#layout-footer">
+            <div class="col section">
+              <div class="text-h7 text-primary section-title">
+                所选参数
+              </div>
+
+              <div class="row item-row">
+                <div class="col-shrink item-title-narrow text-grey">
+                  服务节点
+                </div>
+                <div class="col item-radios">
+                  {{
+                    $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[radioService]?.data_center]?.name
+                  }} - {{ $store.state.vm.tables.globalServiceTable.byId[radioService]?.name }}
+                </div>
+              </div>
+
+              <div class="row item-row">
+                <div class="col-shrink item-title-narrow text-grey">
+                  云主机时长
+                </div>
+                <div class="col item-radios">
+                  {{ sliderDuration }}天
+                </div>
+              </div>
+
+              <div class="row item-row">
+                <div class="col-shrink item-title-narrow text-grey">
+                  CPU
+                </div>
+                <div class="col item-radios">
+                  {{ sliderCpu }}核
+                </div>
+              </div>
+
+              <div class="row item-row">
+                <div class="col-shrink item-title-narrow text-grey">
+                  内存
+                </div>
+                <div class="col item-radios">
+                  {{ sliderRam / 1024 }}GB
+                </div>
+              </div>
+
+              <div class="row item-row">
+                <div class="col-shrink item-title-narrow text-grey">
+                  私网IP
+                </div>
+                <div class="col item-radios">
+                  {{ sliderPrivate }}个
+                </div>
+              </div>
+
+              <div class="row item-row">
+                <div class="col-shrink item-title-narrow text-grey">
+                  公网IP
+                </div>
+                <div class="col item-radios">
+                  {{ sliderPublic }}个
+                </div>
+              </div>
+
+              <div class="row item-row">
+                <div class="col-shrink item-title-narrow text-grey">
+                  云硬盘
+                </div>
+                <div class="col item-radios">
+                  {{ sliderDisk }}GB
+                </div>
+              </div>
+
+              <div class="row item-row">
+                <div class="col-shrink item-title-narrow text-grey">
+                  配额用途
+                </div>
+                <div class="col item-radios">
+                  {{ inputPurpose }}
+                </div>
+              </div>
+
+              <div class="row item-row">
+                <div class="col-shrink item-title-narrow text-grey">
+                  工作单位
+                </div>
+                <div class="col item-radios">
+                  {{ inputUnit }}
+                </div>
+              </div>
+
+            </div>
+          </teleport>
 
           <q-btn color="primary" @click="applyQuota" label="提交配额申请" unelevated :loading="isCreating"/>
 
@@ -257,7 +290,7 @@
 import { computed, defineComponent, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
 
@@ -270,6 +303,7 @@ export default defineComponent({
     const $router = useRouter()
     const $q = useQuasar()
     const { locale } = useI18n({ useScope: 'global' })
+    const $route = useRoute()
 
     // radio选项数据
     const dataCenters = computed(() => Object.values($store.state.vm.tables.globalDataCenterTable.byId))
@@ -279,12 +313,23 @@ export default defineComponent({
       set: (value) => $store.commit('applyQuota/storeApplyPageServiceId', value)
     })
 
+    // 获取url所传参数.
+    /* 传参说明：
+    * 1. 都不传: 全部默认选择第一项
+    * 2. 传service: 默认选择指定service
+    * */
+    const serviceDesignated = $route.query.service as string // string or undefined
+
+    // radioService的默认选择
     const chooseRadioService = () => {
       if ($store.state.vm.tables.globalServiceTable.isLoaded) {
-        radioService.value = $store.state.vm.tables.globalServiceTable.allIds[0]
+        // 如果有指定service,则默认选取指定值，没有则选择第一项
+        radioService.value = serviceDesignated || $store.state.vm.tables.globalServiceTable.allIds[0]
       }
     }
+    // // setup时调用一次
     chooseRadioService()
+    // // watch根据table的变化情况，再调用
     watch($store.state.vm.tables.globalServiceTable, chooseRadioService)
 
     // slider状态

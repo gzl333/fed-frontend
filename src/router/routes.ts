@@ -55,7 +55,8 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Personal/VmCreate.vue')
+            component: () => import('pages/Personal/VmCreate.vue'),
+            props: true // 接收url中的参数
           },
           {
             path: 'vmdetail/:id', // serverId 动态路由匹配
@@ -114,7 +115,8 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Personal/QuotaApply.vue')
+            component: () => import('pages/Personal/QuotaApply.vue'),
+            props: true // 接收url中的参数
           },
           {
             path: 'vpn',
