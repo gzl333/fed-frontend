@@ -86,7 +86,7 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader.vue'
-import ProviderAddButton from 'components/provider/ProviderAddButton.vue'
+import ProviderAddButton from 'components/Provider/ProviderAddButton.vue'
 
 export default defineComponent({
   name: 'Provider',

@@ -1,5 +1,5 @@
 <template>
-  <div class="VmTable">
+  <div class="ServerTable">
 
     <q-table
       flat
@@ -118,10 +118,11 @@
         </q-tr>
       </template>
 
-      <template v-slot:bottom>
-      </template>
-
+      <!--      <template v-slot:bottom>-->
+      <!--      todo 批量操作-->
+      <!--      </template>-->
     </q-table>
+    <q-separator/>
 
   </div>
 </template>
@@ -134,11 +135,11 @@ import { StateInterface } from 'src/store'
 import { copyToClipboard, useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
 
-import ServerStatus from 'components/Personal/ServerStatus.vue'
-import ServerOperationBtnGroup from 'components/Personal/ServerOperationBtnGroup.vue'
+import ServerStatus from 'components/ServerTable/ServerStatus.vue'
+import ServerOperationBtnGroup from 'components/ServerTable/ServerOperationBtnGroup.vue'
 
 export default defineComponent({
-  name: 'VmTable',
+  name: 'ServerTable',
   components: {
     ServerStatus,
     ServerOperationBtnGroup
@@ -368,6 +369,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.VmTable {
+.ServerTable {
 }
 </style>

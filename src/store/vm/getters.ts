@@ -142,30 +142,15 @@ const getters: GetterTree<VmInterface, StateInterface> = {
   },
   /* vmcreate使用 */
 
-  /* 首页-在用云主机资源展示（最多8个） */
+  /* 获取所有server */
   getServers (state): ServerInterface[] {
     const rows: ServerInterface[] = []
-    let number = 0
     for (const server of Object.values(state.tables.userServerTable.byId)) {
-      if (number < 8) {
-        rows.push(server)
-        number = number + 1
-      }
+      rows.push(server)
     }
     return rows
-  },
-  /* 首页-在用云主机资源展示 */
-
-  /* 首页-获取所有机构下的服务的数量 */
-  getServicesNumber (state): number {
-    let num = 0
-    for (const dataCenter of Object.values(state.tables.globalDataCenterTable.byId)) {
-      num = num + dataCenter.globalServices.length
-    }
-    const servicesNum = num
-    return servicesNum
   }
-  /* 首页-获取所有机构下的服务的数量 */
+  /* 获取所有server */
 
 }
 

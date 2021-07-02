@@ -32,7 +32,7 @@
 
       <q-btn-dropdown color="primary" icon="more_horiz" dropdown-icon no-caps>
 
-        <q-list dense style="text-align:center">
+        <q-list  style="text-align:center">
           <q-item clickable v-close-popup class="bg-white text-primary"
                   :to="{path: `/my/personal/vmdetail/${props.server.id}`}">
             <div class="row">

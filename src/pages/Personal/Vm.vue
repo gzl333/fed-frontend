@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <vm-table :vms="rows"/>
+    <server-table :vms="rows"/>
 
   </div>
 
@@ -36,12 +36,12 @@ import { defineComponent, ref, computed, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
-import VmTable from 'components/Personal/VmTable.vue'
+import ServerTable from 'components/ServerTable/ServerTable.vue'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'Vm',
-  components: { VmTable },
+  components: { ServerTable },
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
