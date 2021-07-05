@@ -6,7 +6,8 @@ import { normalize, schema } from 'normalizr'
 import { Dialog, Notify } from 'quasar'
 import { i18n } from '../../boot/i18n' // vue组件外取i18n对象的方法
 
-const apiBase = 'https://vms.cstcloud.cn/api'
+// 根据用户访问协议来决定api地址的https/http
+const apiBase = window.location.protocol + '//vms.cstcloud.cn/api'
 // const apiBase = 'http://223.193.2.211:88/api'
 /* const statusCodeMap = new Map<number, string>(
   [
@@ -337,7 +338,10 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     }).onOk(async () => {
       // 发送请求
       const server = context.state.tables.userServerTable.byId[payload.id]
-      const api = server.endpoint_url.endsWith('/') ? server.endpoint_url + 'api/server/' + payload.id + '/action/' : server.endpoint_url + '/api/server/' + payload.id + '/action/'
+      // 去掉协议
+      const endpoint_url = server.endpoint_url.substr(server.endpoint_url.indexOf('//'))
+      // 判断结尾有没有'/'，并加上当前用户使用的协议
+      const api = window.location.protocol + endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.id + '/action/' : endpoint_url + '/api/server/' + payload.id + '/action/'
       const data = { action: payload.action }
       const response = await axios.post(api, data)
 
