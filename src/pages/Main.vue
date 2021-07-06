@@ -9,6 +9,21 @@
       </div>
 
       <q-separator/>
+      <div class="col-auto">
+        <div class="row justify-center">
+          <div class="content-fixed-width">
+            <q-banner v-if="isBannerOn" class="col  q-mt-lg banner-border shadow-5" inline-actions>
+              <template v-slot:action>
+                <q-btn flat padding="none" color="primary" label="忽略" @click="isBannerOn=false"/>
+              </template>
+              <div>
+                <q-btn class="text-h6" flat padding="none" color="primary">中国科技云联邦内测公告</q-btn>
+              </div>
+
+            </q-banner>
+          </div>
+        </div>
+      </div>
 
       <div class="col-auto">
         <div class="row justify-center">
@@ -50,7 +65,7 @@
                         </div>
                       </div>
                       <div class="col-auto">
-                        <q-btn flat color="primary"  label="更多动态"/>
+                        <q-btn flat color="primary" label="更多动态"/>
                       </div>
                     </div>
 
@@ -175,12 +190,15 @@ export default defineComponent({
       creation: '2021-6-21 15:37'
     }]
 
+    const isBannerOn = ref(true)
+
     return {
       currentUser,
       tab1,
       tab2,
       servers,
-      buckets
+      buckets,
+      isBannerOn
     }
   }
 })
@@ -189,5 +207,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .Main {
 }
-
+.banner-border {
+  border-left: 5px solid $primary;
+}
 </style>

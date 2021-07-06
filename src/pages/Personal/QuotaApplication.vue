@@ -337,7 +337,7 @@ export default defineComponent({
       },
       {
         name: 'duration_days',
-        label: '资源有效期',
+        label: '云主机时长',
         field: 'duration_days',
         align: 'center',
         style: 'padding: 15px 5px'
