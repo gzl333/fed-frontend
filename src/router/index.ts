@@ -59,13 +59,17 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
       // 已经登录，访问/login，重定向到/my
       next({ path: '/my' })
     } else if (to.meta.requireLogin && !store.state.account.isLogin) {
+      // 要求登录的页面，如果没有登录，则返回home页面
       next({ path: '/' })
-    } else if (!to.meta.requireLogin && store.state.account.isLogin) {
+    } else if (to.fullPath === '/' && store.state.account.isLogin) {
+      // home页面，如果已经登录了，则跳转到/my
       next({ path: '/my' })
     }
+
     if (to.meta.title) {
       document.title = to.meta.title as string
     }
+
     // // 进入vmcreate和quota_apply前打开footer
     // if (to.fullPath.includes('/vmcreate') || to.fullPath.includes('/quota_apply')) {
     //   store.commit('account/openFooter')

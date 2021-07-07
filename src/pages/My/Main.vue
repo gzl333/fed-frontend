@@ -9,6 +9,7 @@
       </div>
 
       <q-separator/>
+
       <div class="col-auto">
         <div class="row justify-center">
           <div class="content-fixed-width">
@@ -58,14 +59,14 @@
                   </div>
 
                   <div class="col q-pt-lg">
-                    <div class="row justify-between q-pt-sm q-px-sm">
+                    <div class="row justify-between items-center q-pt-sm">
                       <div class="col-auto">
                         <div class="text-h6 ">
-                          云联邦动态
+                          新闻动态
                         </div>
                       </div>
                       <div class="col-auto">
-                        <q-btn flat color="primary" label="更多动态"/>
+                        <q-btn flat padding="none" color="primary" icon="more_horiz" :to="{path:'/news'}" >更多</q-btn>
                       </div>
                     </div>
 
@@ -104,20 +105,33 @@
                 </div>
               </div>
               <div class="col">
-                <div class="row q-mt-md justify-between ">
-                  <div class=" col q-pa-sm text-h6">{{ $t('云主机') }}</div>
+                <div class="row q-mt-md justify-between items-center">
+                  <div class="col-auto text-h6">
+                    {{ $t('云主机') }}
+                  </div>
+                  <div class="col-auto ">
+                    <q-btn class="q-mr-md" flat padding="none" color="primary" icon="add" :to="{path: '/my/personal/vmcreate'}">新建</q-btn>
+                    <q-btn flat padding="none" color="primary" icon="more_horiz" :to="{path:'/my/personal/vm'}" >更多</q-btn>
+                  </div>
                 </div>
-                <q-separator/>
+                <q-separator color="grey-5"/>
                 <ServerTable v-if="servers" :vms="servers"/>
-                <div v-else>暂无云主机</div>
+                <div v-else>暂无云主机，请创建后使用</div>
               </div>
 
               <div class="col">
-                <div class="row q-mt-md  text-h5 ">
-                  <div class="q-pa-sm text-h6 ">{{ $t('对象存储') }}</div>
+                <div class="row q-mt-md justify-between items-center">
+                  <div class="col-auto text-h6 ">
+                    {{ $t('对象存储') }}
+                  </div>
+                  <div class="col-auto ">
+                    <q-btn disable class="q-mr-md" flat padding="none" color="primary" icon="add">新建</q-btn>
+                    <q-btn disable flat padding="none" color="primary" icon="more_horiz" >更多</q-btn>
+                  </div>
                 </div>
-                <q-separator/>
+                <q-separator color="grey-5"/>
                 <BucketTable v-if="buckets" :buckets="buckets"/>
+                <div v-else>暂无对象存储桶，请创建后使用</div>
               </div>
             </div>
 
@@ -134,7 +148,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
-import { StateInterface } from '../store'
+import { StateInterface } from '../../store'
 
 import GlobalHeader from 'components/GlobalHeader.vue'
 import ServerTable from 'components/ServerTable/ServerTable.vue'

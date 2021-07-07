@@ -94,6 +94,7 @@ const {
   getScrollTarget,
   setVerticalScrollPosition
 } = scroll
+
 export default defineComponent({
   name: 'HomeLayout.vue',
   components: {
@@ -133,7 +134,7 @@ export default defineComponent({
       console.log(respUrl.data.data)
     }
     return {
-      isShowLogin: ref('false'),
+      // isShowLogin: ref('false'),
       scrollTop,
       onScroll,
       scrollRatio,

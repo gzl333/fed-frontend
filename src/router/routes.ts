@@ -22,6 +22,22 @@ const routes: RouteRecordRaw[] = [
   //   }
   // },
   {
+    path: '/news',
+    component: () => import('layouts/NewsLayout.vue'),
+    meta: {
+      title: '新闻动态-中国科技云联邦',
+      requireLogin: false
+    }
+  },
+  {
+    path: '/doc',
+    component: () => import('layouts/DocLayout.vue'),
+    meta: {
+      title: '使用手册-中国科技云联邦',
+      requireLogin: false
+    }
+  },
+  {
     path: '/my',
     component: () => import('layouts/MyLayout.vue'),
     redirect: '/my/main',
@@ -29,7 +45,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'main',
         name: 'main',
-        component: () => import('pages/Main.vue'),
+        component: () => import('pages/My/Main.vue'),
         meta: {
           title: '我的首页-中国科技云联邦',
           requireLogin: true
@@ -37,7 +53,7 @@ const routes: RouteRecordRaw[] = [
       },
       {
         path: 'personal',
-        component: () => import('pages/Personal/PersonalIndex.vue'),
+        component: () => import('pages/My/Personal/PersonalIndex.vue'),
         redirect: '/my/personal/vm',
         meta: {
           title: '在用资源-中国科技云联邦'
@@ -48,14 +64,14 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Personal/Vm.vue')
+            component: () => import('pages/My/Personal/Vm.vue')
           },
           {
             path: 'vmcreate',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Personal/VmCreate.vue'),
+            component: () => import('pages/My/Personal/VmCreate.vue'),
             props: true // 接收url中的参数
           },
           {
@@ -63,28 +79,28 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Personal/VmDetail.vue')
+            component: () => import('pages/My/Personal/VmDetail.vue')
           },
           {
             path: 'vd',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Personal/Vd.vue')
+            component: () => import('pages/My/Personal/Vd.vue')
           },
           {
             path: 'obs',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Personal/Obs.vue')
+            component: () => import('pages/My/Personal/Obs.vue')
           },
           {
             path: 'quota',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Personal/QuotaIndex.vue'),
+            component: () => import('pages/My/Personal/QuotaIndex.vue'),
             redirect: '/my/personal/quota/list',
             children: [
               {
@@ -92,14 +108,14 @@ const routes: RouteRecordRaw[] = [
                 meta: {
                   requireLogin: true
                 },
-                component: () => import('pages/Personal/QuotaList.vue')
+                component: () => import('pages/My/Personal/QuotaList.vue')
               },
               {
                 path: 'application',
                 meta: {
                   requireLogin: true
                 },
-                component: () => import('pages/Personal/QuotaApplication.vue')
+                component: () => import('pages/My/Personal/QuotaApplication.vue')
               }
             ]
           },
@@ -108,14 +124,14 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Personal/QuotaDetail.vue')
+            component: () => import('pages/My/Personal/QuotaDetail.vue')
           },
           {
             path: 'quota_apply',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Personal/QuotaApply.vue'),
+            component: () => import('pages/My/Personal/QuotaApply.vue'),
             props: true // 接收url中的参数
           },
           {
@@ -123,13 +139,13 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Personal/Vpn.vue')
+            component: () => import('pages/My/Personal/Vpn.vue')
           }
         ]
       },
       {
         path: 'group',
-        component: () => import('pages/Group/GroupIndex.vue'),
+        component: () => import('pages/My/Group/GroupIndex.vue'),
         redirect: '/my/group/resource',
         meta: {
           title: '小组资源-中国科技云联邦'
@@ -140,27 +156,27 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Group/GroupResource.vue')
+            component: () => import('pages/My/Group/GroupResource.vue')
           },
           {
             path: 'quota', // 组配额
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Group/GroupQuota.vue')
+            component: () => import('pages/My/Group/GroupQuota.vue')
           },
           {
             path: 'list', // 组列表
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Group/GroupList.vue')
+            component: () => import('pages/My/Group/GroupList.vue')
           }
         ]
       },
       {
         path: 'provider',
-        component: () => import('pages/Provider/ProviderIndex.vue'),
+        component: () => import('pages/My/Provider/ProviderIndex.vue'),
         redirect: '/my/provider/manage',
         meta: {
           title: '资源提供-中国科技云联邦'
@@ -171,55 +187,55 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Provider/Manage.vue')
+            component: () => import('pages/My/Provider/Manage.vue')
           },
           {
             path: 'provided',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Provider/Provided.vue')
+            component: () => import('pages/My/Provider/Provided.vue')
           },
           {
             path: 'service',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Provider/Service.vue')
+            component: () => import('pages/My/Provider/Service.vue')
           },
           {
             path: 'join_service',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Provider/Join.vue')
+            component: () => import('pages/My/Provider/Join.vue')
           },
           {
             path: 'create_datacenter',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Provider/CreateDatacenter.vue')
+            component: () => import('pages/My/Provider/CreateDatacenter.vue')
           },
           {
             path: 'configuration',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Provider/Configuration.vue')
+            component: () => import('pages/My/Provider/Configuration.vue')
           },
           {
             path: 'quit',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Provider/Quit.vue')
+            component: () => import('pages/My/Provider/Quit.vue')
           }
         ]
       },
       {
         path: 'federation',
-        component: () => import('pages/Federation/FederationIndex.vue'),
+        component: () => import('pages/My/Federation/FederationIndex.vue'),
         redirect: '/my/federation/service_list',
         meta: {
           title: '联邦管理-中国科技云联邦'
@@ -230,21 +246,21 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Federation/ServiceList.vue')
+            component: () => import('pages/My/Federation/ServiceList.vue')
           },
           {
             path: 'institution_list',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Federation/InstitutionList.vue')
+            component: () => import('pages/My/Federation/InstitutionList.vue')
           },
           {
             path: 'audit_list',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/Federation/AuditList.vue')
+            component: () => import('pages/My/Federation/AuditList.vue')
           }
         ]
       }
