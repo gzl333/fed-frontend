@@ -6,7 +6,7 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-            <q-input disable outlined v-model="text" stack-label label="搜索">
+            <q-input disable dense outlined v-model="text" stack-label label="搜索">
               <template v-slot:append>
                 <!--                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>-->
                 <q-icon name="search"/>
@@ -19,7 +19,7 @@
       <div class="col-2">
         <div class="row justify-end">
           <div class="col">
-            <q-select outlined stack-label label="筛选" v-model="filterSelection"
+            <q-select outlined dense stack-label label="筛选" v-model="filterSelection"
                       :options="filterOptions"/>
           </div>
         </div>
@@ -139,7 +139,7 @@
           </div>
 
           <div class="row q-py-sm">
-            <div class="col-3 text-grey-7">资源有效期</div>
+            <div class="col-3 text-grey-7">云主机时长</div>
             <div class="col">{{ currentApplication.duration_days }}天</div>
           </div>
 
@@ -276,7 +276,7 @@ export default defineComponent({
       },
       {
         name: 'duration_days',
-        label: '资源有效期',
+        label: '云主机时长',
         field: 'duration_days',
         align: 'center',
         style: 'padding: 15px 5px'

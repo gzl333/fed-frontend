@@ -27,7 +27,18 @@ const routes: RouteRecordRaw[] = [
     meta: {
       title: '新闻动态-中国科技云联邦',
       requireLogin: false
-    }
+    },
+    props: true,
+    children: [
+      {
+        path: 'article/:name',
+        component: () => import('pages/News/Article.vue'),
+        meta: {
+          title: '新闻动态-中国科技云联邦',
+          requireLogin: false
+        }
+      }
+    ]
   },
   {
     path: '/doc',
