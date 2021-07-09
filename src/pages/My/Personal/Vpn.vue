@@ -62,12 +62,12 @@
                     <q-input class="password-input"
                              :loading="isLoading"
                              v-model="vpn.password"
-                             :type="isPwd ? 'password' : 'text'"
+                             :type="isPwds[vpn.id] ? 'password' : 'text'"
                              readonly borderless dense square outlined>
                       <template v-slot:prepend>
                         <q-icon
-                          :name="isPwd ? 'visibility' : 'visibility_off'"
-                          @click="isPwd = !isPwd"
+                          :name="isPwds[vpn.id] ? 'visibility' : 'visibility_off'"
+                          @click="isPwds[vpn.id] = !isPwds[vpn.id]"
                         />
                       </template>
                     </q-input>
@@ -116,10 +116,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, reactive, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
-import { copyToClipboard, useQuasar } from 'quasar'
+import useCopyToClipboard from 'src/hooks/useCopyToClipboard'
 
 export default defineComponent({
   name: 'Vpn',
@@ -127,27 +127,22 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const $q = useQuasar()
 
     const vpns = computed(() => Object.values($store.state.vm.tables.userVpnTable.byId))
 
     const tab = ref('1')
 
     // 复制信息到剪切板
-    const clickToCopy = async (text: string) => {
-      void await copyToClipboard(text).then(() => {
-        $q.notify({
-          color: 'primary',
-          message: `${text} 已经复制到剪切板`,
-          // position: 'bottom-right',
-          closeBtn: false,
-          timeout: 1500
-        })
-      })
-    }
+    const clickToCopy = useCopyToClipboard()
 
     // password可见性
-    const isPwd = ref(true)
+    const isPwds = computed(() => {
+      const isPwds = {}
+      vpns.value.forEach((vpn) => {
+        Object.assign(isPwds, { [vpn.id]: true })
+      })
+      return reactive(isPwds)
+    })
 
     // 修改密码loading状态
     const isLoading = ref(false)
@@ -156,7 +151,7 @@ export default defineComponent({
       $store,
       vpns,
       tab,
-      isPwd,
+      isPwds,
       isLoading,
       clickToCopy
     }

@@ -18,7 +18,9 @@
                 <q-btn flat padding="none" color="primary" label="忽略" @click="isBannerOn=false"/>
               </template>
               <div>
-                <q-btn class="text-h6" flat padding="none" color="primary" :to="{path: '/news/article/18'}">中国科技云联邦内测公告</q-btn>
+                <q-btn class="text-h6" flat padding="none" color="primary" :to="{path: '/news/article/18'}">
+                  中国科技云联邦内测公告
+                </q-btn>
               </div>
             </q-banner>
           </div>
@@ -47,12 +49,25 @@
                     </q-tabs>
 
                     <q-tab-panels v-model="tab1" animated>
-                      <q-tab-panel name="fed" class="">
-                        地图
+                      <q-tab-panel name="fed" class="tab1" style="overflow: hidden;">
+                        <div class="row justify-start items-center q-gutter-lg">
+                          <div class="col-auto">
+                            现有机构数量：
+                            <span class="text-primary text-h4">
+                              {{ $store.state.vm.tables.globalDataCenterTable.allIds?.length }}
+                            </span>
+                          </div>
+                          <div class="col-auto">
+                            现有服务数量：
+                            <span class="text-primary text-h4">
+                              {{ $store.state.vm.tables.globalServiceTable.allIds?.length }}
+                            </span>
+                          </div>
+                        </div>
                       </q-tab-panel>
 
-                      <q-tab-panel name="sum" class="">
-                        汇聚图
+                      <q-tab-panel name="sum" class="tab2" style="overflow: hidden;">
+                        <img src="img/fed_map.png" alt="">
                       </q-tab-panel>
                     </q-tab-panels>
                   </div>
@@ -65,7 +80,7 @@
                         </div>
                       </div>
                       <div class="col-auto">
-                        <q-btn flat padding="none" color="primary" icon="more_horiz" :to="{path:'/news'}" >更多</q-btn>
+                        <q-btn flat padding="none" color="primary" icon="more_horiz" :to="{path:'/news'}">更多</q-btn>
                       </div>
                     </div>
 
@@ -109,8 +124,11 @@
                     {{ $t('云主机') }}
                   </div>
                   <div class="col-auto ">
-                    <q-btn class="q-mr-md" flat padding="none" color="primary" icon="add" :to="{path: '/my/personal/vmcreate'}">新建</q-btn>
-                    <q-btn flat padding="none" color="primary" icon="more_horiz" :to="{path:'/my/personal/vm'}" >更多</q-btn>
+                    <q-btn class="q-mr-md" flat padding="none" color="primary" icon="add"
+                           :to="{path: '/my/personal/vmcreate'}">新建
+                    </q-btn>
+                    <q-btn flat padding="none" color="primary" icon="more_horiz" :to="{path:'/my/personal/vm'}">更多
+                    </q-btn>
                   </div>
                 </div>
                 <q-separator color="grey-5"/>
@@ -125,7 +143,7 @@
                   </div>
                   <div class="col-auto ">
                     <q-btn disable class="q-mr-md" flat padding="none" color="primary" icon="add">新建</q-btn>
-                    <q-btn disable flat padding="none" color="primary" icon="more_horiz" >更多</q-btn>
+                    <q-btn disable flat padding="none" color="primary" icon="more_horiz">更多</q-btn>
                   </div>
                 </div>
                 <q-separator color="grey-5"/>
@@ -206,6 +224,7 @@ export default defineComponent({
     const isBannerOn = ref(true)
 
     return {
+      $store,
       currentUser,
       tab1,
       tab2,
@@ -220,7 +239,17 @@ export default defineComponent({
 <style lang="scss" scoped>
 .Main {
 }
+
 .banner-border {
   border-left: 5px solid $primary;
+}
+// todo debug
+.tab1 {
+  background-image: url(./public/img/city_map.png);
+}
+
+.counts {
+  position: relative;
+  top: -50px;
 }
 </style>

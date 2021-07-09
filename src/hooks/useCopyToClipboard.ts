@@ -1,18 +1,18 @@
-// 复制信息到剪切板
+// 复制信息到剪切板的钩子函数
 import { copyToClipboard, useQuasar } from 'quasar'
 
-const useCopyToClipboard = (text: string) => {
+export default function () {
   const $q = useQuasar()
-  void copyToClipboard(text).then(() => {
-    console.log($q)
-    $q.notify({
-      color: 'primary',
-      message: `${text} 已经复制到剪切板`,
-      // position: 'bottom-right',
-      closeBtn: false,
-      timeout: 1500
+  // 调用useHook函数后对外暴露一个函数，这个函数内部包裹一个copyToClipboard的调用形式
+  return (text: string) => {
+    void copyToClipboard(text).then(() => {
+      $q.notify({
+        color: 'primary',
+        message: `${text} 已经复制到剪切板`,
+        // position: 'bottom-right',
+        closeBtn: false,
+        timeout: 1500
+      })
     })
-  })
+  }
 }
-
-export default useCopyToClipboard

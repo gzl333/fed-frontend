@@ -132,8 +132,9 @@ import { computed, defineComponent, PropType, ref } from 'vue'
 import { VmInterface } from 'src/store/vm/state'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
-import { copyToClipboard, useQuasar } from 'quasar'
 import { useI18n } from 'vue-i18n'
+
+import useCopyToClipboard from 'src/hooks/useCopyToClipboard'
 
 import ServerStatus from 'components/ServerTable/ServerStatus.vue'
 import ServerOperationBtnGroup from 'components/ServerTable/ServerOperationBtnGroup.vue'
@@ -152,7 +153,6 @@ export default defineComponent({
   },
   setup (props) {
     const $store = useStore<StateInterface>()
-    const $q = useQuasar()
     const { locale } = useI18n({ useScope: 'global' })
 
     // 云主机列表分栏定义
@@ -333,17 +333,8 @@ export default defineComponent({
     })
 
     // 复制信息到剪切板
-    const clickToCopy = async (text: string) => {
-      void await copyToClipboard(text).then(() => {
-        $q.notify({
-          color: 'primary',
-          message: `${text} 已经复制到剪切板`,
-          // position: 'bottom-right',
-          closeBtn: false,
-          timeout: 1500
-        })
-      })
-    }
+    const clickToCopy = useCopyToClipboard()
+
     // table row hover
     const hoverRow = ref('')
     const onMouseEnterRow = (rowName: string) => {

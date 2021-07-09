@@ -285,8 +285,8 @@ import { defineComponent, computed, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter, useRoute } from 'vue-router'
-import { copyToClipboard, useQuasar } from 'quasar'
 import ServerStatus from 'components/ServerTable/ServerStatus.vue'
+import useCopyToClipboard from 'src/hooks/useCopyToClipboard'
 // import QuotaCard from 'components/Personal/PersonalQuotaCard.vue'
 
 export default defineComponent({
@@ -296,7 +296,6 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
     const $router = useRouter()
-    const $q = useQuasar()
     const $route = useRoute()
 
     // 从route对象中读取id参数
@@ -318,18 +317,8 @@ export default defineComponent({
     // password可见性
     const isPwd = ref(true)
 
-    // 复制信息到剪切板 todo ---> hooks
-    const clickToCopy = async (text: string) => {
-      void await copyToClipboard(text).then(() => {
-        $q.notify({
-          color: 'primary',
-          message: `${text} 已经复制到剪切板`,
-          // position: 'bottom-right',
-          closeBtn: false,
-          timeout: 1500
-        })
-      })
-    }
+    // 复制信息到剪切板
+    const clickToCopy = useCopyToClipboard()
 
     // 返回上一页
     const goBack = () => {
