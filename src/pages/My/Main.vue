@@ -18,9 +18,8 @@
                 <q-btn flat padding="none" color="primary" label="忽略" @click="isBannerOn=false"/>
               </template>
               <div>
-                <q-btn class="text-h6" flat padding="none" color="primary">中国科技云联邦内测公告</q-btn>
+                <q-btn class="text-h6" flat padding="none" color="primary" :to="{path: '/news/article/18'}">中国科技云联邦内测公告</q-btn>
               </div>
-
             </q-banner>
           </div>
         </div>

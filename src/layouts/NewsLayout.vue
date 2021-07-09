@@ -1,36 +1,36 @@
 <template>
   <q-layout view="hHh lpR fFf">
 
-    <q-header class="header" reveal>
-
-      <div class="row items-center justify-between no-wrap">
-        <div class="col-xs-6 col-sm-6 col-md-4 text-right">
+    <q-header class="header row justify-center" :style="dynamicBackground">
+      <div class="row justify-between items-center no-wrap content-fixed-width">
+        <div class="col-auto">
           <q-btn flat :ripple="false" padding="none" size="xs" unelevated dense>
-            <img src="logo.png" class="logo">
+            <img src="logo.png" class="logo" @click="$router.push({path: '/'})">
+            <q-tooltip>首页</q-tooltip>
           </q-btn>
         </div>
-
-        <div class="col-xs-6 col-sm-6 col-md-4 text-left q-px-xl q-gutter-sm">
+        <div class="col-auto q-gutter-sm">
           <q-btn class="gt-xs" outline :ripple="false" color="white" label="注 册" type="a"
-                 href="https://passport.escience.cn/regist.jsp"
-                 target="_blank"/>
+                 href="https://passport.escience.cn/regist.jsp" target="_blank"/>
           <q-btn unelevated :ripple="false" color="primary" label="登 录" @click="cstLogin"/>
-
         </div>
       </div>
-
     </q-header>
 
     <q-page-container>
       <q-page class="non-selectable">
         <q-scroll-area class="home-scroll-area">
+          <q-scroll-observer @scroll="onScroll"/>
 
-              <!--如果进入/news，则显示newslist组件-->
-              <news-list v-if="$route.path.endsWith('/news') ||$route.path.endsWith('/news/')"
-              class=""/>
+          <!--如果进入/news，则显示newslist组件-->
+          <news-list v-if="$route.path.endsWith('/news') ||$route.path.endsWith('/news/')"/>
 
-              <!--否则用router-view接住导航页面,并传入article id-->
-              <router-view v-else/>
+          <!--否则用router-view接住导航页面,并传入article id-->
+          <router-view v-else/>
+
+          <div class="footer">
+            <div>©CNIC 2021</div>
+          </div>
 
         </q-scroll-area>
       </q-page>
@@ -40,8 +40,8 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
-import { useRoute } from 'vue-router'
+import { computed, defineComponent, ref } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 
 import NewsList from 'components/News/NewsList.vue'
 
@@ -51,9 +51,26 @@ export default defineComponent({
   props: {},
   setup () {
     const $route = useRoute()
+    const $router = useRouter()
     console.log($route.path)
+
+    // scroll info
+    const scrollTop = ref(0)
+    const onScroll = (info: Record<string, Record<string, number>>) => {
+      scrollTop.value = info.position.top
+    }
+    const scrollRatio = computed(() => scrollTop.value > 400 ? 0.4 : scrollTop.value / 400 * 0.4)
+    const dynamicBackground = computed(() => {
+      return {
+        background: `rgb(0,0,0, ${scrollRatio.value})`
+      }
+    })
     return {
-      $route
+      $route,
+      $router,
+      onScroll,
+      scrollRatio,
+      dynamicBackground
     }
   }
 })
@@ -64,7 +81,11 @@ export default defineComponent({
   height: 100px;
   line-height: 100px;
   //background: transparentize(white, .7);
-  background: linear-gradient(90deg ,#021048,#1e38a3);
+  //background: linear-gradient(90deg ,#021048,#1e38a3);
+}
+
+.header-content {
+  width: $general-width;
 }
 
 .logo {
@@ -80,33 +101,8 @@ export default defineComponent({
   min-width: 300px;
 }
 
-.part1 {
-  padding-top: 80px;
-  user-select: none;
-  height: 100vh;
-  top: 0;
-  left: 0;
-  z-index: -10;
-  width: 100%;
-  background: linear-gradient(90deg, $nord10, $nord7);
-
-  h3 {
-    text-align: center;
-    margin-top: 40vh;
-  }
-}
-
-.part2 {
-  .q-parallax {
-    opacity: .9;
-  }
-}
-
-.part3 {
-}
-
-.home-footer {
-  color: $nord6;
+.footer {
+  color: white;
   text-align: center;
   height: 50px;
   line-height: 50px;
