@@ -18,7 +18,7 @@
                 <q-btn flat padding="none" color="primary" label="忽略" @click="isBannerOn=false"/>
               </template>
               <div>
-                <q-btn class="text-h6" flat padding="none" color="primary" :to="{path: '/news/article/18'}">
+                <q-btn class="text-h6" flat padding="none" color="primary" :to="{path: '/news/closed-beta'}">
                   中国科技云联邦内测公告
                 </q-btn>
               </div>
@@ -48,17 +48,17 @@
                       <q-tab class="q-px-sm text-h6 " name="sum">资源汇聚</q-tab>
                     </q-tabs>
 
-                    <q-tab-panels v-model="tab1" animated>
+                    <q-tab-panels v-model="tab1" animated class="non-selectable">
                       <q-tab-panel name="fed" class="tab1" style="overflow: hidden;">
-                        <div class="row justify-start items-center q-gutter-lg">
+                        <div class="row justify-start items-center q-gutter-lg counts">
                           <div class="col-auto">
-                            现有机构数量：
+                            当前机构数量：
                             <span class="text-primary text-h4">
                               {{ $store.state.vm.tables.globalDataCenterTable.allIds?.length }}
                             </span>
                           </div>
                           <div class="col-auto">
-                            现有服务数量：
+                            当前服务数量：
                             <span class="text-primary text-h4">
                               {{ $store.state.vm.tables.globalServiceTable.allIds?.length }}
                             </span>
@@ -67,7 +67,7 @@
                       </q-tab-panel>
 
                       <q-tab-panel name="sum" class="tab2" style="overflow: hidden;">
-                        <img src="img/fed_map.png" alt="">
+
                       </q-tab-panel>
                     </q-tab-panels>
                   </div>
@@ -167,7 +167,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from '../../store'
 
-import GlobalHeader from 'components/GlobalHeader.vue'
+import GlobalHeader from 'components/GlobalHeader/GlobalHeader.vue'
 import ServerTable from 'components/ServerTable/ServerTable.vue'
 import BucketTable from 'components/BucketTable/BucketTable.vue'
 
@@ -245,11 +245,21 @@ export default defineComponent({
 }
 // todo debug
 .tab1 {
-  background-image: url(./public/img/city_map.png);
+  background-image: url('/img/city_map.png');
+  background-repeat: no-repeat;
+  background-size: auto;
+  height: 190px;
+}
+
+.tab2 {
+  background-image: url('/img/fed_map.png');
+  background-repeat: no-repeat;
+  background-size: contain;
+  height: 190px;
 }
 
 .counts {
   position: relative;
-  top: -50px;
+  top: 135px;
 }
 </style>

@@ -11,25 +11,25 @@
     <q-header :elevated="scrollRatio===0.4" class="home-header row justify-center" :style="dynamicBackground">
       <div class="row justify-between items-center no-wrap content-fixed-width">
 
-          <div class="col-auto">
-            <q-btn flat :ripple="false" padding="none" size="xs" unelevated dense>
-              <img src="logo.png" class="logo">
-            </q-btn>
-          </div>
+        <div class="col-auto">
+          <q-btn flat :ripple="false" padding="none" size="xs" unelevated dense>
+            <img src="logo.png" class="logo">
+          </q-btn>
+        </div>
 
-          <div class="gt-sm col-auto q-px-md q-gutter-xs">
-            <q-btn flat :ripple="false" color="white" label="资源与服务" @click="scrollToElement($refs['part1'])"/>
-            <q-btn flat :ripple="false" color="white" label="资源提供者" @click="scrollToElement($refs['part2'])"/>
-            <q-btn flat :ripple="false" color="white" label="开发者" @click="scrollToElement($refs['part3'])"/>
-          </div>
-          <!--        <q-separator vertical v-if="scrollRatio===0.6"/>-->
-          <div class="col-auto q-gutter-sm">
-            <q-btn class="gt-xs" outline :ripple="false" color="white" label="注 册" type="a"
-                   href="https://passport.escience.cn/regist.jsp"
-                   target="_blank"/>
-            <q-btn unelevated :ripple="false" color="primary" label="登 录" @click="cstLogin"/>
+        <div class="gt-sm col-auto q-px-md q-gutter-xs">
+          <q-btn flat :ripple="false" color="white" label="资源与服务" @click="scrollToElement($refs['part1'])"/>
+          <q-btn flat :ripple="false" color="white" label="资源提供者" @click="scrollToElement($refs['part2'])"/>
+          <q-btn flat :ripple="false" color="white" label="开发者" @click="scrollToElement($refs['part3'])"/>
+        </div>
+        <!--        <q-separator vertical v-if="scrollRatio===0.6"/>-->
+        <div class="col-auto q-gutter-sm">
+          <q-btn class="gt-xs" outline :ripple="false" color="white" label="注 册" type="a"
+                 href="https://passport.escience.cn/regist.jsp"
+                 target="_blank"/>
+          <q-btn unelevated :ripple="false" color="primary" label="登 录" @click="cstLogin"/>
 
-          </div>
+        </div>
       </div>
     </q-header>
 
@@ -78,6 +78,8 @@ import { scroll } from 'quasar'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
+import useCstLogin from 'src/hooks/useCstLogin'
+
 const {
   getScrollTarget,
   setVerticalScrollPosition
@@ -115,12 +117,8 @@ export default defineComponent({
       }
     })
     // 科技云通行证用户登录
-    const cstLogin = async () => {
-      // loginCard 只负责获取科技云通行证登录页面地址，并跳转。 code及token处理、/login路由跳转逻辑处理，均放在router.beforeEach中
-      const respUrl = await $store.dispatch('account/fetchCstLoginUrl')
-      window.location.href = respUrl.data.data
-      console.log(respUrl.data.data)
-    }
+    const cstLogin = useCstLogin()
+
     return {
       // isShowLogin: ref('false'),
       // scrollTop,
@@ -186,8 +184,8 @@ export default defineComponent({
 .home-footer {
   color: $nord6;
   text-align: center;
-  height: 50px;
-  line-height: 50px;
+  height: $global-footer-height;
+  line-height: $global-footer-height;
   background-color: $nord0;
 }
 </style>

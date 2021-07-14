@@ -54,6 +54,7 @@ export default defineComponent({
 .Article {
   width: 100vw;
   background: linear-gradient(90deg, #021048, #1e38a3);
+  min-height: 100vh;
 }
 
 .title-area {

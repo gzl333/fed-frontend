@@ -9,7 +9,10 @@
             <q-tooltip>首页</q-tooltip>
           </q-btn>
         </div>
-        <div class="col-auto q-gutter-sm">
+
+        <HeaderDropdown v-if="currentUser.isLogin"/>
+
+        <div v-else class="col-auto q-gutter-sm">
           <q-btn class="gt-xs" outline :ripple="false" color="white" label="注 册" type="a"
                  href="https://passport.escience.cn/regist.jsp" target="_blank"/>
           <q-btn unelevated :ripple="false" color="primary" label="登 录" @click="cstLogin"/>
@@ -44,15 +47,26 @@ import { computed, defineComponent, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 
 import NewsList from 'components/News/NewsList.vue'
+import HeaderDropdown from 'components/GlobalHeader/HeaderDropdown.vue'
+import { useStore } from 'vuex'
+import { StateInterface } from 'src/store'
+
+import useCstLogin from 'src/hooks/useCstLogin'
 
 export default defineComponent({
   name: 'NewsLayout',
-  components: { NewsList },
+  components: {
+    HeaderDropdown,
+    NewsList
+  },
   props: {},
   setup () {
     const $route = useRoute()
     const $router = useRouter()
+    const $store = useStore<StateInterface>()
     console.log($route.path)
+
+    const currentUser = computed(() => $store.state.account)
 
     // scroll info
     const scrollTop = ref(0)
@@ -65,12 +79,18 @@ export default defineComponent({
         background: `rgb(0,0,0, ${scrollRatio.value})`
       }
     })
+
+    // cstlogin
+    const cstLogin = useCstLogin()
+
     return {
       $route,
       $router,
       onScroll,
       scrollRatio,
-      dynamicBackground
+      dynamicBackground,
+      currentUser,
+      cstLogin
     }
   }
 })
@@ -104,8 +124,8 @@ export default defineComponent({
 .footer {
   color: white;
   text-align: center;
-  height: 50px;
-  line-height: 50px;
+  height: $global-footer-height;
+  line-height: $global-footer-height;
   background-color: $nord0;
 }
 </style>

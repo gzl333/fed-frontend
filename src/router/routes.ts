@@ -31,8 +31,18 @@ const routes: RouteRecordRaw[] = [
     props: true,
     children: [
       {
+        // 文章统一出口，数据来自后端
         path: 'article/:name',
         component: () => import('pages/News/Article.vue'),
+        meta: {
+          title: '新闻动态-中国科技云联邦',
+          requireLogin: false
+        }
+      },
+      {
+        // 内测公告
+        path: 'closed-beta',
+        component: () => import('pages/News/ClosedBeta.vue'),
         meta: {
           title: '新闻动态-中国科技云联邦',
           requireLogin: false

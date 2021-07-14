@@ -10,7 +10,7 @@
       <div class="col-auto card-area">
 
         <q-card class="q-my-xl shadow-24 q-hoverable cursor-pointer" square v-ripple
-                @click="$router.push({path: '/news/article/18'})">
+                @click="$router.push({path: '/news/closed-beta'})">
           <!--https://stackoverflow.com/questions/64890882/how-to-create-a-clickable-q-card-with-hover-effect-->
           <span class="q-focus-helper">test</span>
           <img src="https://cdn.quasar.dev/img/mountains.jpg">
@@ -60,6 +60,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .NewsList {
   width: 100vw;
+  min-height: calc(100vh - #{$global-footer-height});
   background: linear-gradient(90deg, #021048, #1e38a3);
 }
 
