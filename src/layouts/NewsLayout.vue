@@ -66,6 +66,15 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     console.log($route.path)
 
+    /* news layout内页所有table加载起始点 */
+    void $store.dispatch('vm/updateVmTable').then(() => {
+      console.log('$STORE-vm:', $store.state.vm)
+    })
+    void $store.dispatch('applyQuota/updateQuotaApplicationTable').then(() => {
+      console.log('$STORE-applyQuota:', $store.state.applyQuota)
+    })
+    /* news layout内页所有table加载起始点 */
+
     const currentUser = computed(() => $store.state.account)
 
     // scroll info

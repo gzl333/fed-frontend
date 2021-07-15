@@ -2,6 +2,7 @@ import { boot } from 'quasar/wrappers'
 import axios, { AxiosInstance, AxiosError } from 'axios'
 import { Loading/*, Notify */ } from 'quasar'
 
+// 自己写的，把错误打印到console的helper函数，对业务无影响
 const errorNotifier = (error: AxiosError) => {
   const errorRespMap: Map<number, string> = new Map([
     [400, '请求错误'],
@@ -15,25 +16,6 @@ const errorNotifier = (error: AxiosError) => {
     [503, '服务不可用'],
     [505, 'HTTP版本不受支持']
   ])
-  // let notifyMsg: Record<string, string | number>
-  // if (error.response && error.response.data) { // 有响应时
-  //   const errorStatus = error.response.status
-  //   const errorInfo = errorRespMap.get(errorStatus) || ''
-  //   const errorMsg: string = error.response.data.message
-  //   // const errorCode:string = error.response.data.code
-  //   notifyMsg = {
-  //     type: 'negative',
-  //     message: errorStatus,
-  //     caption: `${errorInfo}
-  //               ${errorMsg}`
-  //   }
-  // } else { // 没有响应时
-  //   notifyMsg = {
-  //     type: 'negative',
-  //     message: error.message
-  //   }
-  // }
-  // Notify.create(notifyMsg)
 
   if (error.response && error.response.data) { // 有响应时
     const errorStatus = error.response.status
@@ -64,7 +46,9 @@ axios.interceptors.response.use(config => {
 }, (error: AxiosError) => {
   Loading.hide()
   errorNotifier(error)
-  throw error
+  // throw error // throw就无法把错误传递给发到请求处
+  // 响应里的error信息在error.response.data里面，被包成了axios error对象
+  return error // return可以把错误返回
 })
 
 declare module '@vue/runtime-core' {

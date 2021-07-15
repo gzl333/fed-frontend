@@ -116,7 +116,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     return response
   },
   async updateUserQuotaTable (context) {
-    // 先清空table，避免多次更新时数据累加
+    // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
     context.commit('clearUserQuotaTable')
     // 将响应normalize
     const service = new schema.Entity('service')

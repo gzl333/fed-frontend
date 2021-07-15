@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex'
-import { ApplicationQuotaInterface, ApplyQuotaInterface } from './state'
+import { ApplicationQuotaInterface, ApplyQuotaInterface, QuotaActivity } from './state'
 
 const mutation: MutationTree<ApplyQuotaInterface> = {
   // 保存apply页面中所选择的serviceId
@@ -46,7 +46,21 @@ const mutation: MutationTree<ApplyQuotaInterface> = {
     currentTable.allIds.unshift(Object.keys(tableObj)[0])
     currentTable.allIds = [...new Set(currentTable.allIds)]
     currentTable.isLoaded = true
+  },
+  clearGlobalQuotaActivityTable (state) {
+    const currentTable = state.tables.globalQuotaActivityTable
+    currentTable.byId = {}
+    currentTable.allIds = []
+    currentTable.isLoaded = false
+  },
+  storeGlobalQuotaActivityTable (state, tableObj: Record<string, QuotaActivity>) {
+    const currentTable = state.tables.globalQuotaActivityTable
+    Object.assign(currentTable.byId, tableObj)
+    currentTable.allIds.unshift(Object.keys(tableObj)[0])
+    currentTable.allIds = [...new Set(currentTable.allIds)]
+    currentTable.isLoaded = true
   }
+  /* 泛型尝试，vuex4.0似乎不支持泛型 */
   // storeItemInTable<T> (state: ApplyQuotaInterface, table: { allIds: string[], isLoaded: boolean; byId: Record<string, T> }, item: Record<string, T>) {
   //   Object.assign(table.byId, item)
   //   table.allIds.unshift(Object.keys(item)[0])

@@ -17,6 +17,9 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
     if (!context.state.tables.adminQuotaApplicationTable.isLoaded) {
       void context.dispatch('updateAdminQuotaApplicationTable')
     }
+    if (!context.state.tables.globalQuotaActivityTable.isLoaded) {
+      void context.dispatch('updateGlobalQuotaActivityTable')
+    }
   },
   /* 初次获取全部applyQuota模块Table，已有则自动忽略 */
 
@@ -228,7 +231,7 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   },
   // 默认userQuotaApplicationTable只保存undeleted的application
   async updateUserQuotaApplicationTable (context) {
-    // 先清空table，避免多次更新时数据累加
+    // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
     context.commit('clearUserQuotaApplicationTable')
     // 再获取数据并更新table todo 应该保存全部，显示时筛选
     const respApply = await context.dispatch('fetchUserApplication', { deleted: false })
@@ -251,8 +254,97 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
       response = await axios.get(api)
     }
     return response
-  }
+  },
   /* userQuotaApplicationTable */
+
+  /* globalQuotaActivityTable */
+  async getActivityQuotaAndUpdateGlobalQuotaActivityTable (context, activityId: string) {
+    const respQuota = await context.dispatch('fetchQuotaFromActivity', activityId)
+    // const resp = {
+    //   data: {
+    //     quota_id: '15ec9dd6-e543-11eb-bd38-c8009fe2eb03'
+    //   },
+    //   status: 200,
+    //   statusText: 'OK'
+    // }
+
+    // code 200 -> 正确领取：1.提示领取成功 2.更新userQuotaTable(更新领取的新配额)和globalQuotaActivityTable(更新剩余数量)
+    if (respQuota.status === 200) {
+      // 提示成功
+      Dialog.create({
+        title: '成功',
+        message:
+          '配额领取成功',
+        ok: {
+          label: '确认',
+          push: false,
+          flat: true,
+          unelevated: true,
+          color: 'primary'
+        }
+      })
+      // 强制更新table
+      void context.dispatch('updateGlobalQuotaActivityTable')
+      void context.dispatch('vm/updateUserQuotaTable', null, { root: true })
+    } else {
+      // code error -> 领取出错：提示错误
+      Dialog.create({
+        title: '错误',
+        message:
+        respQuota.response.data.message, // 真正信息在respQuota.response.data里面
+        ok: {
+          label: '确认',
+          push: false,
+          flat: true,
+          unelevated: true,
+          color: 'primary'
+        }
+      })
+    }
+  },
+  async fetchQuotaFromActivity (context, activityId: string) {
+    const api = apiBase + '/quota-activity/' + activityId + '/get/'
+    const response = await axios.get(api)
+    return response
+  },
+  async updateGlobalQuotaActivityTable (context) {
+    // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新
+    // 当前没有强制清楚，避免了ui闪烁,但是也没有数据累加
+    // context.commit('clearGlobalQuotaActivityTable')
+
+    // 再获取数据并更新table
+    // 当前table内容为筛选出active,排除未开始和已结束的，以后可根据需求全部获取，显示时进行筛选
+    const respActivity = await context.dispatch('fetchQuotaActivity', {
+      staus: 'active',
+      'exclude-not-start': true,
+      'exclude-ended': true
+    })
+    // normalize信息
+    const service = new schema.Entity('service')
+    const user = new schema.Entity('user')
+    const quotaActivity = new schema.Entity('quotaActivity', {
+      service,
+      user
+    })
+    respActivity.data.results.forEach((data: Record<string, unknown>) => {
+      const normalizedData = normalize(data, quotaActivity)
+      context.commit('storeGlobalQuotaActivityTable', normalizedData.entities.quotaActivity)
+    })
+  },
+  async fetchQuotaActivity (context, payload?: { page?: number; page_size?: number; status?: 'active' | 'closed'; 'exclude-not-start'?: boolean; 'exclude-ended'?: boolean; }) {
+    const api = apiBase + '/quota-activity/'
+    let response
+    if (payload) {
+      const config = {
+        params: payload
+      }
+      response = await axios.get(api, config)
+    } else {
+      response = await axios.get(api)
+    }
+    return response
+  }
+  /* globalQuotaActivityTable */
 }
 
 export default actions

@@ -92,7 +92,7 @@ export default defineComponent({
   },
   props: {},
   setup () {
-    const $store = useStore<StateInterface>()
+    // const $store = useStore<StateInterface>()
     // const logJWT = () => {
     //   void $store.dispatch('retainToken')
     // }

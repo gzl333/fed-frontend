@@ -1,3 +1,4 @@
+// 配额申请接口
 export interface ApplicationQuotaInterface {
   private_ip: number
   public_ip: number
@@ -13,6 +14,30 @@ export interface ApplicationQuotaInterface {
   status: string
   service: string
   deleted: boolean
+}
+
+// 赠送配额活动
+export interface QuotaActivity {
+  'id': string
+  'got_count': number
+  'service': string // service id
+  'user': string // user id
+  'creation_time': string
+  'name': string
+  'name_en': string
+  'start_time': string
+  'end_time': string
+  'count': number
+  'times_per_user': number
+  'status': string
+  'tag': string
+  'cpus': number
+  'private_ip': number
+  'public_ip': number
+  'ram': number
+  'disk_size': number
+  'expiration_time': string
+  'duration_days': number
 }
 
 // applyQuota总接口
@@ -49,6 +74,13 @@ export interface ApplyQuotaInterface {
       allIds: string[]
       isLoaded: boolean
     }
+
+    // 赠送配额活动
+    globalQuotaActivityTable: {
+      byId: Record<string, QuotaActivity>
+      allIds: string[]
+      isLoaded: boolean
+    }
   }
 }
 
@@ -72,6 +104,11 @@ function state (): ApplyQuotaInterface {
         isLoaded: false
       },
       adminQuotaApplicationTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      globalQuotaActivityTable: {
         byId: {},
         allIds: [],
         isLoaded: false
