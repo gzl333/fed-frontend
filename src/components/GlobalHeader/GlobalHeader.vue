@@ -134,14 +134,14 @@ export default defineComponent({
   height: 40px;
 }
 
-.dropdown-content {
-  min-width: 200px;
-  //background-image: url(https://cdn.quasar.dev/img/material.png);
-  background-color: $c-blue-3;
-  background-size: 150% auto;
-}
-
-.dropdown-items {
-  text-align: center;
-}
+//.dropdown-content {
+//  min-width: 200px;
+//  //background-image: url(https://cdn.quasar.dev/img/material.png);
+//  background-color: $c-blue-3;
+//  background-size: 150% auto;
+//}
+//
+//.dropdown-items {
+//  text-align: center;
+//}
 </style>

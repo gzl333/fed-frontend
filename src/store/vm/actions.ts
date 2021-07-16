@@ -4,7 +4,7 @@ import { ServerInterface, VmInterface, VpnInterface } from './state'
 import axios from 'axios'
 import { normalize, schema } from 'normalizr'
 import { Dialog, Notify } from 'quasar'
-import { i18n } from '../../boot/i18n' // vue组件外取i18n对象的方法
+import { i18n } from '../../boot/i18n'
 
 // 根据用户访问协议来决定api地址的https/http
 const apiBase = window.location.protocol + '//vms.cstcloud.cn/api'
@@ -84,31 +84,39 @@ const actions: ActionTree<VmInterface, StateInterface> = {
 
   /* userQuotaTable */
   deleteAndUpdateUserQuotaTable (context, quotaId: string) {
-    // 操作的确认提示
-    Dialog.create({
-      title: '删除配额',
-      message:
-        '删除后的配额无法恢复。 确认删除此配额？',
-      ok: {
-        label: '确认',
-        push: false,
-        flat: true,
-        unelevated: true,
-        color: 'primary'
-      },
-      cancel: {
-        label: '放弃',
-        push: false,
-        flat: true,
-        unelevated: true,
-        color: 'primary'
-      }
-    }).onOk(async () => {
-      const respDelete = await context.dispatch('deleteUserQuota', quotaId)
-      if (respDelete.status === 204) {
-        context.commit('deleteUserQuotaTable', quotaId)
-      }
+    // 把整个对话框对象包在promise里。删除成功、失败包装为promise结果值。
+    const promise = new Promise((resolve, reject) => {
+      // 操作的确认提示
+      Dialog.create({
+        title: '删除配额',
+        message:
+          '删除后的配额无法恢复。 确认删除此配额？',
+        ok: {
+          label: '确认',
+          push: false,
+          flat: true,
+          unelevated: true,
+          color: 'primary'
+        },
+        cancel: {
+          label: '放弃',
+          push: false,
+          flat: true,
+          unelevated: true,
+          color: 'primary'
+        }
+      }).onOk(async () => {
+        const respDelete = await context.dispatch('deleteUserQuota', quotaId)
+        if (respDelete.status === 204) {
+          context.commit('deleteUserQuotaTable', quotaId)
+          resolve(true)
+        } else {
+          reject(false) // 都是resolve，信息用boolean表达是否删除。因为接收处用的await语法，用reject会被catch。
+        }
+      })
     })
+
+    return promise
   },
   async deleteUserQuota (context, quotaId: string) {
     const api = apiBase + '/quota/' + quotaId + '/'

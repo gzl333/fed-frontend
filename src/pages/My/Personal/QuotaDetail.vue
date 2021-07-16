@@ -235,7 +235,7 @@
                       </q-btn>
 
                       <q-btn icon="delete" flat dense padding="none" color="primary"
-                             @click="$store.dispatch('vm/deleteAndUpdateUserQuotaTable', quota.id)">
+                             @click="deleteAndJump(quota.id)">
                         <q-tooltip>删除</q-tooltip>
                       </q-btn>
 
@@ -296,6 +296,13 @@ export default defineComponent({
     // 根据quota.servers获取server对象数组
     const vms = computed(() => quota.value.servers?.map((serverId) => $store.state.vm.tables.userServerTable.byId[serverId]))
 
+    const deleteAndJump = async (quotaId: string) => {
+      const isDeleted = await $store.dispatch('vm/deleteAndUpdateUserQuotaTable', quotaId)
+      if (isDeleted) {
+        void $router.push({ path: '/my/personal/quota/list' })
+      }
+    }
+
     // 返回上一页
     const goBack = () => {
       $router.go(-1)
@@ -304,7 +311,8 @@ export default defineComponent({
       goBack,
       quota,
       vms: vms,
-      $store
+      $store,
+      deleteAndJump
     }
   }
 })

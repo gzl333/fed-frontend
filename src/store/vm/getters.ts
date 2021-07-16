@@ -125,6 +125,8 @@ const getters: GetterTree<VmInterface, StateInterface> = {
   },
   // 只返回未过期guota
   getQuotasByServiceId (state): QuotaInterface[] {
+    // expirtation_time字段为null时为长期配额，应视为最大时间
+    const sortFn = (a: QuotaInterface, b: QuotaInterface) => new Date(b.expiration_time || 9999999999999).getTime() - new Date(a.expiration_time || 9999999999999).getTime()
     const serviceId = state.pages.vmCreate.serviceId
     return Object.values(state.tables.userQuotaTable.byId).filter(quota => {
       if (!quota.deleted && quota.service === serviceId) {
@@ -138,7 +140,7 @@ const getters: GetterTree<VmInterface, StateInterface> = {
       } else {
         return false
       }
-    })
+    }).sort(sortFn)
   },
   /* vmcreate使用 */
 

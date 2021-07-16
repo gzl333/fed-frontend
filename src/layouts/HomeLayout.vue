@@ -74,9 +74,9 @@
 import { computed, defineComponent, ref } from 'vue'
 import { scroll } from 'quasar'
 // import LoginCard from 'components/LoginCard.vue'
-
-import { useStore } from 'vuex'
-import { StateInterface } from 'src/store'
+//
+// import { useStore } from 'vuex'
+// import { StateInterface } from 'src/store'
 
 import useCstLogin from 'src/hooks/useCstLogin'
 

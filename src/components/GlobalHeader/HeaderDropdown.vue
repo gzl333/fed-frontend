@@ -64,8 +64,8 @@ export default defineComponent({
 .dropdown-content {
   min-width: 200px;
   //background-image: url(https://cdn.quasar.dev/img/material.png);
-  background-color: $c-blue-3;
-  background-size: 150% auto;
+  background-color: $c-blue-4;
+  //background-size: 150% auto;
 }
 
 .dropdown-items {

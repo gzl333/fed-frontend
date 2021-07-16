@@ -289,7 +289,7 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
     } else {
       // code error -> 领取出错：提示错误
       Dialog.create({
-        title: '错误',
+        title: '抱歉',
         message:
         respQuota.response.data.message, // 真正信息在respQuota.response.data里面
         ok: {
@@ -315,7 +315,7 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
     // 再获取数据并更新table
     // 当前table内容为筛选出active,排除未开始和已结束的，以后可根据需求全部获取，显示时进行筛选
     const respActivity = await context.dispatch('fetchQuotaActivity', {
-      staus: 'active',
+      status: 'active',
       'exclude-not-start': true,
       'exclude-ended': true
     })
