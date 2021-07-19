@@ -33,17 +33,6 @@
                   </div>
 
                   <div class="col item-radios">
-                    <!--                                        <q-radio-->
-                    <!--                                          v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"-->
-                    <!--                                          :disable="!dataCenter.userServices.includes(service.id)"-->
-                    <!--                                          dense v-model="radioService" :val="service.id" :label="service.name" :key="service.id"-->
-                    <!--                                          class="radio">-->
-                    <!--                                          <span v-if="!dataCenter.userServices.includes(service.id)">(暂无配额，<q-btn label="申请云主机配额" flat-->
-                    <!--                                                                                                                  padding="none"-->
-                    <!--                                                                                                                  color="primary"-->
-                    <!--                                                                                                                  to="/my/personal/quota_apply"/>后可用)</span>-->
-                    <!--                                        </q-radio>-->
-
                     <div class="row items-center q-pb-sm"
                          v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"
                          :key="service.id">
@@ -271,8 +260,8 @@ export default defineComponent({
     const $q = useQuasar()
     const $route = useRoute()
 
-    // 强制更新userQuotaTable，不顾isLoaded。因为quota可能在加载table后被批准更新。(前置serviceId等table已经存在。)
-    void $store.dispatch('vm/updateUserQuotaTable')
+    // 强制更新全部vmtable
+    void $store.dispatch('vm/forceUpdateVmTable')
 
     // radio选项数据，根据所选择serviceId建立
     // //全局数据
@@ -307,14 +296,7 @@ export default defineComponent({
       radioImage.value = images.value[0]?.id
       radioFlavor.value = flavors.value[0]?.id
       // 选择有余量的配额里的第一项
-      radioQuota.value = quotas.value.filter((quota: QuotaInterface) => {
-        if (quota.vcpu_used === quota.vcpu_total || quota.ram_used === quota.ram_total ||
-          (quota.private_ip_used === quota.private_ip_total && quota.public_ip_used === quota.public_ip_total)) {
-          return false
-        } else {
-          return true
-        }
-      })[0]?.id
+      radioQuota.value = quotas.value.filter((quota: QuotaInterface) => !quota.exhausted)[0]?.id
     })
 
     // 获取url所传参数.

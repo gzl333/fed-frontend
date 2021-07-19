@@ -51,8 +51,8 @@ const routes: RouteRecordRaw[] = [
     ]
   },
   {
-    path: '/doc',
-    component: () => import('layouts/DocLayout.vue'),
+    path: '/manual',
+    component: () => import('layouts/ManualLayout.vue'),
     meta: {
       title: '使用手册-中国科技云联邦',
       requireLogin: false

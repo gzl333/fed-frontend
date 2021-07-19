@@ -286,8 +286,8 @@ export default defineComponent({
     const $router = useRouter()
     const $route = useRoute()
 
-    // 进入本页面强制更新vm/userQuotaTable,数据更新来自后台，进入页面后应强制更新table,刷新quota状态
-    void $store.dispatch('vm/updateUserQuotaTable')
+    // 进入本页面强制更新vmtable
+    void $store.dispatch('vm/updateVmTable')
 
     // 从route对象中读取id参数
     const quotaId = $route.params.id as string
@@ -299,7 +299,8 @@ export default defineComponent({
     const deleteAndJump = async (quotaId: string) => {
       const isDeleted = await $store.dispatch('vm/deleteAndUpdateUserQuotaTable', quotaId)
       if (isDeleted) {
-        void $router.push({ path: '/my/personal/quota/list' })
+        // void $router.push({ path: '/my/personal/quota/list' })
+        void $router.back()
       }
     }
 
@@ -310,7 +311,7 @@ export default defineComponent({
     return {
       goBack,
       quota,
-      vms: vms,
+      vms,
       $store,
       deleteAndJump
     }

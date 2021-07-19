@@ -51,7 +51,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
         if (!context.state.tables.globalServiceTable.isLoaded) {
           void context.dispatch('updateGlobalServiceTable')
         }
-        // userServiceTable依赖globalDataCenterTable。更新serviceTable时会补充userServices内容
+        // userServiceTable依赖globalDataCenterTable的存在，更新serviceTable时会补充userServices内容
         if (!context.state.tables.userServiceTable.isLoaded) {
           void context.dispatch('updateUserServiceTable').then(() => {
             // 获取依赖userServiceTable的表
@@ -81,6 +81,28 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     }
   },
   /* 初次获取全部Vm模块Table，已有则自动忽略 */
+
+  /* 强制更新全部vmtable */
+  forceUpdateVmTable (context) {
+    void context.dispatch('updateGlobalFlavorTable')
+    void context.dispatch('updateUserQuotaTable')
+    void context.dispatch('updateGlobalDataCenterTable').then(() => {
+      // globalServiceTable依赖globalDataCenterTable。更新serviceTable时会补充globalServices内容
+      void context.dispatch('updateGlobalServiceTable')
+      // userServiceTable依赖globalDataCenterTable的存在，更新serviceTable时会补充userServices内容
+      void context.dispatch('updateUserServiceTable').then(() => {
+        // 获取依赖userServiceTable的表
+        // userServerTable虽然不依赖userServiceTable，但是userVpnTable的更新依赖userServiceTable
+        void context.dispatch('updateUserServerTable').then(() => {
+          void context.dispatch('updateUserVpnTableFromServer')
+        })
+        void context.dispatch('updateUserVpnTableFromService')
+        void context.dispatch('updateUserNetworkTable')
+        void context.dispatch('updateUserImageTable')
+      })
+    })
+  },
+  /* 强制更新全部vmtable */
 
   /* userQuotaTable */
   deleteAndUpdateUserQuotaTable (context, quotaId: string) {
@@ -523,7 +545,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     const dataCenter = new schema.Entity('dataCenter', {})
     respDataCenters.data.registries.forEach((data: Record<string, never>) => {
       const normalizedData = normalize(data, dataCenter)
-      // 添加上userServices/globalServices字段
+      // 添加上userServices/globalServices空字段
       Object.values(normalizedData.entities.dataCenter!)[0].userServices = []
       Object.values(normalizedData.entities.dataCenter!)[0].globalServices = []
       context.commit('storeGlobalDataCenterTable', normalizedData.entities.dataCenter)
