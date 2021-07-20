@@ -34,7 +34,7 @@
               <q-tab-panel v-for="vpn in vpns" :key="vpn.id" :name="vpn.id" class="bg-grey-1">
                 <div class="row">
                   <div class="col q-pb-lg text-primary">
-                    {{ $store.state.vm.tables.globalServiceTable.byId[vpn.id]?.name }}VPN信息
+                    {{$store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[vpn.id]?.data_center].name}} - {{ $store.state.vm.tables.globalServiceTable.byId[vpn.id]?.name }}
                   </div>
                   <div class="col"></div>
                 </div>

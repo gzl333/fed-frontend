@@ -50,14 +50,14 @@ const routes: RouteRecordRaw[] = [
       }
     ]
   },
-  {
-    path: '/manual',
-    component: () => import('layouts/ManualLayout.vue'),
-    meta: {
-      title: '使用手册-中国科技云联邦',
-      requireLogin: false
-    }
-  },
+  // {
+  //   path: '/manual',
+  //   component: () => import('layouts/ManualLayout.vue'),
+  //   meta: {
+  //     title: '使用手册-中国科技云联邦',
+  //     requireLogin: false
+  //   }
+  // },
   {
     path: '/my',
     component: () => import('layouts/MyLayout.vue'),

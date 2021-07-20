@@ -220,12 +220,12 @@ const actions: ActionTree<VmInterface, StateInterface> = {
   },
   // 下载vpn ca
   fetchCa (context, serviceId: string) {
-    const url = 'https://vms.cstcloud.cn/api/vpn/' + serviceId + '/ca/'
+    const url = apiBase + '/vpn/' + serviceId + '/ca/'
     window.open(url)
   },
   // 下载vpn config
   fetchConfig (context, serviceId: string) {
-    const url = 'https://vms.cstcloud.cn/api/vpn/' + serviceId + '/config/'
+    const url = apiBase + '/vpn/' + serviceId + '/config/'
     window.open(url)
   },
   /* vpn操作 */

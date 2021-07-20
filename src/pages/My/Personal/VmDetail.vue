@@ -175,6 +175,11 @@
               <div class="col-8">
 
                 <div class="row q-pb-md">
+                  <div class="col-2 text-grey">所属机构</div>
+                  <div class="col"> {{ $store.state.vm.tables.globalDataCenterTable.byId[service.data_center]?.name }}</div>
+                </div>
+
+                <div class="row q-pb-md">
                   <div class="col-2 text-grey">服务节点</div>
                   <div class="col"> {{ service.name }}</div>
                 </div>

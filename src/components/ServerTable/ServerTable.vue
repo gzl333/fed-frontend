@@ -45,10 +45,18 @@
               </div>
             </div>
           </q-td>
-          <q-td key="dataCenterName" :props="props">
-            {{
-              locale === 'zh' ? $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name : $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name_en
-            }}
+          <q-td key="serviceNode" :props="props">
+            <div>
+              {{
+                locale === 'zh' ? $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name : $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name_en
+              }}
+            </div>
+            <div>
+              {{
+                locale === 'zh' ? $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[props.row.service]?.data_center]?.name :
+                  $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[props.row.service]?.data_center]?.name_en
+              }}
+            </div>
           </q-td>
           <q-td key="serviceType" :props="props">
             {{ $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.service_type }}
@@ -165,9 +173,9 @@ export default defineComponent({
         style: 'max-width: 150px;padding: 15px 5px'
       },
       {
-        name: 'dataCenterName',
+        name: 'serviceNode',
         label: '服务节点',
-        field: 'dataCenterName',
+        field: 'serviceNode',
         align: 'center',
         style: 'padding: 15px 5px'
       },
@@ -248,9 +256,9 @@ export default defineComponent({
         style: 'max-width: 150px;padding: 15px 5px'
       },
       {
-        name: 'dataCenterName',
+        name: 'serviceNode',
         label: 'Service Node',
-        field: 'dataCenterName',
+        field: 'serviceNode',
         align: 'center',
         style: 'padding: 15px 5px'
       },

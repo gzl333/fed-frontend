@@ -139,7 +139,7 @@
               <div class="col">
                 <div class="row q-mt-md justify-between items-center">
                   <div class="col-auto text-h6 ">
-                    {{ $t('对象存储') }}
+                    {{ $t('对象存储') }}-dev
                   </div>
                   <div class="col-auto ">
                     <q-btn disable class="q-mr-md" flat padding="none" color="primary" icon="add">新建</q-btn>
