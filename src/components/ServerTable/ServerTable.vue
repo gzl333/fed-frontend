@@ -64,11 +64,10 @@
           <q-td key="image" :props="props">
             {{ props.row.image }}
           </q-td>
-          <q-td key="cpu" :props="props">
-            {{ props.row.vcpus }} {{ locale === 'zh' ? '核' : props.row.vcpus > 1 ? 'cores' : 'core' }}
-          </q-td>
-          <q-td key="ram" :props="props">
-            {{ props.row.ram / 1024 }}GB
+          <q-td key="configuration" :props="props">
+            {{ props.row.vcpus }}{{
+              locale === 'zh' ? '核' : props.row.vcpus > 1 ? 'cores' : 'core'
+            }}/{{ props.row.ram / 1024 }}GB
           </q-td>
           <q-td key="expiration" :props="props">
             <div v-if="!props.row.expiration_time">
@@ -194,16 +193,9 @@ export default defineComponent({
         style: 'padding: 15px 5px'
       },
       {
-        name: 'cpu',
-        label: 'CPU',
-        field: 'cpu',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'ram',
-        label: '内存',
-        field: 'ram',
+        name: 'configuration',
+        label: 'CPU/内存',
+        field: 'configuration',
         align: 'center',
         style: 'padding: 15px 5px'
       },
@@ -215,7 +207,6 @@ export default defineComponent({
         classes: 'ellipsis',
         style: 'padding: 15px 5px'
       },
-      // { name: 'source', label: '资源来源', field: 'source', sortable: true,align: 'center' },
       {
         name: 'note',
         label: '备注',
@@ -277,16 +268,9 @@ export default defineComponent({
         style: 'padding: 15px 5px'
       },
       {
-        name: 'cpu',
-        label: 'CPU',
-        field: 'cpu',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'ram',
-        label: 'Memory',
-        field: 'ram',
+        name: 'configuration',
+        label: 'CPU/RAM',
+        field: 'configuration',
         align: 'center',
         style: 'padding: 15px 5px'
       },
@@ -298,7 +282,6 @@ export default defineComponent({
         classes: 'ellipsis',
         style: 'padding: 15px 5px'
       },
-      // { name: 'source', label: '资源来源', field: 'source', sortable: true,align: 'center' },
       {
         name: 'note',
         label: 'Notes',

@@ -11,6 +11,23 @@ body {
   width: $general-width;
 }
 
+// 通知栏自定义样式
+.notification-primary{
+  border-left: 5px solid $primary;
+  border-radius: 0;
+  background-color: white;
+  //color: $primary;  // 貌似被notify覆盖了，不起效
+  width: 600px;
+}
+
+.notification-negative{
+  border-left: 5px solid $negative;
+  border-radius: 0;
+  background-color: white;
+  //color: $primary;  // 貌似被notify覆盖了，不起效
+  width: 600px;
+}
+
 .line-height-1em {
   line-height: 1em;
 }

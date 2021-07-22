@@ -6,6 +6,12 @@ export default {
   },
   // 文字翻译
 
+  // 按钮
+  忽略: 'Dismiss',
+  // hooks
+  已经复制到剪切板: 'has been copied to clipboard',
+  // global header
+  使用手册: 'User manual',
   // global left drawer
   中国科技云联邦: 'Global Open Science Cloud',
   我的首页: 'Home',
@@ -43,13 +49,13 @@ export default {
   云主机详情: 'Server detail',
 
   // 云主机状态
-  获取中: 'Requesting',
+  获取中: 'Updating...',
   无法获取状态: 'No State',
   运行中: 'Running',
   已屏蔽: 'Blocked',
   已暂停: 'Paused',
-  正在关机: 'Shutting Down',
-  已关机: 'Shut Off',
+  正在关机: 'Stopping...',
+  已关机: 'Stopped',
   已崩溃: 'Crashed',
   被电源管理器挂起: 'Suspended',
   与宿主机通讯失败: 'Connection Fail',

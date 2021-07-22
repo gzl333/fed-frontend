@@ -351,7 +351,8 @@ export default defineComponent({
       // 如果radio没有选择全，则弹出通知
       if (!radioService.value || !radioNetwork.value || !radioImage.value || !radioFlavor.value || !radioQuota.value) {
         $q.notify({
-          color: 'red',
+          classes: 'notification-negative shadow-15',
+          textColor: 'negative',
           message: '请选择正确的云主机配置',
           position: 'center',
           closeBtn: false,
@@ -368,6 +369,7 @@ export default defineComponent({
           remarks: inputRemarks.value
         }
         try {
+          // todo 全流程优化
           const respCreateVM = await $store.dispatch('vm/createServer', selection)
           // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
           void await $store.dispatch('vm/updateUserServerTableSingleServer', respCreateVM.data.id)
@@ -375,9 +377,10 @@ export default defineComponent({
           newIP.value = $store.state.vm.tables.userServerTable.byId[respCreateVM.data.id].ipv4
           newId.value = $store.state.vm.tables.userServerTable.byId[respCreateVM.data.id].id
           $q.notify({
-            color: 'primary',
-            message: `成功创建id为${newIP.value}的云主机`,
-            position: 'bottom-right',
+            classes: 'notification-primary shadow-15',
+            textColor: 'primary',
+            message: `成功创建云主机: ${newIP.value}`,
+            position: 'bottom',
             closeBtn: false,
             timeout: 10000
           })

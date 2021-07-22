@@ -23,9 +23,8 @@
             </template>
           </q-select>
 
-          <q-btn :ripple="false" flat dense icon="library_books" label="使用手册"
-                 @click="gotoManual">
-            <q-tooltip>使用手册</q-tooltip>
+          <q-btn color="grey-9" :ripple="false" flat dense no-caps icon="library_books" @click="gotoManual">
+            {{ $t('使用手册') }}
           </q-btn>
 
           <q-btn disable :ripple="false" flat dense color="grey" icon="notifications">
@@ -113,12 +112,15 @@ export default defineComponent({
     }
 
     const gotoManual = () => {
-      const url = location.origin + '/manual'
-      window.open(url)
+      // 中文访问/manual 英文访问/manual/en
+      const url = computed(() => location.origin + (locale.value === 'zh' ? '/manual' : '/manual/en'))
+      window.open(url.value)
     }
+
     const toLogout = () => {
       void $store.dispatch('account/logoutCstUser')
     }
+
     return {
       localeModel,
       localeOptions,
