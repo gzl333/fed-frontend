@@ -86,29 +86,39 @@
 
                     <div>
                       <q-list dense bordered padding class="rounded-borders q-mt-sm">
-                        <q-item clickable>
+                        <q-item clickable to="/news/closed-beta">
                           <q-item-section>
-                            云联邦系统新闻1
+                            <div class="row justify-between">
+                              <div class="col-auto">中国科技云联邦将开启科技云部内测</div>
+                              <div class="col-auto">2021-7-26</div>
+                            </div>
                           </q-item-section>
                         </q-item>
+
                         <q-item clickable>
                           <q-item-section>
-                            云联邦系统新闻2
+                            <div class="row justify-between">
+                              <div class="col-auto">中国科技云联邦alpha版本上线</div>
+                              <div class="col-auto">2021-7-1</div>
+                            </div>
                           </q-item-section>
                         </q-item>
+
                         <q-item clickable>
                           <q-item-section>
-                            云联邦系统新闻3
+                            <div class="row justify-between">
+                              <div class="col-auto">中国科技云联邦demo版本上线</div>
+                              <div class="col-auto">2021-4-1</div>
+                            </div>
                           </q-item-section>
                         </q-item>
+
                         <q-item clickable>
                           <q-item-section>
-                            云联邦系统新闻4
-                          </q-item-section>
-                        </q-item>
-                        <q-item clickable>
-                          <q-item-section>
-                            云联邦系统新闻5
+                            <div class="row justify-between">
+                              <div class="col-auto">中国科技云联邦研发启动</div>
+                              <div class="col-auto">2021-1-1</div>
+                            </div>
                           </q-item-section>
                         </q-item>
 

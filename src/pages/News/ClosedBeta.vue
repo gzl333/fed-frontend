@@ -16,7 +16,7 @@
 
             <div class="text-h7">1. 点击以下按钮，获取云主机配额</div>
 
-            <div v-if="quotaActivities">
+            <div v-if="quotaActivities.length > 0">
               <div class="row items-center justify-center">
                 <div class="col-auto q-pa-md" v-for="activity in quotaActivities" :key="activity.id">
                   <q-card class="activity-card bg-secondary text-white ">
@@ -88,14 +88,18 @@
                 </div>
               </div>
             </div>
-            <div v-else>暂无配额赠送活动</div>
+            <div v-else>
+              <div class="text-red">
+                抱歉，当前暂无配额赠送活动。请咨询云联邦管理员。
+              </div>
+            </div>
 
             <div class="text-h7">2. 使用配额
               <q-btn class="text-h7" flat color="primary" size="md" padding="none" :to="{path:'/my/personal/vmcreate'}">
                 创建云主机
               </q-btn>
             </div>
-            <div class="text-h7">3. 根据需要使用云主机，具体使用方法请参考使用手册</div>
+            <div class="text-h7">3. 根据需要使用云主机，具体使用方法请参考<q-btn flat padding="none" color="primary" to="/manual/personal">用户手册</q-btn></div>
 
             <!--            <pre>{{ quotaActivities }}</pre>-->
           </q-card-section>

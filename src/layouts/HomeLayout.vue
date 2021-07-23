@@ -51,13 +51,13 @@
           </div>
 
           <div class="part3" ref="part3">
-            <q-parallax :height="900">
-              <template v-slot:media>
-                <video width="1440" height="1080" poster="https://cdn.quasar.dev/img/polina.jpg" autoplay loop muted>
-                  <source type="video/webm" src="https://cdn.quasar.dev/img/polina.webm">
-                  <source type="video/mp4" src="https://cdn.quasar.dev/img/polina.mp4">
-                </video>
-              </template>
+            <q-parallax :height="1000" src="img/cloud2.jpg">
+<!--              <template v-slot:media>-->
+<!--                <video width="1440" height="1080" poster="https://cdn.quasar.dev/img/polina.jpg" autoplay loop muted>-->
+<!--                  <source type="video/webm" src="https://cdn.quasar.dev/img/polina.webm">-->
+<!--                  <source type="video/mp4" src="https://cdn.quasar.dev/img/polina.mp4">-->
+<!--                </video>-->
+<!--              </template>-->
               <h3 class="text-white">开发者</h3>
             </q-parallax>
           </div>
@@ -179,6 +179,9 @@ export default defineComponent({
 }
 
 .part3 {
+  .q-parallax {
+    opacity: .9;
+  }
 }
 
 .home-footer {
