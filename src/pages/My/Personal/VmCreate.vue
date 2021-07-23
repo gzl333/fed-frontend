@@ -9,230 +9,229 @@
 
       <div v-else>
 
-        <div v-if="!isShowJumper" class="col q-pb-md title-area">
+        <div class="col q-pb-md title-area">
 
           <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                  @click="goBack"/>
           新建云主机
-          <!--        <q-btn @click="quickJump" label="quickjump"/>-->
         </div>
 
         <div class="col">
-          <div v-if="!isShowJumper" class="stepper-area">
 
-            <div class="column">
-
-              <div class="col section">
-                <div class="text-h7 text-primary section-title">
-                  服务节点
-                </div>
-                <div v-for="dataCenter in dataCenters" :key="dataCenter.id" class="row  item-row">
-
-                  <div class="col-auto item-title text-bold">
-                    {{ dataCenter.name }}
-                  </div>
-
-                  <div class="col item-radios">
-                    <div class="row items-center q-pb-sm"
-                         v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"
-                         :key="service.id">
-                      <q-radio :disable="!dataCenter.userServices.includes(service.id)"
-                               dense v-model="radioService" :val="service.id" :label="service.name"
-                               class="col-auto"/>
-                      <div class="col-auto" v-if="!dataCenter.userServices.includes(service.id)">
-                        (
-                        <q-btn label="申请云主机配额" flat padding="none" color="primary"
-                               :to="{path: '/my/personal/quota_apply', query: {service: service.id}}"/>
-                        后可用)
-                      </div>
-                    </div>
-
-                  </div>
-
-                </div>
-              </div>
-
-            </div>
+          <div class="column">
 
             <div class="col section">
               <div class="text-h7 text-primary section-title">
+                服务节点
+              </div>
+              <div v-for="dataCenter in dataCenters" :key="dataCenter.id" class="row  item-row">
+
+                <div class="col-auto item-title text-bold">
+                  {{ dataCenter.name }}
+                </div>
+
+                <div class="col item-radios">
+                  <div class="row items-center q-pb-sm"
+                       v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"
+                       :key="service.id">
+                    <q-radio :disable="!dataCenter.userServices.includes(service.id)"
+                             dense v-model="radioService" :val="service.id" :label="service.name"
+                             class="col-auto"/>
+                    <div class="col-auto" v-if="!dataCenter.userServices.includes(service.id)">
+                      (
+                      <q-btn label="申请云主机配额" flat padding="none" color="primary"
+                             :to="{path: '/my/personal/quota_apply', query: {service: service.id}}"/>
+                      后可用)
+                    </div>
+                  </div>
+
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+
+          <div class="col section">
+            <div class="text-h7 text-primary section-title">
+              云主机配额
+            </div>
+            <div v-if="quotas.length > 0" class="row item-row">
+              <div class="col item-radios">
+                <q-radio v-for="quota in quotas" dense v-model="radioQuota" :val="quota.id"
+                         :key="quota.id" class="radio"
+                         :disable="quota.expired || quota.exhausted">
+                  <quota-card :quota="quota"/>
+                </q-radio>
+              </div>
+            </div>
+            <div v-if="quotas.length === 0" class="row item-row">
+              <div class="col-shrink item-title">
+                该服务节点暂无可用云主机配额，请选择其它服务节点。 或者
+                <q-btn label="申请云主机配额" flat
+                       padding="none" color="primary"
+                       to="/my/personal/quota_apply"/>
+              </div>
+            </div>
+          </div>
+
+          <div class="col section">
+            <div class="text-h7 text-primary section-title">
+              网络类型
+            </div>
+            <div v-if="privateNetworks.length > 0" class="row item-row">
+              <div class="col-shrink item-title-narrow text-bold">
+                私网IP
+              </div>
+              <div class="col item-radios">
+                <q-radio v-for="network in privateNetworks" dense v-model="radioNetwork" :val="network.id"
+                         :label="network.name" :key="network.id" class="radio"/>
+              </div>
+            </div>
+            <div v-if="publicNetworks.length > 0" class="row item-row">
+              <div class="col-shrink item-title-narrow text-bold">
+                公网IP
+              </div>
+              <div class="col item-radios">
+                <q-radio v-for="network in publicNetworks" dense v-model="radioNetwork" :val="network.id"
+                         :label="network.name" :key="network.id" class="radio"/>
+              </div>
+            </div>
+            <div v-if="publicNetworks.length === 0 && privateNetworks.length === 0" class="row item-row">
+              <div class="col-shrink item-title">
+                该服务节点暂无可用网络类型，请选择其它服务节点
+              </div>
+            </div>
+          </div>
+
+          <div class="col section">
+            <div class="text-h7 text-primary section-title">
+              系统镜像
+            </div>
+            <div v-if="images.length > 0" class="row item-row">
+              <div class="col item-radios">
+                <q-radio v-for="image in images" dense v-model="radioImage" :val="image.id"
+                         :label="image.name" :key="image.id" class="radio"/>
+              </div>
+            </div>
+            <div v-else>该服务节点暂无可用镜像，请选择其它服务节点</div>
+          </div>
+
+          <div class="col section">
+            <div class="text-h7 text-primary section-title">
+              CPU/内存
+            </div>
+            <div v-if="flavors.length > 0" class="row item-row">
+              <div class="col item-radios">
+                <q-radio v-for="flavor in flavors" dense v-model="radioFlavor" :val="flavor.id"
+                         :label="`${flavor.vcpus}核/${flavor.ram/1024}GB`" :key="flavor.id" class="radio"/>
+              </div>
+            </div>
+            <div v-else>该服务节点暂无可用配置，请选择其它服务节点</div>
+          </div>
+
+          <div class="col section">
+            <div class="text-h7 text-primary section-title">
+              备注(可选)
+            </div>
+            <div class="row item-row">
+              <div class="col">
+                <q-input class="input-remarks" v-model="inputRemarks" maxlength="30" dense counter></q-input>
+              </div>
+            </div>
+          </div>
+
+          <div class="col section">
+            <div class="text-h7 text-primary section-title">
+              所选配置
+            </div>
+
+            <div class="row item-row">
+              <div class="col-shrink item-title-narrow text-grey">
+                服务节点
+              </div>
+              <div class="col item-radios">
+                {{
+                  $store.state.vm.tables.globalDataCenterTable.byId[radioDataCenter] && $store.state.vm.tables.userServiceTable.byId[radioService] ?
+                    `${$store.state.vm.tables.globalDataCenterTable.byId[radioDataCenter].name} - ${$store.state.vm.tables.userServiceTable.byId[radioService].name}` : '尚未选择服务节点'
+                }}
+              </div>
+            </div>
+
+            <div class="row item-row">
+              <div class="col-shrink item-title-narrow text-grey">
                 云主机配额
               </div>
-              <div v-if="quotas.length > 0" class="row item-row">
-                <div class="col item-radios">
-                  <q-radio v-for="quota in quotas" dense v-model="radioQuota" :val="quota.id"
-                           :key="quota.id" class="radio"
-                           :disable="quota.expired || quota.exhausted">
-                    <quota-card :quota="quota"/>
-                  </q-radio>
-                </div>
-              </div>
-              <div v-if="quotas.length === 0" class="row item-row">
-                <div class="col-shrink item-title">
-                  该服务节点暂无可用云主机配额，请选择其它服务节点。 或者
-                  <q-btn label="申请云主机配额" flat
-                         padding="none" color="primary"
-                         to="/my/personal/quota_apply"/>
-                </div>
+              <div class="col item-radios">
+                {{
+                  $store.state.vm.tables.userQuotaTable.byId[radioQuota]?.display || '尚未选择云主机配额'
+                }}
               </div>
             </div>
 
-            <div class="col section">
-              <div class="text-h7 text-primary section-title">
+            <div class="row item-row">
+              <div class="col-shrink item-title-narrow text-grey">
                 网络类型
               </div>
-              <div v-if="privateNetworks.length > 0" class="row item-row">
-                <div class="col-shrink item-title-narrow text-bold">
-                  私网IP
-                </div>
-                <div class="col item-radios">
-                  <q-radio v-for="network in privateNetworks" dense v-model="radioNetwork" :val="network.id"
-                           :label="network.name" :key="network.id" class="radio"/>
-                </div>
-              </div>
-              <div v-if="publicNetworks.length > 0" class="row item-row">
-                <div class="col-shrink item-title-narrow text-bold">
-                  公网IP
-                </div>
-                <div class="col item-radios">
-                  <q-radio v-for="network in publicNetworks" dense v-model="radioNetwork" :val="network.id"
-                           :label="network.name" :key="network.id" class="radio"/>
-                </div>
-              </div>
-              <div v-if="publicNetworks.length === 0 && privateNetworks.length === 0" class="row item-row">
-                <div class="col-shrink item-title">
-                  该服务节点暂无可用网络类型，请选择其它服务节点
-                </div>
+              <div class="col item-radios">
+                {{
+                  $store.state.vm.tables.userNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name || '尚未选择网络类型'
+                }}
               </div>
             </div>
 
-            <div class="col section">
-              <div class="text-h7 text-primary section-title">
+            <div class="row item-row">
+              <div class="col-shrink item-title-narrow text-grey">
                 系统镜像
               </div>
-              <div v-if="images.length > 0" class="row item-row">
-                <div class="col item-radios">
-                  <q-radio v-for="image in images" dense v-model="radioImage" :val="image.id"
-                           :label="image.name" :key="image.id" class="radio"/>
-                </div>
+              <div class="col item-radios">
+                {{
+                  $store.state.vm.tables.userImageTable.byLocalId[`${radioService}-${radioImage}`]?.name || '尚未选择系统镜像'
+                }}
               </div>
-              <div v-else>该服务节点暂无可用镜像，请选择其它服务节点</div>
             </div>
 
-            <div class="col section">
-              <div class="text-h7 text-primary section-title">
+            <div class="row item-row">
+              <div class="col-shrink item-title-narrow text-grey">
                 CPU/内存
               </div>
-              <div v-if="flavors.length > 0" class="row item-row">
-                <div class="col item-radios">
-                  <q-radio v-for="flavor in flavors" dense v-model="radioFlavor" :val="flavor.id"
-                           :label="`${flavor.vcpus}核/${flavor.ram/1024}GB`" :key="flavor.id" class="radio"/>
-                </div>
-              </div>
-              <div v-else>该服务节点暂无可用配置，请选择其它服务节点</div>
-            </div>
-
-            <div class="col section">
-              <div class="text-h7 text-primary section-title">
-                备注(可选)
-              </div>
-              <div class="row item-row">
-                <div class="col">
-                  <q-input class="input-remarks" v-model="inputRemarks" maxlength="30" dense counter></q-input>
-                </div>
+              <div class="col item-radios">
+                {{
+                  $store.state.vm.tables.globalFlavorTable.byId[radioFlavor] ?
+                    `${$store.state.vm.tables.globalFlavorTable.byId[radioFlavor].vcpus}核/${$store.state.vm.tables.globalFlavorTable.byId[radioFlavor].ram / 1024}GB` :
+                    '尚未选择配置'
+                }}
               </div>
             </div>
 
-            <div class="col section">
-              <div class="text-h7 text-primary section-title">
-                所选配置
+            <div class="row item-row">
+              <div class="col-shrink item-title-narrow text-grey">
+                备注
               </div>
-
-              <div class="row item-row">
-                <div class="col-shrink item-title-narrow text-grey">
-                  服务节点
-                </div>
-                <div class="col item-radios">
-                  {{
-                    $store.state.vm.tables.globalDataCenterTable.byId[radioDataCenter] && $store.state.vm.tables.userServiceTable.byId[radioService] ?
-                      `${$store.state.vm.tables.globalDataCenterTable.byId[radioDataCenter].name} - ${$store.state.vm.tables.userServiceTable.byId[radioService].name}` : '尚未选择服务节点'
-                  }}
-                </div>
+              <div class="col item-radios">
+                {{
+                  inputRemarks
+                }}
               </div>
-
-              <div class="row item-row">
-                <div class="col-shrink item-title-narrow text-grey">
-                  云主机配额
-                </div>
-                <div class="col item-radios">
-                  {{
-                    $store.state.vm.tables.userQuotaTable.byId[radioQuota]?.display || '尚未选择云主机配额'
-                  }}
-                </div>
-              </div>
-
-              <div class="row item-row">
-                <div class="col-shrink item-title-narrow text-grey">
-                  网络类型
-                </div>
-                <div class="col item-radios">
-                  {{
-                    $store.state.vm.tables.userNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name || '尚未选择网络类型'
-                  }}
-                </div>
-              </div>
-
-              <div class="row item-row">
-                <div class="col-shrink item-title-narrow text-grey">
-                  系统镜像
-                </div>
-                <div class="col item-radios">
-                  {{
-                    $store.state.vm.tables.userImageTable.byLocalId[`${radioService}-${radioImage}`]?.name || '尚未选择系统镜像'
-                  }}
-                </div>
-              </div>
-
-              <div class="row item-row">
-                <div class="col-shrink item-title-narrow text-grey">
-                  CPU/内存
-                </div>
-                <div class="col item-radios">
-                  {{
-                    $store.state.vm.tables.globalFlavorTable.byId[radioFlavor] ?
-                      `${$store.state.vm.tables.globalFlavorTable.byId[radioFlavor].vcpus}核/${$store.state.vm.tables.globalFlavorTable.byId[radioFlavor].ram / 1024}GB` :
-                      '尚未选择配置'
-                  }}
-                </div>
-              </div>
-
-              <div class="row item-row">
-                <div class="col-shrink item-title-narrow text-grey">
-                  备注
-                </div>
-                <div class="col item-radios">
-                  {{
-                    inputRemarks
-                  }}
-                </div>
-              </div>
-
             </div>
-
-            <q-btn color="primary" @click="createVM" label="创建云主机" unelevated :loading="isCreating"/>
 
           </div>
 
-          <div v-else class="jumper">
-            <div class="q-pa-lg">
-              已成功创建IP地址为{{ newIP }}的云主机
-            </div>
-            <div class="q-pa-lg">
-              3秒后跳转至详情页面
-              <!--              <q-btn flat padding="none" color="primary" label="详情页面" :to="'/my/personal/vmdetail/'+newId"/>-->
-            </div>
-            <q-btn label="继续创建云主机" @click="refresh" color="primary" unelevated/>
-          </div>
+          <q-btn color="primary" @click="createVM" label="创建云主机" unelevated :loading="isCreating"/>
+
+          <!--          </div>-->
+
+          <!--          <div v-else class="jumper">-->
+          <!--            <div class="q-pa-lg">-->
+          <!--              已成功创建IP地址为{{ newIP }}的云主机-->
+          <!--            </div>-->
+          <!--            <div class="q-pa-lg">-->
+          <!--              3秒后跳转至详情页面-->
+          <!--              &lt;!&ndash;              <q-btn flat padding="none" color="primary" label="详情页面" :to="'/my/personal/vmdetail/'+newId"/>&ndash;&gt;-->
+          <!--            </div>-->
+          <!--            <q-btn label="继续创建云主机" @click="refresh" color="primary" unelevated/>-->
+          <!--          </div>-->
+
         </div>
       </div>
     </div>
@@ -247,7 +246,6 @@ import { useRoute, useRouter } from 'vue-router'
 import { StateInterface } from 'src/store'
 import { useQuasar } from 'quasar'
 import { QuotaInterface } from 'src/store/vm/state'
-
 import QuotaCard from 'components/Personal/PersonalQuotaCard.vue'
 
 export default defineComponent({
@@ -339,11 +337,6 @@ export default defineComponent({
     // // watch根据tables的变化情况，再调用
     watch($store.state.vm.tables, chooseRadioService)
 
-    // jumper 创建后跳转
-    const isShowJumper = ref(false)
-    const newIP = ref('')
-    const newId = ref('')
-
     // 创建云主机按钮状态
     const isCreating = ref(false)
     // 创建云主机
@@ -352,16 +345,19 @@ export default defineComponent({
       if (!radioService.value || !radioNetwork.value || !radioImage.value || !radioFlavor.value || !radioQuota.value) {
         $q.notify({
           classes: 'notification-negative shadow-15',
+          icon: 'error',
           textColor: 'negative',
           message: '请选择正确的云主机配置',
-          position: 'center',
-          closeBtn: false,
-          timeout: 3000
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
         })
       } else {
         isCreating.value = true
         const selection = {
           service_id: radioService.value,
+          // service_id: '', // dev
           network_id: radioNetwork.value,
           image_id: radioImage.value,
           flavor_id: radioFlavor.value,
@@ -369,31 +365,38 @@ export default defineComponent({
           remarks: inputRemarks.value
         }
         try {
-          // todo 全流程优化
           const respCreateVM = await $store.dispatch('vm/createServer', selection)
           // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
           void await $store.dispatch('vm/updateUserServerTableSingleServer', respCreateVM.data.id)
-
-          newIP.value = $store.state.vm.tables.userServerTable.byId[respCreateVM.data.id].ipv4
-          newId.value = $store.state.vm.tables.userServerTable.byId[respCreateVM.data.id].id
+          // 显示通知
           $q.notify({
-            classes: 'notification-primary shadow-15',
-            textColor: 'primary',
-            message: `成功创建云主机: ${newIP.value}`,
+            classes: 'notification-positive shadow-15',
+            icon: 'check_circle',
+            textColor: 'positive',
+            message: `成功创建云主机: ${$store.state.vm.tables.userServerTable.byId[respCreateVM.data.id].ipv4}`,
             position: 'bottom',
-            closeBtn: false,
-            timeout: 10000
+            closeBtn: true,
+            timeout: 15000,
+            multiLine: false
           })
+          // 改变按钮状态
           isCreating.value = false
-          isShowJumper.value = true
-
-          setTimeout(() => {
-            // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-            void $router.push(`/my/personal/vmdetail/${respCreateVM.data.id}`)
-          }, 3000)
-        } catch {
-          // 创建vm失败，将按钮状态改回，错误由axios统一提示
+          // 跳转
+          void $router.push({ path: '/my/personal/vm' })
+        } catch (error) {
+          // 创建vm失败，将按钮状态改回
           isCreating.value = false
+          // 提示错误
+          $q.notify({
+            classes: 'notification-negative shadow-15',
+            icon: 'error',
+            textColor: 'negative',
+            message: '创建云主机失败，请重试',
+            position: 'bottom',
+            closeBtn: true,
+            timeout: 5000,
+            multiLine: false
+          })
         }
       }
     }
@@ -405,10 +408,7 @@ export default defineComponent({
     const goBack = () => {
       $router.go(-1)
     }
-    // dev
-    const quickJump = () => {
-      isShowJumper.value = true
-    }
+
     return {
       dataCenters,
       publicNetworks,
@@ -424,11 +424,8 @@ export default defineComponent({
       radioQuota,
       inputRemarks,
       createVM,
-      isShowJumper,
       refresh,
       goBack,
-      quickJump,
-      newIP,
       isCreating
     }
   }

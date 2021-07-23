@@ -158,8 +158,8 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .active-item {
-  color: white;
-  background: $c-blue-4;
+  //color: white !important; // 不起作用
+  background-color: $c-blue-6;
 }
 
 .logo {

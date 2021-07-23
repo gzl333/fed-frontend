@@ -21,19 +21,37 @@
           </div>
 
           <div v-else class="col content-area">
-            <div class="row justify-center items-center q-pt-lg">
-              <div class="col-4 text-h5">
-                <div>
+            <div class="row justify-center items-start q-pt-md">
+              <div class="col-4">
+                <div class="row">
                   <q-btn
-                    class="col-shrink" flat size="xl" padding="none" color="primary"
-                    :label="server.ipv4"
-                    @click="clickToCopy(server.ipv4)">
+                    class="col-shrink text-h4 text-bold" flat padding="none" color="primary"
+                    @click="clickToCopy(server.ipv4)">{{ server.ipv4 }}
                     <q-tooltip>
                       复制
                     </q-tooltip>
+                    <!--创建时间距离当下小于1小时则打上new标记-->
+                    <q-badge v-if="(new Date() - new Date(server.creation_time)) < 1000 * 60 * 60 * 1 "
+                             color="light-green" floating transparent rounded align="middle">new
+                    </q-badge>
                   </q-btn>
-
                   <ServerStatus :server="server"/>
+                </div>
+                <div class="row q-pb-md items-center">
+                  <!--                  <div class="col-2 text-grey">备注</div>-->
+                  <div class="col-auto">
+                    <span>
+                      {{ server.remarks }}
+                      <q-tooltip>备注</q-tooltip>
+                    </span>
+
+                    <q-btn class="col-shrink q-px-xs" flat dense icon="edit" size="sm" color="primary"
+                           @click="$store.dispatch('vm/popEditVmNote',server.id)">
+                      <q-tooltip>
+                        编辑备注
+                      </q-tooltip>
+                    </q-btn>
+                  </div>
                 </div>
               </div>
 
@@ -109,28 +127,126 @@
                 </q-btn>
               </div>
             </div>
-            <!--空行开始-->
-            <div class="row justify-center items-center q-py-xl ">
-              <div class="button-area q-gutter-lg">
+
+            <div class="row justify-center q-pt-xl ">
+              <div class="col-4">
+
+                <div class="row q-pb-md items-center">
+                  <div class="col-3 text-grey">初始用户名</div>
+                  <div class="col">
+                    {{ server.default_user }}
+                    <q-btn
+                      class="col-shrink q-px-xs" flat color="primary" icon="content_copy" size="sm"
+                      @click="clickToCopy(server.default_user)">
+                      <q-tooltip>
+                        复制
+                      </q-tooltip>
+                    </q-btn>
+                  </div>
+                </div>
+
+                <div class="row q-pb-md items-center">
+                  <div class="col-3 text-grey">初始密码</div>
+                  <div class="col-shrink">
+                    <!--根据内容改变长度的input. 一个字母占8像素，一个汉字占16像素.https://github.com/quasarframework/quasar/issues/1958-->
+                    <q-input
+                      :input-style="{width:`${server.default_password.length * 8}px`, maxWidth: '200px', minWidth: '32px'}"
+                      v-model="server.default_password" readonly borderless dense
+                      :type="isPwd ? 'password' : 'text'">
+                      <template v-slot:append>
+                        <q-icon :name="isPwd ? 'visibility' : 'visibility_off'" @click="isPwd = !isPwd"/>
+                        <q-btn class="q-px-xs" flat color="primary" icon="content_copy" size="sm"
+                               @click="clickToCopy(server.default_password)">
+                          <q-tooltip>
+                            复制
+                          </q-tooltip>
+                        </q-btn>
+                      </template>
+                    </q-input>
+                  </div>
+                </div>
+
+                <div v-if="!service.need_vpn" class="row q-pb-md items-center">
+                  <div class="col-3 text-grey">VPN</div>
+                  <div class="col-auto">无需VPN连接</div>
+                </div>
+
+                <div v-if="service.need_vpn" class="row q-pb-md items-center ">
+                  <div class="col-3 text-grey ">VPN用户名</div>
+                  <div class="col">
+                    {{ vpn.username }}
+                    <q-btn class="col-shrink q-px-xs" flat color="primary" icon="content_copy" size="sm"
+                           @click="clickToCopy(vpn.username)">
+                      <q-tooltip>
+                        复制
+                      </q-tooltip>
+                    </q-btn>
+                  </div>
+                </div>
+
+                <div v-if="service.need_vpn" class="row q-pb-md items-center">
+                  <div class="col-3 text-grey">VPN密码</div>
+
+                  <div class="col-shrink">
+                    <!--根据内容改变长度的input. 一个字母占8像素，一个汉字占16像素.https://github.com/quasarframework/quasar/issues/1958-->
+                    <q-input :input-style="{width:`${vpn.password.length * 8}px`, maxWidth: '200px', minWidth: '32px'}"
+                             v-model="vpn.password" readonly borderless dense
+                             :type="isPwdVpn ? 'password' : 'text'">
+                      <template v-slot:append>
+                        <q-icon :name="isPwdVpn ? 'visibility' : 'visibility_off'" @click="isPwdVpn = !isPwdVpn"/>
+                        <q-btn class="q-px-xs" flat color="primary" icon="content_copy" size="sm"
+                               @click="clickToCopy(vpn.password)">
+                          <q-tooltip>
+                            复制
+                          </q-tooltip>
+                        </q-btn>
+                        <q-btn icon="edit" size="sm" dense flat color="primary"
+                               @click="$store.dispatch('vm/popEditVpnPass',  vpn)">
+                          <q-tooltip>
+                            修改
+                          </q-tooltip>
+                        </q-btn>
+                      </template>
+                    </q-input>
+                  </div>
+
+                </div>
+
+                <div v-if="service.need_vpn" class="row q-pb-md">
+                  <div class="col-3 text-grey">VPN配置文件</div>
+                  <div class="col">
+                    <q-btn label="下载" class=" " color="primary" padding="none" dense flat
+                           @click="$store.dispatch('vm/fetchConfig', server.service)"/>
+                  </div>
+                </div>
+
+                <div v-if="service.need_vpn" class="row q-pb-md">
+                  <div class="col-3 text-grey">VPN CA证书</div>
+                  <div class="col">
+                    <q-btn label="下载" class="" color="primary" padding="none" dense flat
+                           @click="$store.dispatch('vm/fetchCa', server.service)"/>
+                  </div>
+                </div>
+
               </div>
-            </div>
-            <!--空行结束-->
-            <div class="row justify-center">
+
               <div class="col-4">
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey">ID</div>
+                  <div class="col-2 text-grey">有效期</div>
+                  <div class="col"> {{ new Date(server.creation_time).toLocaleString() }} -
+                    {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString() : '永久有效' }}
+                  </div>
+                </div>
+
+                <div class="row q-pb-md">
+                  <div class="col-2 text-grey">云主机ID</div>
                   <div class="col"> {{ server.id }}</div>
                 </div>
 
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey">CPU</div>
-                  <div class="col"> {{ server.vcpus }}核</div>
-                </div>
-
-                <div class="row q-pb-md">
-                  <div class="col-2 text-grey">内存</div>
-                  <div class="col"> {{ server.ram / 1024 }}GB</div>
+                  <div class="col-2 text-grey">配置</div>
+                  <div class="col"> {{ server.vcpus }}核 / {{ server.ram / 1024 }}GB</div>
                 </div>
 
                 <div class="row q-pb-md">
@@ -143,51 +259,11 @@
                   <div class="col"> {{ server.image }}</div>
                 </div>
 
-                <div class="row q-pb-md">
-                  <div class="col-2 text-grey">创建时间</div>
-                  <div class="col"> {{ new Date(server.creation_time).toLocaleString() }}</div>
+                <div v-if="server.image_desc" class="row q-pb-md">
+                  <div class="col-2 text-grey">系统描述</div>
+                  <div class="col"> {{ server.image_desc }}</div>
                 </div>
 
-                <div class="row q-pb-md">
-                  <div class="col-2 text-grey">失效时间</div>
-                  <div class="col">
-                    {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString() : '永久有效' }}
-                  </div>
-                </div>
-
-                <div class="row q-pb-md">
-                  <div class="col-2 text-grey">备注</div>
-                  <div class="col">
-
-                    <q-btn class="col-shrink q-px-xs" flat dense icon="edit" size="xs" color="primary"
-                           @click="$store.dispatch('vm/popEditVmNote',server.id)">
-                      <q-tooltip>
-                        编辑备注
-                      </q-tooltip>
-                    </q-btn>
-
-                    {{ server.remarks }}
-
-                  </div>
-                </div>
-
-              </div>
-              <div class="col-8">
-
-                <div class="row q-pb-md">
-                  <div class="col-2 text-grey">所属机构</div>
-                  <div class="col"> {{ $store.state.vm.tables.globalDataCenterTable.byId[service.data_center]?.name }}</div>
-                </div>
-
-                <div class="row q-pb-md">
-                  <div class="col-2 text-grey">服务节点</div>
-                  <div class="col"> {{ service.name }}</div>
-                </div>
-
-                <div class="row q-pb-md">
-                  <div class="col-2 text-grey">服务类型</div>
-                  <div class="col"> {{ service.service_type }}</div>
-                </div>
                 <div class="row q-pb-md">
                   <div class="col-2 text-grey">所用配额</div>
                   <div class="col-shrink">
@@ -199,7 +275,7 @@
                           进入配额详情页面
                         </q-tooltip>
                       </q-btn>
-                      {{ quota?.display }}
+                      <!--                      {{ quota?.display }}-->
                     </div>
 
                     <div v-else>所用配额已删除或未使用配额创建</div>
@@ -207,69 +283,26 @@
                   </div>
                 </div>
 
+              </div>
+
+              <div class="col-4">
+
                 <div class="row q-pb-md">
-                  <div class="col-2 text-grey">需要VPN</div>
-                  <div class="col"> {{ service?.need_vpn ? '是' : '否' }}</div>
-                </div>
-
-                <div v-if="service.need_vpn" class="row q-pb-md ">
-                  <div class="col-2 text-grey">VPN用户名</div>
-                  <div class="col">
-                    {{ vpn.username }}
-                    <q-btn
-                      class="col-shrink q-px-xs" flat color="primary" icon="content_copy" size="xs"
-                      @click="clickToCopy(vpn.username)">
-                      <q-tooltip>
-                        复制
-                      </q-tooltip>
-                    </q-btn>
+                  <div class="col-2 text-grey">所属机构</div>
+                  <div class="col"> {{
+                      $store.state.vm.tables.globalDataCenterTable.byId[service.data_center]?.name
+                    }}
                   </div>
                 </div>
 
-                <div v-if="service.need_vpn" class="row q-pb-md items-center">
-                  <div class="col-2 text-grey">VPN密码</div>
-                  <div class="col">
-                    <div class="row ">
-                      <q-input class="password-input"
-                               v-model="vpn.password" :type="isPwd ? 'password' : 'text'"
-                               readonly borderless dense square outlined>
-                        <template v-slot:prepend>
-                          <q-icon
-                            :name="isPwd ? 'visibility' : 'visibility_off'"
-                            @click="isPwd = !isPwd"
-                          />
-                        </template>
-                      </q-input>
-
-                      <q-btn
-                        class="col-shrink q-px-xs" flat color="primary" icon="content_copy" size="xs"
-                        @click="clickToCopy(vpn.password)">
-                        <q-tooltip>
-                          复制
-                        </q-tooltip>
-                      </q-btn>
-
-                      <q-btn label="修改密码" padding="none" dense flat color="primary"
-                             @click="$store.dispatch('vm/popEditVpnPass',  vpn)"/>
-
-                    </div>
-                  </div>
+                <div class="row q-pb-md">
+                  <div class="col-2 text-grey">服务节点</div>
+                  <div class="col"> {{ service.name }}</div>
                 </div>
 
-                <div v-if="service.need_vpn" class="row q-pb-md">
-                  <div class="col-2 text-grey">VPN配置文件</div>
-                  <div class="col">
-                    <q-btn label="下载" class=" " color="primary" padding="none" dense flat
-                           @click="$store.dispatch('vm/fetchConfig', server.service)"/>
-                  </div>
-                </div>
-
-                <div v-if="service.need_vpn" class="row q-pb-md">
-                  <div class="col-2 text-grey">VPN CA证书</div>
-                  <div class="col">
-                    <q-btn label="下载" class="" color="primary" padding="none" dense flat
-                           @click="$store.dispatch('vm/fetchCa', server.service)"/>
-                  </div>
+                <div class="row q-pb-md">
+                  <div class="col-2 text-grey">服务类型</div>
+                  <div class="col"> {{ service.service_type }}</div>
                 </div>
 
               </div>
@@ -319,8 +352,11 @@ export default defineComponent({
     const quota = computed(() => $store.state.vm.tables.userQuotaTable.byId[server.value.user_quota])
     // vpn info
     const vpn = computed(() => $store.state.vm.tables.userVpnTable.byId[server.value.service])
+
     // password可见性
     const isPwd = ref(true)
+    // VPN password可见性
+    const isPwdVpn = ref(true)
 
     // 复制信息到剪切板
     const clickToCopy = useCopyToClipboard()
@@ -335,6 +371,7 @@ export default defineComponent({
       quota,
       vpn,
       isPwd,
+      isPwdVpn,
       clickToCopy,
       goBack,
       $route
@@ -371,6 +408,6 @@ export default defineComponent({
 .password-input {
   //top: -10px;
   //height: 10px;
-  width: 250px;
+  width: 175px;
 }
 </style>

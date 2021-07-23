@@ -70,9 +70,10 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, watch } from 'vue'
 import { useStore } from 'vuex'
 import { useI18n } from 'vue-i18n'
+import { useQuasar } from 'quasar'
 
 import { StateInterface } from 'src/store'
 
@@ -84,10 +85,11 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
+    const $q = useQuasar()
     const { locale } = useI18n({ useScope: 'global' })
 
     // i18n
-    // 保持selection与i18n模块同步
+    // 保持localeModel与i18n模块同步
     const localeModel = computed({
       get: () => locale.value,
       set: newVal => {
@@ -105,6 +107,15 @@ export default defineComponent({
         label: 'English-dev'
       }
     ]
+
+    // 根据localeModel改变Quasar Language Pack
+    watch(localeModel, val => {
+      // 因本地i18n简化为zh和en，此处应补全为'zh-CN'和'en-US'共quasar寻址使用
+      const locale = val.includes('zh') ? 'zh-CN' : 'en-US'
+      void import('quasar/lang/' + locale).then(lang => {
+        $q.lang.set(lang.default)
+      })
+    })
 
     const currentUser = $store.state.account
     const toggleRightDrawer = () => {

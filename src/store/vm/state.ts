@@ -43,12 +43,19 @@ export interface ServerInterface {
   creation_time: string
   expiration_time: string | null
   remarks: string
+  classification: string
+  image_id: string
+  image_desc: string
+  default_user: string
+  default_password: string
   endpoint_url: string
   service: string
   user_quota: string
   center_quota: number
+  vo_id: string | null
 
   // 来自status接口 根据status_code映射为文字状态
+  vnc?: string
   status?: string
 }
 
@@ -71,6 +78,8 @@ export interface ImageInterface {
   system_type: string
   creation_time: string
   desc: string
+  default_user: string
+  default_password: string
   // 根据查询时所填的serviceId补充
   service: string
   localId: string

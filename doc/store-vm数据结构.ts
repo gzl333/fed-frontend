@@ -90,12 +90,14 @@ const vm = {
       byLocalId: {
         'id1-id2': { // ***与service_id拼接后的id*** 原始id在系统中不唯一
           id: 'id2', // 原始id
-          localId: 'id1-id2',
+          localId: 'id1-id2', // id1是service_id, id2是image原始id
           name: 'Ubuntu_2004',
           system: 'Ubuntu_2004',
           system_type: 'Linux',
           creation_time: '0001-01-01T00:00:00Z',
           desc: '',
+          default_user: 'string', // 当前image的默认用户名和密码
+          default_password: 'string',
           // 根据查询时所填的serviceId补充
           service: 'id1'
         }
@@ -176,10 +178,9 @@ const vm = {
       byId: {
         id1: {
           id: 'id1',
-          center_quota: 2, // 1: 服务的私有资源配额，"user_quota"=null; 2: 服务的分享资源配额
           creation_time: '2021-03-19T03:26:58.793601Z',
           endpoint_url: 'http://gosc.cstcloud.cn/',
-          image: 'CentOS_Stream',
+          image: 'CentOS_Stream', // server创建时的操作系统镜像名称
           ipv4: '159.226.235.62',
           name: '6c660b3707304132a787fba87bbfb56b',
           public_ip: true,
@@ -187,10 +188,17 @@ const vm = {
           ram: 1024,
           service: 'id1', // 关联serviceTable
           user_quota: 'id1', // 关联userQuotaTable
+          center_quota: 2, // 1: 服务的私有资源配额，"user_quota"=null; 2: 服务的分享资源配额
           remarks: 'zlguo@cnic.cn', // ->主动更新，patch更新后，resp中带有新的remarks
+          classification: 'personal',
+          image_id: '',
+          image_desc: '',
+          default_user: 'root',
+          default_password: 'cnic.cn',
+          vo_id: null,
 
           // 以下来自不同接口的补充
-          vnc: 'http://159.226.235.2/novnc/?vncid=fdb475ef-544e-4e6f-8691-0557ca8b3ee9', // 单独查询，随着serverTable更新
+          vnc: 'http://159.226.235.2/novnc/?vncid=fdb475ef-544e-4e6f-8691-0557ca8b3ee9', // todo 单独查询，然后给serverTable补充更新
           status: 1 // 关联statusMap ->根据操作被动更新，云主机的操作之后，应重新获取状态数据 （增加保证成功的底层机制，即一次操作不成功则自动重试）
         }
       },

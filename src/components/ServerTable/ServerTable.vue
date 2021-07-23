@@ -20,30 +20,30 @@
               @mouseleave="onMouseLeaveRow"
         >
           <q-td key="ip" :props="props">
-            <div class="row">
-              <div class="col">
 
-                <q-btn
-                  class="q-ma-none" :label="props.row.ipv4" color="primary" flat dense unelevated
-                  :to="{path: `/my/personal/vmdetail/${props.row.id}`}">
-                  <q-tooltip>
-                    {{ $t('进入详情页面') }}
-                  </q-tooltip>
-                </q-btn>
+            <q-btn
+              class="q-ma-none" :label="props.row.ipv4" color="primary" padding="sm" flat dense unelevated
+              :to="{path: `/my/personal/vmdetail/${props.row.id}`}">
+              <q-tooltip>
+                {{ $t('进入详情页面') }}
+              </q-tooltip>
+              <!--创建时间距离当下小于1小时则打上new标记-->
+              <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
+                       color="light-green" floating transparent rounded align="middle">new
+              </q-badge>
+            </q-btn>
 
-                <q-btn v-if="hoverRow === props.row.name"
-                       class="col-shrink q-px-xs q-ma-none" flat dense icon="content_copy" size="xs" color="primary"
-                       @click="clickToCopy(props.row.ipv4)">
-                  <q-tooltip>
-                    {{ $t('复制到剪切板') }}
-                  </q-tooltip>
-                </q-btn>
-                <q-btn v-else
-                       class="col-shrink q-px-xs q-ma-none invisible" flat dense icon="content_copy" size="xs">
-                </q-btn>
+            <q-btn v-if="hoverRow === props.row.name"
+                   class="col-shrink q-px-xs q-ma-none" flat dense icon="content_copy" size="xs" color="primary"
+                   @click="clickToCopy(props.row.ipv4)">
+              <q-tooltip>
+                {{ $t('复制到剪切板') }}
+              </q-tooltip>
+            </q-btn>
+            <q-btn v-else
+                   class="col-shrink q-px-xs q-ma-none invisible" flat dense icon="content_copy" size="xs">
+            </q-btn>
 
-              </div>
-            </div>
           </q-td>
           <q-td key="serviceNode" :props="props">
             <div>

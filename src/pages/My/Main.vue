@@ -147,8 +147,7 @@
                   </div>
                 </div>
                 <q-separator color="grey-5"/>
-                <BucketTable v-if="buckets" :buckets="buckets"/>
-                <div v-else>暂无对象存储桶，请创建后使用</div>
+                <BucketTable :buckets="[]"/>
               </div>
             </div>
 
@@ -190,38 +189,38 @@ export default defineComponent({
     const servers = computed(() => $store.getters['vm/getServers'].slice(0, 3))
 
     // 获取对象存储桶数据列表，目前是测试数据
-    const buckets = [
-    //   {
-    //   bucketName: '测试桶1',
-    //   domainName: 'obs.cstcloud.cn',
-    //   count: 100,
-    //   volume: '20GB',
-    //   status: true,
-    //   writeRead: 'pass1',
-    //   readonly: 'pass1-1',
-    //   creation: '2021-6-21 15:37'
-    // },
-    // {
-    //   bucketName: '测试桶2',
-    //   domainName: 'obs.cstcloud.cn',
-    //   count: 289,
-    //   volume: '300GB',
-    //   status: false,
-    //   writeRead: 'pass2',
-    //   readonly: 'pass2-1',
-    //   creation: '2021-6-21 15:37'
-    // },
-    // {
-    //   bucketName: '测试桶3',
-    //   domainName: 'obs.cstcloud.cn',
-    //   count: 500,
-    //   volume: '600GB',
-    //   status: true,
-    //   writeRead: 'pass3',
-    //   readonly: 'pass3-1',
-    //   creation: '2021-6-21 15:37'
-    // }
-    ]
+    // const buckets = [
+    // //   {
+    // //   bucketName: '测试桶1',
+    // //   domainName: 'obs.cstcloud.cn',
+    // //   count: 100,
+    // //   volume: '20GB',
+    // //   status: true,
+    // //   writeRead: 'pass1',
+    // //   readonly: 'pass1-1',
+    // //   creation: '2021-6-21 15:37'
+    // // },
+    // // {
+    // //   bucketName: '测试桶2',
+    // //   domainName: 'obs.cstcloud.cn',
+    // //   count: 289,
+    // //   volume: '300GB',
+    // //   status: false,
+    // //   writeRead: 'pass2',
+    // //   readonly: 'pass2-1',
+    // //   creation: '2021-6-21 15:37'
+    // // },
+    // // {
+    // //   bucketName: '测试桶3',
+    // //   domainName: 'obs.cstcloud.cn',
+    // //   count: 500,
+    // //   volume: '600GB',
+    // //   status: true,
+    // //   writeRead: 'pass3',
+    // //   readonly: 'pass3-1',
+    // //   creation: '2021-6-21 15:37'
+    // // }
+    // ]
 
     const isBannerOn = ref(true)
 
@@ -231,7 +230,7 @@ export default defineComponent({
       tab1,
       tab2,
       servers,
-      buckets,
+      // buckets,
       isBannerOn
     }
   }
