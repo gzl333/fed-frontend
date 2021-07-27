@@ -110,20 +110,20 @@ const actions: ActionTree<VmInterface, StateInterface> = {
     const promise = new Promise((resolve, reject) => {
       // 操作的确认提示
       Dialog.create({
+        class: 'dialog-primary',
         title: '删除配额',
         message:
           '删除后的配额无法恢复。 确认删除此配额？',
+        focus: 'cancel',
         ok: {
           label: '确认',
           push: false,
-          flat: true,
-          unelevated: true,
+          outline: true,
           color: 'primary'
         },
         cancel: {
           label: '放弃',
           push: false,
-          flat: true,
           unelevated: true,
           color: 'primary'
         }
@@ -194,6 +194,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
   // 修改vpn密码
   popEditVpnPass (context, vpn: VpnInterface) {
     Dialog.create({
+      class: 'dialog-primary',
       title: `修改${context.state.tables.globalServiceTable.byId[vpn.id].name}的VPN密码`,
       message: '新密码长度为6-64位',
       prompt: {
@@ -206,7 +207,20 @@ const actions: ActionTree<VmInterface, StateInterface> = {
         type: 'text' // optional
       },
       color: 'primary',
-      cancel: true
+      ok: {
+        label: i18n.global.tc('确认'),
+        push: false,
+        // flat: true,
+        outline: true,
+        color: 'primary'
+      },
+      cancel: {
+        label: i18n.global.tc('放弃'),
+        push: false,
+        flat: false,
+        unelevated: true,
+        color: 'primary'
+      }
     }).onOk((data: string) => {
       const payload = {
         serviceId: vpn.id,
@@ -348,24 +362,32 @@ const actions: ActionTree<VmInterface, StateInterface> = {
   vmOperation (context, payload: { id: string; action: string }) {
     // 操作的确认提示 todo 输入删除两个字以确认
     Dialog.create({
+      class: 'dialog-primary',
       title: `${i18n.global.tc(actionMap.get(payload.action) as string) || ''}`,
+      focus: 'cancel',
       message:
         `${payload.action === 'delete' || payload.action === 'delete_force' ? '被删除的云主机将无法自行恢复，如需恢复请联系云联邦管理员。' : ''}确认执行？`,
       ok: {
         label: i18n.global.tc('确认'),
         push: false,
-        flat: true,
-        unelevated: true,
+        // flat: true,
+        outline: true,
         color: 'primary'
       },
       cancel: {
         label: i18n.global.tc('放弃'),
         push: false,
-        flat: true,
+        flat: false,
         unelevated: true,
         color: 'primary'
       }
     }).onOk(async () => {
+      // 将主机状态清空，界面将显示loading
+      context.commit('storeUserServerTableSingleStatus', {
+        serverId: payload.id,
+        status_code: ''
+      })
+
       // 发送请求
       const server = context.state.tables.userServerTable.byId[payload.id]
       // 去掉协议
@@ -375,20 +397,17 @@ const actions: ActionTree<VmInterface, StateInterface> = {
       const data = { action: payload.action }
       const response = await axios.post(api, data)
 
-      // 将主机状态清空，界面将显示loading
-      context.commit('storeUserServerTableSingleStatus', {
-        serverId: payload.id,
-        status_code: ''
-      })
-
       // 如果删除主机，重新获取userServerTable
       if (payload.action === 'delete' || payload.action === 'delete_force') {
         Notify.create({
+          classes: 'notification-primary shadow-15',
+          textColor: 'black',
           spinner: true,
+          message: `正在删除云主机${server.ipv4 || ''} ，请稍候`,
+          position: 'bottom',
+          closeBtn: true,
           timeout: 3000,
-          color: 'primary',
-          message: `正在删除IP地址为：${server.ipv4 || ''} 的云主机，请稍候`,
-          closeBtn: false
+          multiLine: false
         })
         // 应延时
         void await new Promise(resolve => (
@@ -411,6 +430,7 @@ const actions: ActionTree<VmInterface, StateInterface> = {
   // 编辑云主机备注
   popEditVmNote (context, id: string) {
     Dialog.create({
+      class: 'dialog-primary',
       title: `编辑${context.state.tables.userServerTable.byId[id].ipv4}的备注信息`,
       // message: '长度限制为30个字',
       prompt: {

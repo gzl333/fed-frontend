@@ -205,7 +205,7 @@
               <div class="col-auto ">
                 <div class="column justify-start items-center" style="height: 120px">
                   <div class="col-2 text-grey">
-                    配额失效时间
+                    配额过期时间
                   </div>
                   <div class="col-10">
                     <div class="column justify-center items-center" style="height: 100px">

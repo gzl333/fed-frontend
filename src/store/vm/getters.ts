@@ -44,13 +44,8 @@ const getters: GetterTree<VmInterface, StateInterface> = {
           }
         ]
     */
-    // vue组件外取i18n中locale字段的方法
-    const serviceOptions = [
-      {
-        value: '0',
-        label: i18n.global.locale === 'zh' ? '全部服务节点' : 'All Service Nodes'
-      }
-    ]
+
+    let serviceOptions = []
 
     // const serviceOptions = []
     for (const service of Object.values(state.tables.userServiceTable.byId)) {
@@ -62,6 +57,14 @@ const getters: GetterTree<VmInterface, StateInterface> = {
         }
       )
     }
+    // 排序
+    serviceOptions = serviceOptions.sort((a, b) => -a.label.localeCompare(b.label, 'zh-CN'))
+    // // vue组件外取i18n中locale字段的方法
+    serviceOptions.unshift({
+      value: '0',
+      label: i18n.global.locale === 'zh' ? '全部服务节点' : 'All Service Nodes'
+    })
+
     return serviceOptions
   },
   getServersByServiceId (state): ServerInterface[] {

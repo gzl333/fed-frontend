@@ -10,6 +10,7 @@
         <q-space/>
         <div class="q-gutter-md row items-center no-wrap">
           <q-select
+            disable
             v-model="localeModel"
             :options="localeOptions"
             dense
@@ -27,12 +28,12 @@
             {{ $t('使用手册') }}
           </q-btn>
 
-          <q-btn disable :ripple="false" flat dense color="grey" icon="notifications">
-            <q-badge color="c-blue-3" text-color="white" floating>
-              0
-            </q-badge>
-            <q-tooltip>系统消息</q-tooltip>
-          </q-btn>
+<!--          <q-btn disable :ripple="false" flat dense color="grey" icon="notifications">-->
+<!--            <q-badge color="c-blue-3" text-color="white" floating>-->
+<!--              0-->
+<!--            </q-badge>-->
+<!--            <q-tooltip>系统消息</q-tooltip>-->
+<!--          </q-btn>-->
 
           <HeaderDropdown/>
 

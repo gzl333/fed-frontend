@@ -297,7 +297,7 @@ export default defineComponent({
       },
       {
         name: 'expiration_time',
-        label: '配额失效时间',
+        label: '配额过期时间',
         field: 'expiration_time',
         align: 'center',
         style: 'padding: 15px 5px'

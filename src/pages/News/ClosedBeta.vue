@@ -99,7 +99,7 @@
                 创建云主机
               </q-btn>
             </div>
-            <div class="text-h7">3. 根据需要使用云主机，具体使用方法请参考<q-btn flat padding="none" color="primary" to="/manual/personal">用户手册</q-btn></div>
+            <div class="text-h7">3. 根据需要使用云主机，具体使用方法请参考<q-btn flat padding="none" color="primary" @click="gotoManual">用户手册</q-btn></div>
 
             <!--            <pre>{{ quotaActivities }}</pre>-->
           </q-card-section>
@@ -121,9 +121,17 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
     const quotaActivities = computed(() => Object.values($store.state.applyQuota.tables.globalQuotaActivityTable.byId))
+
+    const gotoManual = () => {
+      // 中文访问/manual 英文访问/manual/en
+      const url = location.origin + '/manual/personal/'
+      window.open(url)
+    }
+
     return {
       $store,
-      quotaActivities
+      quotaActivities,
+      gotoManual
     }
   }
 })

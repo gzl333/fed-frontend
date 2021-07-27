@@ -115,20 +115,20 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   deleteAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
     // 操作的确认提示
     Dialog.create({
+      class: 'dialog-primary',
       title: '删除配额申请记录',
       message:
         '删除后的申请记录无法恢复。 确认删除此记录？',
+      focus: 'cancel',
       ok: {
         label: '确认',
         push: false,
-        flat: true,
-        unelevated: true,
+        outline: true,
         color: 'primary'
       },
       cancel: {
         label: '放弃',
         push: false,
-        flat: true,
         unelevated: true,
         color: 'primary'
       }
@@ -150,20 +150,20 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
   cancelAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
     // 操作的确认提示
     Dialog.create({
+      class: 'dialog-primary',
       title: '取消配额申请',
       message:
         '取消后的申请无法恢复。 确认取消此申请？',
+      focus: 'cancel',
       ok: {
         label: '确认',
         push: false,
-        flat: true,
-        unelevated: true,
+        outline: true,
         color: 'primary'
       },
       cancel: {
         label: '放弃',
         push: false,
-        flat: true,
         unelevated: true,
         color: 'primary'
       }
@@ -272,6 +272,7 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
     if (respQuota.status === 200) {
       // 提示成功
       Dialog.create({
+        class: 'dialog-positive',
         title: '成功',
         message:
           '配额领取成功',
@@ -289,6 +290,7 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
     } else {
       // code error -> 领取出错：提示错误
       Dialog.create({
+        class: 'dialog-negative',
         title: '抱歉',
         message:
         respQuota.response.data.message, // 真正信息在respQuota.response.data里面
@@ -316,7 +318,7 @@ const actions: ActionTree<ApplyQuotaInterface, StateInterface> = {
     // 当前table内容为筛选出active,排除未开始和已结束的，以后可根据需求全部获取，显示时进行筛选
     const respActivity = await context.dispatch('fetchQuotaActivity', {
       status: 'active',
-      'exclude-not-start': true,
+      // 'exclude-not-start': true,
       'exclude-ended': true
     })
     // normalize信息

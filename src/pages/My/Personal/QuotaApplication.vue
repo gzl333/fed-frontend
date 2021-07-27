@@ -249,9 +249,9 @@
         <q-separator/>
 
         <q-card-actions align="right">
-          <q-btn v-close-popup flat color="primary" label="保存"
+          <q-btn v-close-popup unelevated color="primary" label="放弃"/>
+          <q-btn v-close-popup outline color="primary" label="保存"
                  @click="$store.dispatch('applyQuota/patchAndUpdateUserQuotaApplicationTable', {apply_id, data: newApplication})"/>
-          <q-btn v-close-popup flat color="primary" label="放弃"/>
         </q-card-actions>
       </q-card>
     </q-dialog>

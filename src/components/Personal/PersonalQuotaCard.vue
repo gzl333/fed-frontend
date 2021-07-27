@@ -22,7 +22,7 @@
         <div class="row justify-end text-center">
 
           <div class="col-8 text-left">
-            <span class="text-grey q-px-sm">配额失效时间</span>
+            <span class="text-grey q-px-sm">配额过期时间</span>
             <span v-if="props.quota.expiration_time">{{ new Date(props.quota.expiration_time).toLocaleString() }}</span>
             <span v-else>长期有效</span>
           </div>
