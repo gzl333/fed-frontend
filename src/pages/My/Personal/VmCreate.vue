@@ -151,10 +151,13 @@
                 服务节点
               </div>
               <div class="col item-radios">
-                {{
-                  $store.state.vm.tables.globalDataCenterTable.byId[radioDataCenter] && $store.state.vm.tables.userServiceTable.byId[radioService] ?
-                    `${$store.state.vm.tables.globalDataCenterTable.byId[radioDataCenter].name} - ${$store.state.vm.tables.userServiceTable.byId[radioService].name}` : '尚未选择服务节点'
-                }}
+                <div
+                  v-if="$store.state.vm.tables.globalDataCenterTable.byId[radioDataCenter] && $store.state.vm.tables.userServiceTable.byId[radioService]">
+                  {{
+                    `${$store.state.vm.tables.globalDataCenterTable.byId[radioDataCenter].name} - ${$store.state.vm.tables.userServiceTable.byId[radioService].name}`
+                  }}
+                </div>
+                <div v-else class="text-red">请选择服务节点</div>
               </div>
             </div>
 
@@ -163,9 +166,10 @@
                 云主机配额
               </div>
               <div class="col item-radios">
-                {{
-                  $store.state.vm.tables.userQuotaTable.byId[radioQuota]?.display || '尚未选择云主机配额'
-                }}
+                <div v-if="$store.state.vm.tables.userQuotaTable.byId[radioQuota]?.display">
+                  {{ $store.state.vm.tables.userQuotaTable.byId[radioQuota]?.display }}
+                </div>
+                <div v-else class="text-red">请选择云主机配额</div>
               </div>
             </div>
 
@@ -174,9 +178,10 @@
                 网络类型
               </div>
               <div class="col item-radios">
-                {{
-                  $store.state.vm.tables.userNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name || '尚未选择网络类型'
-                }}
+                <div v-if="$store.state.vm.tables.userNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name">
+                  {{ $store.state.vm.tables.userNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name }}
+                </div>
+                <div v-else class="text-red">请选择网络类型</div>
               </div>
             </div>
 
@@ -185,9 +190,10 @@
                 系统镜像
               </div>
               <div class="col item-radios">
-                {{
-                  $store.state.vm.tables.userImageTable.byLocalId[`${radioService}-${radioImage}`]?.name || '尚未选择系统镜像'
-                }}
+                <div v-if="$store.state.vm.tables.userImageTable.byLocalId[`${radioService}-${radioImage}`]?.name">
+                  {{ $store.state.vm.tables.userImageTable.byLocalId[`${radioService}-${radioImage}`]?.name }}
+                </div>
+                <div v-else class="text-red">选择系统镜像</div>
               </div>
             </div>
 
@@ -196,11 +202,12 @@
                 CPU/内存
               </div>
               <div class="col item-radios">
-                {{
-                  $store.state.vm.tables.globalFlavorTable.byId[radioFlavor] ?
-                    `${$store.state.vm.tables.globalFlavorTable.byId[radioFlavor].vcpus}核/${$store.state.vm.tables.globalFlavorTable.byId[radioFlavor].ram / 1024}GB` :
-                    '尚未选择配置'
-                }}
+                <div v-if="$store.state.vm.tables.globalFlavorTable.byId[radioFlavor]">
+                  {{
+                    `${$store.state.vm.tables.globalFlavorTable.byId[radioFlavor].vcpus}核/${$store.state.vm.tables.globalFlavorTable.byId[radioFlavor].ram / 1024}GB`
+                  }}
+                </div>
+                <div v-else class="text-red">请选择配置</div>
               </div>
             </div>
 
@@ -218,19 +225,6 @@
           </div>
 
           <q-btn color="primary" @click="createVM" label="创建云主机" unelevated :loading="isCreating"/>
-
-          <!--          </div>-->
-
-          <!--          <div v-else class="jumper">-->
-          <!--            <div class="q-pa-lg">-->
-          <!--              已成功创建IP地址为{{ newIP }}的云主机-->
-          <!--            </div>-->
-          <!--            <div class="q-pa-lg">-->
-          <!--              3秒后跳转至详情页面-->
-          <!--              &lt;!&ndash;              <q-btn flat padding="none" color="primary" label="详情页面" :to="'/my/personal/vmdetail/'+newId"/>&ndash;&gt;-->
-          <!--            </div>-->
-          <!--            <q-btn label="继续创建云主机" @click="refresh" color="primary" unelevated/>-->
-          <!--          </div>-->
 
         </div>
       </div>
@@ -293,8 +287,8 @@ export default defineComponent({
       radioNetwork.value = privateNetworks.value.length > 0 ? privateNetworks.value[0]?.id : publicNetworks.value[0]?.id
       radioImage.value = images.value[0]?.id
       radioFlavor.value = flavors.value[0]?.id
-      // 选择有余量的配额里的第一项
-      radioQuota.value = quotas.value.filter((quota: QuotaInterface) => !quota.exhausted)[0]?.id
+      // 选择有余量、没过期的配额里的第一项
+      radioQuota.value = quotas.value.filter((quota: QuotaInterface) => !quota.exhausted && !quota.expired)[0]?.id
     })
 
     // 获取url所传参数.
@@ -325,7 +319,7 @@ export default defineComponent({
         $store.state.vm.tables.globalFlavorTable.isLoaded &&
         $store.state.vm.tables.userQuotaTable.isLoaded
       ) {
-        // 如果有指定service,则默认选取指定值，没有则选择第一项
+        // 如果有指定service则默认选取指定值，没有则选择第一项
         radioService.value = serviceDesignated.value ? serviceDesignated.value : $store.state.vm.tables.userServiceTable.allIds[0]
         // 如果有指定的quota则默认选取指定值，没有则不变
         radioQuota.value = quotaDesignated || radioQuota.value
@@ -391,7 +385,8 @@ export default defineComponent({
             classes: 'notification-negative shadow-15',
             icon: 'error',
             textColor: 'negative',
-            message: '创建云主机失败，请重试',
+            message: '创建云主机失败，请重试。',
+            caption: `${error.response.status as string}: ${error.response.data.message as string}`, // 应告诉ts取到的值为string
             position: 'bottom',
             closeBtn: true,
             timeout: 5000,

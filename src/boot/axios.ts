@@ -46,9 +46,9 @@ axios.interceptors.response.use(config => {
 }, (error: AxiosError) => {
   Loading.hide()
   errorNotifier(error)
-  // throw error // throw就无法把错误传递给发到请求处
   // 响应里的error信息在error.response.data里面，被包成了axios error对象
-  return error // return可以把错误返回
+  throw error
+  // return error // ?? 不确定，throw就无法把错误传递给发到请求处
 })
 
 declare module '@vue/runtime-core' {
