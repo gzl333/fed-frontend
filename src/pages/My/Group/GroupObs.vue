@@ -1,6 +1,6 @@
 <template>
-  <div class="GroupResource">
-    this is GroupResource
+  <div class="GroupObs">
+    this is GroupObs
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'GroupResource',
+  name: 'GroupObs',
   components: {},
   props: {},
   setup () {
@@ -18,6 +18,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.GroupResource {
+.GroupObs {
 }
 </style>

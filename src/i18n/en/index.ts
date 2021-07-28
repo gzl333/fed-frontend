@@ -16,7 +16,7 @@ export default {
   中国科技云联邦: 'Global Open Science Cloud',
   我的首页: 'Home',
   个人资源: 'Personal Resource',
-  小组资源: 'Group Resource',
+  组资源: 'Group Resource',
   资源提供: 'Resource Provider',
   联邦管理: 'Federation Management',
 

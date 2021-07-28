@@ -81,7 +81,7 @@
               </div>
 
               <div class="col-1">
-                <global-add-button/>
+                <personal-add-button/>
               </div>
             </div>
           </div>
@@ -109,13 +109,13 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader/GlobalHeader.vue'
-import GlobalAddButton from 'components/Personal/PersonalAddButton.vue'
+import PersonalAddButton from 'components/Personal/PersonalAddButton.vue'
 
 export default defineComponent({
   name: 'PersonalIndex',
   components: {
     GlobalHeader,
-    GlobalAddButton
+    PersonalAddButton
   },
   props: {},
   setup () {

@@ -25,7 +25,7 @@
       </div>
     </div>
 
-    <server-table :vms="rows"/>
+    <server-table :servers="rows"/>
 
   </div>
 

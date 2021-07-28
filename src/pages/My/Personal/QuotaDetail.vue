@@ -13,7 +13,7 @@
 
         <!--直接从url进入本页面时，tables尚未载入，应显示loading界面。对取属性进行缓冲，不出现undefined错误-->
         <div class="row content-area">
-          <div v-if="!quota || !vms" class="col">
+          <div v-if="!quota || !servers" class="col">
             正在加载，请稍候
           </div>
 
@@ -255,7 +255,7 @@
                   关联云主机列表
                 </div>
 
-                <vm-table :vms="vms"/>
+                <vm-table :servers="servers"/>
               </div>
             </div>
             <!--            云主机列表结束-->
@@ -294,7 +294,7 @@ export default defineComponent({
     // 获取quota对象
     const quota = computed(() => $store.state.vm.tables.userQuotaTable.byId[quotaId])
     // 根据quota.servers获取server对象数组
-    const vms = computed(() => quota.value.servers?.map((serverId) => $store.state.vm.tables.userServerTable.byId[serverId]))
+    const servers = computed(() => quota.value.servers?.map((serverId) => $store.state.vm.tables.userServerTable.byId[serverId]))
 
     const deleteAndJump = async (quotaId: string) => {
       const isDeleted = await $store.dispatch('vm/deleteAndUpdateUserQuotaTable', quotaId)
@@ -311,7 +311,7 @@ export default defineComponent({
     return {
       goBack,
       quota,
-      vms,
+      servers,
       $store,
       deleteAndJump
     }

@@ -6,7 +6,7 @@
       card-class=""
       table-class=""
       table-header-class="bg-grey-1 text-grey"
-      :rows="props.vms"
+      :rows="props.servers"
       :columns="columns"
       row-key="name"
       no-data-label="暂无可用云主机，请创建后使用"
@@ -19,6 +19,11 @@
               @mouseenter="onMouseEnterRow(props.row.name)"
               @mouseleave="onMouseLeaveRow"
         >
+
+          <q-td key="group" :props="props">
+            {{ props.row.vo_id }}
+          </q-td>
+
           <q-td key="ip" :props="props">
 
             <q-btn
@@ -81,6 +86,11 @@
               </div>
             </div>
           </q-td>
+
+          <q-td key="creator" :props="props">
+            {{ props.row.vo_id }}
+          </q-td>
+
           <q-td key="note" :props="props">
             <div class="row">
 
@@ -101,7 +111,7 @@
 
             </div>
           </q-td>
-          <q-td key="vnc" :props="props" class="non-selectable">
+          <q-td key="vnc" :props="props" class="non-selectable q-pa-none">
             <q-btn v-if="props.row.status === 1" unelevated flat padding="none" size="lg" color="primary"
                    icon="computer"
                    @click="$store.dispatch('vm/gotoVNC',props.row.id)">
@@ -153,165 +163,390 @@ export default defineComponent({
     ServerOperationBtnGroup
   },
   props: {
-    vms: {
+    servers: {
       type: Array as PropType<VmInterface[]>,
       required: true
+    },
+    isGroup: {
+      type: Boolean,
+      required: false
     }
   },
   setup (props) {
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
-    // 云主机列表分栏定义
-    const columnsZH = [
-      {
-        name: 'ip',
-        label: 'IP地址',
-        field: 'ip',
-        align: 'center',
-        style: 'max-width: 150px;padding: 15px 5px'
-      },
-      {
-        name: 'serviceNode',
-        label: '服务节点',
-        field: 'serviceNode',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'serviceType',
-        label: '服务种类',
-        field: 'serviceType',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'image',
-        label: '系统镜像',
-        field: 'image',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'configuration',
-        label: 'CPU/内存',
-        field: 'configuration',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'expiration',
-        label: '到期时间',
-        field: 'expiration',
-        align: 'center',
-        classes: 'ellipsis',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'note',
-        label: '备注',
-        field: 'note',
-        align: 'center',
-        classes: 'ellipsis',
-        style: 'max-width: 150px;padding: 15px 5px'
-      },
-      {
-        name: 'vnc',
-        label: '远程控制',
-        field: 'vnc',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'status',
-        label: '状态',
-        field: 'status',
-        align: 'center',
-        style: 'padding: 15px 5px'
-
-      },
-      {
-        name: 'operation',
-        label: '操作',
-        field: 'operation',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      }
-    ]
-    const columnsEN = [
-      {
-        name: 'ip',
-        label: 'IP Address',
-        field: 'ip',
-        align: 'center',
-        style: 'max-width: 150px;padding: 15px 5px'
-      },
-      {
-        name: 'serviceNode',
-        label: 'Service Node',
-        field: 'serviceNode',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'serviceType',
-        label: 'Service Type',
-        field: 'serviceType',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'image',
-        label: 'OS',
-        field: 'image',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'configuration',
-        label: 'CPU/RAM',
-        field: 'configuration',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'expiration',
-        label: 'Expiration Time',
-        field: 'expiration',
-        align: 'center',
-        classes: 'ellipsis',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'note',
-        label: 'Notes',
-        field: 'note',
-        align: 'center',
-        classes: 'ellipsis',
-        style: 'max-width: 150px;padding: 15px 5px'
-      },
-      {
-        name: 'vnc',
-        label: 'Console',
-        field: 'vnc',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'status',
-        label: 'Status',
-        field: 'status',
-        align: 'center',
-        style: 'width: 120px;padding: 15px 5px'
-      },
-      {
-        name: 'operation',
-        label: 'Operations',
-        field: 'operation',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      }
-    ]
+    // 云主机列表分栏定义, 判断使用组配置还是个人配置
+    const columnsZH = props.isGroup ?
+      [
+        {
+          name: 'group',
+          label: '所属组',
+          field: 'group',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'ip',
+          label: 'IP地址',
+          field: 'ip',
+          align: 'center',
+          style: 'max-width: 150px;padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'serviceNode',
+          label: '服务节点',
+          field: 'serviceNode',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'serviceType',
+          label: '服务种类',
+          field: 'serviceType',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'image',
+          label: '系统镜像',
+          field: 'image',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'configuration',
+          label: 'CPU/内存',
+          field: 'configuration',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'expiration',
+          label: '到期时间',
+          field: 'expiration',
+          align: 'center',
+          classes: 'ellipsis',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'creator',
+          label: '创建人',
+          field: 'creator',
+          align: 'center',
+          classes: 'ellipsis',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'note',
+          label: '备注',
+          field: 'note',
+          align: 'center',
+          classes: 'ellipsis',
+          style: 'max-width: 150px;padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'vnc',
+          label: '远程控制',
+          field: 'vnc',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'status',
+          label: '状态',
+          field: 'status',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'operation',
+          label: '操作',
+          field: 'operation',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        }
+      ] : [
+        {
+          name: 'ip',
+          label: 'IP地址',
+          field: 'ip',
+          align: 'center',
+          style: 'max-width: 150px;padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'serviceNode',
+          label: '服务节点',
+          field: 'serviceNode',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'serviceType',
+          label: '服务种类',
+          field: 'serviceType',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'image',
+          label: '系统镜像',
+          field: 'image',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'configuration',
+          label: 'CPU/内存',
+          field: 'configuration',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'expiration',
+          label: '到期时间',
+          field: 'expiration',
+          align: 'center',
+          classes: 'ellipsis',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'note',
+          label: '备注',
+          field: 'note',
+          align: 'center',
+          classes: 'ellipsis',
+          style: 'max-width: 150px;padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'vnc',
+          label: '远程控制',
+          field: 'vnc',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'status',
+          label: '状态',
+          field: 'status',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'operation',
+          label: '操作',
+          field: 'operation',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        }
+      ]
+    const columnsEN = props.isGroup ?
+      [
+        {
+          name: 'group',
+          label: 'Group',
+          field: 'group',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'ip',
+          label: 'IP Address',
+          field: 'ip',
+          align: 'center',
+          style: 'max-width: 150px;padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'serviceNode',
+          label: 'Service Node',
+          field: 'serviceNode',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'serviceType',
+          label: 'Service Type',
+          field: 'serviceType',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'image',
+          label: 'OS',
+          field: 'image',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'configuration',
+          label: 'CPU/RAM',
+          field: 'configuration',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'expiration',
+          label: 'Expiration Time',
+          field: 'expiration',
+          align: 'center',
+          classes: 'ellipsis',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'creator',
+          label: 'Creator',
+          field: 'creator',
+          align: 'center',
+          classes: 'ellipsis',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'note',
+          label: 'Notes',
+          field: 'note',
+          align: 'center',
+          classes: 'ellipsis',
+          style: 'max-width: 150px;padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'vnc',
+          label: 'Console',
+          field: 'vnc',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'status',
+          label: 'Status',
+          field: 'status',
+          align: 'center',
+          style: 'max-width: 120px;padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'operation',
+          label: 'Operations',
+          field: 'operation',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        }
+      ] : [
+        {
+          name: 'ip',
+          label: 'IP Address',
+          field: 'ip',
+          align: 'center',
+          style: 'max-width: 150px;padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'serviceNode',
+          label: 'Service Node',
+          field: 'serviceNode',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'serviceType',
+          label: 'Service Type',
+          field: 'serviceType',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'image',
+          label: 'OS',
+          field: 'image',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'configuration',
+          label: 'CPU/RAM',
+          field: 'configuration',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'expiration',
+          label: 'Expiration Time',
+          field: 'expiration',
+          align: 'center',
+          classes: 'ellipsis',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'note',
+          label: 'Notes',
+          field: 'note',
+          align: 'center',
+          classes: 'ellipsis',
+          style: 'max-width: 150px;padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'vnc',
+          label: 'Console',
+          field: 'vnc',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'status',
+          label: 'Status',
+          field: 'status',
+          align: 'center',
+          style: 'max-width: 120px;padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        },
+        {
+          name: 'operation',
+          label: 'Operations',
+          field: 'operation',
+          align: 'center',
+          style: 'padding: 15px 0px',
+          headerStyle: 'padding: 0 5px'
+        }
+      ]
     // i18n影响该配置对象取值
     const columns = computed(() => locale.value === 'zh' ? columnsZH : columnsEN)
 

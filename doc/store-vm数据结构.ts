@@ -190,12 +190,12 @@ const vm = {
           user_quota: 'id1', // 关联userQuotaTable
           center_quota: 2, // 1: 服务的私有资源配额，"user_quota"=null; 2: 服务的分享资源配额
           remarks: 'zlguo@cnic.cn', // ->主动更新，patch更新后，resp中带有新的remarks
-          classification: 'personal',
+          classification: 'personal', // 个人还是组
           image_id: '',
           image_desc: '',
           default_user: 'root',
           default_password: 'cnic.cn',
-          vo_id: null,
+          vo_id: null, // 组id
 
           // 以下来自不同接口的补充
           vnc: 'http://159.226.235.2/novnc/?vncid=fdb475ef-544e-4e6f-8691-0557ca8b3ee9', // todo 单独查询，然后给serverTable补充更新

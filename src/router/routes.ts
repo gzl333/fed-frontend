@@ -167,17 +167,24 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'group',
         component: () => import('pages/My/Group/GroupIndex.vue'),
-        redirect: '/my/group/resource',
+        redirect: '/my/group/server',
         meta: {
           title: '小组资源-中国科技云联邦'
         },
         children: [
           {
-            path: 'resource', // 组资源
+            path: 'server', // 组资源
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/My/Group/GroupResource.vue')
+            component: () => import('pages/My/Group/GroupServer.vue')
+          },
+          {
+            path: 'obs', // 组资源
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/My/Group/GroupObs.vue')
           },
           {
             path: 'quota', // 组配额

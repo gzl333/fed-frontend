@@ -142,7 +142,7 @@
                   </div>
                 </div>
                 <q-separator color="grey-5"/>
-                <ServerTable v-if="servers" :vms="servers"/>
+                <ServerTable v-if="servers" :servers="servers"/>
                 <div v-else>暂无云主机，请创建后使用</div>
               </div>
 
