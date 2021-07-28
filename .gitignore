@@ -1,7 +1,28 @@
+### VSCode settings --> only keep in develop branch
+## after git clone the project: enable .vscode at next line
+.vscode
+
+### WebStorm settings --> only keep in develop branch
+## after git clone the project: enable .idea at next line
+.idea
+## and comment off next a few lines
+# .idea/*
+# !.idea/codeStyles
+# !.idea/fileTemplates
+# !.idea/inspectionProfiles
+# !.idea/jsLinters
+# !.idea/vcs.xml
+
+# macOS
 .DS_Store
+
+# Quasar
+.quasar
+.src/store.store-flag.d.ts
+
+# Vue.js
 node_modules
 /dist
-
 
 # local env files
 .env.local
@@ -14,7 +35,6 @@ yarn-error.log*
 pnpm-debug.log*
 
 # Editor directories and files
-.idea
 *.suo
 *.ntvs*
 *.njsproj
