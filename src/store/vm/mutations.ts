@@ -85,9 +85,9 @@ const mutation: MutationTree<VmInterface> = {
   storeUserServerTableSingleStatus (state, payload: { serverId: string; status_code: string; }) {
     state.tables.userServerTable.byId[payload.serverId].status = payload.status_code
   },
-  storeVmListFilter (state, filter: string) {
-    state.pages.vmList.filter = filter
-  },
+  // storeVmListFilter (state, filter: string) {
+  //   state.pages.vmList.filter = filter
+  // },
   clearUserServerTable (state) {
     state.tables.userServerTable.byId = {}
     state.tables.userServerTable.allIds = []

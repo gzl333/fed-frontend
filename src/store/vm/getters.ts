@@ -67,18 +67,18 @@ const getters: GetterTree<VmInterface, StateInterface> = {
 
     return serviceOptions
   },
-  getServersByServiceId (state): ServerInterface[] {
-    // 根据用户选择的serviceId来返回server数组
+  // https://github.com/vuejs/vuex/issues/456
+  // 根据用户选择的serviceId来返回server数组
+  getServersByServiceId: (state) => (serviceId: string): ServerInterface[] => {
     // 排序函数，根据云主机创建时间降序排列
     const sortFn = (a: ServerInterface, b: ServerInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
 
-    // 当前选择的serviceId位于state.vm.pages.vmlist.filter，利用vmlist中的watch来修改
-    if (state.pages.vmList.filter === '0') {
+    if (serviceId === '0') {
       return Object.values(state.tables.userServerTable.byId).sort(sortFn)
     } else {
       const rows: ServerInterface[] = []
       for (const server of Object.values(state.tables.userServerTable.byId)) {
-        if (server.service === state.pages.vmList.filter) {
+        if (server.service === serviceId) {
           rows.push(server)
         }
       }

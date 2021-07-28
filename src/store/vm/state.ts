@@ -155,9 +155,9 @@ export interface VmInterface {
     quotaList: { // 配额管理的配额列表使用
       filter: string
     }
-    vmList: {
-      filter: string // serviceId 用于筛选显示server列表，'0'为显示全部
-    }
+    // vmList: {
+    //   filter: string // serviceId 用于筛选显示server列表，'0'为显示全部
+    // }
     vmCreate: {
       serviceId: string // serviceId serviceId选择结果影响后面所有选项的options
     }
@@ -236,9 +236,9 @@ function state ():
       quotaList: {
         filter: '0'
       },
-      vmList: {
-        filter: '0'
-      },
+      // vmList: {
+      //   filter: '0'
+      // },
       vmCreate: {
         serviceId: '0'
       }

@@ -51,7 +51,7 @@
           </div>
 
           <div class="part3" ref="part3">
-            <q-parallax :height="1000" src="img/cloud2.jpg">
+            <q-parallax  src="img/cloud2.jpg">
 <!--              <template v-slot:media>-->
 <!--                <video width="1440" height="1080" poster="https://cdn.quasar.dev/img/polina.jpg" autoplay loop muted>-->
 <!--                  <source type="video/webm" src="https://cdn.quasar.dev/img/polina.webm">-->

@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, computed, watch } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
@@ -54,13 +54,13 @@ export default defineComponent({
       value: '0'
     })
 
-    $store.commit('vm/storeVmListFilter', '0') // 不能去掉！从其它界面重新进入时必须设置这个值
-    watch(serviceSelection, () => {
-      $store.commit('vm/storeVmListFilter', serviceSelection.value.value)
-    })
+    // $store.commit('vm/storeVmListFilter', '0') // 不能去掉！从其它界面重新进入时必须设置这个值
+    // watch(serviceSelection, () => {
+    //   $store.commit('vm/storeVmListFilter', serviceSelection.value.value)
+    // })
 
     // 获取云主机列表数据
-    const rows = computed(() => $store.getters['vm/getServersByServiceId'])
+    const rows = computed(() => $store.getters['vm/getServersByServiceId'](serviceSelection.value.value))
 
     return {
       $store,

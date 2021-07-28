@@ -10,7 +10,6 @@
         <q-space/>
         <div class="q-gutter-md row items-center no-wrap">
           <q-select
-            disable
             v-model="localeModel"
             :options="localeOptions"
             dense

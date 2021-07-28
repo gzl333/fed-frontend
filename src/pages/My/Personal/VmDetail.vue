@@ -212,7 +212,7 @@
 
                 </div>
 
-                <div v-if="service.need_vpn" class="row q-pb-md">
+                <div v-if="service.need_vpn" class="row q-pb-md items-center">
                   <div class="col-3 text-grey">VPN配置文件</div>
                   <div class="col">
                     <q-btn label="下载" class=" " color="primary" padding="none" dense flat
@@ -220,7 +220,7 @@
                   </div>
                 </div>
 
-                <div v-if="service.need_vpn" class="row q-pb-md">
+                <div v-if="service.need_vpn" class="row q-pb-md items-center">
                   <div class="col-3 text-grey">VPN CA证书</div>
                   <div class="col">
                     <q-btn label="下载" class="" color="primary" padding="none" dense flat
@@ -232,29 +232,29 @@
 
               <div class="col-4">
 
-                <div class="row q-pb-md">
-                  <div class="col-2 text-grey">有效期</div>
+                <div class="row q-pb-md items-center">
+                  <div class="col-2 text-grey">可用期</div>
                   <div class="col"> {{ new Date(server.creation_time).toLocaleString() }} -
                     {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString() : '永久有效' }}
                   </div>
                 </div>
 
-                <div class="row q-pb-md">
+                <div class="row q-pb-md items-center">
                   <div class="col-2 text-grey">云主机ID</div>
                   <div class="col"> {{ server.id }}</div>
                 </div>
 
-                <div class="row q-pb-md">
+                <div class="row q-pb-md items-center">
                   <div class="col-2 text-grey">配置</div>
                   <div class="col"> {{ server.vcpus }}核 / {{ server.ram / 1024 }}GB</div>
                 </div>
 
-                <div class="row q-pb-md">
+                <div class="row q-pb-md items-center">
                   <div class="col-2 text-grey">IP类型</div>
                   <div class="col"> {{ server.public_ip ? '公网' : '私网' }}</div>
                 </div>
 
-                <div class="row q-pb-md">
+                <div class="row q-pb-md items-center">
                   <div class="col-2 text-grey">系统镜像</div>
                   <div class="col"> {{ server.image }}</div>
                 </div>
@@ -264,7 +264,7 @@
                   <div class="col"> {{ server.image_desc }}</div>
                 </div>
 
-                <div class="row q-pb-md">
+                <div class="row q-pb-md items-center">
                   <div class="col-2 text-grey">所用配额</div>
                   <div class="col-shrink">
 
