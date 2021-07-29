@@ -199,6 +199,13 @@ const routes: RouteRecordRaw[] = [
               requireLogin: true
             },
             component: () => import('pages/My/Group/GroupList.vue')
+          },
+          {
+            path: 'detail/:id', // groupId 动态路由匹配
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/My/Group/GroupDetail.vue')
           }
         ]
       },

@@ -89,22 +89,29 @@ const getters: GetterTree<VmInterface, StateInterface> = {
 
   /* quotaList使用 */
   // 根据用户选择的filter来返回application数组
-  getUserQuotasByFilter (state): QuotaInterface[] {
+  getUserQuotasByFilter: (state) => (filter: string): QuotaInterface[] => {
     // expirtation_time字段为null时为长期配额，应视为最大时间
     const sortFn = (a: QuotaInterface, b: QuotaInterface) => new Date(b.expiration_time || 9999999999999).getTime() - new Date(a.expiration_time || 9999999999999).getTime()
 
-    // 当前选择的filter位于state.applyQuota.applicationList.filter，利用applicationList页面中的watch来修改
-    if (state.pages.quotaList.filter === '0') {
+    if (filter === '0') {
       // 返回quota对象的数组，并以过期时间降序排序
       return Object.values(state.tables.userQuotaTable.byId).sort(sortFn)
     } else {
       const rows: QuotaInterface[] = []
       for (const quota of Object.values(state.tables.userQuotaTable.byId)) {
-        if (state.pages.quotaList.filter === null && quota.expiration_time === null) { // 筛选出长期的quota
+        if (filter === 'valid' && !quota.exhausted && !quota.expired) { // 可用的quota
           rows.push(quota)
-        } else if (state.pages.quotaList.filter === 'valid' && !!quota.expiration_time && (new Date(quota.expiration_time).getTime() - new Date().getTime()) > 0) { // 筛选出未过期的quota
+        } else if (filter === 'invalid' && (quota.exhausted || quota.expired)) { // 不可用的quota
           rows.push(quota)
-        } else if (state.pages.quotaList.filter === 'invalid' && !!quota.expiration_time && (new Date(quota.expiration_time).getTime() - new Date().getTime()) <= 0) { // 筛选出过期的quota
+        } else if (filter === null && quota.expiration_time === null) { // 长期的quota
+          rows.push(quota)
+        } else if (filter === 'notExpired' && !quota.expired) { // 未过期的quota
+          rows.push(quota)
+        } else if (filter === 'expired' && quota.expired) { // 过期的quota
+          rows.push(quota)
+        } else if (filter === 'notExhausted' && !quota.exhausted) { // 未用尽的quota
+          rows.push(quota)
+        } else if (filter === 'exhausted' && quota.exhausted) { // 用尽的quota
           rows.push(quota)
         }
       }
@@ -133,13 +140,7 @@ const getters: GetterTree<VmInterface, StateInterface> = {
     const serviceId = state.pages.vmCreate.serviceId
     return Object.values(state.tables.userQuotaTable.byId).filter(quota => {
       if (!quota.deleted && quota.service === serviceId) {
-        // 有过期时间则判断是否过期
-        if (quota.expiration_time) {
-          return Boolean(new Date(quota.expiration_time).getTime() - new Date().getTime())
-        } else {
-          // 没有过期时间则quota可用
-          return true
-        }
+        return !quota.expired
       } else {
         return false
       }

@@ -67,7 +67,7 @@
             </div>
             <div v-if="quotas.length === 0" class="row item-row">
               <div class="col-shrink item-title">
-                该服务节点暂无可用云主机配额，请选择其它服务节点。 或者
+                该服务节点暂无可用云主机配额，请选择其它服务节点。 或
                 <q-btn label="申请云主机配额" flat
                        padding="none" color="primary"
                        to="/my/personal/quota_apply"/>

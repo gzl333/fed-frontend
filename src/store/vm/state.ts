@@ -53,6 +53,10 @@ export interface ServerInterface {
   user_quota: string
   center_quota: number
   vo_id: string | null
+  user: {
+    id: string
+    username: string
+  }
 
   // 来自status接口 根据status_code映射为文字状态
   vnc?: string
@@ -126,8 +130,24 @@ export interface QuotaInterface {
   deleted: boolean
   display: string
   duration_days: number
+  classification: 'vo' | 'personal' // 配额类型，二选一
+  vo: null // "classification"=="personal"时为null
+    | {
+    id: string
+    name: string
+    company: string
+    description: string
+    creation_time: string
+    owner: {
+      id: string
+      username: string
+    },
+    status: string
+  }
+
   // 来自server接口补充
   servers?: string[] // serverId
+
   // 以下为根据上述字段自行判断填充
   expired: boolean
   exhausted: boolean
@@ -152,12 +172,6 @@ export interface ArchivedServerInterface {
 // Vm总接口
 export interface VmInterface {
   pages: { // 各个页面所需vuex数据
-    quotaList: { // 配额管理的配额列表使用
-      filter: string
-    }
-    // vmList: {
-    //   filter: string // serviceId 用于筛选显示server列表，'0'为显示全部
-    // }
     vmCreate: {
       serviceId: string // serviceId serviceId选择结果影响后面所有选项的options
     }
@@ -233,12 +247,6 @@ function state ():
   VmInterface {
   return {
     pages: {
-      quotaList: {
-        filter: '0'
-      },
-      // vmList: {
-      //   filter: '0'
-      // },
       vmCreate: {
         serviceId: '0'
       }

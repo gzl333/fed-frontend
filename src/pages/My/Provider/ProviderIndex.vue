@@ -39,6 +39,7 @@
                     exact
                   />
                   <q-route-tab
+                    :disable="isProd"
                     class="q-px-none q-py-md q-mx-md"
                     name="provided"
                     icon="task_alt"
@@ -48,6 +49,7 @@
                     exact
                   />
                   <q-route-tab
+                    :disable="isProd"
                     class="q-px-none q-py-md q-mx-md"
                     name="service"
                     icon="task_alt"
@@ -96,7 +98,9 @@ export default defineComponent({
   },
   props: {},
   setup () {
+    const isProd = process.env.PROD
     return {
+      isProd,
       activeTab: ref('manage')
     }
   }

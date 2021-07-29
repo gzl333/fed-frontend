@@ -14,6 +14,8 @@ export interface ApplicationQuotaInterface {
   status: string
   service: string
   deleted: boolean
+  classification: 'personal' | 'vo'
+  result_desc: string // 拒绝理由
 }
 
 // 赠送配额活动

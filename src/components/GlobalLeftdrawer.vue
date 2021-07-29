@@ -45,6 +45,7 @@
           </q-item>
 
           <q-item
+            :disable="isProd"
             clickable
             :active="activeItem === 'group'"
             @click="activeItem = 'group'"
@@ -55,6 +56,7 @@
             <q-item-section class="column items-center">
               <q-icon name="group" size="lg"/>
               <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('组资源') }}</div>
+              <div>dev</div>
             </q-item-section>
           </q-item>
 
@@ -73,7 +75,7 @@
           </q-item>
 
           <q-item
-            disable
+            :disable="isProd"
             clickable
             :active="activeItem === 'federation'"
             @click="activeItem = 'federation'"
@@ -83,53 +85,9 @@
             <q-item-section class="column items-center">
               <q-icon name="construction" size="lg"/>
               <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('联邦管理') }}</div>
-
+              <div>dev</div>
             </q-item-section>
           </q-item>
-
-          <q-separator/>
-
-          <!--          <q-item clickable disable class="text-center">-->
-          <!--            <q-item-section class="column items-center">-->
-          <!--              <q-icon name="group" size="lg"/>-->
-          <!--              <div class="text-c-blue5">我的群组</div>-->
-          <!--            </q-item-section>-->
-          <!--          </q-item>-->
-
-          <!--          <q-item clickable disable>-->
-          <!--            <q-item-section class="column items-center">-->
-          <!--              <q-icon name="paid" size="lg"/>-->
-          <!--              <div class="text-c-blue5">结算计费</div>-->
-          <!--            </q-item-section>-->
-          <!--          </q-item>-->
-
-          <!--          <q-item clickable disable>-->
-          <!--            <q-item-section class="column items-center">-->
-          <!--              <q-icon name="help_center" size="lg"/>-->
-          <!--              <div class="text-c-blue5">工单服务</div>-->
-          <!--            </q-item-section>-->
-          <!--          </q-item>-->
-
-          <!--          <q-item clickable disable>-->
-          <!--            <q-item-section class="column items-center">-->
-          <!--              <q-icon name="visibility" size="lg"/>-->
-          <!--              <div class="text-c-blue5">计量监测</div>-->
-          <!--            </q-item-section>-->
-          <!--          </q-item>-->
-
-          <!--          <q-item clickable disable>-->
-          <!--            <q-item-section class="column items-center">-->
-          <!--              <q-icon name="analytics" size="lg"/>-->
-          <!--              <div class="text-c-blue5">统计报表</div>-->
-          <!--            </q-item-section>-->
-          <!--          </q-item>-->
-
-          <!--          <q-item clickable disable>-->
-          <!--            <q-item-section class="column items-center">-->
-          <!--              <q-icon name="switch_account" size="lg"/>-->
-          <!--              <div class="text-c-blue5">用户管理</div>-->
-          <!--            </q-item-section>-->
-          <!--          </q-item>-->
 
         </q-list>
       </q-scroll-area>
@@ -145,9 +103,11 @@ export default defineComponent({
   components: {},
   props: {},
   setup () {
+    const isProd = process.env.PROD
     const leftDrawerOpen = ref(false)
     const activeItem = ref('main')
     return {
+      isProd,
       leftDrawerOpen,
       activeItem
     }

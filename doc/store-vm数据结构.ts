@@ -159,6 +159,20 @@ const vm = {
           display: '[普通配额](vCPU: 100, RAM: 102400Mb, Disk: 1000Gb, PublicIP: 100, PrivateIP: 100)',
           expiration_time: null, // 过期时间。 和deleted共同决定该配额是否可用：其中一项即可决定该配额是否有效
           deleted: false, // 用户或管理员删除配额
+          duration_days: 110,
+          classification: 'vo', // vo：vo组配额申请；personal：用户个人配额申请
+          vo: { // "classification"=="vo"时存在；"classification"=="personal"时为null
+            id: '3d7cd5fc-d236-11eb-9da9-c8009fe2eb10',
+            name: '项目组1',
+            company: '网络中心',
+            description: '的是',
+            creation_time: '2021-06-21T02:13:16.663967Z',
+            owner: {
+              id: '1',
+              username: 'shun'
+            },
+            status: 'active'
+          },
 
           // 以下来自quota-server接口
           servers: ['id1', 'id2'], // 关联serverTable，该配额下创建的云主机id
@@ -196,6 +210,10 @@ const vm = {
           default_user: 'root',
           default_password: 'cnic.cn',
           vo_id: null, // 组id
+          user: { // 创建者, 暂不normailize
+            id: '6',
+            username: 'zlguo@cnic.cn'
+          },
 
           // 以下来自不同接口的补充
           vnc: 'http://159.226.235.2/novnc/?vncid=fdb475ef-544e-4e6f-8691-0557ca8b3ee9', // todo 单独查询，然后给serverTable补充更新
