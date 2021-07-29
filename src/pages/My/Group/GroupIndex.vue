@@ -39,7 +39,7 @@
                     to="/my/group/server"
                   />
                   <q-route-tab
-                    disable
+                    :disable="isProd"
                     no-caps
                     class="q-px-none q-py-md q-mx-md"
                     name="obs"
@@ -105,7 +105,9 @@ export default defineComponent({
   },
   props: {},
   setup () {
+    const isProd = process.env.PROD
     return {
+      isProd,
       activeTab: ref('vm'),
       fabButton: ref(false)
     }
