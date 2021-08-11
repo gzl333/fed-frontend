@@ -12,6 +12,9 @@ import { VmInterface } from 'src/store/vm/state'
 import applyQuota from './applyQuota'
 import { ApplyQuotaInterface } from 'src/store/applyQuota/state'
 
+import group from './group'
+import { GroupInterface } from 'src/store/group/state'
+
 /*
  * If not building with SSR mode, you can
  * directly export the Store instantiation;
@@ -29,7 +32,8 @@ export interface StateInterface {
 
   account: AccountInterface,
   vm: VmInterface,
-  applyQuota: ApplyQuotaInterface
+  applyQuota: ApplyQuotaInterface,
+  group: GroupInterface
 }
 
 const store = createStore<StateInterface>({
@@ -37,7 +41,8 @@ const store = createStore<StateInterface>({
     // example
     account,
     vm,
-    applyQuota
+    applyQuota,
+    group
   },
 
   // enable strict mode (adds overhead!)
