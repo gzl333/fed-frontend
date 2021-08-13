@@ -3,14 +3,14 @@ import { createStore } from 'vuex'
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state'
 
-import account from './account'
-import { AccountInterface } from 'src/store/account/state'
+import accountModule from './account'
+import { AccountModuleInterface } from 'src/store/account/state'
 
-import vm from './vm'
-import { VmInterface } from 'src/store/vm/state'
+import vmModule from './vm'
+import { VmModuleInterface } from 'src/store/vm/state'
 
-import applyQuota from './applyQuota'
-import { ApplyQuotaInterface } from 'src/store/applyQuota/state'
+import applyQuotaModule from './applyQuota'
+import { ApplyQuotaModuleInterface } from 'src/store/applyQuota/state'
 
 import group from './group'
 import { GroupInterface } from 'src/store/group/state'
@@ -30,18 +30,18 @@ export interface StateInterface {
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   // example: ExampleStateInterface
 
-  account: AccountInterface,
-  vm: VmInterface,
-  applyQuota: ApplyQuotaInterface,
+  account: AccountModuleInterface,
+  vm: VmModuleInterface,
+  applyQuota: ApplyQuotaModuleInterface,
   group: GroupInterface
 }
 
 const store = createStore<StateInterface>({
   modules: {
     // example
-    account,
-    vm,
-    applyQuota,
+    account: accountModule,
+    vm: vmModule,
+    applyQuota: applyQuotaModule,
     group
   },
 

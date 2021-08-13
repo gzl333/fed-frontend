@@ -43,7 +43,7 @@ export interface QuotaActivity {
 }
 
 // applyQuota总接口
-export interface ApplyQuotaInterface {
+export interface ApplyQuotaModuleInterface {
   // eslint-disable-next-line @typescript-eslint/ban-types
   pages: {
     apply: {
@@ -86,7 +86,7 @@ export interface ApplyQuotaInterface {
   }
 }
 
-function state (): ApplyQuotaInterface {
+function state (): ApplyQuotaModuleInterface {
   return {
     pages: {
       apply: {

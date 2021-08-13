@@ -1,6 +1,6 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
-import { ServerInterface, VmInterface, VpnInterface } from './state'
+import { ServerInterface, VmModuleInterface, VpnInterface } from './state'
 import axios from 'axios'
 import { normalize, schema } from 'normalizr'
 import { Dialog, Notify } from 'quasar'
@@ -36,7 +36,7 @@ const actionMap = new Map<string, string>(
   ]
 )
 
-const actions: ActionTree<VmInterface, StateInterface> = {
+const actions: ActionTree<VmModuleInterface, StateInterface> = {
   /* 初次获取全部Vm模块Table，已loaded则自动忽略 */
   updateVmTable (context) {
     if (!context.state.tables.globalFlavorTable.isLoaded) {

@@ -1,8 +1,8 @@
 import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
-import { ApplicationQuotaInterface, ApplyQuotaInterface } from './state'
+import { ApplicationQuotaInterface, ApplyQuotaModuleInterface } from './state'
 
-const getters: GetterTree<ApplyQuotaInterface, StateInterface> = {
+const getters: GetterTree<ApplyQuotaModuleInterface, StateInterface> = {
 
   // 根据用户选择的filter来返回application数组
   getAdminApplicationsByFilter (state): ApplicationQuotaInterface[] {

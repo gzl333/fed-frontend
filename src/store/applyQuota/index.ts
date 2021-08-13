@@ -1,11 +1,11 @@
 import { Module } from 'vuex'
 import { StateInterface } from '../index'
-import state, { ApplyQuotaInterface } from './state'
+import state, { ApplyQuotaModuleInterface } from './state'
 import actions from './actions'
 import getters from './getters'
 import mutations from './mutations'
 
-const applyQuota: Module<ApplyQuotaInterface, StateInterface> = {
+const applyQuotaModule: Module<ApplyQuotaModuleInterface, StateInterface> = {
   namespaced: true,
   actions,
   getters,
@@ -13,4 +13,4 @@ const applyQuota: Module<ApplyQuotaInterface, StateInterface> = {
   state
 }
 
-export default applyQuota
+export default applyQuotaModule

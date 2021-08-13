@@ -1,10 +1,10 @@
 import { MutationTree } from 'vuex'
-import { CstJwtInterface, AccountInterface } from './state'
+import { CstJwtInterface, AccountModuleInterface } from './state'
 import axios from 'axios'
 import jwtDecode from 'jwt-decode'
 
 // 注意此时state是store.state.account，而不是store.state
-const mutation: MutationTree<AccountInterface> = {
+const mutation: MutationTree<AccountModuleInterface> = {
   // toggle footer
   openFooter (state) {
     state.isFooterOpen = true
@@ -34,7 +34,7 @@ const mutation: MutationTree<AccountInterface> = {
     // axios header
     axios.defaults.headers.common.Authorization = `Bearer ${state.token.access}`
   },
-  deleteUser (state: AccountInterface) {
+  deleteUser (state: AccountModuleInterface) {
     // vuex
     state.isLogin = false
     delete state.token

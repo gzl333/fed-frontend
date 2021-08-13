@@ -16,7 +16,7 @@ export interface CstJwtInterface {
 }
 
 // Account总体类型
-export interface AccountInterface {
+export interface AccountModuleInterface {
   isLogin: boolean
   cstTrueName?: string
   cstEmail?: string
@@ -31,7 +31,7 @@ export interface AccountInterface {
   isFooterOpen: boolean
 }
 
-function state () {
+function state (): AccountModuleInterface {
   return {
     isLogin: false,
     isRightDrawerOpen: false,

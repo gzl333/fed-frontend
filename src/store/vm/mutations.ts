@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import {
-  VmInterface,
+  VmModuleInterface,
   DataCenterInterface,
   ServiceInterface,
   NetworkInterface,
@@ -11,7 +11,7 @@ import {
   ServerInterface
 } from './state'
 
-const mutation: MutationTree<VmInterface> = {
+const mutation: MutationTree<VmModuleInterface> = {
 
   // 保存VmCreate页面中所选择的serviceId
   storeVmCreatePageServiceId (state, serviceId: string) {

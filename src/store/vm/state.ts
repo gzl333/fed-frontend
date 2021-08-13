@@ -170,7 +170,7 @@ export interface ArchivedServerInterface {
 }
 
 // Vm总接口
-export interface VmInterface {
+export interface VmModuleInterface {
   pages: { // 各个页面所需vuex数据
     vmCreate: {
       serviceId: string // serviceId serviceId选择结果影响后面所有选项的options
@@ -243,8 +243,7 @@ export interface VmInterface {
   }
 }
 
-function state ():
-  VmInterface {
+function state (): VmModuleInterface {
   return {
     pages: {
       vmCreate: {

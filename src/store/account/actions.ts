@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import {
   TokenInterface,
-  AccountInterface,
+  AccountModuleInterface,
   CstJwtInterface
 } from './state'
 import { Notify } from 'quasar'
@@ -13,7 +13,7 @@ import jwtDecode from 'jwt-decode'
 const cstApiBase = window.location.protocol + '//gosc-login.cstcloud.cn'
 // const cstApiBase = 'https://159.226.235.50'
 // 注意此时context.state是store.state.account，而不是store.state
-const actions: ActionTree<AccountInterface, StateInterface> = {
+const actions: ActionTree<AccountModuleInterface, StateInterface> = {
   retainCstToken (context) {
     // console.log('in retain')
     if (context.state.token) {

@@ -1,7 +1,7 @@
 import { MutationTree } from 'vuex'
-import { ApplicationQuotaInterface, ApplyQuotaInterface, QuotaActivity } from './state'
+import { ApplicationQuotaInterface, ApplyQuotaModuleInterface, QuotaActivity } from './state'
 
-const mutation: MutationTree<ApplyQuotaInterface> = {
+const mutation: MutationTree<ApplyQuotaModuleInterface> = {
   // 保存apply页面中所选择的serviceId
   storeApplyPageServiceId (state, serviceId: string) {
     state.pages.apply.serviceId = serviceId

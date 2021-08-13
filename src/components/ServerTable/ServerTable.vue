@@ -147,7 +147,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue'
-import { VmInterface } from 'src/store/vm/state'
+import { ServerInterface } from 'src/store/vm/state'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
@@ -165,7 +165,7 @@ export default defineComponent({
   },
   props: {
     servers: {
-      type: Array as PropType<VmInterface[]>,
+      type: Array as PropType<ServerInterface[]>,
       required: true
     },
     isGroup: {

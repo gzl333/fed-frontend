@@ -45,7 +45,7 @@
           </q-item>
 
           <q-item
-            :disable="isProd"
+            :disable="process?.env.PROD"
             clickable
             :active="activeItem === 'group'"
             @click="activeItem = 'group'"
@@ -75,7 +75,7 @@
           </q-item>
 
           <q-item
-            :disable="isProd"
+            :disable="process?.env.PROD"
             clickable
             :active="activeItem === 'federation'"
             @click="activeItem = 'federation'"
@@ -103,11 +103,9 @@ export default defineComponent({
   components: {},
   props: {},
   setup () {
-    const isProd = process.env.PROD
     const leftDrawerOpen = ref(false)
     const activeItem = ref('main')
     return {
-      isProd,
       leftDrawerOpen,
       activeItem
     }

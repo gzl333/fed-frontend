@@ -68,7 +68,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue'
-import { VmInterface } from 'src/store/vm/state'
+import { ServerInterface } from 'src/store/vm/state'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
@@ -80,7 +80,7 @@ export default defineComponent({
   components: {},
   props: {
     buckets: {
-      type: Array as PropType<VmInterface[]>, // todo 待添加obs类型
+      type: Array as PropType<ServerInterface[]>, // todo 待添加obs类型
       required: true
     }
   },
