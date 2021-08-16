@@ -217,10 +217,10 @@ export default defineComponent({
       label: '全部状态',
       value: '0'
     })
-    $store.commit('applyQuota/storeManageFilter', '0')
-    watch(filterSelection, () => {
-      $store.commit('applyQuota/storeManageFilter', filterSelection.value.value)
-    })
+    // $store.commit('applyQuota/storeManageFilter', '0')
+    // watch(filterSelection, () => {
+    //   $store.commit('applyQuota/storeManageFilter', filterSelection.value.value)
+    // })
     const filterOptions = [
       {
         label: '全部状态',
@@ -249,7 +249,7 @@ export default defineComponent({
     ]
 
     // 获取列表数据
-    const rows = computed(() => $store.getters['applyQuota/getAdminApplicationsByFilter'])
+    const rows = computed(() => $store.getters['applyQuota/getAdminApplicationsByFilter'](filterSelection.value.value))
 
     // 列表分栏定义
     const columns = [

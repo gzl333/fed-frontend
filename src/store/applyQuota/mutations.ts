@@ -15,9 +15,9 @@ const mutation: MutationTree<ApplyQuotaModuleInterface> = {
       currentTable.isLoaded = false
     }
   },
-  storeManageFilter (state, filter: string) {
-    state.pages.manage.filter = filter
-  },
+  // storeManageFilter (state, filter: string) {
+  //   state.pages.manage.filter = filter
+  // },
   storeApplicationListFilter (state, filter: string) {
     state.pages.applicationList.filter = filter
   },

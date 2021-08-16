@@ -38,17 +38,17 @@
                     :ripple="false"
                     to="/my/personal/vm"
                   />
-<!--                  <q-route-tab-->
-<!--                    disable-->
-<!--                    no-caps-->
-<!--                    class="q-px-none q-py-md q-mx-md"-->
-<!--                    name="disk"-->
-<!--                    icon="fas fa-compact-disc"-->
-<!--                    label="云硬盘"-->
-<!--                    :ripple="false"-->
-<!--                    to="/my/personal/vd"-->
-<!--                    exact-->
-<!--                  />-->
+                  <!--                  <q-route-tab-->
+                  <!--                    disable-->
+                  <!--                    no-caps-->
+                  <!--                    class="q-px-none q-py-md q-mx-md"-->
+                  <!--                    name="disk"-->
+                  <!--                    icon="fas fa-compact-disc"-->
+                  <!--                    label="云硬盘"-->
+                  <!--                    :ripple="false"-->
+                  <!--                    to="/my/personal/vd"-->
+                  <!--                    exact-->
+                  <!--                  />-->
                   <q-route-tab
                     disable
                     no-caps
@@ -129,11 +129,5 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .PersonalIndex {
-}
-
-.btn-add {
-  float: right;
-  top: 33px;
-  right: 20px;
 }
 </style>

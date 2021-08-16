@@ -39,7 +39,7 @@
                     to="/my/group/server"
                   />
                   <q-route-tab
-                    :disable="isProd"
+                    :disable="process?.env.PROD"
                     no-caps
                     class="q-px-none q-py-md q-mx-md"
                     name="obs"
@@ -53,7 +53,7 @@
                     class="q-px-none q-py-md q-mx-md"
                     name="quota"
                     icon="fas fa-file-alt"
-                    :label="$t('组配额')"
+                    :label="$t('组云主机配额')"
                     :ripple="false"
                     to="/my/group/quota"
                   />
@@ -70,7 +70,7 @@
               </div>
 
               <div class="col-1">
-                <global-add-button/>
+                <group-add-button/>
               </div>
             </div>
           </div>
@@ -97,17 +97,17 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader/GlobalHeader.vue'
+import GroupAddButton from 'components/Group/GroupAddButton.vue'
 
 export default defineComponent({
   name: 'GroupIndex',
   components: {
-    GlobalHeader
+    GlobalHeader,
+    GroupAddButton
   },
   props: {},
   setup () {
-    const isProd = process.env.PROD
     return {
-      isProd,
       activeTab: ref('vm'),
       fabButton: ref(false)
     }

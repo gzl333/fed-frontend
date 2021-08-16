@@ -1,5 +1,5 @@
 <template>
-  <div class="QuotaIndex">
+  <div class="GroupQuotaIndex">
 
     <div class="column items-start q-py-none q-px-none">
 
@@ -13,19 +13,19 @@
           <q-route-tab class="q-px-none q-py-none q-mr-md"
                        :ripple="false"
                        name="quota"
-                       label="现有配额"
-                       to="/my/personal/quota/list"/>
+                       label="现有组配额"
+                       to="/my/group/quota/list"/>
           <q-route-tab class="q-px-none q-py-none q-mr-md"
                        :ripple="false"
                        name="application"
                        label="申请记录"
-                       to="/my/personal/quota/application"/>
+                       to="/my/group/quota/application"/>
         </q-tabs>
 
       </div>
 
       <div class="col-auto">
-        <q-separator />
+        <q-separator/>
         <router-view class="router-view"/>
       </div>
 
@@ -38,7 +38,7 @@
 import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
-  name: 'QuotaIndex',
+  name: 'GroupQuotaIndex',
   components: {},
   props: {},
   setup () {
@@ -51,9 +51,8 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.QuotaIndex {
+.GroupQuotaIndex {
 }
-
 .router-view {
   width: $general-width-no-padding;
 }

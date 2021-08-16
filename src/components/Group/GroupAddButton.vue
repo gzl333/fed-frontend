@@ -1,5 +1,5 @@
 <template>
-  <div class="PersonalAddButton">
+  <div class="GroupAddButton">
 
     <q-fab
       class="btn-add"
@@ -10,9 +10,11 @@
       :label="$t('新建')"
       direction="down"
     >
-      <q-fab-action :label="$t('新建云主机')" unelevated color="primary" icon="computer"
+      <q-fab-action :label="$t('新建组')" unelevated color="primary" icon="computer"
                     :to="{ path: '/my/personal/vmcreate' }"/>
-      <q-fab-action :label="$t('申请云主机配额')" unelevated color="primary" icon="description"
+      <q-fab-action :label="$t('新建组云主机')" unelevated color="primary" icon="computer"
+                    :to="{ path: '/my/personal/vmcreate' }"/>
+      <q-fab-action :label="$t('申请组云主机配额')" unelevated color="primary" icon="description"
                     :to="{ path: '/my/personal/quota_apply' }"/>
     </q-fab>
 
@@ -23,7 +25,7 @@
 import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
-  name: 'PersonalAddButton',
+  name: 'GroupAddButton',
   components: {},
   props: {},
   setup () {
@@ -35,7 +37,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.PersonalAddButton {
+.GroupAddButton {
 }
 
 .btn-add {

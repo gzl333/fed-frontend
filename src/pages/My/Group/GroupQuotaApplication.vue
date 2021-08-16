@@ -1,6 +1,6 @@
 <template>
-  <div class="GroupQuota">
-    this is GroupQuota
+  <div class="GroupQuotaApplication">
+    this is GroupQuotaApplication
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'GroupQuota',
+  name: 'GroupQuotaApplication',
   components: {},
   props: {},
   setup () {
@@ -18,6 +18,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.GroupQuota {
+.GroupQuotaApplication {
 }
 </style>

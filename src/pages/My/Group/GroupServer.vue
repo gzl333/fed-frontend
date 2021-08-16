@@ -18,14 +18,14 @@
       <div class="col-3">
         <div class="row justify-end">
           <div class="col">
-            <q-select outlined dense stack-label :label="$t('筛选组')" v-model="groupSelection"
-                      :options="groupOptions"/>
+            <q-select outlined dense stack-label :label="$t('筛选组')"
+                      v-model="groupSelection" :options="groupOptions"/>
           </div>
         </div>
       </div>
     </div>
 
-    <server-table :servers="rows" is-group />
+    <server-table :servers="rows" is-group/>
 
   </div>
 </template>

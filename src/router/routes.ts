@@ -191,7 +191,24 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/My/Group/GroupQuota.vue')
+            component: () => import('pages/My/Group/GroupQuotaIndex.vue'),
+            redirect: '/my/group/quota/list',
+            children: [
+              {
+                path: 'list',
+                meta: {
+                  requireLogin: true
+                },
+                component: () => import('pages/My/Group/GroupQuotaList.vue')
+              },
+              {
+                path: 'application',
+                meta: {
+                  requireLogin: true
+                },
+                component: () => import('pages/My/Group/GroupQuotaApplication.vue')
+              }
+            ]
           },
           {
             path: 'list', // 组列表

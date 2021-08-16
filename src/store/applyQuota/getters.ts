@@ -3,35 +3,38 @@ import { StateInterface } from '../index'
 import { ApplicationQuotaInterface, ApplyQuotaModuleInterface } from './state'
 
 const getters: GetterTree<ApplyQuotaModuleInterface, StateInterface> = {
-
   // 根据用户选择的filter来返回application数组
-  getAdminApplicationsByFilter (state): ApplicationQuotaInterface[] {
-    // 当前选择的filter位于state.applyQuota.manage.filter，利用manage页面中的watch来修改
-    if (state.pages.manage.filter === '0') {
-      return Object.values(state.tables.adminQuotaApplicationTable.byId)
+  getAdminApplicationsByFilter: (state) => (filter: string): ApplicationQuotaInterface[] => {
+    // 排序函数，根据申请时间降序排列
+    const sortFn = (a: ApplicationQuotaInterface, b: ApplicationQuotaInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
+
+    if (filter === '0') {
+      return Object.values(state.tables.adminQuotaApplicationTable.byId).sort(sortFn)
     } else {
       const rows: ApplicationQuotaInterface[] = []
       for (const application of Object.values(state.tables.adminQuotaApplicationTable.byId)) {
-        if (application.status === state.pages.manage.filter) {
+        if (application.status === filter) {
           rows.push(application)
         }
       }
-      return rows
+      return rows.sort(sortFn)
     }
   },
   // 根据用户选择的filter来返回application数组
-  getUserApplicationsByFilter (state): ApplicationQuotaInterface[] {
-    // 当前选择的filter位于state.applyQuota.applicationList.filter，利用applicationList页面中的watch来修改
-    if (state.pages.applicationList.filter === '0') {
-      return Object.values(state.tables.userQuotaApplicationTable.byId)
+  getUserApplicationsByFilter: (state) => (filter: string): ApplicationQuotaInterface[] => {
+    // 排序函数，根据申请时间降序排列
+    const sortFn = (a: ApplicationQuotaInterface, b: ApplicationQuotaInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
+
+    if (filter === '0') {
+      return Object.values(state.tables.userQuotaApplicationTable.byId).sort(sortFn)
     } else {
       const rows: ApplicationQuotaInterface[] = []
       for (const application of Object.values(state.tables.userQuotaApplicationTable.byId)) {
-        if (application.status === state.pages.applicationList.filter) {
+        if (application.status === filter) {
           rows.push(application)
         }
       }
-      return rows
+      return rows.sort(sortFn)
     }
   }
 }
