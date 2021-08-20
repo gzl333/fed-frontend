@@ -21,7 +21,12 @@ const mutation: MutationTree<VmModuleInterface> = {
     state.tables.userQuotaTable.byId = {}
     state.tables.userQuotaTable.allIds = []
     state.tables.userQuotaTable.isLoaded = false
-    // 不清空filter值，保持serviceId的选择
+  },
+  // group
+  clearGroupQuotaTable (state) {
+    state.tables.groupQuotaTable.byId = {}
+    state.tables.groupQuotaTable.allIds = []
+    state.tables.groupQuotaTable.isLoaded = false
   },
   // 删除单一user quota
   deleteUserQuotaTable (state, quotaId: string) {
@@ -38,6 +43,14 @@ const mutation: MutationTree<VmModuleInterface> = {
     state.tables.userQuotaTable.allIds = [...new Set(state.tables.userQuotaTable.allIds)]
     // userServerTable.isLoaded,每次都更新，可以优化
     state.tables.userQuotaTable.isLoaded = true
+  },
+  // group
+  storeGroupQuotaTable (state, tableObj: Record<string, QuotaInterface>) {
+    Object.assign(state.tables.groupQuotaTable.byId, tableObj)
+    state.tables.groupQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.tables.groupQuotaTable.allIds = [...new Set(state.tables.groupQuotaTable.allIds)]
+    // userServerTable.isLoaded,每次都更新，可以优化
+    state.tables.groupQuotaTable.isLoaded = true
   },
   storeUserVpnTableSingle (state, vpn: VpnInterface) {
     Object.assign(state.tables.userVpnTable.byId, { [vpn.id]: vpn })
@@ -82,14 +95,20 @@ const mutation: MutationTree<VmModuleInterface> = {
   storeUserServerTableSingleStatus (state, payload: { serverId: string; status_code: string; }) {
     state.tables.userServerTable.byId[payload.serverId].status = payload.status_code
   },
-  // storeVmListFilter (state, filter: string) {
-  //   state.pages.vmList.filter = filter
-  // },
+  // group
+  storeGroupServerTableSingleStatus (state, payload: { serverId: string; status_code: string; }) {
+    state.tables.groupServerTable.byId[payload.serverId].status = payload.status_code
+  },
   clearUserServerTable (state) {
     state.tables.userServerTable.byId = {}
     state.tables.userServerTable.allIds = []
     state.tables.userServerTable.isLoaded = false
-    // 不清空filter值，保持serviceId的选择
+  },
+  // group
+  clearGroupServerTable (state) {
+    state.tables.groupServerTable.byId = {}
+    state.tables.groupServerTable.allIds = []
+    state.tables.groupServerTable.isLoaded = false
   },
   storeUserServerTable (state, tableObj: Record<string, ServerInterface>) {
     Object.assign(state.tables.userServerTable.byId, tableObj)
@@ -98,6 +117,13 @@ const mutation: MutationTree<VmModuleInterface> = {
     // userServerTable.isLoaded,每次都更新，可以优化
     state.tables.userServerTable.isLoaded = true
     // console.log('updating userServerTable')
+  },
+  // group
+  storeGroupServerTable (state, tableObj: Record<string, ServerInterface>) {
+    Object.assign(state.tables.groupServerTable.byId, tableObj)
+    state.tables.groupServerTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.tables.groupServerTable.allIds = [...new Set(state.tables.groupServerTable.allIds)]
+    state.tables.groupServerTable.isLoaded = true
   },
   storeGlobalDataCenterTableGlobalServices (state, payload: { dataCenterId: string; serviceId: string; }) {
     state.tables.globalDataCenterTable.byId[payload.dataCenterId].globalServices.unshift(payload.serviceId)

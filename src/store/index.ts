@@ -1,19 +1,19 @@
 import { createStore } from 'vuex'
-
 // import example from './module-example'
 // import { ExampleStateInterface } from './module-example/state'
-
 import accountModule from './account'
 import { AccountModuleInterface } from 'src/store/account/state'
-
 import vmModule from './vm'
 import { VmModuleInterface } from 'src/store/vm/state'
-
 import applyQuotaModule from './applyQuota'
 import { ApplyQuotaModuleInterface } from 'src/store/applyQuota/state'
+import groupModule from './group'
+import { GroupModuleInterface } from 'src/store/group/state'
 
-import group from './group'
-import { GroupInterface } from 'src/store/group/state'
+/* 全局API BASE */
+// 根据用户访问协议来决定api地址的https/http
+export const apiBase = window.location.protocol + '//vms.cstcloud.cn/api'
+/* 全局API BASE */
 
 /*
  * If not building with SSR mode, you can
@@ -33,7 +33,7 @@ export interface StateInterface {
   account: AccountModuleInterface,
   vm: VmModuleInterface,
   applyQuota: ApplyQuotaModuleInterface,
-  group: GroupInterface
+  group: GroupModuleInterface
 }
 
 const store = createStore<StateInterface>({
@@ -42,7 +42,7 @@ const store = createStore<StateInterface>({
     account: accountModule,
     vm: vmModule,
     applyQuota: applyQuotaModule,
-    group
+    group: groupModule
   },
 
   // enable strict mode (adds overhead!)

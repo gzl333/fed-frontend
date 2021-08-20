@@ -1,12 +1,9 @@
 import { ActionTree } from 'vuex'
-import { StateInterface } from '../index'
+import { StateInterface, apiBase } from '../index'
 import { ApplyQuotaModuleInterface } from './state'
 import axios from 'axios'
 import { normalize, schema } from 'normalizr'
 import { Dialog } from 'quasar'
-
-// 根据用户访问协议来决定api地址的https/http
-const apiBase = window.location.protocol + '//vms.cstcloud.cn/api'
 
 const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   /* 初次获取全部applyQuota模块Table，已有则自动忽略 */

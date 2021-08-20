@@ -47,8 +47,9 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
-    // 进入本页面强制更新vm/userQuotaTable,数据更新来自后台，进入页面后应强制更新table,刷新quota状态
-    void $store.dispatch('vm/updateUserQuotaTable')
+    // 是否已经被quotatable内更新代替？
+    // // 进入本页面强制更新vm/userQuotaTable,数据更新来自后台，进入页面后应强制更新table,刷新quota状态
+    // void $store.dispatch('vm/updateUserQuotaTable')
 
     // application filter
     const filterSelection = ref({

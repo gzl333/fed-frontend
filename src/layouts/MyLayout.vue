@@ -59,6 +59,11 @@ export default defineComponent({
         console.log('$STORE-applyQuota:', $store.state.applyQuota)
       }
     })
+    void $store.dispatch('group/loadGroupModuleTable').then(() => {
+      if (!process.env.PROD) {
+        console.log('$STORE-group:', $store.state.group)
+      }
+    })
     /* my内页所有table加载起始点 */
 
     const currentUser = $store.state.account

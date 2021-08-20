@@ -49,12 +49,6 @@ export interface ApplyQuotaModuleInterface {
     apply: {
       serviceId: string
     }
-    applicationList: {
-      filter: string
-    }
-    // manage: {
-    //   filter: string
-    // }
   }
   // eslint-disable-next-line @typescript-eslint/ban-types
   tables: {
@@ -91,13 +85,7 @@ function state (): ApplyQuotaModuleInterface {
     pages: {
       apply: {
         serviceId: '0'
-      },
-      applicationList: {
-        filter: '0'
       }
-      // manage: {
-      //   filter: '0'
-      // }
     },
     tables: {
       userQuotaApplicationTable: {

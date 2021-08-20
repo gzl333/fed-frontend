@@ -1,41 +1,52 @@
+/* group 模块保存组信息，组内成员信息 */
 // 自定义类型
-// 组配额接口
-export interface GroupQuotaInterface {
+// 组类型
+export interface GroupInterface {
   id: string
-  tag: { // 提出去单做table无用，暂时保留不拍平
-    value: number
-    display: string
+  name: string
+  company: string
+  description: string
+  creation_time: string
+  owner: {
+    id: string
+    username: string
   },
-  user: string // user id
-  service: string // service id
-  private_ip_total: number
-  private_ip_used: number
-  public_ip_total: number
-  public_ip_used: number
-  vcpu_total: number
-  vcpu_used: number
-  ram_total: number
-  ram_used: number
-  disk_size_total: number
-  disk_size_used: number
-  expiration_time: string
-  deleted: boolean
-  display: string
-  duration_days: number
-  classification: 'vo' | 'personal' // 配额类型，二选一
+  status: string // 'active' | 'inactive' ?
+}
 
-  // 以下字段来自自己补充
-  group: string // 所属group id
+export interface GroupMemberInterface {
+  members: [
+    {
+      id: string
+      user: {
+        id: string
+        username: string
+      },
+      role: string
+      join_time: string
+      inviter: string
+    }
+  ],
+  owner: {
+    id: string
+    username: string
+  }
 }
 
 // group模块的总体类型
-export interface GroupInterface {
+export interface GroupModuleInterface {
   pages: { // 各个页面所需vuex数据
   }
   tables: { // 扁平的data table
-    // 用户可用的group quota
-    userGroupQuotaTable: {
-      byId: Record<string, GroupQuotaInterface>
+    // 用户相关的全部组table
+    groupTable: {
+      byId: Record<string, GroupInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 组配额table: groupId -> groupMember
+    groupMemberTable: {
+      byId: Record<string, GroupMemberInterface>
       allIds: string[]
       isLoaded: boolean
     }
@@ -43,11 +54,16 @@ export interface GroupInterface {
 }
 
 // group模块初始值
-function state (): GroupInterface {
+function state (): GroupModuleInterface {
   return {
     pages: {},
     tables: {
-      userGroupQuotaTable: {
+      groupTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      groupMemberTable: {
         byId: {},
         allIds: [],
         isLoaded: false

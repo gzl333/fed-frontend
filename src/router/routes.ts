@@ -167,7 +167,7 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'group',
         component: () => import('pages/My/Group/GroupIndex.vue'),
-        redirect: '/my/group/server',
+        redirect: '/my/group/list',
         meta: {
           title: '小组资源-中国科技云联邦'
         },

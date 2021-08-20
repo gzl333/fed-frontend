@@ -1,14 +1,11 @@
 import { ActionTree } from 'vuex'
-import { StateInterface } from '../index'
+import { StateInterface, apiBase } from '../index'
 import { ServerInterface, VmModuleInterface, VpnInterface } from './state'
 import axios from 'axios'
 import { normalize, schema } from 'normalizr'
 import { Dialog, Notify } from 'quasar'
 import { i18n } from '../../boot/i18n'
 
-// 根据用户访问协议来决定api地址的https/http
-const apiBase = window.location.protocol + '//vms.cstcloud.cn/api'
-// const apiBase = 'http://223.193.2.211:88/api'
 /* const statusCodeMap = new Map<number, string>(
   [
     [0, '无法获取状态'],
@@ -156,7 +153,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     for (const data of respQuota.data.results) {
       /* 增加补充字段 */
       // 获取quota下对应的server列表
-      const respQuotaServers = await context.dispatch('fetchUserQuotaServers', data.id)
+      const respQuotaServers = await context.dispatch('fetchQuotaServers', data.id)
       const servers: string[] = []
       respQuotaServers.data.results.forEach((server: ServerInterface) => {
         servers.push(server.id)
@@ -183,12 +180,61 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     const response = await axios.get(api)
     return response
   },
-  async fetchUserQuotaServers (context, serviceId: string) {
-    const api = apiBase + '/quota/' + serviceId + '/servers/'
+  async fetchQuotaServers (context, quotaId: string) {
+    const api = apiBase + '/quota/' + quotaId + '/servers/'
     const response = await axios.get(api)
     return response
   },
   /* userQuotaTable */
+
+  /* groupQuotaTable -> 依赖groupTable,根据组列表来分别获取组的配额，调用点在group模块里 */
+  // 所有groupQuota根据quotaId存在一个对象里，不区分group，getter里区分group取
+  async loadGroupQuotaTable (context) {
+    // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
+    context.commit('clearGroupQuotaTable')
+    // 根据groupTable,建立groupQuotaTable
+    for (const groupId of context.rootState.group.tables.groupTable.allIds) {
+      // 获取响应
+      const respGroupQuota = await context.dispatch('fetchGroupQuota', { vo_id: groupId })
+      // 将响应normalize
+      const service = new schema.Entity('service')
+      const quota = new schema.Entity('quota', { service })
+      // quota数组
+      for (const data of respGroupQuota.data.results) {
+        /* 增加补充字段 */
+        // 补充vo_id字段
+        Object.assign(data, { vo_id: groupId })
+        // 获取quota下对应的server列表
+        const respQuotaServers = await context.dispatch('fetchQuotaServers', data.id)
+        const servers: string[] = []
+        respQuotaServers.data.results.forEach((server: ServerInterface) => {
+          servers.push(server.id)
+        })
+        // 给data增加servers字段
+        Object.assign(data, { servers })
+        // 给data增加expired字段
+        const expired = !!data.expiration_time && (new Date(data.expiration_time).getTime() < new Date().getTime())
+        Object.assign(data, { expired })
+        // 给data增加exhausted字段,该字段的判断方式可能后期更改
+        const exhausted = data.vcpu_used === data.vcpu_total ||
+          data.ram_used === data.ram_total ||
+          (data.private_ip_used === data.private_ip_total && data.public_ip_used === data.public_ip_total)
+        Object.assign(data, { exhausted })
+        /* 增加补充字段 */
+
+        // normalize data
+        const normalizedData = normalize(data, quota)
+        // 存入groupQuotaTable
+        context.commit('storeGroupQuotaTable', normalizedData.entities.quota)
+      }
+    }
+  },
+  async fetchGroupQuota (context, payload: { vo_id: string; page?: number; page_size?: number; service?: string; usable?: boolean }) {
+    const api = apiBase + '/quota/vo/' + payload.vo_id + '/'
+    const response = await axios.get(api)
+    return response
+  },
+  /* groupQuotaTable */
 
   /* vpn操作 */
   // 修改vpn密码
@@ -358,8 +404,228 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   },
   /* userNetworkTable */
 
+  /*  userServerTable */
+  // 更新整个userServerTable
+  async updateUserServerTable (context) {
+    // 先清空userServerTable，避免多次更新时数据累加
+    context.commit('clearUserServerTable')
+    // 发送请求
+    const respServer = await context.dispatch('fetchUserServer')
+    // 将响应normalize，存入state里的userServerTable
+    const service = new schema.Entity('service')
+    const user_quota = new schema.Entity('user_quota')
+    const server = new schema.Entity('server', {
+      service,
+      user_quota
+    })
+    for (const data of respServer.data.servers) {
+      const normalizedData = normalize(data, server)
+      context.commit('storeUserServerTable', normalizedData.entities.server)
+    }
+    // console.log(context.state.userServerTable)
+    // 建立userServerTable之后，分别更新每个server status, 并发更新，无需await
+    for (const serverId of context.state.tables.userServerTable.allIds) {
+      void context.dispatch('updateUserServerTableSingleStatus', serverId)
+    }
+  },
+
+  // 远程修改单个server的remarks
+  async patchRemarks (context, payload: { id: string; remark: string; }) {
+    // const api = apiBase + '/server/' + payload.id + '/remark/'
+    const api = `${apiBase}/server/${payload.id}/remark/`
+    const config = { params: { remark: payload.remark } }
+    const response = await axios.patch(api, null, config)
+    return response
+  },
+  // 更新单个server的信息
+  async updateUserServerTableSingleServer (context, serverId: string) {
+    const respSingleServer = await context.dispatch('fetchSingleServer', serverId)
+    // 将响应normalize，存入state里的userServerTable
+    const service = new schema.Entity('service')
+    const user_quota = new schema.Entity('user_quota')
+    const server = new schema.Entity('server', {
+      service,
+      user_quota
+    })
+    const normalizedData = normalize(respSingleServer.data.server, server)
+    context.commit('storeUserServerTable', normalizedData.entities.server)
+    // 获取新的server后都需要更新status，写在这里
+    void await context.dispatch('updateUserServerTableSingleStatus', serverId)
+  },
+  // 获取并保存单个server的status
+  async updateUserServerTableSingleStatus (context, serverId: string) {
+    // 先清空server status，让状态变为空，UI则显示为获取中
+    context.commit('storeUserServerTableSingleStatus', {
+      serverId,
+      status_code: '' // 有状态的状态码为integer
+    })
+    const respStatus = await context.dispatch('fetchServerStatus', serverId)
+    context.commit('storeUserServerTableSingleStatus', {
+      serverId,
+      status_code: respStatus.data.status.status_code
+    })
+  },
+  async fetchServerStatus (context, serverId: string) {
+    const api = apiBase + '/server/' + serverId + '/status/'
+    const response = await axios.get(api)
+    return response
+  },
+  async fetchServerVNC (context, serverId: string) {
+    const api = apiBase + '/server/' + serverId + '/vnc/'
+    const response = await axios.get(api)
+    return response
+  },
+  async fetchUserServer (context, payload?: { page?: number; page_size?: number; service_id?: string; }) {
+    const api = apiBase + '/server/'
+    let response
+    if (payload) {
+      const config = {
+        params: payload
+      }
+      response = await axios.get(api, config)
+    } else {
+      response = await axios.get(api)
+    }
+    return response
+  },
+  async fetchSingleServer (context, id: string) {
+    const api = apiBase + '/server/' + id + '/'
+    const response = axios.get(api)
+    return response
+  },
+  async createServer (context, payload: { service_id: string; network_id: string; image_id: string; flavor_id: string; quota_id: string; remarks?: string; }) {
+    const api = apiBase + '/server/'
+    const data = payload
+    const response = axios.post(api, data)
+    return response
+  },
+  /*  userServerTable */
+
+  /* groupServerTable */
+  // 更新整个groupServerTable，调用点在group模块里
+  async loadGroupServerTable (context) {
+    // 先清空groupServerTable，避免多次更新时数据累加
+    context.commit('clearGroupServerTable')
+    // 根据groupTable,建立groupServerTable
+    for (const groupId of context.rootState.group.tables.groupTable.allIds) {
+      // 发送请求
+      const respGroupServer = await context.dispatch('fetchGroupServer', { vo_id: groupId })
+      // 将响应normalize
+      const service = new schema.Entity('service')
+      const user_quota = new schema.Entity('user_quota')
+      const server = new schema.Entity('server', {
+        service,
+        user_quota
+      })
+      for (const data of respGroupServer.data.servers) {
+        const normalizedData = normalize(data, server)
+        context.commit('storeGroupServerTable', normalizedData.entities.server)
+      }
+      // console.log(context.state.userServerTable)
+      // 建立groupServerTable之后，分别更新每个server status, 并发更新，无需await
+      for (const serverId of context.state.tables.groupServerTable.allIds) {
+        void context.dispatch('updateGroupServerTableSingleStatus', serverId)
+      }
+    }
+  },
+  async fetchGroupServer (context, payload: { vo_id: string; page?: number; page_size?: number; service_id?: string; }) {
+    const api = apiBase + '/server/vo/' + payload.vo_id + '/'
+    const config = {
+      params: payload
+    }
+    const response = await axios.get(api, config)
+    return response
+  },
+  // 获取并保存单个server的status
+  async updateGroupServerTableSingleStatus (context, serverId: string) {
+    // 先清空server status，让状态变为空，UI则显示为获取中
+    context.commit('storeGroupServerTableSingleStatus', {
+      serverId,
+      status_code: '' // 有状态的状态码为integer
+    })
+    const respStatus = await context.dispatch('fetchServerStatus', serverId)
+    context.commit('storeGroupServerTableSingleStatus', {
+      serverId,
+      status_code: respStatus.data.status.status_code
+    })
+  },
+  /* groupServerTable */
+
+  /*  globalDataCenterTable */
+  async updateGlobalDataCenterTable (context) {
+    const respDataCenters = await context.dispatch('fetchDataCenters')
+    const dataCenter = new schema.Entity('dataCenter', {})
+    respDataCenters.data.registries.forEach((data: Record<string, never>) => {
+      const normalizedData = normalize(data, dataCenter)
+      // 添加上userServices/globalServices空字段
+      Object.values(normalizedData.entities.dataCenter!)[0].userServices = []
+      Object.values(normalizedData.entities.dataCenter!)[0].globalServices = []
+      context.commit('storeGlobalDataCenterTable', normalizedData.entities.dataCenter)
+    })
+    // console.log(context.state.globalDataCenterTable)
+  },
+  async fetchDataCenters () {
+    const api = apiBase + '/registry/'
+    const response = await axios.get(api)
+    return response
+  },
+  /*  globalDataCenterTable */
+
+  /*  globalServiceTable */
+  async updateGlobalServiceTable (context) {
+    // 发送请求
+    const respService = await context.dispatch('fetchService')
+    // 将响应normalize，存入state里的serviceTable
+    const data_center = new schema.Entity('data_center')
+    const service = new schema.Entity('service', { data_center })
+    respService.data.results.forEach((data: Record<string, never>) => {
+      const normalizedData = normalize(data, service)
+      context.commit('storeGlobalServiceTable', normalizedData.entities.service)
+
+      // 将本serviceId补充进对应dataCenter的globalServices字段
+      context.commit('storeGlobalDataCenterTableGlobalServices', {
+        dataCenterId: Object.values(normalizedData.entities.service!)[0].data_center,
+        serviceId: Object.values(normalizedData.entities.service!)[0].id
+      })
+    })
+  },
+  /*  globalServiceTable */
+
+  /*  userServiceTable */
+  async updateUserServiceTable (context) {
+    // 发送请求
+    const respService = await context.dispatch('fetchService', { available_only: true })
+    // 将响应normalize，存入state里的serviceTable
+    const data_center = new schema.Entity('data_center')
+    const service = new schema.Entity('service', { data_center })
+    respService.data.results.forEach((data: Record<string, never>) => {
+      const normalizedData = normalize(data, service)
+      context.commit('storeUserServiceTable', normalizedData.entities.service)
+
+      // 将本serviceId补充进对应dataCenter的userServices字段
+      context.commit('storeGlobalDataCenterTableUserServices', {
+        dataCenterId: Object.values(normalizedData.entities.service!)[0].data_center,
+        serviceId: Object.values(normalizedData.entities.service!)[0].id
+      })
+    })
+  },
+  async fetchService (context, payload?: { page?: number; page_size?: number; center_id?: string; available_only?: boolean; }) {
+    const api = apiBase + '/service/'
+    let response
+    if (payload) {
+      const config = {
+        params: payload
+      }
+      response = await axios.get(api, config)
+    } else {
+      response = await axios.get(api)
+    }
+    return response
+  },
+  /*  userServiceTable */
+
   /* vmlist页面中的云主机操作 */
-  vmOperation (context, payload: { id: string; action: string }) {
+  vmOperation (context, payload: { id: string; action: string; isGroup?: boolean }) {
     // 操作的确认提示 todo 输入删除两个字以确认
     Dialog.create({
       class: 'dialog-primary',
@@ -459,178 +725,9 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     const response = await context.dispatch('fetchServerVNC', id)
     const url = response.data.vnc.url
     window.open(url)
-  },
+  }
   /* vmlist页面中的云主机操作 */
 
-  /*  userServerTable */
-  // 更新整个userServerTable
-  async updateUserServerTable (context) {
-    // 先清空userServerTable，避免多次更新时数据累加
-    context.commit('clearUserServerTable')
-
-    // 发送请求
-    const respServer = await context.dispatch('fetchServer')
-    // 将响应normalize，存入state里的userServerTable
-    const service = new schema.Entity('service')
-    const user_quota = new schema.Entity('user_quota')
-    const server = new schema.Entity('server', {
-      service,
-      user_quota
-    })
-    for (const data of respServer.data.servers) {
-      const normalizedData = normalize(data, server)
-      context.commit('storeUserServerTable', normalizedData.entities.server)
-    }
-    // console.log(context.state.userServerTable)
-    // 建立userServerTable之后，分别更新每个server status, 并发更新，无需await
-    for (const serverId of context.state.tables.userServerTable.allIds) {
-      void context.dispatch('updateUserServerTableSingleStatus', serverId)
-    }
-  },
-  // 远程修改单个server的remarks
-  async patchRemarks (context, payload: { id: string; remark: string; }) {
-    // const api = apiBase + '/server/' + payload.id + '/remark/'
-    const api = `${apiBase}/server/${payload.id}/remark/`
-    const config = { params: { remark: payload.remark } }
-    const response = await axios.patch(api, null, config)
-    return response
-  },
-  // 更新单个server的信息
-  async updateUserServerTableSingleServer (context, serverId: string) {
-    const respSingleServer = await context.dispatch('fetchSingleServer', serverId)
-    // 将响应normalize，存入state里的userServerTable
-    const service = new schema.Entity('service')
-    const user_quota = new schema.Entity('user_quota')
-    const server = new schema.Entity('server', {
-      service,
-      user_quota
-    })
-    const normalizedData = normalize(respSingleServer.data.server, server)
-    context.commit('storeUserServerTable', normalizedData.entities.server)
-    // 获取新的server后都需要更新status，写在这里
-    void await context.dispatch('updateUserServerTableSingleStatus', serverId)
-  },
-  // 获取并保存单个server的status
-  async updateUserServerTableSingleStatus (context, serverId: string) {
-    // 先清空server status，让状态变为空，UI则显示为获取中
-    context.commit('storeUserServerTableSingleStatus', {
-      serverId,
-      status_code: '' // 有状态的状态码为integer
-    })
-    const respStatus = await context.dispatch('fetchServerStatus', serverId)
-    context.commit('storeUserServerTableSingleStatus', {
-      serverId,
-      status_code: respStatus.data.status.status_code
-    })
-  },
-  async fetchServerStatus (context, serverId: string) {
-    const api = apiBase + '/server/' + serverId + '/status/'
-    const response = await axios.get(api)
-    return response
-  },
-  async fetchServerVNC (context, serverId: string) {
-    const api = apiBase + '/server/' + serverId + '/vnc/'
-    const response = await axios.get(api)
-    return response
-  },
-  async fetchServer (context, payload?: { page?: number; page_size?: number; service_id?: string; }) {
-    const api = apiBase + '/server/'
-    let response
-    if (payload) {
-      const config = {
-        params: payload
-      }
-      response = await axios.get(api, config)
-    } else {
-      response = await axios.get(api)
-    }
-    return response
-  },
-  async fetchSingleServer (context, id: string) {
-    const api = apiBase + '/server/' + id + '/'
-    const response = axios.get(api)
-    return response
-  },
-  async createServer (context, payload: { service_id: string; network_id: string; image_id: string; flavor_id: string; quota_id: string; remarks?: string; }) {
-    const api = apiBase + '/server/'
-    const data = payload
-    const response = axios.post(api, data)
-    return response
-  },
-  /*  userServerTable */
-
-  /*  globalDataCenterTable */
-  async updateGlobalDataCenterTable (context) {
-    const respDataCenters = await context.dispatch('fetchDataCenters')
-    const dataCenter = new schema.Entity('dataCenter', {})
-    respDataCenters.data.registries.forEach((data: Record<string, never>) => {
-      const normalizedData = normalize(data, dataCenter)
-      // 添加上userServices/globalServices空字段
-      Object.values(normalizedData.entities.dataCenter!)[0].userServices = []
-      Object.values(normalizedData.entities.dataCenter!)[0].globalServices = []
-      context.commit('storeGlobalDataCenterTable', normalizedData.entities.dataCenter)
-    })
-    // console.log(context.state.globalDataCenterTable)
-  },
-  async fetchDataCenters () {
-    const api = apiBase + '/registry/'
-    const response = await axios.get(api)
-    return response
-  },
-  /*  globalDataCenterTable */
-
-  /*  globalServiceTable */
-  async updateGlobalServiceTable (context) {
-    // 发送请求
-    const respService = await context.dispatch('fetchService')
-    // 将响应normalize，存入state里的serviceTable
-    const data_center = new schema.Entity('data_center')
-    const service = new schema.Entity('service', { data_center })
-    respService.data.results.forEach((data: Record<string, never>) => {
-      const normalizedData = normalize(data, service)
-      context.commit('storeGlobalServiceTable', normalizedData.entities.service)
-
-      // 将本serviceId补充进对应dataCenter的globalServices字段
-      context.commit('storeGlobalDataCenterTableGlobalServices', {
-        dataCenterId: Object.values(normalizedData.entities.service!)[0].data_center,
-        serviceId: Object.values(normalizedData.entities.service!)[0].id
-      })
-    })
-  },
-  /*  globalServiceTable */
-
-  /*  userServiceTable */
-  async updateUserServiceTable (context) {
-    // 发送请求
-    const respService = await context.dispatch('fetchService', { available_only: true })
-    // 将响应normalize，存入state里的serviceTable
-    const data_center = new schema.Entity('data_center')
-    const service = new schema.Entity('service', { data_center })
-    respService.data.results.forEach((data: Record<string, never>) => {
-      const normalizedData = normalize(data, service)
-      context.commit('storeUserServiceTable', normalizedData.entities.service)
-
-      // 将本serviceId补充进对应dataCenter的userServices字段
-      context.commit('storeGlobalDataCenterTableUserServices', {
-        dataCenterId: Object.values(normalizedData.entities.service!)[0].data_center,
-        serviceId: Object.values(normalizedData.entities.service!)[0].id
-      })
-    })
-  },
-  async fetchService (context, payload?: { page?: number; page_size?: number; center_id?: string; available_only?: boolean; }) {
-    const api = apiBase + '/service/'
-    let response
-    if (payload) {
-      const config = {
-        params: payload
-      }
-      response = await axios.get(api, config)
-    } else {
-      response = await axios.get(api)
-    }
-    return response
-  }
-  /*  userServiceTable */
 }
 
 export default actions

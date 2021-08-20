@@ -1,11 +1,11 @@
 import { Module } from 'vuex'
 import { StateInterface } from '../index'
-import state, { GroupInterface } from './state'
+import state, { GroupModuleInterface } from './state'
 import actions from './actions'
 import getters from './getters'
 import mutations from './mutations'
 
-const group: Module<GroupInterface, StateInterface> = {
+const group: Module<GroupModuleInterface, StateInterface> = {
   namespaced: true,
   actions,
   getters,

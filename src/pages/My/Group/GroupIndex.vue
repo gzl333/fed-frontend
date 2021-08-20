@@ -22,6 +22,7 @@
 
             <div class="row">
               <div class="col">
+
                 <q-tabs
                   v-model="activeTab"
                   indicator-color="primary"
@@ -32,6 +33,15 @@
                   <q-route-tab
                     no-caps
                     class="q-px-none q-py-md q-mr-md"
+                    name="list"
+                    icon="format_list_bulleted"
+                    :label="$t('组')"
+                    :ripple="false"
+                    to="/my/group/list"
+                  />
+                  <q-route-tab
+                    no-caps
+                    class="q-px-none q-py-md q-mx-sm"
                     name="server"
                     icon="computer"
                     :label="$t('组云主机')"
@@ -56,15 +66,6 @@
                     :label="$t('组云主机配额')"
                     :ripple="false"
                     to="/my/group/quota"
-                  />
-                  <q-route-tab
-                    no-caps
-                    class="q-px-none q-py-md q-mx-sm"
-                    name="list"
-                    icon="format_list_bulleted"
-                    :label="$t('组列表')"
-                    :ripple="false"
-                    to="/my/group/list"
                   />
                 </q-tabs>
               </div>

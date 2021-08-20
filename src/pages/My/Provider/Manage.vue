@@ -198,7 +198,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref, watch } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
@@ -217,10 +217,7 @@ export default defineComponent({
       label: '全部状态',
       value: '0'
     })
-    // $store.commit('applyQuota/storeManageFilter', '0')
-    // watch(filterSelection, () => {
-    //   $store.commit('applyQuota/storeManageFilter', filterSelection.value.value)
-    // })
+
     const filterOptions = [
       {
         label: '全部状态',

@@ -131,19 +131,9 @@ export interface QuotaInterface {
   display: string
   duration_days: number
   classification: 'vo' | 'personal' // 配额类型，二选一
-  vo: null // "classification"=="personal"时为null
-    | {
-    id: string
-    name: string
-    company: string
-    description: string
-    creation_time: string
-    owner: {
-      id: string
-      username: string
-    },
-    status: string
-  }
+
+  // 来自vo/quota接口的补充
+  vo_id?: string // groupId
 
   // 来自server接口补充
   servers?: string[] // serverId
@@ -177,6 +167,7 @@ export interface VmModuleInterface {
     }
   }
   tables: { // 扁平的data table
+    /* 全局table */
     // 全局统一的datacenter
     globalDataCenterTable: {
       byId: Record<string, DataCenterInterface>
@@ -195,6 +186,9 @@ export interface VmModuleInterface {
       allIds: string[]
       isLoaded: boolean
     }
+    /* 全局table */
+
+    /* 个人table */
     // 用户可用的service
     userServiceTable: {
       byId: Record<string, ServiceInterface>
@@ -240,6 +234,22 @@ export interface VmModuleInterface {
         allIds: string[]
         isLoaded: boolean
       } */
+    /* 个人table */
+
+    /* 组table */
+    // 组quota，依赖globalServiceTable, groupTable, quotaId -> quota, 所有组quota存一起不区分group，在getter里区分
+    groupQuotaTable: {
+      byId: Record<string, QuotaInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 组server, 依赖group/groupTable, serverId -> server, 所有组server存一起不区分group，在getter里区分
+    groupServerTable: {
+      byId: Record<string, ServerInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    /* 组table */
   }
 }
 
@@ -298,12 +308,22 @@ function state (): VmModuleInterface {
         byId: {},
         allIds: [],
         isLoaded: false
-      }
-      // , userArchivedServerTable: {
+      },
+      //   userArchivedServerTable: {
       //   byId: {},
       //   allIds: [],
       //   isLoaded: false
       // }
+      groupQuotaTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      groupServerTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      }
     }
   }
 }
