@@ -16,7 +16,7 @@
           <div class="content-fixed-width">
             <div class="row">
               <div class="text-h6 q-pt-lg q-px-none">
-                {{ $t('组资源') }}
+                {{ $t('项目组资源') }}
               </div>
             </div>
 
@@ -35,7 +35,7 @@
                     class="q-px-none q-py-md q-mr-md"
                     name="list"
                     icon="format_list_bulleted"
-                    :label="$t('组')"
+                    :label="$t('项目组')"
                     :ripple="false"
                     to="/my/group/list"
                   />

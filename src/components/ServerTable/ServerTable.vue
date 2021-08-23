@@ -21,16 +21,28 @@
         >
 
           <q-td key="group" :props="props">
-            {{ props.row.vo_id }}
+            <q-btn
+              class="q-ma-none" :label="$store.state.group.tables.groupTable.byId[props.row.vo_id].name" color="primary"
+              padding="none" flat dense unelevated
+              :to="{path: `/my/group/detail/${props.row.vo_id}`}">
+              <q-tooltip>
+                {{ $t('进入项目组详情') }}
+              </q-tooltip>
+              <!--创建时间距离当下小于1小时则打上new标记-->
+              <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
+                       color="light-green" floating transparent rounded align="middle">new
+              </q-badge>
+            </q-btn>
+
           </q-td>
 
           <q-td key="ip" :props="props">
 
             <q-btn
-              class="q-ma-none" :label="props.row.ipv4" color="primary" padding="sm" flat dense unelevated
+              class="q-ma-none" :label="props.row.ipv4" color="primary" padding="none" flat dense unelevated
               :to="{path: `/my/personal/vmdetail/${props.row.id}`}">
               <q-tooltip>
-                {{ $t('进入详情页面') }}
+                {{ $t('进入云主机详情') }}
               </q-tooltip>
               <!--创建时间距离当下小于1小时则打上new标记-->
               <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
@@ -184,7 +196,8 @@ export default defineComponent({
           label: '所属组',
           field: 'group',
           align: 'center',
-          style: 'padding: 15px 0px',
+          classes: 'ellipsis',
+          style: 'max-width: 150px;padding: 15px 0px',
           headerStyle: 'padding: 0 5px'
         },
         {
@@ -369,7 +382,8 @@ export default defineComponent({
             label: 'Group',
             field: 'group',
             align: 'center',
-            style: 'padding: 15px 0px',
+            classes: 'ellipsis',
+            style: 'max-width: 150px;padding: 15px 0px',
             headerStyle: 'padding: 0 5px'
           },
           {

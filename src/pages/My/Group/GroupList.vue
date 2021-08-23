@@ -1,6 +1,32 @@
 <template>
   <div class="GroupList">
 
+    <div class="row items-center justify-between q-py-md">
+
+      <div class="col-3">
+        <div class="row justify-start">
+          <div class="col">
+            <q-input disable dense outlined v-model="text" stack-label label="搜索">
+              <template v-slot:append>
+                <!--                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>-->
+                <q-icon name="search"/>
+              </template>
+            </q-input>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-2">
+        <div class="row justify-end">
+          <div class="col">
+            <q-select outlined dense stack-label label="筛选" v-model="filterSelection"
+                      :options="filterOptions"/>
+          </div>
+        </div>
+      </div>
+
+    </div>
+
     <q-table
       flat
       card-class=""
@@ -18,31 +44,41 @@
         <q-tr :props="props">
 
           <q-td key="name" :props="props">
-            {{ props.row.name }}
+            <q-btn
+              class="q-ma-none" :label="props.row.name" color="primary" padding="sm" flat dense unelevated
+              :to="{path: `/my/group/detail/${props.row.id}`}">
+              <q-tooltip>
+                {{ $t('进入项目组详情') }}
+              </q-tooltip>
+              <!--创建时间距离当下小于1小时则打上new标记-->
+              <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
+                       color="light-green" floating transparent rounded align="middle">new
+              </q-badge>
+            </q-btn>
           </q-td>
 
           <q-td key="creation_time" :props="props">
-            {{ props.row.creation_time }}
+            {{ new Date(props.row.creation_time).toLocaleString(locale) }}
           </q-td>
 
           <q-td key="role" :props="props">
-            {{ props.row.owner.id }}
+            {{ props.row.owner.username === $store.state.account.cstEmail ? $t('组长') : $t('组员') }}
           </q-td>
 
           <q-td key="quota" :props="props">
-            {{ props.row.owner.id }}
+            {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id)('valid').length }} / {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id)('expired').length }} / {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id)('exhausted').length }}
           </q-td>
 
           <q-td key="server" :props="props">
-            {{ props.row.owner.id }}
+            {{ $store.getters['vm/getGroupServersByGroupId'](props.row.id).length }}
           </q-td>
 
           <q-td key="member" :props="props">
-            {{ props.row.owner.id }}
+            {{ $store.state.group.tables.groupMemberTable.byId[props.row.id]?.members.length }}
           </q-td>
 
           <q-td key="desc" :props="props">
-            {{ props.row.owner.id }}
+            {{ props.row.description }}
           </q-td>
 
         </q-tr>
@@ -73,11 +109,47 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
+    // application filter
+    const filterSelection = ref({
+      label: locale.value === 'zh' ? '全部项目组' : 'All Groups',
+      value: '0'
+    })
+
+    const filterOptionsZH = [
+      {
+        label: '全部项目组',
+        value: '0'
+      },
+      {
+        label: '作为组长',
+        value: 'owner'
+      },
+      {
+        label: '作为组员',
+        value: 'member'
+      }
+    ]
+    const filterOptionsEN = [
+      {
+        label: 'All Groups',
+        value: '0'
+      },
+      {
+        label: 'As Group Owner',
+        value: 'owner'
+      },
+      {
+        label: 'As Group Member',
+        value: 'member'
+      }
+    ]
+    const filterOptions = computed(() => locale.value === 'zh' ? filterOptionsZH : filterOptionsEN)
+
     // group分栏定义
     const columnsZH = [
       {
         name: 'name',
-        label: '组名称',
+        label: '项目组名称',
         field: 'name',
         align: 'center',
         style: 'padding: 15px 0px',
@@ -101,7 +173,7 @@ export default defineComponent({
       },
       {
         name: 'quota',
-        label: '组配额',
+        label: '可用配额 / 过期配额 / 用尽配额',
         field: 'quota',
         align: 'center',
         style: 'padding: 15px 0px',
@@ -146,23 +218,13 @@ export default defineComponent({
     })
 
     // group data
-    const groups = [
-      {
-        id: '1f513572-fe56-11eb-9949-c8009fe2eb03',
-        name: 'Group开发测试',
-        company: 'cnic云联邦实验室',
-        description: 'dev',
-        creation_time: '2021-08-16T05:52:21.102483Z',
-        owner: {
-          id: '6',
-          username: 'zlguo@cnic.cn'
-        },
-        status: 'active'
-      }
-    ]
+    const groups = computed(() => $store.getters['group/getGroupsByFilter'](filterSelection.value.value))
+
     return {
       $store,
       locale,
+      filterSelection,
+      filterOptions,
       columns,
       paginationTable,
       groups

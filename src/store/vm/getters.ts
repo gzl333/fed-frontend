@@ -7,7 +7,7 @@ import {
   ImageInterface,
   QuotaInterface
 } from './state'
-import { i18n } from '../../boot/i18n' // vue组件外取i18n对象的方法
+import { i18n } from '../../boot/i18n'
 
 const getters: GetterTree<VmModuleInterface, StateInterface> = {
 
@@ -155,8 +155,67 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
       rows.push(server)
     }
     return rows
-  }
+  },
   /* 获取所有server */
+
+  /* groupList页面用 */
+  getGroupOptions (state, getters, rootState/*, rootGetters */): { value: string; label: string; }[] {
+    let groupOptions = []
+    for (const group of Object.values(rootState.group.tables.groupTable.byId)) {
+      groupOptions.push(
+        {
+          value: group.id,
+          label: group.name
+        }
+      )
+    }
+    // 排序
+    groupOptions = groupOptions.sort((a, b) => -a.label.localeCompare(b.label, 'zh-CN'))
+    // // vue组件外取i18n中locale字段的方法
+    groupOptions.unshift({
+      value: '0',
+      label: i18n.global.locale === 'zh' ? '全部项目组' : 'All Groups'
+    })
+
+    return groupOptions
+  },
+  getGroupServersByGroupId: (state) => (groupId: string): ServerInterface[] => {
+    const sortFn = (a: ServerInterface, b: ServerInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
+
+    if (groupId === '0') {
+      return Object.values(state.tables.groupServerTable.byId).sort(sortFn)
+    } else {
+      const servers: ServerInterface[] = []
+      for (const server of Object.values(state.tables.groupServerTable.byId)) {
+        if (groupId === server.vo_id) {
+          servers.push(server)
+        }
+      }
+      return servers.sort(sortFn)
+    }
+  },
+  // 有三种状态：valid -> 可用， expired -> 过期, exhausted -> 用尽
+  getGroupQuotasByGroupIdByStatus: (state) => (groupId: string) => (status: string): QuotaInterface[] => {
+    const sortFn = (a: QuotaInterface, b: QuotaInterface) => new Date(b.expiration_time).getTime() - new Date(a.expiration_time).getTime()
+    const quotasByGroupId: QuotaInterface[] = []
+    for (const quota of Object.values(state.tables.groupQuotaTable.byId)) {
+      if (quota.vo_id === groupId) {
+        quotasByGroupId.push(quota)
+      }
+    }
+    const quotasByStatus: QuotaInterface[] = []
+    for (const quota of quotasByGroupId) {
+      if (status === 'valid' && !quota.expired && !quota.exhausted) {
+        quotasByStatus.push(quota)
+      } else if (status === 'expired' && quota.expired) {
+        quotasByStatus.push(quota)
+      } else if (status === 'exhausted' && quota.exhausted) {
+        quotasByStatus.push(quota)
+      }
+    }
+    return quotasByStatus.sort(sortFn)
+  }
+  /* groupList页面用 */
 
 }
 

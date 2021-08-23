@@ -55,7 +55,7 @@
 
             <q-item-section class="column items-center">
               <q-icon name="group" size="lg"/>
-              <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('组资源') }}</div>
+              <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('项目组资源') }}</div>
               <div>dev</div>
             </q-item-section>
           </q-item>
