@@ -77,7 +77,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/My/Personal/PersonalIndex.vue'),
         redirect: '/my/personal/vm',
         meta: {
-          title: '在用资源-中国科技云联邦'
+          title: '个人资源-中国科技云联邦'
         },
         children: [
           {
@@ -169,7 +169,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/My/Group/GroupIndex.vue'),
         redirect: '/my/group/list',
         meta: {
-          title: '小组资源-中国科技云联邦'
+          title: '项目组资源-中国科技云联邦'
         },
         children: [
           {

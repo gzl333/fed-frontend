@@ -2,11 +2,25 @@
   <div class="GroupRoleChip">
 
     <q-chip v-if="props.role === 'owner'"
-            square label="组长" color="light-green" text-color="white" icon="mdi-account-tie"/>
+            square color="light-green" text-color="white" icon="mdi-account-tie">
+      <div style=" width: 45px;text-align: center">
+        {{ $t('组长') }}
+      </div>
+    </q-chip>
+
     <q-chip v-if="props.role === 'leader'"
-            square label="管理员" color="teal" text-color="white" icon="mdi-account-star"/>
+            square color="teal" text-color="white" icon="mdi-account-star">
+      <div style=" width: 45px;text-align: center">
+        {{ $t('管理员') }}
+      </div>
+    </q-chip>
+
     <q-chip v-if="props.role === 'member'"
-            square label="成员" color="blue-grey" text-color="white" icon="mdi-account"/>
+            square color="blue-grey" text-color="white" icon="mdi-account">
+      <div style=" width: 45px;text-align: center">
+        {{ $t('成员') }}
+      </div>
+    </q-chip>
 
   </div>
 </template>
@@ -33,5 +47,10 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .GroupRoleChip {
+}
+
+.chip {
+  width: 100px;
+  //text-align: center;
 }
 </style>

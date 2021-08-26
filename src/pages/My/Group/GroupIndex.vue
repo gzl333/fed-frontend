@@ -49,7 +49,7 @@
                     to="/my/group/server"
                   />
                   <q-route-tab
-                    :disable="process?.env.PROD"
+                    disable
                     no-caps
                     class="q-px-none q-py-md q-mx-md"
                     name="obs"

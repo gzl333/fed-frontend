@@ -90,7 +90,8 @@
                   <div class="col-10">
                     <div class="row justify-center items-center q-gutter-sm" style="height: 70px">
 
-                      <q-btn icon="edit" flat padding="none" color="primary" size="sm">
+                      <q-btn icon="edit" flat padding="none" color="primary" size="sm"
+                             @click="$store.dispatch('group/editGroup', group.id)">
                         <q-tooltip>编辑项目组信息</q-tooltip>
                       </q-btn>
 
