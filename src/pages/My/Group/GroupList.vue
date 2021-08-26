@@ -45,10 +45,10 @@
 
           <q-td key="name" :props="props">
             <q-btn
-              class="q-ma-none" :label="props.row.name" color="primary" padding="sm" flat dense unelevated
+              class="q-ma-none" :label="props.row.name" color="primary" padding="xs" flat dense unelevated
               :to="{path: `/my/group/detail/${props.row.id}`}">
               <q-tooltip>
-                {{ $t('进入项目组详情') }}
+                {{ $t('详情') }}
               </q-tooltip>
               <!--创建时间距离当下小于1小时则打上new标记-->
               <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
@@ -57,28 +57,50 @@
             </q-btn>
           </q-td>
 
+          <q-td key="company" :props="props">
+            {{ props.row.company }}
+          </q-td>
+
           <q-td key="creation_time" :props="props">
             {{ new Date(props.row.creation_time).toLocaleString(locale) }}
           </q-td>
 
           <q-td key="role" :props="props">
-            {{ props.row.owner.username === $store.state.account.cstEmail ? $t('组长') : $t('组员') }}
+            <GroupRoleChip class="non-selectable" :role="props.row.myRole"/>
           </q-td>
 
           <q-td key="quota" :props="props">
-            {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id)('valid').length }} / {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id)('expired').length }} / {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id)('exhausted').length }}
+            {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id)('valid').length }} /
+            {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id)('expired').length }} /
+            {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id)('exhausted').length }}
           </q-td>
 
           <q-td key="server" :props="props">
-            {{ $store.getters['vm/getGroupServersByGroupId'](props.row.id).length }}
+            {{ $store.getters['vm/getGroupServersByGroupId'](props.row.id).length }}台
           </q-td>
 
           <q-td key="member" :props="props">
-            {{ $store.state.group.tables.groupMemberTable.byId[props.row.id]?.members.length }}
+            {{ $store.state.group.tables.groupMemberTable.byId[props.row.id]?.members.length }}人
           </q-td>
 
           <q-td key="desc" :props="props">
             {{ props.row.description }}
+          </q-td>
+
+          <q-td key="operation" :props="props">
+
+            <div class="row justify-center items-center q-gutter-xs">
+              <q-btn icon="info" flat dense padding="none" color="primary"
+                     :to="{path: `/my/group/detail/${props.row.id}`}">
+                <q-tooltip>详情</q-tooltip>
+              </q-btn>
+
+              <q-btn :disable="props.row.myRole!=='owner'" icon="settings" flat dense padding="none" color="primary"
+                     :to="{path: `/my/group/edit/${props.row.id}`}">
+                <q-tooltip>设置</q-tooltip>
+              </q-btn>
+            </div>
+
           </q-td>
 
         </q-tr>
@@ -101,9 +123,13 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
 
+import GroupRoleChip from 'components/Group/GroupRoleChip.vue'
+
 export default defineComponent({
   name: 'GroupList',
-  components: {},
+  components: {
+    GroupRoleChip
+  },
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
@@ -125,7 +151,11 @@ export default defineComponent({
         value: 'owner'
       },
       {
-        label: '作为组员',
+        label: '作为管理员',
+        value: 'leader'
+      },
+      {
+        label: '作为成员',
         value: 'member'
       }
     ]
@@ -137,6 +167,10 @@ export default defineComponent({
       {
         label: 'As Group Owner',
         value: 'owner'
+      },
+      {
+        label: 'As Group Manager',
+        value: 'leader'
       },
       {
         label: 'As Group Member',
@@ -151,6 +185,14 @@ export default defineComponent({
         name: 'name',
         label: '项目组名称',
         field: 'name',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
+      },
+      {
+        name: 'company',
+        label: '所属单位',
+        field: 'company',
         align: 'center',
         style: 'padding: 15px 0px',
         headerStyle: 'padding: 0 5px'
@@ -199,6 +241,14 @@ export default defineComponent({
         name: 'desc',
         label: '备注',
         field: 'desc',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
+      },
+      {
+        name: 'operation',
+        label: '操作',
+        field: 'operation',
         align: 'center',
         style: 'padding: 15px 0px',
         headerStyle: 'padding: 0 5px'

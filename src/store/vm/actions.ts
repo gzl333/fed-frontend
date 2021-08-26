@@ -594,7 +594,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   /*  userServiceTable */
   async updateUserServiceTable (context) {
     // 发送请求
-    const respService = await context.dispatch('fetchService', { available_only: true })
+    const respService = await context.dispatch('fetchService', { available_only: true }) // 配额失效则用户看不到相关service信息
     // 将响应normalize，存入state里的serviceTable
     const data_center = new schema.Entity('data_center')
     const service = new schema.Entity('service', { data_center })

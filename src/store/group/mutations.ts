@@ -13,6 +13,9 @@ const mutation: MutationTree<GroupModuleInterface> = {
     state.tables.groupMemberTable.allIds.unshift(Object.keys(tableObj)[0])
     state.tables.groupMemberTable.allIds = [...new Set(state.tables.groupMemberTable.allIds)]
     state.tables.groupMemberTable.isLoaded = true
+  },
+  storeRoleGroupTable (state, payload: {groupId: string; myRole: 'owner' | 'leader' | 'member'}) {
+    state.tables.groupTable.byId[payload.groupId].myRole = payload.myRole
   }
 }
 

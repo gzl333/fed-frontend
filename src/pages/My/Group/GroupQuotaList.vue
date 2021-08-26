@@ -33,10 +33,10 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import QuotaTable from 'components/QuotaTable/QuotaTable.vue'
-// import { useStore } from 'vuex'
-// import { StateInterface } from 'src/store'
+import { useStore } from 'vuex'
+import { StateInterface } from 'src/store'
 
 export default defineComponent({
   name: 'GroupQuotaList',
@@ -45,10 +45,9 @@ export default defineComponent({
   },
   props: {},
   setup () {
-    // const $store = useStore<StateInterface>()
+    const $store = useStore<StateInterface>()
 
-    // 进入本页面强制更新vm/userQuotaTable,数据更新来自后台，进入页面后应强制更新table,刷新quota状态
-    // void $store.dispatch('vm/updateUserQuotaTable')
+    void $store.dispatch('vm/loadGroupQuotaTable')
 
     // application filter
     const filterSelection = ref({
@@ -71,36 +70,7 @@ export default defineComponent({
       }
     ]
 
-    const quotas = [
-      {
-        id: '9c70cbe2-690c-11eb-a4b7-c8009fe2eb10',
-        tag: {
-          value: 1,
-          display: '普通配额'
-        },
-        user: {
-          id: '9c70cbe2-690c-11eb-a4b7-c8009fe2eb10',
-          username: 'shun'
-        },
-        service: '1',
-        private_ip_total: 5,
-        private_ip_used: 2,
-        public_ip_total: 5,
-        public_ip_used: 0,
-        vcpu_total: 10,
-        vcpu_used: 3,
-        ram_total: 10240,
-        ram_used: 4176,
-        disk_size_total: 0,
-        disk_size_used: 0,
-        expiration_time: '2021-03-31T08:38:00Z',
-        deleted: false,
-        display: '[普通配额](vCPU: 10, RAM: 10240Mb, PublicIP: 5, PrivateIP: 5)',
-        duration_days: 365,
-        classification: 'personal',
-        group: '123'
-      }
-    ]
+    const quotas = computed(() => $store.getters['vm/getGroupQuotasByFilter'](filterSelection.value.value))
 
     return {
       quotas,

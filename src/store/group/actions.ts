@@ -32,6 +32,11 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
     // normalize
     const group = new schema.Entity('group')
     for (const data of respGroup.data.results) {
+      // 添加role字段
+      const currentId = context.rootState.account.cstEmail
+      const myRole = currentId === data.owner.username ? 'owner' : 'member'
+      Object.assign(data, { myRole })
+      // normalize
       const normalizedData = normalize(data, group)
       context.commit('storeGroupTable', normalizedData.entities.group)
     }
@@ -63,6 +68,18 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
       const normalizedData = normalize(respGroupMember.data, groupMember)
       // 存入state
       context.commit('storeGroupMemberTable', normalizedData.entities.groupMember)
+
+      // 给groupTable补充role字段
+      const currentId = context.rootState.account.cstEmail
+      for (const member of respGroupMember.data.members) {
+        if (member.user.username === currentId && member.role === 'leader') {
+          const myRole = 'leader'
+          context.commit('storeRoleGroupTable', {
+            groupId,
+            myRole
+          })
+        }
+      }
     }
   },
   async fetchGroupMember (context, groupId: string) {

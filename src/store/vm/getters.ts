@@ -194,26 +194,49 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
       return servers.sort(sortFn)
     }
   },
-  // 有三种状态：valid -> 可用， expired -> 过期, exhausted -> 用尽
+  // 有四种状态：all -> 全部, valid -> 可用， expired -> 过期, exhausted -> 用尽
   getGroupQuotasByGroupIdByStatus: (state) => (groupId: string) => (status: string): QuotaInterface[] => {
     const sortFn = (a: QuotaInterface, b: QuotaInterface) => new Date(b.expiration_time).getTime() - new Date(a.expiration_time).getTime()
-    const quotasByGroupId: QuotaInterface[] = []
-    for (const quota of Object.values(state.tables.groupQuotaTable.byId)) {
-      if (quota.vo_id === groupId) {
-        quotasByGroupId.push(quota)
+    if (status === 'all') {
+      return Object.values(state.tables.groupQuotaTable.byId).sort(sortFn)
+    } else {
+      const quotasByGroupId: QuotaInterface[] = []
+      for (const quota of Object.values(state.tables.groupQuotaTable.byId)) {
+        if (quota.vo_id === groupId) {
+          quotasByGroupId.push(quota)
+        }
       }
-    }
-    const quotasByStatus: QuotaInterface[] = []
-    for (const quota of quotasByGroupId) {
-      if (status === 'valid' && !quota.expired && !quota.exhausted) {
-        quotasByStatus.push(quota)
-      } else if (status === 'expired' && quota.expired) {
-        quotasByStatus.push(quota)
-      } else if (status === 'exhausted' && quota.exhausted) {
-        quotasByStatus.push(quota)
+      const quotasByStatus: QuotaInterface[] = []
+      for (const quota of quotasByGroupId) {
+        if (status === 'valid' && !quota.expired && !quota.exhausted) {
+          quotasByStatus.push(quota)
+        } else if (status === 'expired' && quota.expired) {
+          quotasByStatus.push(quota)
+        } else if (status === 'exhausted' && quota.exhausted) {
+          quotasByStatus.push(quota)
+        }
       }
+      return quotasByStatus.sort(sortFn)
     }
-    return quotasByStatus.sort(sortFn)
+  },
+  getGroupQuotasByFilter: (state) => (filter:string) : QuotaInterface[] => {
+    // expiration_time字段为null时为长期配额，应视为最大时间
+    const sortFn = (a: QuotaInterface, b: QuotaInterface) => new Date(b.expiration_time || 9999999999999).getTime() - new Date(a.expiration_time || 9999999999999).getTime()
+
+    if (filter === '0') {
+      // 返回quota对象的数组，并以过期时间降序排序
+      return Object.values(state.tables.groupQuotaTable.byId).sort(sortFn)
+    } else {
+      const rows: QuotaInterface[] = []
+      for (const quota of Object.values(state.tables.groupQuotaTable.byId)) {
+        if (filter === 'valid' && !quota.exhausted && !quota.expired) { // 可用的quota
+          rows.push(quota)
+        } else if (filter === 'invalid' && (quota.exhausted || quota.expired)) { // 不可用的quota
+          rows.push(quota)
+        }
+      }
+      return rows.sort(sortFn)
+    }
   }
   /* groupList页面用 */
 

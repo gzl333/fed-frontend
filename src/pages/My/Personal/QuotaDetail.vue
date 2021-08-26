@@ -17,7 +17,7 @@
             正在加载，请稍候
           </div>
 
-          <div v-else class="col ">
+          <div v-else class="col">
             <!--            配额详情开始-->
             <div class="row items-center justify-evenly quota-area ">
 

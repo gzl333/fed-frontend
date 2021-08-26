@@ -12,21 +12,25 @@ export interface GroupInterface {
     username: string
   },
   status: string // 'active' | 'inactive' ?
+
+  // 以下字段自行判断添加
+  // 当前用户在组内权限  owner > leader > member
+  myRole: 'owner' | 'leader' | 'member'
+}
+
+export interface SingleMemberInterface {
+  id: string
+  user: {
+    id: string
+    username: string
+  },
+  role: 'member' | 'leader'
+  join_time: string
+  inviter: string
 }
 
 export interface GroupMemberInterface {
-  members: [
-    {
-      id: string
-      user: {
-        id: string
-        username: string
-      },
-      role: string
-      join_time: string
-      inviter: string
-    }
-  ],
+  members: SingleMemberInterface[],
   owner: {
     id: string
     username: string

@@ -18,7 +18,13 @@
         <q-tr :props="props">
 
           <q-td key="group" :props="props">
-            {{ props.row.group }}
+            <q-btn
+              class="q-ma-none" :label="$store.state.group.tables.groupTable.byId[props.row.vo_id].name" color="primary" padding="xs" flat dense unelevated
+              :to="{path: `/my/group/detail/${props.row.vo_id}`}">
+              <q-tooltip>
+                {{ $t('查看项目组详情') }}
+              </q-tooltip>
+            </q-btn>
           </q-td>
 
           <q-td key="service" :props="props">
@@ -146,21 +152,24 @@
           </q-td>
 
           <q-td key="operation" :props="props">
-            <q-btn icon="add_circle" flat dense padding="none" color="primary"
-                   :disable="props.row.expired || props.row.exhausted"
-                   :to="{path: `/my/personal/vmcreate`, query:{quota:props.row.id}}">
-              <q-tooltip>使用该配额创建云主机</q-tooltip>
-            </q-btn>
+            <div class="row justify-center items-center q-gutter-xs">
+              <q-btn icon="add_circle" flat dense padding="none" color="primary"
+                     :disable="props.row.expired || props.row.exhausted"
+                     :to="{path: `/my/personal/vmcreate`, query:{quota:props.row.id}}">
+                <q-tooltip>使用该配额创建云主机</q-tooltip>
+              </q-btn>
 
-            <q-btn icon="info" flat dense padding="none" color="primary"
-                   :to="{path: `/my/personal/quota_detail/${props.row.id}`}">
-              <q-tooltip>详情</q-tooltip>
-            </q-btn>
+              <q-btn icon="info" flat dense padding="none" color="primary"
+                     :to="{path: `/my/personal/quota_detail/${props.row.id}`}">
+                <q-tooltip>详情</q-tooltip>
+              </q-btn>
 
-            <q-btn icon="delete" flat dense padding="none" color="primary"
-                   @click="$store.dispatch('vm/deleteAndUpdateUserQuotaTable', props.row.id)">
-              <q-tooltip>删除</q-tooltip>
-            </q-btn>
+              <q-btn icon="delete" flat dense padding="none" color="primary"
+                     @click="$store.dispatch('vm/deleteAndUpdateUserQuotaTable', props.row.id)">
+                <q-tooltip>删除</q-tooltip>
+              </q-btn>
+            </div>
+
           </q-td>
         </q-tr>
       </template>
@@ -200,8 +209,7 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
-    // 应强制更新table,刷新quota状态
-    void $store.dispatch('vm/updateUserQuotaTable')
+    // 应强制更新table刷新quota状态，该逻辑应转移到调用层
 
     // quota列表分栏定义
     const columnsZH = props.isGroup ? [
