@@ -6,6 +6,7 @@ import { normalize, schema } from 'normalizr'
 import { Dialog, Notify } from 'quasar'
 
 import GroupEditCard from 'components/Group/GroupEditCard.vue'
+import GroupAddMemberCard from 'components/Group/GroupAddMemberCard.vue'
 
 const actions: ActionTree<GroupModuleInterface, StateInterface> = {
   // 加载group模块内全部table
@@ -44,18 +45,16 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
       context.commit('storeGroupTable', normalizedData.entities.group)
     }
   },
-  async fetchGroup (context, payload: { page?: number; page_size?: number; owner?: boolean; member?: boolean }) {
+  fetchGroup (context, payload: { page?: number; page_size?: number; owner?: boolean; member?: boolean }) {
     const api = apiBase + '/vo/'
-    let response
     if (payload) {
       const config = {
         params: payload
       }
-      response = await axios.get(api, config)
+      return axios.get(api, config)
     } else {
-      response = await axios.get(api)
+      return axios.get(api)
     }
-    return response
   },
   /* groupTable */
 
@@ -85,17 +84,16 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
       }
     }
   },
-  async fetchGroupMember (context, groupId: string) {
+  fetchGroupMember (context, groupId: string) {
     const api = apiBase + '/vo/' + groupId + '/list-members/'
-    const response = await axios.get(api)
-    return response
+    return axios.get(api)
   },
   /* groupMemberTable */
 
   /* 修改group信息 */
-  async editGroup (context, groupId: string) {
+  async editGroupDialog (context, groupId: string) {
     // 把整个对话框对象包在promise里。删除成功、失败包装为promise结果值。
-    const promise = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       // 操作的确认提示
       Dialog.create({
         component: GroupEditCard,
@@ -119,7 +117,7 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
           context.commit('storeGroupTable', newGroup)
           // 弹出通知
           Notify.create({
-            classes: 'notification-primary shadow-15',
+            classes: 'notification-positive shadow-15',
             icon: 'mdi-check-circle',
             textColor: 'light-green',
             message: '项目组信息已经修改',
@@ -130,20 +128,211 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
           })
           resolve(true)
         } else {
+          // 弹出通知
+          Notify.create({
+            classes: 'notification-negative shadow-15',
+            icon: 'mdi-alert',
+            textColor: 'negative',
+            message: '项目组信息修改失败，请重试',
+            position: 'bottom',
+            closeBtn: true,
+            timeout: 5000,
+            multiLine: false
+          })
           reject(false) // 待研究：用reject还是resolve
         }
       })
     })
-
-    return promise
   },
-  async patchGroup (context, payload: { groupId: string; data: { name: string; company: string; description: string } }) {
+  patchGroup (context, payload: { groupId: string; data: { name: string; company: string; description: string } }) {
     const api = apiBase + '/vo/' + payload.groupId + '/'
     const { data } = payload
-    const response = await axios.patch(api, data)
-    return response
-  }
+    return axios.patch(api, data)
+  },
   /* 修改group信息 */
+
+  /* 增加group人员 */
+  addGroupMemberDialog (context, groupId: string) {
+    Dialog.create({
+      component: GroupAddMemberCard,
+      componentProps: {
+        groupId
+      }
+    }).onOk(async (val: { groupId: string; usernames: string[] }) => {
+      // val是onDialogOK调用时传入的实参
+      // 发送patch请求
+      const respPostAddMembers = await context.dispatch('postAddMembers', val)
+      // 此请求可能有多个成功，多个失败混在一起。因此不能用状态码判断。
+      // 把成功的账户member信息存入table
+      for (const member of respPostAddMembers.data.success) {
+        // 存入单个member
+        context.commit('storeGroupMemberTableSingleMember', {
+          groupId,
+          member
+        })
+        // 通知：单个member成功信息
+        Notify.create({
+          classes: 'notification-positive shadow-15',
+          icon: 'mdi-check-circle',
+          textColor: 'light-green',
+          message: '已经成功添加人员:' + member.user.username,
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      }
+      // 通知：失败账户错误信息
+      for (const member of respPostAddMembers.data.failed) {
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '添加人员失败：' + member.username + ' - ' + member.message,
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      }
+    })
+  },
+  postAddMembers (context, payload: { groupId: string; usernames: string[] }) {
+    const api = apiBase + '/vo/' + payload.groupId + '/add-members/'
+    const data = {
+      usernames: payload.usernames
+    }
+    return axios.post(api, data)
+  },
+  /* 增加group人员 */
+
+  /* 移除group人员 */
+  removeSingleGroupMemberDialog (context, payload: { groupId: string; username: string }) {
+    // 操作的确认提示
+    Dialog.create({
+      class: 'dialog-primary',
+      title: '移除项目组人员：' + payload.username,
+      message:
+        '确认移除?',
+      focus: 'cancel',
+      ok: {
+        label: '确认',
+        push: false,
+        outline: true,
+        color: 'primary'
+      },
+      cancel: {
+        label: '放弃',
+        push: false,
+        unelevated: true,
+        color: 'primary'
+      }
+    }).onOk(async () => {
+      const respPostRemoveMembers = await context.dispatch('postRemoveMembers', {
+        groupId: payload.groupId,
+        usernames: [payload.username]
+      })
+      if (respPostRemoveMembers.status === 204) {
+        // 保存最新group
+        context.commit('deleteGroupMemberTableSingleMember', payload)
+        // 弹出通知
+        Notify.create({
+          classes: 'notification-positive shadow-15',
+          icon: 'mdi-check-circle',
+          textColor: 'light-green',
+          message: '已经移除项目组人员：' + payload.username,
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      } else {
+        // 弹出通知
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '移除项目组人员失败，请重试',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      }
+    })
+  },
+  postRemoveMembers (context, payload: { groupId: string; usernames: string[] }) {
+    const api = apiBase + '/vo/' + payload.groupId + '/remove-members/'
+    const data = {
+      usernames: payload.usernames
+    }
+    return axios.post(api, data)
+  },
+  /* 移除group人员 */
+
+  /* 修改group人员角色 */
+  editGroupMemberRoleDialog (context, payload: { groupId: string; member_id: string; role: 'member' | 'leader'; role_name: string }) {
+    // 操作的确认提示
+    Dialog.create({
+      class: 'dialog-primary',
+      title: '将人员设置为：' + payload.role_name,
+      message:
+        '确认设置?',
+      focus: 'cancel',
+      ok: {
+        label: '确认',
+        push: false,
+        outline: true,
+        color: 'primary'
+      },
+      cancel: {
+        label: '放弃',
+        push: false,
+        unelevated: true,
+        color: 'primary'
+      }
+    }).onOk(async () => {
+      const respPostMemberRole = await context.dispatch('postMemberRole', {
+        member_id: payload.member_id,
+        role: payload.role
+      })
+      if (respPostMemberRole.status === 200) {
+        // 保存最新member
+        context.commit('storeGroupMemberTableSingleMember', {
+          groupId: payload.groupId,
+          member: respPostMemberRole.data
+        })
+        // 弹出通知
+        Notify.create({
+          classes: 'notification-positive shadow-15',
+          icon: 'mdi-check-circle',
+          textColor: 'light-green',
+          message: '已经设置人员：' + respPostMemberRole.data.user.username + '为' + payload.role_name,
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      } else {
+        // 弹出通知
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '设置人员角色失败，请重试',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      }
+    })
+  },
+  postMemberRole (context, payload: { member_id: string; role: 'member' | 'leader' }) {
+    const api = apiBase + '/vo/members/' + payload.member_id + '/role/' + payload.role + '/'
+    return axios.post(api)
+  }
+  /* 修改group人员角色 */
 }
 
 export default actions

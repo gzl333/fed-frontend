@@ -27,17 +27,20 @@
                     项目组名称
                   </div>
                   <div class="col-10">
-                    <div class="row justify-center items-center" style="height: 70px">
-                      <q-btn
-                        class="q-pa-none q-ma-none" color="primary" padding="none" size="md" flat dense unelevated
-                        :to="{path: `/my/group/detail/${group.id}`}">
-                        <div class="">
-                          {{ group.name }}
-                        </div>
-                        <q-tooltip>
-                          {{ $t('详情') }}
-                        </q-tooltip>
-                      </q-btn>
+                    <div class="row justify-center items-center text-bold" style="height: 70px">
+                      {{ group.name }}
+
+<!--                      <q-btn-->
+<!--                        class="q-pa-none q-ma-none" color="primary" padding="none" size="md" flat dense unelevated-->
+<!--                        :to="{path: `/my/group/detail/${group.id}`}">-->
+<!--                        <div class="">-->
+<!--                          {{ group.name }}-->
+<!--                        </div>-->
+<!--                        <q-tooltip>-->
+<!--                          {{ $t('详情') }}-->
+<!--                        </q-tooltip>-->
+<!--                      </q-btn>-->
+
                     </div>
                   </div>
                 </div>
@@ -91,11 +94,11 @@
                     <div class="row justify-center items-center q-gutter-sm" style="height: 70px">
 
                       <q-btn icon="edit" flat padding="none" color="primary" size="sm"
-                             @click="$store.dispatch('group/editGroup', group.id)">
+                             @click="$store.dispatch('group/editGroupDialog', group.id)">
                         <q-tooltip>编辑项目组信息</q-tooltip>
                       </q-btn>
 
-                      <q-btn v-if="group.myRole ==='owner'" icon="mdi-account-convert" flat padding="none"
+                      <q-btn disable v-if="group.myRole ==='owner'" icon="mdi-account-convert" flat padding="none"
                              color="primary"
                              size="sm">
                         <q-tooltip>移交项目组</q-tooltip>
@@ -118,13 +121,14 @@
                     人员列表
                   </div>
                   <div class="col-auto">
-                    <q-btn icon="add" size="sm" unelevated dense padding="xs" color="primary">
+                    <q-btn icon="add" size="sm" unelevated dense padding="xs" color="primary"
+                           @click="$store.dispatch('group/addGroupMemberDialog', group.id)">
                       增加人员
                     </q-btn>
                   </div>
                 </div>
 
-                <group-member-table :members="groupMember.members" :is-owner="group.myRole === 'owner'"/>
+                <group-member-table :group-id="group.id"/>
 
               </div>
             </div>

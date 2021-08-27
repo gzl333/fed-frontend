@@ -5,10 +5,10 @@
       card-class=""
       table-class=""
       table-header-class="bg-grey-1 text-grey"
-      :rows="props.members"
+      :rows="members"
       :columns="columns"
       row-key="name"
-      no-data-label="暂无可用配额，请申请后使用"
+      no-data-label="项目组人员为空"
       hide-pagination
       :pagination="paginationTable"
     >
@@ -17,7 +17,14 @@
         <q-tr :props="props">
 
           <q-td key="username" :props="props">
-            {{ props.row.user.username }}
+            <q-btn flat padding="none" no-caps no-wrap :ripple="false">
+              {{ props.row.user.username }}
+              <!--创建时间距离当下小于1小时则打上new标记-->
+              <q-badge v-if="(new Date() - new Date(props.row.join_time)) < 1000 * 60 * 60 * 1 "
+                       color="light-green" floating transparent rounded align="middle">new
+              </q-badge>
+            </q-btn>
+
           </q-td>
 
           <q-td key="role" :props="props">
@@ -34,15 +41,19 @@
 
           <q-td key="operation" :props="props">
             <div class="row justify-center items-center q-gutter-xs">
-              <q-btn v-if="props.row.role === 'member'" icon="mdi-account-multiple-check" flat dense padding="none" color="primary">
+              <q-btn v-if="props.row.role === 'member'" icon="mdi-account-multiple-check" flat dense padding="none"
+                     color="primary"
+                     @click="$store.dispatch('group/editGroupMemberRoleDialog', {groupId, member_id: props.row.id, role:'leader', role_name: '管理员'})">
                 <q-tooltip>设为管理员</q-tooltip>
               </q-btn>
 
-              <q-btn v-else icon="mdi-account-multiple-remove" flat dense padding="none" color="primary">
+              <q-btn v-else icon="mdi-account-multiple-remove" flat dense padding="none" color="primary"
+                     @click="$store.dispatch('group/editGroupMemberRoleDialog', {groupId, member_id: props.row.id, role:'member', role_name: '成员'})">
                 <q-tooltip>取消管理员</q-tooltip>
               </q-btn>
 
-              <q-btn icon="mdi-close-thick" flat dense padding="none" color="primary">
+              <q-btn icon="mdi-close-thick" flat dense padding="none" color="primary"
+                     @click="$store.dispatch('group/removeSingleGroupMemberDialog', {groupId, username: props.row.user.username})">
                 <q-tooltip>移出项目组</q-tooltip>
               </q-btn>
             </div>
@@ -62,8 +73,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue'
-import { SingleMemberInterface } from 'src/store/group/state'
+import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
@@ -74,20 +84,16 @@ export default defineComponent({
   name: 'GroupMemberTable',
   components: { GroupRoleChip },
   props: {
-    members: {
-      type: Array as PropType<SingleMemberInterface[]>,
+    groupId: {
+      type: String,
       required: true
-    },
-    isOwner: {
-      type: Boolean,
-      required: false
     }
   },
   setup (props) {
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
-    const columnsZH = props.isOwner ? [
+    const columnsZH = $store.state.group.tables.groupTable.byId[props.groupId].myRole === 'owner' ? [
       {
         name: 'username',
         label: '用户名',
@@ -176,12 +182,15 @@ export default defineComponent({
       rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
     })
 
+    const members = computed(() => $store.getters['group/getGroupMembersByGroupId'](props.groupId))
+    // const members = computed(() => $store.state.group.tables.groupMemberTable.byId[props.groupId].members)
+
     return {
-      props,
       $store,
       locale,
       columns,
-      paginationTable
+      paginationTable,
+      members
     }
   }
 })

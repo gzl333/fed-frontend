@@ -1,6 +1,6 @@
 import { boot } from 'quasar/wrappers'
 import axios, { AxiosInstance, AxiosError } from 'axios'
-import { Loading/*, Notify */ } from 'quasar'
+import { Loading, Notify } from 'quasar'
 
 // 自己写的，把错误打印到console的helper函数，对业务无影响
 const errorNotifier = (error: AxiosError) => {
@@ -18,12 +18,37 @@ const errorNotifier = (error: AxiosError) => {
   ])
 
   if (error.response && error.response.data) { // 有响应时
+    // console打印
     const errorStatus = error.response.status
     const errorInfo = errorRespMap.get(errorStatus) || ''
     console.log('error status: ', errorInfo)
     console.log('error message: ', error.response.data.message)
+    // 用户通知
+    Notify.create({
+      classes: 'notification-negative shadow-15',
+      icon: 'mdi-alert',
+      textColor: 'negative',
+      message: errorStatus + errorInfo,
+      caption: error.response.data.message,
+      position: 'bottom',
+      closeBtn: true,
+      timeout: 5000,
+      multiLine: false
+    })
   } else { // 没有响应时
+    // console打印
     console.log(error.message)
+    // 用户通知
+    Notify.create({
+      classes: 'notification-negative shadow-15',
+      icon: 'mdi-alert',
+      textColor: 'negative',
+      message: error.message,
+      position: 'bottom',
+      closeBtn: true,
+      timeout: 5000,
+      multiLine: false
+    })
   }
 }
 

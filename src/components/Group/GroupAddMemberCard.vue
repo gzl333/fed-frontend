@@ -1,37 +1,40 @@
 <template>
 
   <!-- notice dialogRef here -->
-  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
+  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent >
     <q-card class="q-dialog-plugin dialog-primary">
       <!--
         ...content
         ... use q-card-section for it?
       -->
       <q-card-section>
-        <div class="text-h6 q-pb-lg">{{ $t('编辑项目组信息') }}</div>
+        <div class="text-h6 q-pb-lg">{{ $t('增加人员') }}</div>
       </q-card-section>
 
       <q-card-section>
         <div class="row items-center q-pb-md">
-          <div class="col-2 text-grey">项目组名称</div>
+          <div class="col-3 text-grey">项目组名称</div>
           <div class="col">
-            <q-input outlined dense v-model="groupName"/>
+            {{ $store.state.group.tables.groupTable.byId[groupId]?.name }}
           </div>
         </div>
 
-        <div class="row items-center q-pb-md">
-          <div class="col-2 text-grey">所属单位</div>
+        <div v-for="index in userCount" :key="index" class="row items-center q-pb-md">
+          <div class="col-3 text-grey">科技云通行证账户{{ index }}</div>
           <div class="col">
-            <q-input outlined dense v-model="groupCompany"/>
+            <q-input outlined dense v-model="usernames[index.toString()]" autofocus/>
           </div>
         </div>
 
-        <div class="row items-center q-pb-md">
-          <div class="col-2 text-grey">备注</div>
-          <div class="col">
-            <q-input outlined dense v-model="groupDescription"/>
+        <div class="row justify-center items-center">
+          <div class="col-auto">
+            <q-btn class="text-center" flat padding="none" icon="add" color="primary"
+                   @click="()=>{userCount += 1}">
+              更多账户
+            </q-btn>
           </div>
         </div>
+
       </q-card-section>
 
       <!-- buttons example -->
@@ -50,13 +53,13 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-import { useDialogPluginComponent } from 'quasar'
+import { defineComponent, ref, reactive } from 'vue'
+import { useDialogPluginComponent, Notify } from 'quasar'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
 export default defineComponent({
-  name: 'GroupEditCard',
+  name: 'GroupAddMemberCard',
   components: {},
   props: {
     groupId: {
@@ -79,20 +82,36 @@ export default defineComponent({
     } = useDialogPluginComponent()
 
     const $store = useStore<StateInterface>()
-    // 以下写法是否正确？
-    // const groupName = ref(computed(() => $store.state.group.tables.groupTable.byId[props.groupId].name).value)
-    const groupName = ref($store.state.group.tables.groupTable.byId[props.groupId].name)
-    const groupCompany = ref($store.state.group.tables.groupTable.byId[props.groupId].company)
-    const groupDescription = ref($store.state.group.tables.groupTable.byId[props.groupId].description)
+
+    const usernames = reactive<Record<string, string>>({})
+    const userCount = ref(1)
+    const addCount = () => {
+      userCount.value += 1
+      usernames[userCount.value.toString()] = ''
+    }
 
     // 点击ok的事件函数
     const onOKClick = () => {
-      // payload是传给onOK的实参, data从这里传到action里面
-      onDialogOK({
-        name: groupName.value,
-        company: groupCompany.value,
-        description: groupDescription.value
-      })
+      // 检查数据，空数组不发送请求
+      // todo 正则检查email格式
+      if (Object.values(usernames).length === 0) {
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '请输入正确的科技云通行证账户',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      } else {
+        // payload是传给onOK的实参, data从这里传到action里面
+        onDialogOK({
+          groupId: props.groupId,
+          usernames: Object.values(usernames)
+        })
+      }
     }
 
     return {
@@ -109,15 +128,15 @@ export default defineComponent({
       // 以上为dialog模板必须
 
       $store,
-      groupName,
-      groupCompany,
-      groupDescription
+      userCount,
+      addCount,
+      usernames
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.GroupEditCard {
+.GroupAddMemberCard {
 }
 </style>
