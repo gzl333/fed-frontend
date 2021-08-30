@@ -1,7 +1,7 @@
 <template>
-  <div class="VmDetail">
+  <div class="GroupServerDetail">
 
-    <server-detail-card :server-id="serverId" :is-group="false"/>
+    <server-detail-card :server-id="serverId" :is-group="true"/>
 
   </div>
 </template>
@@ -9,17 +9,20 @@
 <script lang="ts">
 import { defineComponent } from 'vue'
 import { useRoute } from 'vue-router'
+
 import ServerDetailCard from 'components/Server/ServerDetailCard.vue'
 
 export default defineComponent({
-  name: 'VmDetail',
-  components: { ServerDetailCard },
+  name: 'GroupServerDetail',
+  components: {
+    ServerDetailCard
+  },
   props: {},
   setup () {
     const $route = useRoute()
+
     // 从route对象中读取id参数
     const serverId = $route.params.serverId as string
-
     return {
       serverId
     }
@@ -28,6 +31,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.VmDetail {
+.GroupServerDetail {
 }
 </style>

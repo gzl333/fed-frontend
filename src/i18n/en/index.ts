@@ -10,6 +10,7 @@ export default {
   忽略: 'Dismiss',
   // hooks
   内容已经复制到剪切板: 'Content has been copied to clipboard',
+  已经复制到剪切板: 'has been copied to clipboard',
   // global header
   使用手册: 'User manual',
   // global left drawer

@@ -29,8 +29,16 @@ const mutation: MutationTree<VmModuleInterface> = {
     state.tables.groupQuotaTable.isLoaded = false
   },
   // 删除单一user quota
-  deleteUserQuotaTable (state, quotaId: string) {
+  deleteUserQuotaTableSingleQuota (state, quotaId: string) {
     const currentTable = state.tables.userQuotaTable
+    currentTable.allIds = currentTable.allIds.filter(id => id !== quotaId)
+    delete currentTable.byId[quotaId]
+    if (currentTable.allIds.length === 0) {
+      currentTable.isLoaded = false
+    }
+  },
+  deleteGroupQuotaTableSingleQuota (state, quotaId: string) {
+    const currentTable = state.tables.groupQuotaTable
     currentTable.allIds = currentTable.allIds.filter(id => id !== quotaId)
     delete currentTable.byId[quotaId]
     if (currentTable.allIds.length === 0) {
@@ -91,6 +99,9 @@ const mutation: MutationTree<VmModuleInterface> = {
   },
   storeUserServerTableSingleRemarks (state, payload: { serverId: string; remarks: string; }) {
     state.tables.userServerTable.byId[payload.serverId].remarks = payload.remarks
+  },
+  storeGroupServerTableSingleRemarks (state, payload: { serverId: string; remarks: string; }) {
+    state.tables.groupServerTable.byId[payload.serverId].remarks = payload.remarks
   },
   storeUserServerTableSingleStatus (state, payload: { serverId: string; status_code: string; }) {
     state.tables.userServerTable.byId[payload.serverId].status = payload.status_code

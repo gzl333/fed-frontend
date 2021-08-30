@@ -95,7 +95,7 @@
                       <template v-slot:append>
                         <q-icon :name="isPwds[vpn.id] ? 'visibility' : 'visibility_off'" @click="isPwds[vpn.id] = !isPwds[vpn.id]"/>
                         <q-btn class="q-px-xs" flat color="primary" icon="content_copy" size="sm"
-                               @click="clickToCopy(vpn.password)">
+                               @click="clickToCopy(vpn.password, true)">
                           <q-tooltip>
                             复制
                           </q-tooltip>

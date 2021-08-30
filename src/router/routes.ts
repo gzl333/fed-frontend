@@ -96,7 +96,7 @@ const routes: RouteRecordRaw[] = [
             props: true // 接收url中的参数
           },
           {
-            path: 'vmdetail/:id', // serverId 动态路由匹配
+            path: 'vmdetail/:serverId', // serverId 动态路由匹配
             meta: {
               requireLogin: true
             },
@@ -173,11 +173,18 @@ const routes: RouteRecordRaw[] = [
         },
         children: [
           {
-            path: 'server', // 组资源
+            path: 'server', // 组云主机
             meta: {
               requireLogin: true
             },
             component: () => import('pages/My/Group/GroupServer.vue')
+          },
+          {
+            path: 'server/detail/:serverId',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/My/Group/GroupServerDetail.vue')
           },
           {
             path: 'obs', // 组资源
@@ -209,6 +216,13 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/My/Group/GroupQuotaApplication.vue')
               }
             ]
+          },
+          {
+            path: 'quota/detail/:quotaId',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/My/Group/GroupQuotaDetail.vue')
           },
           {
             path: 'list', // 组列表

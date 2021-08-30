@@ -6,7 +6,7 @@
       card-class=""
       table-class=""
       table-header-class="bg-grey-1 text-grey"
-      :rows="props.servers"
+      :rows="servers"
       :columns="columns"
       row-key="name"
       no-data-label="暂无可用云主机，请创建后使用"
@@ -29,9 +29,9 @@
                 {{ $t('进入项目组详情') }}
               </q-tooltip>
               <!--创建时间距离当下小于1小时则打上new标记-->
-<!--              <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "-->
-<!--                       color="light-green" floating transparent rounded align="middle">new-->
-<!--              </q-badge>-->
+              <!--              <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "-->
+              <!--                       color="light-green" floating transparent rounded align="middle">new-->
+              <!--              </q-badge>-->
             </q-btn>
 
           </q-td>
@@ -40,7 +40,7 @@
 
             <q-btn
               class="q-ma-none" :label="props.row.ipv4" color="primary" padding="none" flat dense unelevated
-              :to="{path: `/my/personal/vmdetail/${props.row.id}`}">
+              :to="{path: isGroup ? `/my/group/server/detail/${props.row.id}` : `/my/personal/vmdetail/${props.row.id}`}">
               <q-tooltip>
                 {{ $t('进入云主机详情') }}
               </q-tooltip>
@@ -82,9 +82,8 @@
             {{ props.row.image }}
           </q-td>
           <q-td key="configuration" :props="props">
-            {{ props.row.vcpus }}{{
-              locale === 'zh' ? '核' : props.row.vcpus > 1 ? 'cores' : 'core'
-            }}/{{ props.row.ram / 1024 }}GB
+            <div> {{ props.row.vcpus }} {{ locale === 'zh' ? '核' : props.row.vcpus > 1 ? 'cores' : 'core' }}</div>
+            <div>{{ props.row.ram / 1024 }}GB</div>
           </q-td>
           <q-td key="expiration" :props="props">
             <div v-if="!props.row.expiration_time">
@@ -92,7 +91,16 @@
             </div>
             <div v-else>
               <!--              日期时间格式根据locale值变化-->
-              <div>{{ new Date(props.row.expiration_time).toLocaleString(locale) }}</div>
+              <div v-if="locale==='zh'">
+                <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(' ')[0] }}</div>
+                <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(' ')[1] }}</div>
+              </div>
+
+              <div v-else>
+                <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(',')[0] }}</div>
+                <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(',')[1] }}</div>
+              </div>
+
               <div v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0" class="text-red">
                 {{ $t('已到期') }}
               </div>
@@ -105,21 +113,20 @@
 
           <q-td key="note" :props="props">
             <div class="row">
+              <div class="col q-ma-none q-pa-none">
+                {{ props.row.remarks }}
+              </div>
 
               <q-btn v-if="hoverRow === props.row.name"
-                     class="col-shrink q-px-xs q-ma-none" flat dense icon="edit" size="xs" color="primary"
-                     @click="$store.dispatch('vm/popEditVmNote',props.row.id)">
+                     class="col-shrink q-px-none q-ma-none" flat dense icon="edit" size="xs" color="primary"
+                     @click="$store.dispatch('vm/editServerNoteDialog',{serverId:props.row.id, isGroup})">
                 <q-tooltip>
                   {{ $t('编辑备注') }}
                 </q-tooltip>
               </q-btn>
 
               <q-btn v-else
-                     class="col-shrink q-px-xs q-ma-none invisible" flat dense icon="edit" size="xs"/>
-
-              <div class="col q-ma-none">
-                {{ props.row.remarks }}
-              </div>
+                     class="col-shrink q-px-none q-ma-none invisible" flat dense icon="edit" size="xs"/>
 
             </div>
           </q-td>
@@ -137,11 +144,11 @@
           </q-td>
 
           <q-td key="status" :props="props" class="non-selectable">
-            <ServerStatus :server="props.row"/>
+            <ServerStatus :server="props.row" :is-group="isGroup"/>
           </q-td>
 
           <q-td key="operation" :props="props" class="non-selectable">
-            <ServerOperationBtnGroup :server="props.row"/>
+            <ServerOperationBtnGroup :server="props.row" :is-group="isGroup"/>
           </q-td>
 
         </q-tr>
@@ -585,7 +592,6 @@ export default defineComponent({
     }
 
     return {
-      props,
       $store,
       locale,
       columns,

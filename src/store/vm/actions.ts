@@ -134,13 +134,66 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
         }
       })
     })
-
     return promise
   },
-  async deleteUserQuota (context, quotaId: string) {
+  deleteQuotaDialog (context, payload: { quotaId: string; isGroup: boolean }) {
+    // 把整个对话框对象包在promise里。删除成功、失败包装为promise结果值。
+    const promise = new Promise((resolve, reject) => {
+      // 操作的确认提示
+      Dialog.create({
+        class: 'dialog-primary',
+        title: '删除配额',
+        message:
+          '删除后的配额无法恢复。 确认删除此配额？',
+        focus: 'cancel',
+        ok: {
+          label: '确认',
+          push: false,
+          outline: true,
+          color: 'primary'
+        },
+        cancel: {
+          label: '放弃',
+          push: false,
+          unelevated: true,
+          color: 'primary'
+        }
+      }).onOk(async () => {
+        const respDelete = await context.dispatch('deleteQuota', payload.quotaId)
+        if (respDelete.status === 204) {
+          payload.isGroup ? context.commit('deleteGroupQuotaTableSingleQuota', payload.quotaId) : context.commit('deleteUserQuotaTableSingleQuota', payload.quotaId)
+          // 通知
+          Notify.create({
+            classes: 'notification-positive shadow-15',
+            icon: 'mdi-check-circle',
+            textColor: 'light-green',
+            message: '配额删除成功',
+            position: 'bottom',
+            closeBtn: true,
+            timeout: 5000,
+            multiLine: false
+          })
+          resolve(true)
+        } else {
+          Notify.create({
+            classes: 'notification-negative shadow-15',
+            icon: 'mdi-alert',
+            textColor: 'negative',
+            message: '配额删除失败，请充实',
+            position: 'bottom',
+            closeBtn: true,
+            timeout: 5000,
+            multiLine: false
+          })
+          reject(false) // 都是resolve? 信息用boolean表达是否删除。因为接收处用的await语法，用reject会被catch。
+        }
+      })
+    })
+    return promise
+  },
+  async deleteQuota (context, quotaId: string) {
     const api = apiBase + '/quota/' + quotaId + '/'
-    const response = await axios.delete(api)
-    return response
+    return axios.delete(api)
   },
   async updateUserQuotaTable (context) {
     // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
@@ -428,14 +481,11 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
       void context.dispatch('updateUserServerTableSingleStatus', serverId)
     }
   },
-
   // 远程修改单个server的remarks
   async patchRemarks (context, payload: { id: string; remark: string; }) {
-    // const api = apiBase + '/server/' + payload.id + '/remark/'
-    const api = `${apiBase}/server/${payload.id}/remark/`
+    const api = apiBase + '/server/' + payload.id + '/remark/'
     const config = { params: { remark: payload.remark } }
-    const response = await axios.patch(api, null, config)
-    return response
+    return axios.patch(api, null, config)
   },
   // 更新单个server的信息
   async updateUserServerTableSingleServer (context, serverId: string) {
@@ -693,31 +743,138 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
       return response
     })
   },
-  // 编辑云主机备注
-  popEditVmNote (context, id: string) {
+  serverOperationDialog (context, payload: { serverId: string; action: string; isGroup?: boolean }) {
+    // 操作的确认提示 todo 输入删除两个字以确认
     Dialog.create({
       class: 'dialog-primary',
-      title: `编辑${context.state.tables.userServerTable.byId[id].ipv4}的备注信息`,
+      title: `${i18n.global.tc(actionMap.get(payload.action) as string) || ''}`,
+      focus: 'cancel',
+      message:
+        `${payload.action === 'delete' || payload.action === 'delete_force' ? '被删除的云主机将无法自行恢复，如需恢复请联系云联邦管理员。' : ''}确认执行？`,
+      ok: {
+        label: i18n.global.tc('确认'),
+        push: false,
+        // flat: true,
+        outline: true,
+        color: 'primary'
+      },
+      cancel: {
+        label: i18n.global.tc('放弃'),
+        push: false,
+        flat: false,
+        unelevated: true,
+        color: 'primary'
+      }
+    }).onOk(async () => {
+      // 将主机状态清空，界面将显示loading
+      if (!payload.isGroup) {
+        context.commit('storeUserServerTableSingleStatus', {
+          serverId: payload.serverId,
+          status_code: ''
+        })
+      } else {
+        context.commit('storeGroupServerTableSingleStatus', {
+          serverId: payload.serverId,
+          status_code: ''
+        })
+      }
+      // 发送请求
+      const server = payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId] : context.state.tables.userServerTable.byId[payload.serverId]
+      // 去掉协议
+      const endpoint_url = server.endpoint_url.substr(server.endpoint_url.indexOf('//'))
+      // 判断结尾有没有'/'，并加上当前用户使用的协议
+      const api = window.location.protocol + endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/action/' : endpoint_url + '/api/server/' + payload.serverId + '/action/'
+      const data = { action: payload.action }
+      void await axios.post(api, data)
+
+      // 如果删除主机，重新获取userServerTable或groupServerTable
+      if (payload.action === 'delete' || payload.action === 'delete_force') {
+        Notify.create({
+          classes: 'notification-primary shadow-15',
+          textColor: 'primary',
+          spinner: true,
+          message: `正在删除云主机${server.ipv4 || ''} ，请稍候`,
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 3000,
+          multiLine: false
+        })
+        // 应延时
+        void await new Promise(resolve => (
+          setTimeout(resolve, 5000)
+        ))
+        // 更新userServerTable或groupServerTable
+        payload.isGroup ? void await context.dispatch('loadGroupServerTable') : void await context.dispatch('updateUserServerTable')
+      } else {
+        // 其它操作只更新该主机状态
+        // 应延时
+        void await new Promise(resolve => (
+          setTimeout(resolve, 5000)
+        ))
+        // 更新单个server status
+        payload.isGroup ? await context.dispatch('updateGroupServerTableSingleStatus', payload.serverId) : await context.dispatch('updateUserServerTableSingleStatus', payload.serverId)
+      }
+    })
+  },
+  // 编辑云主机备注
+  editServerNoteDialog (context, payload: { serverId: string; isGroup?: boolean }) {
+    Dialog.create({
+      class: 'dialog-primary',
+      title: `编辑${payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId].ipv4 : context.state.tables.userServerTable.byId[payload.serverId].ipv4}的备注信息`,
       // message: '长度限制为30个字',
       prompt: {
-        model: `${context.state.tables.userServerTable.byId[id].remarks}`,
+        model: `${payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId].remarks : context.state.tables.userServerTable.byId[payload.serverId].remarks}`,
         counter: true,
         maxlength: 30,
         type: 'text' // optional
       },
       color: 'primary',
       cancel: true
-    }).onOk((data: string) => {
-      const payload: { id: string; remark: string; } = {
-        id,
+    }).onOk(async (data: string) => {
+      const payload2: { id: string; remark: string; } = {
+        id: payload.serverId,
         remark: data.trim()
       }
-      void context.dispatch('patchRemarks', payload).then(() =>
-        context.commit('storeUserServerTableSingleRemarks', {
-          serverId: id,
-          remarks: data.trim()
+      const respPatchRemark = await context.dispatch('patchRemarks', payload2)
+
+      if (respPatchRemark.status === 200) {
+        if (!payload.isGroup) {
+          // 保存个人云主机remark
+          context.commit('storeUserServerTableSingleRemarks', {
+            serverId: payload.serverId,
+            remarks: respPatchRemark.data.remarks
+          })
+        } else {
+          // 保存组云主机remark
+          context.commit('storeGroupServerTableSingleRemarks', {
+            serverId: payload.serverId,
+            remarks: respPatchRemark.data.remarks
+          })
+        }
+        // 弹出通知
+        Notify.create({
+          classes: 'notification-positive shadow-15',
+          icon: 'mdi-check-circle',
+          textColor: 'light-green',
+          message: '已经云主机备注为：' + respPatchRemark.data.remarks,
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
         })
-      )
+      } else {
+        // 弹出通知
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '修改云主机备注失败，请重试',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      }
     })
   },
   // 打开vnc

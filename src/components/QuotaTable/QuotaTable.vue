@@ -19,7 +19,8 @@
 
           <q-td key="group" :props="props">
             <q-btn
-              class="q-ma-none" :label="$store.state.group.tables.groupTable.byId[props.row.vo_id].name" color="primary" padding="xs" flat dense unelevated
+              class="q-ma-none" :label="$store.state.group.tables.groupTable.byId[props.row.vo_id].name" color="primary"
+              padding="xs" flat dense unelevated
               :to="{path: `/my/group/detail/${props.row.vo_id}`}">
               <q-tooltip>
                 {{ $t('查看项目组详情') }}
@@ -160,7 +161,7 @@
               </q-btn>
 
               <q-btn icon="info" flat dense padding="none" color="primary"
-                     :to="{path: `/my/personal/quota_detail/${props.row.id}`}">
+                     :to="{path: isGroup ? `/my/group/quota/detail/${props.row.id}` : `/my/personal/quota_detail/${props.row.id}`}">
                 <q-tooltip>详情</q-tooltip>
               </q-btn>
 
