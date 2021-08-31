@@ -256,7 +256,7 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/My/Group/GroupDetail.vue')
           },
           {
-            path: 'add',
+            path: 'add/:id?',
             meta: {
               requireLogin: true
             },

@@ -195,7 +195,6 @@ export default defineComponent({
   setup (props) {
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
-
     // 云主机列表分栏定义, 判断使用组配置还是个人配置
     const columnsZH = props.isGroup
       ? [{

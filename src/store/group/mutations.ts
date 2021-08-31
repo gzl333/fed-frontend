@@ -30,6 +30,18 @@ const mutation: MutationTree<GroupModuleInterface> = {
   },
   storeRoleGroupTable (state, payload: { groupId: string; myRole: 'owner' | 'leader' | 'member' }) {
     state.tables.groupTable.byId[payload.groupId].myRole = payload.myRole
+  },
+  updateSingleMember (state, payload: { groupId: string; memberObj: SingleMemberInterface }) {
+    for (const member of state.tables.groupMemberTable.byId[payload.groupId].members) {
+      if (member.id === payload.memberObj.id) {
+        Object.assign(member, payload.memberObj)
+      }
+    }
+  },
+  updateMember (state, payload: { groupId: string; memberObj: SingleMemberInterface[] }) {
+    for (const member of payload.memberObj) {
+      state.tables.groupMemberTable.byId[payload.groupId].members.push(member)
+    }
   }
 }
 
