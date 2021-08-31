@@ -177,7 +177,7 @@ import { useStore } from 'vuex'
 import { StateInterface } from '../../store'
 
 import GlobalHeader from 'components/GlobalHeader/GlobalHeader.vue'
-import ServerTable from 'components/ServerTable/ServerTable.vue'
+import ServerTable from 'components/Server/ServerTable.vue'
 import BucketTable from 'components/BucketTable/BucketTable.vue'
 
 export default defineComponent({

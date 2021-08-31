@@ -36,7 +36,7 @@
 import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
-import QuotaApplicationTable from 'components/QuotaTable/QuotaApplicationTable.vue'
+import QuotaApplicationTable from 'components/Quota/QuotaApplicationTable.vue'
 
 export default defineComponent({
   name: 'ApplicationList',

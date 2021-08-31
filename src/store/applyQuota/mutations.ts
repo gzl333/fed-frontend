@@ -6,9 +6,32 @@ const mutation: MutationTree<ApplyQuotaModuleInterface> = {
   storeApplyPageServiceId (state, serviceId: string) {
     state.pages.apply.serviceId = serviceId
   },
+  // group
+  clearGroupApplicationTable (state) {
+    const currentTable = state.tables.groupQuotaApplicationTable
+    currentTable.byId = {}
+    currentTable.allIds = []
+    currentTable.isLoaded = false
+  },
+  storeGroupQuotaApplicationTable (state, tableObj: Record<string, ApplicationQuotaInterface>) {
+    const currentTable = state.tables.groupQuotaApplicationTable
+    Object.assign(currentTable.byId, tableObj)
+    currentTable.allIds.unshift(Object.keys(tableObj)[0])
+    currentTable.allIds = [...new Set(currentTable.allIds)]
+    currentTable.isLoaded = true
+  },
   // 删除单一user quota application
   deleteUserQuotaApplicationTable (state, apply_id: string) {
     const currentTable = state.tables.userQuotaApplicationTable
+    currentTable.allIds = currentTable.allIds.filter(id => id !== apply_id)
+    delete currentTable.byId[apply_id]
+    if (currentTable.allIds.length === 0) {
+      currentTable.isLoaded = false
+    }
+  },
+  // 删除单一group quota application
+  deleteGroupQuotaApplicationTable (state, apply_id: string) {
+    const currentTable = state.tables.groupQuotaApplicationTable
     currentTable.allIds = currentTable.allIds.filter(id => id !== apply_id)
     delete currentTable.byId[apply_id]
     if (currentTable.allIds.length === 0) {

@@ -173,8 +173,8 @@ import { useI18n } from 'vue-i18n'
 
 import useCopyToClipboard from 'src/hooks/useCopyToClipboard'
 
-import ServerStatus from 'components/ServerTable/ServerStatus.vue'
-import ServerOperationBtnGroup from 'components/ServerTable/ServerOperationBtnGroup.vue'
+import ServerStatus from 'components/Server/ServerStatus.vue'
+import ServerOperationBtnGroup from 'components/Server/ServerOperationBtnGroup.vue'
 
 export default defineComponent({
   name: 'ServerTable',

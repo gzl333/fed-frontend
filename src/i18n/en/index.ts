@@ -8,6 +8,7 @@ export default {
 
   // 按钮
   忽略: 'Dismiss',
+  创建: 'Create',
   // hooks
   内容已经复制到剪切板: 'Content has been copied to clipboard',
   已经复制到剪切板: 'has been copied to clipboard',
@@ -17,7 +18,7 @@ export default {
   中国科技云联邦: 'Global Open Science Cloud',
   我的首页: 'Home',
   个人资源: 'Personal Resource',
-  组资源: 'Group Resource',
+  项目组资源: 'Group Resource',
   资源提供: 'Resource Provider',
   联邦管理: 'Federation Management',
 
@@ -31,9 +32,16 @@ export default {
   筛选服务节点: 'Service Node Filter',
 
   // 个人资源
-  云主机: 'Virtual Machine',
-  云主机配额: 'Virtual Machine Quota',
+  云主机: 'Server',
+  云主机配额: 'Server Quota',
+  对象存储: 'Object Storage',
   新建: 'New',
+
+  // 项目组资源
+  项目组: 'Group',
+  组云主机: 'Group Server',
+  组对象存储: 'Group Object Storage',
+  组云主机配额: 'Group Server Quota',
 
   // vmtable
   长期: 'Long Term',

@@ -33,10 +33,11 @@
 </template>
 
 <script lang="ts">
-import { /* computed, */defineComponent, ref } from 'vue'
-import QuotaApplicationTable from 'components/QuotaTable/QuotaApplicationTable.vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
+
+import QuotaApplicationTable from 'components/Quota/QuotaApplicationTable.vue'
 
 export default defineComponent({
   name: 'GroupQuotaApplication',
@@ -78,25 +79,8 @@ export default defineComponent({
       }
     ]
     // 获取quota列表数据
-    const applications = [{
-      group: '567',
-      classification: 'personal',
-      company: '',
-      contact: 'zlguo@cnic.cn',
-      creation_time: '2021-06-21T01:17:53.571333Z',
-      deleted: false,
-      disk_size: 128,
-      duration_days: 1,
-      id: '80c58c80-d22e-11eb-bcd3-c8009fe2eb03',
-      private_ip: 1,
-      public_ip: 1,
-      purpose: '',
-      ram: 3072,
-      result_desc: '',
-      service: '82a060ea-b93b-11eb-90bc-c8009fe2eb03',
-      status: 'pass',
-      vcpu: 2
-    }]
+    const applications = computed(() => $store.getters['applyQuota/getGroupApplicationsByFilter'](filterSelection.value.value))
+
     return {
       $store,
       applications,

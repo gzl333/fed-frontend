@@ -17,10 +17,6 @@
       <template v-slot:body="props">
         <q-tr :props="props">
 
-          <q-td key="group" :props="props">
-            {{ props.row.group }}
-          </q-td>
-
           <q-td key="status" :props="props">
             <div v-if="props.row.status === 'wait'">待审批</div>
             <div v-if="props.row.status === 'pending'" class="text-primary">审批中</div>
@@ -29,8 +25,29 @@
             <div v-if="props.row.status === 'cancel'" class="text-grey">已取消</div>
           </q-td>
 
+          <q-td key="group" :props="props">
+            <q-btn
+              class="q-ma-none" :label="$store.state.group.tables.groupTable.byId[props.row.vo_id].name" color="primary"
+              padding="xs" flat dense unelevated
+              :to="{path: `/my/group/detail/${props.row.vo_id}`}">
+              <q-tooltip>
+                {{ $t('查看项目组详情') }}
+              </q-tooltip>
+            </q-btn>
+          </q-td>
+
           <q-td key="creation_time" :props="props">
-            {{ new Date(props.row.creation_time).toLocaleString() }}
+
+            <div v-if="locale==='zh'">
+              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[0] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[1] }}</div>
+            </div>
+
+            <div v-else>
+              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[0] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[1] }}</div>
+            </div>
+
           </q-td>
 
           <q-td key="service" :props="props">
@@ -69,17 +86,20 @@
             <div>{{ props.row.company }}</div>
           </q-td>
           <q-td key="operation" :props="props">
-            <div v-if="props.row.status === 'wait'">
-              <q-btn label="修改申请" flat dense padding="none" color="primary" @click="showModify(props.row.id)"/>
-            </div>
-            <div v-if="props.row.status === 'wait'">
-              <q-btn label="取消申请" flat dense padding="none" color="primary"
-                     @click="$store.dispatch('applyQuota/cancelAndUpdateUserQuotaApplicationTable',props.row.id)"/>
-            </div>
-            <div v-if="props.row.status !== 'wait'">
-              <q-btn label="删除记录" flat dense padding="none" color="primary"
-                     @click="$store.dispatch('applyQuota/deleteAndUpdateUserQuotaApplicationTable', props.row.id)"
-              />
+            <div v-if="$store.state.group.tables.groupTable.byId[props.row.vo_id]?.myRole === 'member'">普通组员没有修改权限</div>
+            <div v-else>
+              <div v-if="props.row.status === 'wait'">
+                <q-btn label="修改申请" flat dense padding="none" color="primary" @click="showModify(props.row.id)"/>
+              </div>
+              <div v-if="props.row.status === 'wait'">
+                <q-btn label="取消申请" flat dense padding="none" color="primary"
+                       @click="$store.dispatch('applyQuota/cancelAndUpdateUserQuotaApplicationTable',props.row.id)"/>
+              </div>
+              <div v-if="props.row.status !== 'wait'">
+                <q-btn label="删除记录" flat dense padding="none" color="primary"
+                       @click="$store.dispatch('applyQuota/deleteGroupQuotaApplicationDialog', {apply_id: props.row.id, isGroup})"
+                />
+              </div>
             </div>
           </q-td>
         </q-tr>
@@ -268,20 +288,21 @@ export default defineComponent({
 
     // 列表分栏定义
     const columnsZH = props.isGroup ? [
-      {
-        name: 'group',
-        label: '所属组',
-        field: 'group',
-        align: 'center',
-        style: 'padding: 15px 0px',
-        headerStyle: 'padding: 0 5px'
-      },
+
       {
         name: 'status',
         label: '申请状态',
         field: 'status',
         align: 'center',
         style: 'padding: 15px 5px',
+        headerStyle: 'padding: 0 5px'
+      },
+      {
+        name: 'group',
+        label: '所属组',
+        field: 'group',
+        align: 'center',
+        style: 'padding: 15px 0px',
         headerStyle: 'padding: 0 5px'
       },
       {

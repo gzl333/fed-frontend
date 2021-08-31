@@ -31,6 +31,10 @@ const getters: GetterTree<GroupModuleInterface, StateInterface> = {
       newArr.unshift(item)
     })
     return newArr.sort(sortFn)
+  },
+  // 通过vo_id快速获取我在该组的role
+  getMyRoleByGroupId: (state) => (groupId: string): string => {
+    return state.tables.groupTable.byId[groupId].myRole
   }
 }
 

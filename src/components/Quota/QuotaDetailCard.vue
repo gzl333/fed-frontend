@@ -270,7 +270,7 @@
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
-import ServerTable from 'components/ServerTable/ServerTable.vue'
+import ServerTable from 'components/Server/ServerTable.vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter } from 'vue-router'
@@ -302,7 +302,7 @@ export default defineComponent({
     // 根据quota.servers获取server对象数组
     const servers = computed(() => quota.value.servers?.map((serverId) => props.isGroup ? $store.state.vm.tables.groupServerTable.byId[serverId] : $store.state.vm.tables.userServerTable.byId[serverId]))
 
-    const deleteAndJump = async (quotaId: string) => {
+    const deleteAndJump = async () => {
       const isDeleted = await $store.dispatch('vm/deleteQuotaDialog', {
         quotaId: props.quotaId,
         isGroup: props.isGroup

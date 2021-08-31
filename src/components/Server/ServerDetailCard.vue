@@ -335,7 +335,7 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter } from 'vue-router'
 import useCopyToClipboard from 'src/hooks/useCopyToClipboard'
-import ServerStatus from 'components/ServerTable/ServerStatus.vue'
+import ServerStatus from 'components/Server/ServerStatus.vue'
 
 export default defineComponent({
   name: 'ServerDetailCard',

@@ -54,7 +54,7 @@
                     class="q-px-none q-py-md q-mx-md"
                     name="obs"
                     icon="fas fa-database"
-                    label="组对象存储"
+                    :label="$t('组对象存储')"
                     :ripple="false"
                     to="/my/group/obs"
                   />

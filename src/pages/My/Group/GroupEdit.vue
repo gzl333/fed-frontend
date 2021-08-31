@@ -30,16 +30,16 @@
                     <div class="row justify-center items-center text-bold" style="height: 70px">
                       {{ group.name }}
 
-<!--                      <q-btn-->
-<!--                        class="q-pa-none q-ma-none" color="primary" padding="none" size="md" flat dense unelevated-->
-<!--                        :to="{path: `/my/group/detail/${group.id}`}">-->
-<!--                        <div class="">-->
-<!--                          {{ group.name }}-->
-<!--                        </div>-->
-<!--                        <q-tooltip>-->
-<!--                          {{ $t('详情') }}-->
-<!--                        </q-tooltip>-->
-<!--                      </q-btn>-->
+                      <!--                      <q-btn-->
+                      <!--                        class="q-pa-none q-ma-none" color="primary" padding="none" size="md" flat dense unelevated-->
+                      <!--                        :to="{path: `/my/group/detail/${group.id}`}">-->
+                      <!--                        <div class="">-->
+                      <!--                          {{ group.name }}-->
+                      <!--                        </div>-->
+                      <!--                        <q-tooltip>-->
+                      <!--                          {{ $t('详情') }}-->
+                      <!--                        </q-tooltip>-->
+                      <!--                      </q-btn>-->
 
                     </div>
                   </div>
@@ -80,6 +80,29 @@
                   <div class="col-10">
                     <div class="row justify-center items-center" style="height: 70px">
                       {{ group.owner.username }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-auto ">
+                <div class="column justify-start items-center" style="height: 120px">
+                  <div class="col-2 text-grey">
+                    建立时间
+                  </div>
+                  <div class="col-10">
+                    <div class="row justify-center items-center" style="height: 70px">
+
+                      <div v-if="locale==='zh'" class="column justify-center items-center">
+                        <div class="col">{{ new Date(group.creation_time).toLocaleString(locale).split(' ')[0] }}</div>
+                        <div class="col">{{ new Date(group.creation_time).toLocaleString(locale).split(' ')[1] }}</div>
+                      </div>
+
+                      <div v-else class="column justify-center items-center">
+                        <div class="col">{{ new Date(group.creation_time).toLocaleString(locale).split(',')[0] }}</div>
+                        <div class="col">{{ new Date(group.creation_time).toLocaleString(locale).split(',')[1] }}</div>
+                      </div>
+
                     </div>
                   </div>
                 </div>
@@ -148,6 +171,7 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRoute, useRouter } from 'vue-router'
 import GroupMemberTable from 'components/Group/GroupMemberTable.vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'GroupEdit',
@@ -157,6 +181,7 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const $router = useRouter()
     const $route = useRoute()
+    const { locale } = useI18n({ useScope: 'global' })
 
     // 返回上一页
     const goBack = () => {
@@ -172,6 +197,7 @@ export default defineComponent({
 
     return {
       $store,
+      locale,
       goBack,
       groupMember,
       group

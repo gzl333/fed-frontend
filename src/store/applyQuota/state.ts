@@ -64,6 +64,18 @@ export interface ApplyQuotaModuleInterface {
     //   allIds: string[]
     //   isLoaded: boolean
     // }
+    // 项目组内提出的quota申请，只保存undeleted
+    groupQuotaApplicationTable: {
+      byId: Record<string, ApplicationQuotaInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 项目组内提出的quota申请，只保存deleted，回收站用
+    // groupQuotaApplicationDeletedTable: {
+    //   byId: Record<string, ApplicationQuotaInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
     // 管理员有权限审批的quota申请
     adminQuotaApplicationTable: {
       byId: Record<string, ApplicationQuotaInterface>
@@ -89,6 +101,11 @@ function state (): ApplyQuotaModuleInterface {
     },
     tables: {
       userQuotaApplicationTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      groupQuotaApplicationTable: {
         byId: {},
         allIds: [],
         isLoaded: false

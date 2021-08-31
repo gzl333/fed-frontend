@@ -179,7 +179,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
             classes: 'notification-negative shadow-15',
             icon: 'mdi-alert',
             textColor: 'negative',
-            message: '配额删除失败，请充实',
+            message: '配额删除失败，请重试',
             position: 'bottom',
             closeBtn: true,
             timeout: 5000,

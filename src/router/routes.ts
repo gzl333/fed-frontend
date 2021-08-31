@@ -187,6 +187,13 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/My/Group/GroupServerDetail.vue')
           },
           {
+            path: 'server/deploy',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/My/Group/GroupServerDeploy.vue')
+          },
+          {
             path: 'obs', // 组资源
             meta: {
               requireLogin: true
@@ -225,6 +232,13 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/My/Group/GroupQuotaDetail.vue')
           },
           {
+            path: 'quota/apply',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/My/Group/GroupQuotaApply.vue')
+          },
+          {
             path: 'list', // 组列表
             meta: {
               requireLogin: true
@@ -251,6 +265,13 @@ const routes: RouteRecordRaw[] = [
               requireLogin: true
             },
             component: () => import('pages/My/Group/GroupEdit.vue')
+          },
+          {
+            path: 'create',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/My/Group/GroupCreate.vue')
           }
         ]
       },

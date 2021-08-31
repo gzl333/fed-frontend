@@ -62,7 +62,15 @@
           </q-td>
 
           <q-td key="creation_time" :props="props">
-            {{ new Date(props.row.creation_time).toLocaleString(locale) }}
+            <div v-if="locale==='zh'">
+              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[0] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[1] }}</div>
+            </div>
+
+            <div v-else>
+              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[0] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[1] }}</div>
+            </div>
           </q-td>
 
           <q-td key="role" :props="props">

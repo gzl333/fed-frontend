@@ -36,7 +36,7 @@ import { defineComponent, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
-import ServerTable from 'components/ServerTable/ServerTable.vue'
+import ServerTable from 'components/Server/ServerTable.vue'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({

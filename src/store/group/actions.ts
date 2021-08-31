@@ -25,6 +25,10 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
         if (!context.rootState.vm.tables.groupServerTable.isLoaded) {
           void context.dispatch('vm/loadGroupServerTable', null, { root: true })
         }
+        // applyQuota/groupApplicationTable 依赖 groupTable， 跨模块调用
+        if (!context.rootState.applyQuota.tables.groupQuotaApplicationTable.isLoaded) {
+          void context.dispatch(('applyQuota/loadGroupApplicationTable'), null, { root: true })
+        }
       })
     }
   },
@@ -62,7 +66,7 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
   // 根据groupTable,建立groupMemberTable
   async loadGroupMemberTableFromGroup (context) {
     for (const groupId of context.state.tables.groupTable.allIds) {
-      const respGroupMember = await context.dispatch('fetchGroupMember', groupId)
+      const respGroupMember = await context.dispatch('getVoListMembers', groupId)
       // 把groupId字段补充进去
       Object.assign(respGroupMember.data, { id: groupId })
       // normalize
@@ -84,7 +88,7 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
       }
     }
   },
-  fetchGroupMember (context, groupId: string) {
+  getVoListMembers (context, groupId: string) {
     const api = apiBase + '/vo/' + groupId + '/list-members/'
     return axios.get(api)
   },
@@ -331,8 +335,66 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
   postMemberRole (context, payload: { member_id: string; role: 'member' | 'leader' }) {
     const api = apiBase + '/vo/members/' + payload.member_id + '/role/' + payload.role + '/'
     return axios.post(api)
-  }
+  },
   /* 修改group人员角色 */
+
+  /* 新建group */
+  async createGroup (context, payload: { name: string; company: string; description: string; }) {
+    // 检查输入合法性
+    if (payload.name.trim() === '' || payload.company.trim() === '' || payload.description.trim() === '') {
+      Notify.create({
+        classes: 'notification-negative shadow-15',
+        icon: 'mdi-alert',
+        textColor: 'negative',
+        message: '输入项不可为空，请全部填写',
+        position: 'bottom',
+        closeBtn: true,
+        timeout: 5000,
+        multiLine: false
+      })
+    } else {
+      const respPostVO = await context.dispatch('postVO', { data: payload })
+      if (respPostVO.status === 200) {
+        // 添加role字段，正在创建项目组，则必然是owner
+        const myRole = 'owner'
+        Object.assign(respPostVO.data, { myRole })
+        // normalize
+        const group = new schema.Entity('group')
+        const normalizedData = normalize(respPostVO.data, group)
+        context.commit('storeGroupTable', normalizedData.entities.group)
+        // 跳转到group list
+        // @ts-ignore
+        this.$router.push({ path: '/my/group/list' })
+        // 通知
+        Notify.create({
+          classes: 'notification-positive shadow-15',
+          icon: 'mdi-check-circle',
+          textColor: 'light-green',
+          message: '新建项目组成功',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      } else {
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '创建项目组失败，请重试',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      }
+    }
+  },
+  postVO (context, payload: { data: { name: string; company: string; description: string; } }) {
+    const api = apiBase + '/vo/'
+    return axios.post(api, payload.data)
+  }
+  /* 新建group */
 }
 
 export default actions

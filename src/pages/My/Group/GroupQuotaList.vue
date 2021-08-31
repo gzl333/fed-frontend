@@ -34,7 +34,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import QuotaTable from 'components/QuotaTable/QuotaTable.vue'
+import QuotaTable from 'components/Quota/QuotaTable.vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 

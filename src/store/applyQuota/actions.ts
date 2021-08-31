@@ -3,7 +3,7 @@ import { StateInterface, apiBase } from '../index'
 import { ApplyQuotaModuleInterface } from './state'
 import axios from 'axios'
 import { normalize, schema } from 'normalizr'
-import { Dialog } from 'quasar'
+import { Dialog, Notify } from 'quasar'
 
 const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   /* 初次获取全部applyQuota模块Table，已有则自动忽略 */
@@ -109,7 +109,41 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   /* 拒绝配额申请 */
 
   /* 删除配额申请记录 */
-  deleteAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
+
+  // deleteAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
+  //   // 操作的确认提示
+  //   Dialog.create({
+  //     class: 'dialog-primary',
+  //     title: '删除配额申请记录',
+  //     message:
+  //       '删除后的申请记录无法恢复。 确认删除此记录？',
+  //     focus: 'cancel',
+  //     ok: {
+  //       label: '确认',
+  //       push: false,
+  //       outline: true,
+  //       color: 'primary'
+  //     },
+  //     cancel: {
+  //       label: '放弃',
+  //       push: false,
+  //       unelevated: true,
+  //       color: 'primary'
+  //     }
+  //   }).onOk(async () => {
+  //     const respDelete = await context.dispatch('deleteQuotaApplication', apply_id)
+  //     if (respDelete.status === 204) {
+  //       context.commit('deleteUserQuotaApplicationTable', apply_id)
+  //     }
+  //   })
+  // },
+  // async deleteQuotaApplication (context, apply_id: string) {
+  //   const api = apiBase + '/apply/quota/' + apply_id + '/'
+  //   const response = await axios.delete(api)
+  //   return response
+  // },
+
+  deleteGroupQuotaApplicationDialog (context, payload: { apply_id: string; isGroup?: boolean }) {
     // 操作的确认提示
     Dialog.create({
       class: 'dialog-primary',
@@ -130,16 +164,38 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
         color: 'primary'
       }
     }).onOk(async () => {
-      const respDelete = await context.dispatch('deleteQuotaApplication', apply_id)
+      const respDelete = await context.dispatch('deleteApplyQuota', payload.apply_id)
       if (respDelete.status === 204) {
-        context.commit('deleteUserQuotaApplicationTable', apply_id)
+        payload.isGroup ? context.commit('deleteGroupQuotaApplicationTable', payload.apply_id) : context.commit('deleteUserQuotaApplicationTable', payload.apply_id)
+        // 弹出通知
+        Notify.create({
+          classes: 'notification-positive shadow-15',
+          icon: 'mdi-check-circle',
+          textColor: 'light-green',
+          message: '配额已经删除',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      } else {
+        // 弹出通知
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '配额删除失败，请重试',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
       }
     })
   },
-  async deleteQuotaApplication (context, apply_id: string) {
+  async deleteApplyQuota (context, apply_id: string) {
     const api = apiBase + '/apply/quota/' + apply_id + '/'
-    const response = await axios.delete(api)
-    return response
+    return axios.delete(api)
   },
   /* 删除配额申请记录 */
 
@@ -231,7 +287,7 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
     // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
     context.commit('clearUserQuotaApplicationTable')
     // 再获取数据并更新table todo 应该保存全部，显示时筛选
-    const respApply = await context.dispatch('fetchUserApplication', { deleted: false })
+    const respApply = await context.dispatch('getApplyQuota', { deleted: false })
     const service = new schema.Entity('service')
     const quotaApplication = new schema.Entity('quotaApplication', { service })
     respApply.data.results.forEach((data: Record<string, unknown>) => {
@@ -239,20 +295,49 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
       context.commit('storeUserQuotaApplicationTable', normalizedData.entities.quotaApplication)
     })
   },
-  async fetchUserApplication (context, payload?: { page?: number; page_size?: number; deleted?: boolean; service?: string; status?: string[] }) {
+  async getApplyQuota (context, payload?: { page?: number; page_size?: number; deleted?: boolean; service?: string; status?: string[] }) {
     const api = apiBase + '/apply/quota/'
-    let response
-    if (payload) {
-      const config = {
-        params: payload
-      }
-      response = await axios.get(api, config)
-    } else {
-      response = await axios.get(api)
+    const config = {
+      params: payload
     }
-    return response
+    return axios.get(api, config)
   },
   /* userQuotaApplicationTable */
+
+  /* groupQuotaApplicationTable */
+  async loadGroupApplicationTable (context) {
+    // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
+    context.commit('clearGroupApplicationTable')
+    // 根据groupTable,建立groupApplicationTable
+    for (const groupId of context.rootState.group.tables.groupTable.allIds) {
+      // 获取响应
+      const respGroupApplication = await context.dispatch('getApplyQuotaVO', {
+        path: { vo_id: groupId },
+        params: { deleted: false }
+      })
+      // normalize
+      const service = new schema.Entity('service')
+      const application = new schema.Entity('application', { service })
+      // application 数组
+      for (const data of respGroupApplication.data.results) {
+        /* 增加补充字段 */
+        // 补充vo_id字段
+        Object.assign(data, { vo_id: groupId })
+        /* 增加补充字段 */
+        // normalize data
+        const normalizedData = normalize(data, application)
+        // 存入groupQuotaTable
+        context.commit('storeGroupQuotaApplicationTable', normalizedData.entities.application)
+      }
+    }
+  },
+  // payload 分为path和query两部分，方便分别获取
+  async getApplyQuotaVO (context, payload: { path: { vo_id: string }, query?: { status?: string[]; service?: string; deleted?: boolean; page?: number; page_size?: number } }) {
+    const api = apiBase + '/apply/quota/vo/' + payload.path.vo_id + '/'
+    const config = { params: payload.query }
+    return axios.get(api, config)
+  },
+  /* groupQuotaApplicationTable */
 
   /* globalQuotaActivityTable */
   async getActivityQuotaAndUpdateGlobalQuotaActivityTable (context, activityId: string) {

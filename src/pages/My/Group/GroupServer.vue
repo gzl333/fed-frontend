@@ -35,7 +35,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
-import ServerTable from 'components/ServerTable/ServerTable.vue'
+import ServerTable from 'components/Server/ServerTable.vue'
 
 export default defineComponent({
   name: 'GroupServer',
