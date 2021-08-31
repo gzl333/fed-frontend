@@ -29,17 +29,6 @@ export interface SingleMemberInterface {
   inviter: string
 }
 
-export interface SingleMemberInterface {
-  id: string
-  user: {
-    id: string
-    username: string
-  },
-  role: string
-  join_time: string
-  inviter: string
-}
-
 export interface GroupMemberInterface {
   members: SingleMemberInterface[],
   owner: {

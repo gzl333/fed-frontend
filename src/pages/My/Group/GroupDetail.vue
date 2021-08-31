@@ -33,12 +33,16 @@
             <div class="col-8">
               <q-card-section>
                 <div class="column items-center">
-                  <div class="col-3 text-light-blue-9 text-subtitle1 cursor-pointer" @click="toDetail(server.id)">
-                    <span>{{ server.ipv4 }}</span>
-                  </div>
-                  <server-status :server="server" isGroup/>
+<!--                  <div class="col-3 text-light-blue-9 text-subtitle1 cursor-pointer" @click="toDetail(server.id)">-->
+<!--                    <span>{{ server.ipv4 }}</span>-->
+<!--                  </div>-->
+                  <q-btn flat color="primary" padding="none" size="lg" :to="{path: '/my/group/server/detail/' + server.id}" >
+                    {{ server.ipv4 }}
+                  </q-btn>
+                  <server-status :server="server" :is-group="true"/>
                   <div class="col-6">
-                    <q-btn push color="white" text-color="black" icon="cloud_upload" size="sm" label="开机"/>
+                    <q-btn push color="white" text-color="black" icon="cloud_upload" size="sm" label="开机"
+                           @click="$store.dispatch('vm/serverOperationDialog', {serverId: server.id, action:'start', isGroup: true} )"/>
                   </div>
                   <div class="col-3 text-weight-light text-caption">
                     <span>{{ `由${server.user.username}创建` }}</span>
@@ -53,7 +57,7 @@
     <div class="row q-mt-xl">
       <div class="text-weight-bold text-subtitle1">组员列表</div>
       <div style="margin-left: 95px">
-        <q-btn outline style="color: #2E9AFE;" label="添加组员" @click="addMember"/>
+        <q-btn outline style="color: #2E9AFE;" label="添加组员" @click="$store.dispatch('group/addGroupMemberDialog', groupId)"/>
       </div>
     </div>
     <div class="row q-mt-xl">
@@ -126,7 +130,8 @@
                 </div>
                 <div>
                   <div class="row justify-end">
-                    <q-btn outline style="color: #2E9AFE;" size="sm" label="移除" @click="delMember(groupId, member.user.username)"/>
+                    <q-btn outline style="color: #2E9AFE;" size="sm" label="移除"
+                           @click="delMember(groupId, member.user.username)"/>
                     <q-btn outline style="color: #2E9AFE; margin-left: 10px" size="sm" label="取消管理员"
                            v-if="member.role === 'leader'"
                            @click="$store.dispatch('group/switchMemberRole',{group_id: groupId,member_id: member.id, role:member.role})"/>
@@ -148,7 +153,7 @@
       </div>
     </div>
     <div class="q-mt-md">
-      <quota-table :quotas="$store.getters['vm/getGroupQuotasByGroupIdByStatus'](groupId)('valid')"></quota-table>
+      <quota-table :quotas="$store.getters['vm/getGroupQuotasByGroupIdByStatus'](groupId)('valid')" ></quota-table>
     </div>
   </div>
 </template>
@@ -159,8 +164,8 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter } from 'vue-router'
 
-import QuotaTable from 'components/QuotaTable/QuotaTable.vue'
-import ServerStatus from 'components/ServerTable/ServerStatus.vue'
+import QuotaTable from 'components/Quota/QuotaTable.vue'
+import ServerStatus from 'components/Server/ServerStatus.vue'
 
 export default defineComponent({
   name: 'GroupDetail',
@@ -183,7 +188,10 @@ export default defineComponent({
       void router.push(`/my/personal/vmdetail/${id}`)
     }
     const delMember = (groupId: string, username: string) => {
-      void $store.dispatch('group/removeGroupMember', { groupId: groupId, username: username })
+      void $store.dispatch('group/removeGroupMember', {
+        groupId: groupId,
+        username: username
+      })
     }
     return {
       $store,
