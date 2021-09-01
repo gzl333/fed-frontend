@@ -32,6 +32,7 @@ export default {
   筛选服务节点: 'Service Node Filter',
 
   // 个人资源
+  个人: 'Personal',
   云主机: 'Server',
   云主机配额: 'Server Quota',
   对象存储: 'Object Storage',

@@ -16,6 +16,9 @@ export interface ApplicationQuotaInterface {
   deleted: boolean
   classification: 'personal' | 'vo'
   result_desc: string // 拒绝理由
+
+  // 来自补充
+  vo_id?: string
 }
 
 // 赠送配额活动

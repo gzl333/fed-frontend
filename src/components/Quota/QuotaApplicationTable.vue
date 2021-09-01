@@ -18,16 +18,24 @@
         <q-tr :props="props">
 
           <q-td key="status" :props="props">
+
             <div v-if="props.row.status === 'wait'">待审批</div>
             <div v-if="props.row.status === 'pending'" class="text-primary">审批中</div>
             <div v-if="props.row.status === 'pass'" class="text-light-green">已通过</div>
             <div v-if="props.row.status === 'reject'" class="text-red">已拒绝</div>
             <div v-if="props.row.status === 'cancel'" class="text-grey">已取消</div>
+            <!--创建时间距离当下小于1小时则打上new标记-->
+            <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
+                     color="light-green" floating transparent rounded align="middle">
+              new
+            </q-badge>
+
           </q-td>
 
           <q-td key="group" :props="props">
             <q-btn
-              class="q-ma-none" :label="$store.state.group.tables.groupTable.byId[props.row.vo_id].name" color="primary"
+              class="q-ma-none" :label="$store.state.group.tables.groupTable.byId[props.row.vo_id]?.name"
+              color="primary"
               padding="xs" flat dense unelevated
               :to="{path: `/my/group/detail/${props.row.vo_id}`}">
               <q-tooltip>
@@ -88,14 +96,18 @@
           <q-td key="operation" :props="props">
             <div v-if="$store.state.group.tables.groupTable.byId[props.row.vo_id]?.myRole === 'member'">普通组员没有修改权限</div>
             <div v-else>
+
               <div v-if="props.row.status === 'wait'">
-                <q-btn label="修改申请" flat dense padding="none" color="primary" @click="showModify(props.row.id)"/>
+                <q-btn label="修改申请" flat dense padding="none" color="primary"
+                       @click="$store.dispatch('applyQuota/editQuotaApplicationDialog',{apply_id: props.row.id, isGroup})"/>
               </div>
+
               <div v-if="props.row.status === 'wait'">
                 <q-btn label="取消申请" flat dense padding="none" color="primary"
-                       @click="$store.dispatch('applyQuota/cancelAndUpdateUserQuotaApplicationTable',props.row.id)"/>
+                       @click="$store.dispatch('applyQuota/cancelGroupQuotaApplicationDialog',{apply_id: props.row.id, isGroup})"/>
               </div>
-              <div v-if="props.row.status !== 'wait'">
+
+              <div>
                 <q-btn label="删除记录" flat dense padding="none" color="primary"
                        @click="$store.dispatch('applyQuota/deleteGroupQuotaApplicationDialog', {apply_id: props.row.id, isGroup})"
                 />

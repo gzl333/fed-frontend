@@ -32,9 +32,19 @@ const getters: GetterTree<GroupModuleInterface, StateInterface> = {
     })
     return newArr.sort(sortFn)
   },
-  // 通过vo_id快速获取我在该组的role
-  getMyRoleByGroupId: (state) => (groupId: string): string => {
-    return state.tables.groupTable.byId[groupId].myRole
+  // 根据myRole返回group数组
+  getGroupsByMyRole: (state) => (roles: string[]): GroupInterface[] => {
+    // 排序函数，按照组创建时间降序排列
+    const sortFn = (a: GroupInterface, b: GroupInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
+    const groups: GroupInterface[] = []
+    roles.forEach((role) => {
+      for (const group of Object.values(state.tables.groupTable.byId)) {
+        if (group.myRole === role) {
+          groups.push(group)
+        }
+      }
+    })
+    return groups.sort(sortFn)
   }
 }
 

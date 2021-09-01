@@ -4,6 +4,7 @@ import { ApplyQuotaModuleInterface } from './state'
 import axios from 'axios'
 import { normalize, schema } from 'normalizr'
 import { Dialog, Notify } from 'quasar'
+import QuotaApplicationEditCard from 'components/Quota/QuotaApplicationEditCard.vue'
 
 const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   /* 初次获取全部applyQuota模块Table，已有则自动忽略 */
@@ -61,6 +62,36 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
     const response = await axios.patch(api, payload.data)
     return response
   },
+  // 修改quota申请
+  editQuotaApplicationDialog (context, payload: { apply_id: string; isGroup?: boolean }) {
+    Dialog.create({
+      component: QuotaApplicationEditCard,
+      componentProps: {
+        applyId: payload.apply_id,
+        isGroup: payload.isGroup
+      }
+    })/* .onOk(() => {
+    }) */
+  },
+  async patchApplyQuota (context, payload: {
+    path: { apply_id: string }; body: {
+      data: {
+        service_id: string;
+        duration_days: number;
+        vcpu: number;
+        ram: number;
+        private_ip: number;
+        public_ip: number;
+        disk_size: number;
+        company: string;
+        contact: string;
+        purpose: string;
+      }
+    }
+  }) {
+    const api = apiBase + '/apply/quota/' + payload.path.apply_id + '/'
+    return axios.patch(api, payload.body.data)
+  },
   /* 修改配额申请 */
 
   /* 挂起配额申请 */
@@ -109,40 +140,6 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   /* 拒绝配额申请 */
 
   /* 删除配额申请记录 */
-
-  // deleteAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
-  //   // 操作的确认提示
-  //   Dialog.create({
-  //     class: 'dialog-primary',
-  //     title: '删除配额申请记录',
-  //     message:
-  //       '删除后的申请记录无法恢复。 确认删除此记录？',
-  //     focus: 'cancel',
-  //     ok: {
-  //       label: '确认',
-  //       push: false,
-  //       outline: true,
-  //       color: 'primary'
-  //     },
-  //     cancel: {
-  //       label: '放弃',
-  //       push: false,
-  //       unelevated: true,
-  //       color: 'primary'
-  //     }
-  //   }).onOk(async () => {
-  //     const respDelete = await context.dispatch('deleteQuotaApplication', apply_id)
-  //     if (respDelete.status === 204) {
-  //       context.commit('deleteUserQuotaApplicationTable', apply_id)
-  //     }
-  //   })
-  // },
-  // async deleteQuotaApplication (context, apply_id: string) {
-  //   const api = apiBase + '/apply/quota/' + apply_id + '/'
-  //   const response = await axios.delete(api)
-  //   return response
-  // },
-
   deleteGroupQuotaApplicationDialog (context, payload: { apply_id: string; isGroup?: boolean }) {
     // 操作的确认提示
     Dialog.create({
@@ -200,7 +197,7 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   /* 删除配额申请记录 */
 
   /* 取消配额申请 */
-  cancelAndUpdateUserQuotaApplicationTable (context, apply_id: string) {
+  cancelGroupQuotaApplicationDialog (context, payload: { apply_id: string; isGroup: boolean }) {
     // 操作的确认提示
     Dialog.create({
       class: 'dialog-primary',
@@ -221,26 +218,99 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
         color: 'primary'
       }
     }).onOk(async () => {
-      const respCancel = await context.dispatch('cancelQuotaApplication', apply_id)
-      const service = new schema.Entity('service')
-      const quotaApplication = new schema.Entity('quotaApplication', { service })
-      const normalizedData = normalize(respCancel.data, quotaApplication)
-      context.commit('storeUserQuotaApplicationTable', normalizedData.entities.quotaApplication)
+      const respPostApplyQuotaCancel = await context.dispatch('postApplyQuotaCancel', { path: { apply_id: payload.apply_id } })
+      if (respPostApplyQuotaCancel.status === 200) {
+        if (payload.isGroup) {
+          // 补充vo_id字段
+          Object.assign(respPostApplyQuotaCancel.data, { vo_id: context.rootState.applyQuota.tables.groupQuotaApplicationTable.byId[payload.apply_id]?.vo_id })
+        }
+        // normalize
+        const service = new schema.Entity('service')
+        const application = new schema.Entity('application', { service })
+        const normalizedData = normalize(respPostApplyQuotaCancel.data, application)
+        // 存入groupQuotaTable
+        payload.isGroup ? context.commit('storeGroupQuotaApplicationTable', normalizedData.entities.application) : context.commit('storeUserQuotaApplicationTable', normalizedData.entities.application)
+        // 通知
+        Notify.create({
+          classes: 'notification-positive shadow-15',
+          icon: 'mdi-check-circle',
+          textColor: 'light-green',
+          message: '取消配额申请成功',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      } else {
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '取消配额申请失败，请重试',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      }
     })
   },
-  async cancelQuotaApplication (context, apply_id: string) {
-    const api = apiBase + '/apply/quota/' + apply_id + '/cancel/'
-    const response = await axios.post(api)
-    return response
+  async postApplyQuotaCancel (context, payload: { path: { apply_id: string } }) {
+    const api = apiBase + '/apply/quota/' + payload.path.apply_id + '/cancel/'
+    return axios.post(api)
   },
   /* 取消配额申请 */
 
   /*  提交配额申请 */
-  async submitQuotaApplication (context, payload: { service_id: string; private_ip: number; public_ip: number; vcpu: number; ram: number; disk_size: number; duration_days: number; company: string; contact: string; purpose: string }) {
+  async submitApplyQuota (context, data: { vo_id?: string; service_id: string; private_ip?: number; public_ip?: number; vcpu?: number; ram?: number; disk_size?: number; duration_days: number; company?: string; contact?: string; purpose?: string }) {
+    const respPostApplyQuota = await context.dispatch('postApplyQuota', { data })
+    if (respPostApplyQuota.status === 201) {
+      if (data.vo_id) {
+        // 如果是组配额，则需要补充vo_id字段,响应里是vo对象，再加一个vo_id字段
+        Object.assign(respPostApplyQuota.data, { vo_id: respPostApplyQuota.data.vo.id })
+      }
+      // normalize
+      const service = new schema.Entity('service')
+      const vo = new schema.Entity('vo')
+      const application = new schema.Entity('application', {
+        service,
+        vo
+      })
+      const normalizedData = normalize(respPostApplyQuota.data, application)
+      // store
+      data.vo_id ? context.commit('storeGroupQuotaApplicationTable', normalizedData.entities.application) : context.commit('storeUserQuotaApplicationTable', normalizedData.entities.application)
+      // notify
+      Notify.create({
+        classes: 'notification-positive shadow-15',
+        icon: 'mdi-check-circle',
+        textColor: 'light-green',
+        message: '提交配额申请成功',
+        position: 'bottom',
+        closeBtn: true,
+        timeout: 5000,
+        multiLine: false
+      })
+      // 跳转
+      // @ts-ignore
+      data.vo_id ? this.$router.push('/my/group/quota/application') : this.$router.push('/my/personal/quota/application')
+    } else {
+      // 弹出通知
+      Notify.create({
+        classes: 'notification-negative shadow-15',
+        icon: 'mdi-alert',
+        textColor: 'negative',
+        message: '申请云主机配额失败，请重试',
+        position: 'bottom',
+        closeBtn: true,
+        timeout: 5000,
+        multiLine: false
+      })
+    }
+  },
+  async postApplyQuota (context, payload: { data: { vo_id?: string; service_id: string; private_ip?: number; public_ip?: number; vcpu?: number; ram?: number; disk_size?: number; duration_days: number; company?: string; contact?: string; purpose?: string } }) {
     const api = apiBase + '/apply/quota/'
-    const data = payload
-    const response = await axios.post(api, data)
-    return response
+    const data = payload.data
+    return axios.post(api, data)
   },
   /*  提交配额申请 */
 
@@ -310,27 +380,31 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
     context.commit('clearGroupApplicationTable')
     // 根据groupTable,建立groupApplicationTable
     for (const groupId of context.rootState.group.tables.groupTable.allIds) {
-      // 获取响应
-      const respGroupApplication = await context.dispatch('getApplyQuotaVO', {
-        path: { vo_id: groupId },
-        params: { deleted: false }
-      })
-      // normalize
-      const service = new schema.Entity('service')
-      const application = new schema.Entity('application', { service })
-      // application 数组
-      for (const data of respGroupApplication.data.results) {
-        /* 增加补充字段 */
-        // 补充vo_id字段
-        Object.assign(data, { vo_id: groupId })
-        /* 增加补充字段 */
-        // normalize data
-        const normalizedData = normalize(data, application)
-        // 存入groupQuotaTable
-        context.commit('storeGroupQuotaApplicationTable', normalizedData.entities.application)
+      // member没有权限请求这个接口, owner和leader可以
+      if (context.rootState.group.tables.groupTable.byId[groupId].myRole !== 'member') {
+        // 获取响应
+        const respGroupApplication = await context.dispatch('getApplyQuotaVO', {
+          path: { vo_id: groupId },
+          query: { deleted: false }
+        })
+        // normalize
+        const service = new schema.Entity('service')
+        const application = new schema.Entity('application', { service })
+        // application 数组
+        for (const data of respGroupApplication.data.results) {
+          /* 增加补充字段 */
+          // 补充vo_id字段
+          Object.assign(data, { vo_id: groupId })
+          /* 增加补充字段 */
+          // normalize data
+          const normalizedData = normalize(data, application)
+          // 存入groupQuotaTable
+          context.commit('storeGroupQuotaApplicationTable', normalizedData.entities.application)
+        }
       }
     }
   },
+  // 此接口应保证当前用户是owner或者leader,否则返回403
   // payload 分为path和query两部分，方便分别获取
   async getApplyQuotaVO (context, payload: { path: { vo_id: string }, query?: { status?: string[]; service?: string; deleted?: boolean; page?: number; page_size?: number } }) {
     const api = apiBase + '/apply/quota/vo/' + payload.path.vo_id + '/'

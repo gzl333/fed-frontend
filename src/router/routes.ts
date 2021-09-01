@@ -236,7 +236,8 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/My/Group/GroupQuotaApply.vue')
+            component: () => import('pages/My/Group/GroupQuotaApply.vue'),
+            props: true // 接收url中的参数
           },
           {
             path: 'list', // 组列表
@@ -271,7 +272,8 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/My/Group/GroupCreate.vue')
+            component: () => import('pages/My/Group/GroupCreate.vue'),
+            props: true // 接收url中的参数
           }
         ]
       },

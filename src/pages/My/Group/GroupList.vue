@@ -20,7 +20,7 @@
         <div class="row justify-end">
           <div class="col">
             <q-select outlined dense stack-label label="筛选" v-model="filterSelection"
-                      :options="filterOptions"/>
+                      :options="filterOptions" map-options/>
           </div>
         </div>
       </div>

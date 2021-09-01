@@ -50,7 +50,15 @@
           </q-td>
 
           <q-td key="creation_time" :props="props">
-            {{ new Date(props.row.creation_time).toLocaleString() }}
+            <div v-if="locale==='zh'">
+              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[0] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[1] }}</div>
+            </div>
+
+            <div v-else>
+              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[0] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[1] }}</div>
+            </div>
           </q-td>
 
           <q-td key="service" :props="props">
@@ -80,6 +88,9 @@
           </q-td>
           <q-td key="disk" :props="props">
             {{ props.row.disk_size }}GB
+          </q-td>
+          <q-td key="vo" :props="props">
+            {{ props.row.classification === 'vo' ? $t('项目组') : $t('个人') }}
           </q-td>
           <q-td key="purpose" :props="props">
             {{ props.row.purpose }}
@@ -169,6 +180,11 @@
           </div>
 
           <div class="row q-py-sm">
+            <div class="col-3 text-grey-7">配额类型</div>
+            <div class="col">{{ currentApplication.classification === 'vo' ? $t('项目组') : $t('个人') }}</div>
+          </div>
+
+          <div class="row q-py-sm">
             <div class="col-3 text-grey-7">用途</div>
             <div class="col">{{ currentApplication.purpose }}</div>
           </div>
@@ -201,6 +217,7 @@
 import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'Manage',
@@ -208,6 +225,7 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
+    const { locale } = useI18n({ useScope: 'global' })
 
     // adminQuotaApplicationTable数据更新来自后台，进入页面后应强制更新table
     void $store.dispatch('applyQuota/updateAdminQuotaApplicationTable')
@@ -314,6 +332,13 @@ export default defineComponent({
         style: 'padding: 15px 5px'
       },
       {
+        name: 'vo',
+        label: '配额类型',
+        field: 'vo',
+        align: 'center',
+        style: 'padding: 15px 5px'
+      },
+      {
         name: 'purpose',
         label: '用途',
         field: 'purpose',
@@ -366,6 +391,7 @@ export default defineComponent({
     }
     return {
       $store,
+      locale,
       paginationTable,
       columns,
       rows,

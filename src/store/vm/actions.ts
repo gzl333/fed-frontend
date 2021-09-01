@@ -284,8 +284,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   },
   async fetchGroupQuota (context, payload: { vo_id: string; page?: number; page_size?: number; service?: string; usable?: boolean }) {
     const api = apiBase + '/quota/vo/' + payload.vo_id + '/'
-    const response = await axios.get(api)
-    return response
+    return axios.get(api)
   },
   /* groupQuotaTable */
 
@@ -396,8 +395,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   },
   async fetchFlavor () {
     const api = apiBase + '/flavor/'
-    const response = await axios.get(api)
-    return response
+    return axios.get(api)
   },
   /* globalFlavorTable */
 
