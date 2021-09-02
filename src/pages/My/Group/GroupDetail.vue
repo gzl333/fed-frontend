@@ -4,23 +4,14 @@
       <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense @click="goBack"/>
       项目组详情
     </div>
-    <div class="q-mt-xl row">
-      <div class="row column">
-        <div class="text-weight-bold text-subtitle1">
-          {{ $store.state.group.tables.groupTable.byId[groupId]?.name }}
-        </div>
-        <div class="text-weight-bold text-subtitle1 q-mt-xl">云主机</div>
-      </div>
-      <div class="row column q-ml-lg">
-        <div class="text-subtitle1 q-ml-xl">
-          创建时间 {{ new Date($store.state.group.tables.groupTable.byId[groupId]?.creation_time).toLocaleString() }}
-        </div>
-        <div class="q-ml-xl">
-          <q-btn outline color="primary" label="创建云主机" class="q-mt-xl"/>
-        </div>
-      </div>
-    </div>
+    <group-header-information></group-header-information>
     <div class="row q-mt-xl">
+        <div class="text-weight-bold text-subtitle1">云主机</div>
+        <div class="q-ml-xl">
+          <q-btn outline color="primary" label="创建云主机"/>
+        </div>
+    </div>
+    <div class="row q-mt-lg q-ml-xl">
       <div class="col-3 q-ml-xl q-mt-lg" v-for="server in $store.getters['vm/getGroupServersByGroupId'](groupId)"
            :key="server.id">
         <q-card class="my-card">
@@ -42,6 +33,7 @@
                            @click="$store.dispatch('vm/serverOperationDialog', {serverId: server.id, action:'start', isGroup: true} )"/>
                     <q-btn v-show="$store.state.vm.tables.groupServerTable.byId[server.id]?.status === 1" push color="white" text-color="black" icon="cloud_upload" size="sm" label="关机"
                            @click="$store.dispatch('vm/serverOperationDialog', {serverId: server.id, action:'shutdown', isGroup: true} )"/>
+                    <q-btn v-show="$store.state.vm.tables.groupServerTable.byId[server.id]?.status === ''" flat color="white" size="sm"/>
                   </div>
                   <div class="col-3 text-weight-light text-caption">
                     <span>{{ `由${server.user.username}创建` }}</span>
@@ -55,11 +47,11 @@
     </div>
     <div class="row q-mt-xl">
       <div class="text-weight-bold text-subtitle1">组员列表</div>
-      <div style="margin-left: 95px">
+      <div class="q-ml-xl">
         <q-btn outline style="color: #2E9AFE;" label="添加组员" @click="$store.dispatch('group/addGroupMemberDialog', groupId)"/>
       </div>
     </div>
-    <div class="row q-mt-xl">
+    <div class="row q-mt-lg">
       <div class="col-5 q-ml-xl q-mt-lg">
         <q-card class="my-card row">
           <div class="col-2">
@@ -139,7 +131,7 @@
     <div class="row q-mt-xl">
       <div class="text-weight-bold text-subtitle1">组配额</div>
       <div class="q-ml-xl">
-        <q-btn outline style="color: #2E9AFE; margin-left: 65px" label="申请组配额"/>
+        <q-btn outline style="color: #2E9AFE" class="q-ml-md" label="申请组配额"/>
       </div>
     </div>
     <div class="q-mt-md">
@@ -157,13 +149,15 @@ import { useRouter } from 'vue-router'
 import QuotaTable from 'components/Quota/QuotaTable.vue'
 import ServerStatus from 'components/Server/ServerStatus.vue'
 import GroupRoleChip from 'components/Group/GroupRoleChip.vue'
-
+import GroupHeaderInformation from 'pages/My/Group/GroupHeaderInformation.vue'
 export default defineComponent({
   name: 'GroupDetail',
   components: {
     QuotaTable,
     ServerStatus,
-    GroupRoleChip
+    GroupRoleChip,
+    GroupHeaderInformation
+
   },
   props: {},
   setup () {
