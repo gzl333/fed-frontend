@@ -27,7 +27,7 @@
 
     </div>
 
-    <QuotaTable :quotas="quotas" is-group/>
+    <quota-table :quotas="quotas" :is-group="true"/>
 
   </div>
 </template>

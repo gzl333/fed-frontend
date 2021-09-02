@@ -191,7 +191,8 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/My/Group/GroupServerDeploy.vue')
+            component: () => import('pages/My/Group/GroupServerDeploy.vue'),
+            props: true // 接收url中的参数
           },
           {
             path: 'obs', // 组资源

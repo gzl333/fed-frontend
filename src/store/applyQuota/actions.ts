@@ -21,47 +21,48 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   },
   /* 初次获取全部applyQuota模块Table，已有则自动忽略 */
 
-  /* 修改配额申请 */
-  async patchAndUpdateUserQuotaApplicationTable (context, payload: {
-    apply_id: string;
-    data: {
-      service_id: string;
-      duration_days: number;
-      vcpu: number;
-      ram: number;
-      private_ip: number;
-      public_ip: number;
-      disk_size: number;
-      company: string;
-      contact: string;
-      purpose: string;
-    }
-  }) {
-    const respPatch = await context.dispatch('patchQuotaApplication', payload)
-    const service = new schema.Entity('service')
-    const quotaApplication = new schema.Entity('quotaApplication', { service })
-    const normalizedData = normalize(respPatch.data, quotaApplication)
-    context.commit('storeUserQuotaApplicationTable', normalizedData.entities.quotaApplication)
-  },
-  async patchQuotaApplication (context, payload: {
-    apply_id: string;
-    data: {
-      service_id: string;
-      duration_days: number;
-      vcpu: number;
-      ram: number;
-      private_ip: number;
-      public_ip: number;
-      disk_size: number;
-      company: string;
-      contact: string;
-      purpose: string;
-    }
-  }) {
-    const api = apiBase + '/apply/quota/' + payload.apply_id + '/'
-    const response = await axios.patch(api, payload.data)
-    return response
-  },
+  // /* 修改配额申请 */
+  // async patchAndUpdateUserQuotaApplicationTable (context, payload: {
+  //   apply_id: string;
+  //   data: {
+  //     service_id: string;
+  //     duration_days: number;
+  //     vcpu: number;
+  //     ram: number;
+  //     private_ip: number;
+  //     public_ip: number;
+  //     disk_size: number;
+  //     company: string;
+  //     contact: string;
+  //     purpose: string;
+  //   }
+  // }) {
+  //   const respPatch = await context.dispatch('patchQuotaApplication', payload)
+  //   const service = new schema.Entity('service')
+  //   const quotaApplication = new schema.Entity('quotaApplication', { service })
+  //   const normalizedData = normalize(respPatch.data, quotaApplication)
+  //   context.commit('storeUserQuotaApplicationTable', normalizedData.entities.quotaApplication)
+  // },
+  // async patchQuotaApplication (context, payload: {
+  //   apply_id: string;
+  //   data: {
+  //     service_id: string;
+  //     duration_days: number;
+  //     vcpu: number;
+  //     ram: number;
+  //     private_ip: number;
+  //     public_ip: number;
+  //     disk_size: number;
+  //     company: string;
+  //     contact: string;
+  //     purpose: string;
+  //   }
+  // }) {
+  //   const api = apiBase + '/apply/quota/' + payload.apply_id + '/'
+  //   const response = await axios.patch(api, payload.data)
+  //   return response
+  // },
+
   // 修改quota申请
   editQuotaApplicationDialog (context, payload: { apply_id: string; isGroup?: boolean }) {
     Dialog.create({
@@ -70,11 +71,50 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
         applyId: payload.apply_id,
         isGroup: payload.isGroup
       }
-    })/* .onOk(() => {
-    }) */
+    }).onOk(async (val: { data: Record<string, string | number> }) => {
+      const respPatchApplyQuota = await context.dispatch('patchApplyQuota', {
+        path: { apply_id: payload.apply_id },
+        body: { data: val.data }
+      })
+      if (respPatchApplyQuota.status === 200) {
+        if (payload.isGroup) {
+          // 补充vo_id字段
+          Object.assign(respPatchApplyQuota.data, { vo_id: context.state.tables.groupQuotaApplicationTable.byId[payload.apply_id].vo_id })
+        }
+        // normalize
+        const service = new schema.Entity('service')
+        const application = new schema.Entity('application', { service })
+        const normalizedData = normalize(respPatchApplyQuota.data, application)
+        // 保存进table
+        payload.isGroup ? context.commit('storeGroupQuotaApplicationTable', normalizedData.entities.application) : context.commit('storeUserQuotaApplicationTable', normalizedData.entities.application)
+        // 通知
+        Notify.create({
+          classes: 'notification-positive shadow-15',
+          icon: 'mdi-check-circle',
+          textColor: 'light-green',
+          message: '修改配额申请成功',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      } else {
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '修改配额申请失败，请重试',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      }
+    })
   },
   async patchApplyQuota (context, payload: {
-    path: { apply_id: string }; body: {
+    path: { apply_id: string };
+    body: {
       data: {
         service_id: string;
         duration_days: number;
@@ -169,7 +209,7 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
           classes: 'notification-positive shadow-15',
           icon: 'mdi-check-circle',
           textColor: 'light-green',
-          message: '配额已经删除',
+          message: '配额申请已经删除',
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,
@@ -181,7 +221,7 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
           classes: 'notification-negative shadow-15',
           icon: 'mdi-alert',
           textColor: 'negative',
-          message: '配额删除失败，请重试',
+          message: '配额申请删除失败，请重试',
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,
@@ -228,7 +268,7 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
         const service = new schema.Entity('service')
         const application = new schema.Entity('application', { service })
         const normalizedData = normalize(respPostApplyQuotaCancel.data, application)
-        // 存入groupQuotaTable
+        // 存入table
         payload.isGroup ? context.commit('storeGroupQuotaApplicationTable', normalizedData.entities.application) : context.commit('storeUserQuotaApplicationTable', normalizedData.entities.application)
         // 通知
         Notify.create({

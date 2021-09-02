@@ -121,6 +121,7 @@
               </div>
             </q-circular-progress>
           </q-td>
+
           <q-td key="disk" :props="props">
             <div v-if="props.row.disk_size_total === 0">无</div>
             <q-circular-progress v-else
@@ -142,12 +143,30 @@
               </div>
             </q-circular-progress>
           </q-td>
+
           <q-td key="expiration_time" :props="props">
             <div v-if="!props.row.expiration_time">长期有效</div>
             <div v-else>
-              <div>{{ new Date(props.row.expiration_time).toLocaleString() }}</div>
-              <div v-if="props.row.expired" class="text-red">
-                已过期
+              <div v-if="locale==='zh'">
+                <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(' ')[0] }}</div>
+                <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(' ')[1] }}</div>
+              </div>
+              <div v-else>
+                <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(',')[0] }}</div>
+                <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(',')[1] }}</div>
+              </div>
+            </div>
+          </q-td>
+
+          <q-td key="status" :props="props">
+            <div v-if="!props.row.expired && !props.row.exhausted" class="text-light-green">可用</div>
+            <div v-else class="text-red">
+              不可用
+              <div v-if="props.row.expired" class="text-grey">
+                过期
+              </div>
+              <div v-if="props.row.exhausted" class="text-grey">
+                用尽
               </div>
             </div>
           </q-td>
@@ -287,6 +306,14 @@ export default defineComponent({
         headerStyle: 'padding: 0 5px'
       },
       {
+        name: 'status',
+        label: '配额状态',
+        field: 'status',
+        align: 'center',
+        style: 'padding: 15px 5px',
+        headerStyle: 'padding: 0 5px'
+      },
+      {
         name: 'operation',
         label: '操作',
         field: 'operation',
@@ -355,6 +382,14 @@ export default defineComponent({
         name: 'expiration_time',
         label: '配额过期时间',
         field: 'expiration_time',
+        align: 'center',
+        style: 'padding: 15px 5px',
+        headerStyle: 'padding: 0 5px'
+      },
+      {
+        name: 'status',
+        label: '配额状态',
+        field: 'status',
         align: 'center',
         style: 'padding: 15px 5px',
         headerStyle: 'padding: 0 5px'

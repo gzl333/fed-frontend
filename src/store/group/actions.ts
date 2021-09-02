@@ -124,7 +124,7 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
             classes: 'notification-positive shadow-15',
             icon: 'mdi-check-circle',
             textColor: 'light-green',
-            message: '项目组信息已经修改',
+            message: '项目组信息修改成功',
             position: 'bottom',
             closeBtn: true,
             timeout: 5000,

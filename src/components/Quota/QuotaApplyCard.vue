@@ -299,7 +299,7 @@
 import { computed, defineComponent, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
-import { useQuasar } from 'quasar'
+import { Notify } from 'quasar'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
@@ -321,7 +321,6 @@ export default defineComponent({
   },
   setup (props) {
     const $store = useStore<StateInterface>()
-    const $q = useQuasar()
     const { locale } = useI18n({ useScope: 'global' })
 
     // radio选项数据
@@ -374,29 +373,27 @@ export default defineComponent({
     const applyQuota = async () => {
       // 如果没有选择ip地址，则弹出通知
       if (!sliderPublic.value && !sliderPrivate.value) {
-        $q.notify(
-          {
-            classes: 'notification-negative shadow-15',
-            icon: 'mdi-alert',
-            textColor: 'negative',
-            message: '请至少选择1个IP地址',
-            position: 'bottom',
-            closeBtn: true,
-            timeout: 5000,
-            multiLine: false
-          })
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '请至少选择1个私网或公网IP地址',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
       } else if (!inputPurpose.value || !inputUnit.value) {
-        $q.notify(
-          {
-            classes: 'notification-negative shadow-15',
-            icon: 'mdi-alert',
-            textColor: 'negative',
-            message: '请填写备注',
-            position: 'bottom',
-            closeBtn: true,
-            timeout: 5000,
-            multiLine: false
-          })
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '请填写备注',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
       } else {
         isCreating.value = true
         const selection = props.isGroup ? {

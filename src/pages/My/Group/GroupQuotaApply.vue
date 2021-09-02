@@ -10,7 +10,7 @@
       </div>
 
       <div class="col">
-        <quota-apply-card :is-group="true" :service-id="serviceDesignated" :group-id="groupDesignated"/>
+        <quota-apply-card :is-group="true" :service-id="serviceId" :group-id="groupId"/>
       </div>
 
     </div>
@@ -37,8 +37,8 @@ export default defineComponent({
     const { locale } = useI18n({ useScope: 'global' })
 
     // 获取url所传参数.
-    const serviceDesignated = $route.query.service as string // string or undefined
-    const groupDesignated = $route.query.group as string
+    const serviceId = $route.query.service as string // string or undefined
+    const groupId = $route.query.group as string
 
     // 返回上一页
     const goBack = () => {
@@ -46,8 +46,8 @@ export default defineComponent({
     }
 
     return {
-      serviceDesignated,
-      groupDesignated,
+      serviceId,
+      groupId,
       locale,
       goBack
     }
@@ -58,6 +58,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .GroupQuotaApply {
 }
+
 .title-area {
   width: $general-width-no-padding;
   text-align: left;
