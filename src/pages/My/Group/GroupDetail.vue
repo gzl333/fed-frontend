@@ -80,9 +80,7 @@
           </div>
         </q-card>
       </div>
-      <div class="col-5 q-ml-xl q-mt-lg"
-           v-for="member in $store.state.group.tables.groupMemberTable.byId[groupId]?.members "
-           :key="member.id">
+      <div class="col-5 q-ml-xl q-mt-lg" v-for="(member, index) in groupMembers" :key="index">
         <q-card class="my-card row">
           <div class="col-2">
             <q-card-section>
@@ -141,7 +139,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter } from 'vue-router'
@@ -164,13 +162,15 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const router = useRouter()
     const groupId = router.currentRoute.value.params.id as string
+    const groupMembers = computed(() => $store.getters['group/getMemberByTime'](groupId))
     const goBack = () => {
       router.go(-1)
     }
     return {
       $store,
       groupId,
-      goBack
+      goBack,
+      groupMembers
     }
   }
 })
