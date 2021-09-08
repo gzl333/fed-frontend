@@ -58,6 +58,16 @@
                     to="/my/provider/service"
                     exact
                   />
+                  <q-route-tab
+                    :disable="isProd"
+                    class="q-px-none q-py-md q-mx-md"
+                    name="resources"
+                    icon="task_alt"
+                    label="资源信息"
+                    :ripple="false"
+                    to="/my/provider/resources"
+                    exact
+                  />
 
                 </q-tabs>
               </div>

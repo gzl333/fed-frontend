@@ -663,6 +663,38 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     const response = await axios.get(api, config)
     return response
   },
+  // todo
+  async fetchUserPersonalServer (context, payload: { page?: number; page_size?: number}) {
+    const api = apiBase + '/server/'
+    const config = {
+      params: payload
+    }
+    const response = await axios.get(api, config)
+    return response
+  },
+  async loadUserServerTable (context, payload: { page?: number; page_size?: number }) {
+    context.commit('clearUserPersonalServerTable')
+    const respGroupServer = await context.dispatch('fetchUserPersonalServer', payload)
+    const service = new schema.Entity('service')
+    const user_quota = new schema.Entity('user_quota')
+    const server = new schema.Entity('server', {
+      service,
+      user_quota
+    })
+    for (const data of respGroupServer.data.servers) {
+      const normalizedData = normalize(data, server)
+      context.commit('storeUserPersonalServerTable', normalizedData.entities.server)
+      // console.log('1111111111111', normalizedData.entities.user_quota)
+      if (normalizedData.entities.user_quota) {
+        context.commit('storeUserPersonalQuotaTable', normalizedData.entities.user_quota)
+      } else {
+        context.commit('storeUserPersonalQuotaTable', '')
+      }
+
+      // console.log('normalizedData', normalizedData)
+    }
+    return respGroupServer
+  },
   // 获取并保存单个server的status
   async updateGroupServerTableSingleStatus (context, serverId: string) {
     // 先清空server status，让状态变为空，UI则显示为获取中

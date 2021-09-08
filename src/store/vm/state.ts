@@ -62,6 +62,42 @@ export interface ServerInterface {
   vnc?: string
   status?: string
 }
+// todo
+export interface PersonalUser_quota {
+  id: string
+  tag: {
+    value: number
+    display: string
+  }
+  expiration_time: string,
+  deleted: boolean,
+  display: string
+}
+export interface UserPersonalServerInterface {
+    id: string
+    name: string
+    vcpus: number
+    ram: number
+    ipv4: string
+    public_ip: boolean
+    image: string
+    creation_time: string
+    remarks: string
+    endpoint_url: string
+    service: string
+    user_quota: string
+    expiration_time: string | null
+    deleted: boolean
+    display: []
+    center_quota: number
+    classification: string
+    vo_id: string | null
+    user: {
+      id: string
+      username: string
+    }
+    lock: string
+}
 
 export interface NetworkInterface {
   // 来自network接口
@@ -262,6 +298,17 @@ export interface VmModuleInterface {
       isLoaded: boolean
     }
     /* 组table */
+    // 个人服务器table todo
+    userPersonalServerTable: {
+      byId: Record<string, UserPersonalServerInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    userPersonalQuotaTable: {
+      byId: Record<string, PersonalUser_quota>
+      allIds: string[]
+      isLoaded: boolean
+    }
   }
 }
 
@@ -342,6 +389,17 @@ function state (): VmModuleInterface {
         isLoaded: false
       },
       groupServerTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      // todo
+      userPersonalServerTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      userPersonalQuotaTable: {
         byId: {},
         allIds: [],
         isLoaded: false

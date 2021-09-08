@@ -309,6 +309,13 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/My/Provider/Service.vue')
           },
           {
+            path: 'resources',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/My/Provider/Resources.vue')
+          },
+          {
             path: 'join_service',
             meta: {
               requireLogin: true
