@@ -684,14 +684,11 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     for (const data of respGroupServer.data.servers) {
       const normalizedData = normalize(data, server)
       context.commit('storeUserPersonalServerTable', normalizedData.entities.server)
-      // console.log('1111111111111', normalizedData.entities.user_quota)
       if (normalizedData.entities.user_quota) {
         context.commit('storeUserPersonalQuotaTable', normalizedData.entities.user_quota)
       } else {
         context.commit('storeUserPersonalQuotaTable', '')
       }
-
-      // console.log('normalizedData', normalizedData)
     }
     return respGroupServer
   },

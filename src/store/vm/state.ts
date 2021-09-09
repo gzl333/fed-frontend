@@ -63,7 +63,7 @@ export interface ServerInterface {
   status?: string
 }
 // todo
-export interface PersonalUser_quota {
+export interface PersonalUserQuota {
   id: string
   tag: {
     value: number
@@ -305,7 +305,7 @@ export interface VmModuleInterface {
       isLoaded: boolean
     }
     userPersonalQuotaTable: {
-      byId: Record<string, PersonalUser_quota>
+      byId: Record<string, PersonalUserQuota>
       allIds: string[]
       isLoaded: boolean
     }

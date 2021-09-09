@@ -8,7 +8,7 @@ import {
   FlavorInterface,
   VpnInterface,
   QuotaInterface,
-  ServerInterface, UserPersonalServerInterface, PersonalUser_quota
+  ServerInterface, UserPersonalServerInterface, PersonalUserQuota
 } from './state'
 
 const mutation: MutationTree<VmModuleInterface> = {
@@ -141,8 +141,7 @@ const mutation: MutationTree<VmModuleInterface> = {
     state.tables.userPersonalServerTable.allIds = [...new Set(state.tables.userPersonalServerTable.allIds)]
     state.tables.userPersonalServerTable.isLoaded = true
   },
-  storeUserPersonalQuotaTable (state, tableObj: Record<string, PersonalUser_quota>) {
-    // console.log('111111', tableObj)
+  storeUserPersonalQuotaTable (state, tableObj: Record<string, PersonalUserQuota>) {
     Object.assign(state.tables.userPersonalQuotaTable.byId, tableObj)
     state.tables.userPersonalQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
     state.tables.userPersonalQuotaTable.allIds = [...new Set(state.tables.userPersonalQuotaTable.allIds)]

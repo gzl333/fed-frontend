@@ -185,14 +185,13 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
     return groupOptions
   },
   // 排序用户个人服务器资源 todo
-  getUserCreateTime: (state) => (): UserPersonalServerInterface[] => {
+  getUserByCreateTime: (state) => (): UserPersonalServerInterface[] => {
     // 排序函数，根据申请时间降序排列
     const sortFn = (a: UserPersonalServerInterface, b: UserPersonalServerInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
     const rows: UserPersonalServerInterface[] = []
     for (const application of Object.values(state.tables.userPersonalServerTable.byId)) {
       rows.push(application)
     }
-    // console.log('111111', rows)
     return rows.sort(sortFn)
   },
   getGroupServersByGroupId: (state) => (groupId: string): ServerInterface[] => {

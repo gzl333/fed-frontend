@@ -15,13 +15,16 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="ipv4" :props="props">
-            {{ props.row.ipv4 }}
+            <q-btn
+              class="q-ma-none" :label="props.row.ipv4" color="primary" padding="none" flat dense unelevated
+              :to="{path: '/my/group/server/detail/' + props.row.id}">
+              <q-tooltip>
+                {{ $t('进入云主机详情') }}
+              </q-tooltip>
+            </q-btn>
           </q-td>
-          <q-td key="vcpus" :props="props">
-            {{ props.row.vcpus }}
-          </q-td>
-          <q-td key="ram" :props="props">
-            {{ props.row.ram / 1024 }}GB
+          <q-td key="configuration" :props="props">
+            {{ `${props.row.vcpus}核${props.row.ram / 1024}GB` }}
           </q-td>
           <q-td key="public_ip" :props="props">
             {{ props.row.public_ip === true ? '公网' : '非公网' }}
@@ -50,8 +53,7 @@
     <div class="q-pa-md row justify-end">
       <div class="text-subtitle1 text-weight-bold q-mr-lg">
             <span>
-            15条/页 共
-            {{paginationTable.count}}条数据
+            15条/页 共{{paginationTable.count}}条数据
           </span>
       </div>
       <div>
@@ -81,30 +83,24 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
     // 获取列表数据
-    const rows = computed(() => $store.getters['vm/getUserCreateTime']())
+    const rows = computed(() => $store.getters['vm/getUserByCreateTime']())
 
     // 列表分栏定义
     const columns = [
       {
         name: 'ipv4',
-        label: 'IP',
+        label: 'IP地址',
         field: 'ipv4',
         align: 'center',
         style: 'padding: 15px 5px'
       },
       {
-        name: 'vcpus',
-        label: 'vcpus',
-        field: 'vcpus',
+        name: 'configuration',
+        label: 'CPU/内存',
+        field: 'configuration',
         align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'ram',
-        label: '内存',
-        field: 'ram',
-        align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
       },
       {
         name: 'public_ip',

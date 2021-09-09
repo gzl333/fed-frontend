@@ -62,7 +62,7 @@
                     :disable="isProd"
                     class="q-px-none q-py-md q-mx-md"
                     name="resources"
-                    icon="task_alt"
+                    icon="view_agenda"
                     label="资源信息"
                     :ripple="false"
                     to="/my/provider/resources"
