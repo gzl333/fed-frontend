@@ -47,6 +47,14 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
         // globalServiceTable依赖globalDataCenterTable。更新serviceTable时会补充globalServices内容
         if (!context.state.tables.globalServiceTable.isLoaded) {
           void context.dispatch('updateGlobalServiceTable').then(() => {
+            if (!context.state.tables.privateQuotaTable.isLoaded && !context.state.tables.shareQuotaTable.isLoaded) {
+              for (const id of context.state.tables.globalServiceTable.allIds) {
+                void context.dispatch('loadPrivateQuotaTable', id)
+                void context.dispatch('loadShareQuotaTable', id)
+              }
+            }
+          })
+          void context.dispatch('updateGlobalServiceTable').then(() => {
             if (!context.state.tables.globalNetworkTable.isLoaded) {
               void context.dispatch('loadGlobalNetworkTable')
             }
@@ -663,7 +671,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     const response = await axios.get(api, config)
     return response
   },
-  // todo
+  // duyukuan
   async fetchUserPersonalServer (context, payload: { page?: number; page_size?: number}) {
     const api = apiBase + '/server/'
     const config = {
@@ -691,6 +699,34 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
       }
     }
     return respGroupServer
+  },
+  // 服务私有配额actions
+  async fetchPrivateQuota (context, id) {
+    const api = apiBase + '/service/' + id + '/p-quota/'
+    const response = await axios.get(api)
+    return response
+  },
+  async loadPrivateQuotaTable (context, id) {
+    const respQuota = await context.dispatch('fetchPrivateQuota', id)
+    Object.assign(respQuota.data, { id: id })
+    const quota = new schema.Entity('quota')
+    const normalizedData = normalize(respQuota.data, quota)
+    context.commit('storePrivateQuotaTable', normalizedData.entities.quota)
+    return respQuota
+  },
+  // 服务共享配额actions
+  async fetchShareQuota (context, id) {
+    const api = apiBase + '/service/' + id + '/s-quota/'
+    const response = await axios.get(api)
+    return response
+  },
+  async loadShareQuotaTable (context, id) {
+    const respQuota = await context.dispatch('fetchShareQuota', id)
+    Object.assign(respQuota.data, { id: id })
+    const quota = new schema.Entity('quota')
+    const normalizedData = normalize(respQuota.data, quota)
+    context.commit('storeShareQuotaTable', normalizedData.entities.quota)
+    return respQuota
   },
   // 获取并保存单个server的status
   async updateGroupServerTableSingleStatus (context, serverId: string) {

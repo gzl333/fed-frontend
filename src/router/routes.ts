@@ -1,5 +1,7 @@
 import { RouteRecordRaw } from 'vue-router'
 
+// @ts-ignore
+// @ts-ignore
 const routes: RouteRecordRaw[] = [
   {
     path: '/',
@@ -373,6 +375,13 @@ const routes: RouteRecordRaw[] = [
               requireLogin: true
             },
             component: () => import('pages/My/Federation/AuditList.vue')
+          },
+          {
+            path: 'resourceAggregation',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/My/Federation/ResourceAggregation.vue')
           }
         ]
       }

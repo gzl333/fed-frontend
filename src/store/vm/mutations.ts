@@ -8,7 +8,7 @@ import {
   FlavorInterface,
   VpnInterface,
   QuotaInterface,
-  ServerInterface, UserPersonalServerInterface, PersonalUserQuota
+  ServerInterface, UserPersonalServerInterface, PersonalUserQuota, PrivateQuotaInterface, ShareQuotaInterface
 } from './state'
 
 const mutation: MutationTree<VmModuleInterface> = {
@@ -134,7 +134,7 @@ const mutation: MutationTree<VmModuleInterface> = {
     state.tables.userPersonalServerTable.allIds = []
     state.tables.userPersonalServerTable.isLoaded = false
   },
-  // todo
+  // duyukuan
   storeUserPersonalServerTable (state, tableObj: Record<string, UserPersonalServerInterface>) {
     Object.assign(state.tables.userPersonalServerTable.byId, tableObj)
     state.tables.userPersonalServerTable.allIds.unshift(Object.keys(tableObj)[0])
@@ -146,6 +146,20 @@ const mutation: MutationTree<VmModuleInterface> = {
     state.tables.userPersonalQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
     state.tables.userPersonalQuotaTable.allIds = [...new Set(state.tables.userPersonalQuotaTable.allIds)]
     state.tables.userPersonalQuotaTable.isLoaded = true
+  },
+  // 存入服务私有配额
+  storePrivateQuotaTable (state, tableObj: Record<string, PrivateQuotaInterface>) {
+    Object.assign(state.tables.privateQuotaTable.byId, tableObj)
+    state.tables.privateQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.tables.privateQuotaTable.allIds = [...new Set(state.tables.privateQuotaTable.allIds)]
+    state.tables.privateQuotaTable.isLoaded = true
+  },
+  // 存入服务共享配额
+  storeShareQuotaTable (state, tableObj: Record<string, ShareQuotaInterface>) {
+    Object.assign(state.tables.shareQuotaTable.byId, tableObj)
+    state.tables.shareQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.tables.shareQuotaTable.allIds = [...new Set(state.tables.shareQuotaTable.allIds)]
+    state.tables.shareQuotaTable.isLoaded = true
   },
   storeUserServerTable (state, tableObj: Record<string, ServerInterface>) {
     Object.assign(state.tables.userServerTable.byId, tableObj)
@@ -183,6 +197,7 @@ const mutation: MutationTree<VmModuleInterface> = {
   storeGlobalServiceTable (state, tableObj: Record<string, ServiceInterface>) {
     // 将service对象补充至globalServiceTable.byId
     Object.assign(state.tables.globalServiceTable.byId, tableObj)
+    console.log(state.tables.globalServiceTable.allIds)
     // 更新globalServiceTable.allIds，更新后去重
     state.tables.globalServiceTable.allIds.unshift(Object.keys(tableObj)[0])
     state.tables.globalServiceTable.allIds = [...new Set(state.tables.globalServiceTable.allIds)]

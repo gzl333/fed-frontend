@@ -184,7 +184,7 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
 
     return groupOptions
   },
-  // 排序用户个人服务器资源 todo
+  // 排序用户个人服务器资源 duyukuan
   getUserByCreateTime: (state) => (): UserPersonalServerInterface[] => {
     // 排序函数，根据申请时间降序排列
     const sortFn = (a: UserPersonalServerInterface, b: UserPersonalServerInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
@@ -193,6 +193,89 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
       rows.push(application)
     }
     return rows.sort(sortFn)
+  },
+  // 返回groupServiceTable allIds
+  getAllIds: (state) => (): string[] => {
+    const ids: string[] = []
+    console.log('allids', state.tables.globalServiceTable.allIds)
+    for (const item of state.tables.globalServiceTable.allIds) {
+      console.log('this is item', item)
+      ids.push(item)
+    }
+    return ids
+  },
+  // 计算总值
+  getPrivateNum: (state) => (): { private_ip_total: number; public_ip_used: number; public_ip_total: number; private_ip_used: number; vcpu_total: number; ram_total: number; disk_size_total: number; vcpu_used: number; ram_used: number; disk_size_used: number } => {
+    let public_ip_total = 0
+    let public_ip_used = 0
+    let private_ip_total = 0
+    let private_ip_used = 0
+    let vcpu_total = 0
+    let vcpu_used = 0
+    let ram_total = 0
+    let ram_used = 0
+    let disk_size_total = 0
+    let disk_size_used = 0
+    for (const item of state.tables.privateQuotaTable.allIds) {
+      public_ip_total = public_ip_total + state.tables.privateQuotaTable.byId[item].public_ip_total
+      public_ip_used = public_ip_used + state.tables.privateQuotaTable.byId[item].public_ip_used
+      private_ip_total = private_ip_total + state.tables.privateQuotaTable.byId[item].private_ip_total
+      private_ip_used = private_ip_used + state.tables.privateQuotaTable.byId[item].private_ip_used
+      vcpu_total = vcpu_total + state.tables.privateQuotaTable.byId[item].vcpu_total
+      vcpu_used = vcpu_used + state.tables.privateQuotaTable.byId[item].vcpu_used
+      ram_total = ram_total + state.tables.privateQuotaTable.byId[item].ram_total
+      ram_used = ram_used + state.tables.privateQuotaTable.byId[item].ram_used
+      disk_size_total = disk_size_total + state.tables.privateQuotaTable.byId[item].disk_size_total
+      disk_size_used = disk_size_used + state.tables.privateQuotaTable.byId[item].disk_size_used
+    }
+    return {
+      public_ip_total,
+      public_ip_used,
+      private_ip_total,
+      private_ip_used,
+      vcpu_total,
+      vcpu_used,
+      ram_total,
+      ram_used,
+      disk_size_total,
+      disk_size_used
+    }
+  },
+  getShareNum: (state) => (): { private_ip_total: number; public_ip_used: number; public_ip_total: number; private_ip_used: number; vcpu_total: number; ram_total: number; disk_size_total: number; vcpu_used: number; ram_used: number; disk_size_used: number } => {
+    let public_ip_total = 0
+    let public_ip_used = 0
+    let private_ip_total = 0
+    let private_ip_used = 0
+    let vcpu_total = 0
+    let vcpu_used = 0
+    let ram_total = 0
+    let ram_used = 0
+    let disk_size_total = 0
+    let disk_size_used = 0
+    for (const item of state.tables.shareQuotaTable.allIds) {
+      public_ip_total = public_ip_total + state.tables.shareQuotaTable.byId[item].public_ip_total
+      public_ip_used = public_ip_used + state.tables.shareQuotaTable.byId[item].public_ip_used
+      private_ip_total = private_ip_total + state.tables.shareQuotaTable.byId[item].private_ip_total
+      private_ip_used = private_ip_used + state.tables.shareQuotaTable.byId[item].private_ip_used
+      vcpu_total = vcpu_total + state.tables.shareQuotaTable.byId[item].vcpu_total
+      vcpu_used = vcpu_used + state.tables.shareQuotaTable.byId[item].vcpu_used
+      ram_total = ram_total + state.tables.shareQuotaTable.byId[item].ram_total
+      ram_used = ram_used + state.tables.shareQuotaTable.byId[item].ram_used
+      disk_size_total = disk_size_total + state.tables.shareQuotaTable.byId[item].disk_size_total
+      disk_size_used = disk_size_used + state.tables.shareQuotaTable.byId[item].disk_size_used
+    }
+    return {
+      public_ip_total,
+      public_ip_used,
+      private_ip_total,
+      private_ip_used,
+      vcpu_total,
+      vcpu_used,
+      ram_total,
+      ram_used,
+      disk_size_total,
+      disk_size_used
+    }
   },
   getGroupServersByGroupId: (state) => (groupId: string): ServerInterface[] => {
     const sortFn = (a: ServerInterface, b: ServerInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()

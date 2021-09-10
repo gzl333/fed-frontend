@@ -62,7 +62,7 @@ export interface ServerInterface {
   vnc?: string
   status?: string
 }
-// todo
+// duyukuan
 export interface PersonalUserQuota {
   id: string
   tag: {
@@ -98,7 +98,36 @@ export interface UserPersonalServerInterface {
     }
     lock: string
 }
-
+// 服务私有配额 duyukuan
+export interface PrivateQuotaInterface {
+  private_ip_total: number
+  public_ip_total: number
+  vcpu_total: number
+  ram_total: number
+  disk_size_total: number
+  private_ip_used: number
+  public_ip_used: number
+  vcpu_used: number
+  ram_used: number
+  disk_size_used: number
+  creation_time: number
+  enable: number
+}
+// 服务共享配额 duyukuan
+export interface ShareQuotaInterface {
+  private_ip_total: number
+  public_ip_total: number
+  vcpu_total: number
+  ram_total: number
+  disk_size_total: number
+  private_ip_used: number
+  public_ip_used: number
+  vcpu_used: number
+  ram_used: number
+  disk_size_used: number
+  creation_time: number
+  enable: number
+}
 export interface NetworkInterface {
   // 来自network接口
   id: string
@@ -298,7 +327,7 @@ export interface VmModuleInterface {
       isLoaded: boolean
     }
     /* 组table */
-    // 个人服务器table todo
+    // 个人服务器table duyukuan
     userPersonalServerTable: {
       byId: Record<string, UserPersonalServerInterface>
       allIds: string[]
@@ -306,6 +335,18 @@ export interface VmModuleInterface {
     }
     userPersonalQuotaTable: {
       byId: Record<string, PersonalUserQuota>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 服务私有配额 table
+    privateQuotaTable: {
+      byId: Record<string, PrivateQuotaInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 服务共享配额 table
+    shareQuotaTable: {
+      byId: Record<string, PrivateQuotaInterface>
       allIds: string[]
       isLoaded: boolean
     }
@@ -393,13 +434,23 @@ function state (): VmModuleInterface {
         allIds: [],
         isLoaded: false
       },
-      // todo
+      // duyukuan
       userPersonalServerTable: {
         byId: {},
         allIds: [],
         isLoaded: false
       },
       userPersonalQuotaTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      privateQuotaTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      shareQuotaTable: {
         byId: {},
         allIds: [],
         isLoaded: false

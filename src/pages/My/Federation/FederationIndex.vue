@@ -55,6 +55,15 @@
                     to="/my/federation/audit_list"
                     exact
                   />
+                  <q-route-tab
+                    class="q-px-none q-py-md q-mx-md"
+                    name="quota"
+                    icon="task_alt"
+                    label="资源汇聚"
+                    :ripple="false"
+                    to="/my/federation/resourceAggregation"
+                    exact
+                  />
                 </q-tabs>
               </div>
 
