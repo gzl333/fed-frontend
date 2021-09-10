@@ -120,33 +120,41 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
   },
   /* quotaList使用 */
 
-  /* vmcreate使用 */
-  getPublicNetworksByServiceId (state): NetworkInterface[] {
-    const serviceId = state.pages.vmCreate.serviceId
+  /* server deploy card使用 */
+  getPublicNetworksByServiceId: (state) => (serviceId: string): NetworkInterface[] => {
     return Object.values(state.tables.userNetworkTable.byLocalId).filter(network => network.public && network.service === serviceId)
   },
-  getPrivateNetworksByServicedId (state): NetworkInterface[] {
-    const serviceId = state.pages.vmCreate.serviceId
+  getPrivateNetworksByServicedId: (state) => (serviceId: string): NetworkInterface[] => {
     return Object.values(state.tables.userNetworkTable.byLocalId).filter(network => !network.public && network.service === serviceId)
   },
-  getImagesByServiceId (state): ImageInterface[] {
-    const serviceId = state.pages.vmCreate.serviceId
+  getImagesByServiceId: (state) => (serviceId: string): ImageInterface[] => {
     return Object.values(state.tables.userImageTable.byLocalId).filter(image => image.service === serviceId)
   },
-  // 只返回未过期guota
-  getQuotasByServiceId (state): QuotaInterface[] {
+  // 只返回未删除guota
+  getQuotasByServiceId: (state) => (serviceId: string, groupId?: string): QuotaInterface[] => {
     // expirtation_time字段为null时为长期配额，应视为最大时间
     const sortFn = (a: QuotaInterface, b: QuotaInterface) => new Date(b.expiration_time || 9999999999999).getTime() - new Date(a.expiration_time || 9999999999999).getTime()
-    const serviceId = state.pages.vmCreate.serviceId
-    return Object.values(state.tables.userQuotaTable.byId).filter(quota => {
-      if (!quota.deleted && quota.service === serviceId) {
-        return !quota.expired
-      } else {
-        return false
-      }
-    }).sort(sortFn)
+    // group
+    if (groupId) {
+      return Object.values(state.tables.groupQuotaTable.byId).filter(quota => {
+        if (!quota.deleted && quota.service === serviceId && quota.vo_id === groupId) {
+          return true
+        } else {
+          return false
+        }
+      }).sort(sortFn)
+    // personal
+    } else {
+      return Object.values(state.tables.userQuotaTable.byId).filter(quota => {
+        if (!quota.deleted && quota.service === serviceId) {
+          return true
+        } else {
+          return false
+        }
+      }).sort(sortFn)
+    }
   },
-  /* vmcreate使用 */
+  /* server deploy card使用 */
 
   /* 获取所有server */
   getServers (state): ServerInterface[] {
@@ -219,7 +227,7 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
       return quotasByStatus.sort(sortFn)
     }
   },
-  getGroupQuotasByFilter: (state) => (filter:string) : QuotaInterface[] => {
+  getGroupQuotasByFilter: (state) => (filter: string): QuotaInterface[] => {
     // expiration_time字段为null时为长期配额，应视为最大时间
     const sortFn = (a: QuotaInterface, b: QuotaInterface) => new Date(b.expiration_time || 9999999999999).getTime() - new Date(a.expiration_time || 9999999999999).getTime()
 

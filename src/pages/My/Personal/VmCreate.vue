@@ -18,7 +18,7 @@
 
         <div class="col">
 
-          <div class="column">
+<!--          <div class="column">-->
 
             <div class="col section">
               <div class="text-h7 text-primary section-title">
@@ -50,7 +50,7 @@
               </div>
             </div>
 
-          </div>
+<!--          </div>-->
 
           <div class="col section">
             <div class="text-h7 text-primary section-title">
@@ -261,16 +261,13 @@ export default defineComponent({
     // //radioService的选项数据根据dataCenters动态生成
     const flavors = computed(() => Object.values($store.state.vm.tables.globalFlavorTable.byId))
     // //依赖radioService Id选择值的数据
-    const publicNetworks = computed(() => $store.getters['vm/getPublicNetworksByServiceId'])
-    const privateNetworks = computed(() => $store.getters['vm/getPrivateNetworksByServicedId'])
-    const images = computed(() => $store.getters['vm/getImagesByServiceId'])
-    const quotas = computed(() => $store.getters['vm/getQuotasByServiceId'])
+    const quotas = computed(() => $store.getters['vm/getQuotasByServiceId'](radioService.value))
+    const publicNetworks = computed(() => $store.getters['vm/getPublicNetworksByServiceId'](radioService.value))
+    const privateNetworks = computed(() => $store.getters['vm/getPrivateNetworksByServicedId'](radioService.value))
+    const images = computed(() => $store.getters['vm/getImagesByServiceId'](radioService.value))
 
     // radio的选择状态
-    const radioService = computed({
-      get: () => $store.state.vm.pages.vmCreate.serviceId,
-      set: (value) => $store.commit('vm/storeVmCreatePageServiceId', value)
-    })
+    const radioService = ref('')
     // //radioDataCenter不对应实体radio按钮，而是根据radioService选择结果自动更新对应的dataCenterId
     const radioDataCenter = computed(() => {
       // console.log($store.state.vm.tables.userServiceTable.byId[radioService.value].data_center === $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.userServiceTable.byId[radioService.value].data_center].id)

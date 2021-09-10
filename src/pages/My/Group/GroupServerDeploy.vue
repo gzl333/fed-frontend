@@ -10,7 +10,7 @@
       </div>
 
       <div class="col">
-        <server-deploy-card :is-group="true" :quota-id="quotaId" :service-id="serviceId"/>
+        <server-deploy-card :is-group="true" :quota-id="quotaId" :service-id="serviceId" :group-id="groupId"/>
       </div>
 
     </div>
@@ -44,31 +44,17 @@ export default defineComponent({
       $router.go(-1)
     }
 
-    // 获取url所传参数.
-    /* 传参说明：
-    * 1. 都不传: 全部默认选择第一项
-    * 2. 只传groupId：
-    * 2. 只传quotaId: serviceId根据quotaId算出，quotaId
-    * 3. 只传service：service选择指定值，quota选择第一项
-    * 4. 同时传quota和service：则service被忽略
-    * */
-    let serviceId = computed(() => '')
-    let quotaId = ''
-    if ($route.query.quota) {
-      quotaId = $route.query.quota as string
-      serviceId = computed(() => $store.state.vm.tables.userQuotaTable.byId[quotaId]?.service)
-    } else {
-      if ($route.query.service) {
-        serviceId = computed(() => $route.query.service as string)
-      }
-    }
+    const groupId = $route.query.group as string
+    const serviceId = $route.query.service as string
+    const quotaId = $route.query.quota as string
 
     return {
       $router,
       locale,
       goBack,
       quotaId,
-      serviceId
+      serviceId,
+      groupId
     }
   }
 })

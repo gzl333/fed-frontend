@@ -201,12 +201,16 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     // 将响应normalize
     const service = new schema.Entity('service')
     const quota = new schema.Entity('quota', { service })
-    const respQuota = await context.dispatch('fetchUserQuota')
+    const respQuota = await context.dispatch('getQuota')
     // quota数组
     for (const data of respQuota.data.results) {
       /* 增加补充字段 */
       // 获取quota下对应的server列表
-      const respQuotaServers = await context.dispatch('fetchQuotaServers', data.id)
+      const respQuotaServers = await context.dispatch('getQuotaServers', {
+        path: {
+          quotaId: data.id
+        }
+      })
       const servers: string[] = []
       respQuotaServers.data.results.forEach((server: ServerInterface) => {
         servers.push(server.id)
@@ -228,15 +232,19 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
       context.commit('storeUserQuotaTable', normalizedData.entities.quota)
     }
   },
-  async fetchUserQuota () {
+  getQuota (context, payload?: { query: { page?: number; page_size?: number; service?: string; usable?: boolean; } }) {
     const api = apiBase + '/quota/'
-    const response = await axios.get(api)
-    return response
+    const config = {
+      params: payload?.query
+    }
+    return axios.get(api, config)
   },
-  async fetchQuotaServers (context, quotaId: string) {
-    const api = apiBase + '/quota/' + quotaId + '/servers/'
-    const response = await axios.get(api)
-    return response
+  getQuotaServers (context, payload: { path: { quotaId: string }, query: { page?: number; page_size?: number; } }) {
+    const api = apiBase + '/quota/' + payload.path.quotaId + '/servers/'
+    const config = {
+      params: payload.query
+    }
+    return axios.get(api, config)
   },
   /* userQuotaTable */
 
@@ -258,7 +266,11 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
         // 补充vo_id字段
         Object.assign(data, { vo_id: groupId })
         // 获取quota下对应的server列表
-        const respQuotaServers = await context.dispatch('fetchQuotaServers', data.id)
+        const respQuotaServers = await context.dispatch('getQuotaServers', {
+          path: {
+            quotaId: data.id
+          }
+        })
         const servers: string[] = []
         respQuotaServers.data.results.forEach((server: ServerInterface) => {
           servers.push(server.id)

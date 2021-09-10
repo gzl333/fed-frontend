@@ -34,7 +34,7 @@
 
           <div class="col">
             <q-radio
-              v-for="service in dataCenter.globalServices.map((serviceId) => $store.state.vm.tables.globalServiceTable.byId[serviceId])"
+              v-for="service in dataCenter.globalServices.map(id => $store.state.vm.tables.globalServiceTable.byId[id])"
               dense v-model="radioService" :val="service.id"
               :label=" locale === 'zh' ? service.name : service.name_en" :key="service.id"
               class="q-pb-sm q-mr-lg"/>
@@ -333,20 +333,26 @@ export default defineComponent({
 *  2. 传service/group: 默认选择指定service/group
 *  以下4步缺一不可
 */
-    // radio状态 (1)
-    const radioService = ref(props.serviceId)
-    const radioGroup = ref(props.groupId)
+    // radio 初始状态 (1)
+    const radioService = ref('')
+    const radioGroup = ref('')
     // radio的默认选择 (2)
     const chooseRadioService = () => {
-      if (!props.serviceId && $store.state.vm.tables.globalServiceTable.isLoaded) {
-        // 如果有指定service,则默认选取指定值，没有则选择第一项
-        radioService.value = props.serviceId || $store.state.vm.tables.globalServiceTable.allIds[0]
+      if (props.serviceId) {
+        radioService.value = props.serviceId
+      } else {
+        // if ($store.state.vm.tables.globalServiceTable.isLoaded) {
+        radioService.value = $store.state.vm.tables.globalServiceTable.allIds[0]
+        // }
       }
     }
     const chooseRadioGroup = () => {
-      if (!props.groupId && $store.state.group.tables.groupTable.isLoaded) {
-        // 如果有指定group,则默认选取指定值，没有则选择第一项
-        radioGroup.value = props.groupId || groups.value[0].id
+      if (props.groupId) {
+        radioGroup.value = props.groupId
+      } else {
+        // if ($store.state.group.tables.groupTable.isLoaded) {
+        radioGroup.value = groups.value[0]?.id
+        // }
       }
     }
     // setup时调用一次 (3) 没有传参时要选一次默认值
