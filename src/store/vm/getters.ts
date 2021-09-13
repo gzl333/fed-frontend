@@ -197,9 +197,7 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
   // 返回groupServiceTable allIds
   getAllIds: (state) => (): string[] => {
     const ids: string[] = []
-    console.log('allids', state.tables.globalServiceTable.allIds)
     for (const item of state.tables.globalServiceTable.allIds) {
-      console.log('this is item', item)
       ids.push(item)
     }
     return ids
