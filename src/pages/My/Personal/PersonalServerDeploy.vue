@@ -1,50 +1,40 @@
 <template>
-  <div class="GroupServerDeploy">
-
+  <div class="PersonalServerDeploy">
     <div class="column q-py-md">
 
       <div class="col q-pb-md title-area">
         <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                @click="goBack"/>
-        {{ $t('创建项目组云主机') }}
+        {{ $t('创建个人云主机') }}
       </div>
 
       <div class="col">
-        <server-deploy-card :is-group="true" :quota-id="quotaId" :service-id="serviceId" :group-id="groupId"/>
+        <server-deploy-card :is-group="false" :quota-id="quotaId" :service-id="serviceId"/>
       </div>
 
     </div>
-
   </div>
 </template>
 
 <script lang="ts">
-import { /* computed, */ defineComponent } from 'vue'
+import { defineComponent } from 'vue'
+import ServerDeployCard from 'components/Server/ServerDeployCard.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
-import ServerDeployCard from 'components/Server/ServerDeployCard.vue'
-// import { useStore } from 'vuex'
-// import { StateInterface } from 'src/store'
-
 export default defineComponent({
-  name: 'GroupServerDeploy',
-  components: {
-    ServerDeployCard
-  },
+  name: 'PersonalServerDeploy',
+  components: { ServerDeployCard },
   props: {},
   setup () {
-    // const $store = useStore<StateInterface>()
     const $router = useRouter()
     const $route = useRoute()
     const { locale } = useI18n({ useScope: 'global' })
-
     // 返回上一页
     const goBack = () => {
       $router.go(-1)
     }
 
-    const groupId = $route.query.group as string
     const serviceId = $route.query.service as string
     const quotaId = $route.query.quota as string
 
@@ -53,15 +43,14 @@ export default defineComponent({
       locale,
       goBack,
       quotaId,
-      serviceId,
-      groupId
+      serviceId
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.GroupServerDeploy {
+.PersonalServerDeploy {
 }
 
 .title-area {

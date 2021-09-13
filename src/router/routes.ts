@@ -75,24 +75,24 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'personal',
         component: () => import('pages/My/Personal/PersonalIndex.vue'),
-        redirect: '/my/personal/vm',
+        redirect: '/my/personal/server',
         meta: {
           title: '个人资源-中国科技云联邦'
         },
         children: [
           {
-            path: 'vm',
+            path: 'server',
             meta: {
               requireLogin: true
             },
             component: () => import('pages/My/Personal/Vm.vue')
           },
           {
-            path: 'vmcreate',
+            path: 'server/deploy',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/My/Personal/VmCreate.vue'),
+            component: () => import('pages/My/Personal/PersonalServerDeploy.vue'),
             props: true // 接收url中的参数
           },
           {
@@ -148,7 +148,7 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/My/Personal/QuotaDetail.vue')
           },
           {
-            path: 'quota_apply',
+            path: 'quota/apply',
             meta: {
               requireLogin: true
             },

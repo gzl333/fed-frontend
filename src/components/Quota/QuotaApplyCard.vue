@@ -15,7 +15,7 @@
         </div>
         <div class="row items-center q-gutter-md q-pb-lg">
           <div class="col-1">
-            {{ $t('配额所属项目组') }}
+            {{ $t('使用该配额的项目组') }}
           </div>
           <q-select class="col-4" outlined v-model="radioGroup" dense
                     :options="groups" map-options emit-value option-label="name" option-value="id"/>

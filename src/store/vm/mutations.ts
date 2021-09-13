@@ -83,12 +83,25 @@ const mutation: MutationTree<VmModuleInterface> = {
     state.tables.globalFlavorTable.allIds = [...new Set(state.tables.globalFlavorTable.allIds)]
     state.tables.globalFlavorTable.isLoaded = true
   },
+  storeGlobalImageTable (state, image: ImageInterface) {
+    // 存进allImageTable
+    Object.assign(state.tables.globalImageTable.byLocalId, { [image.localId]: image })
+    state.tables.globalImageTable.allLocalIds.unshift(image.localId)
+    state.tables.globalImageTable.allLocalIds = [...new Set(state.tables.globalImageTable.allLocalIds)]
+    state.tables.globalImageTable.isLoaded = true
+  },
   storeUserImageTable (state, image: ImageInterface) {
     // 存进allImageTable
     Object.assign(state.tables.userImageTable.byLocalId, { [image.localId]: image })
     state.tables.userImageTable.allLocalIds.unshift(image.localId)
     state.tables.userImageTable.allLocalIds = [...new Set(state.tables.userImageTable.allLocalIds)]
     state.tables.userImageTable.isLoaded = true
+  },
+  storeGlobalNetworkTable (state, network: NetworkInterface) {
+    Object.assign(state.tables.globalNetworkTable.byLocalId, { [network.localId]: network })
+    state.tables.globalNetworkTable.allLocalIds.unshift(network.localId)
+    state.tables.globalNetworkTable.allLocalIds = [...new Set(state.tables.globalNetworkTable.allLocalIds)]
+    state.tables.globalNetworkTable.isLoaded = true
   },
   storeUserNetworkTable (state, network: NetworkInterface) {
     // 存进allNetworkTable

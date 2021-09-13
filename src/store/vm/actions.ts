@@ -46,7 +46,14 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
       void context.dispatch('updateGlobalDataCenterTable').then(() => {
         // globalServiceTable依赖globalDataCenterTable。更新serviceTable时会补充globalServices内容
         if (!context.state.tables.globalServiceTable.isLoaded) {
-          void context.dispatch('updateGlobalServiceTable')
+          void context.dispatch('updateGlobalServiceTable').then(() => {
+            if (!context.state.tables.globalNetworkTable.isLoaded) {
+              void context.dispatch('loadGlobalNetworkTable')
+            }
+            if (!context.state.tables.globalNetworkTable.isLoaded) {
+              void context.dispatch('loadGlobalImageTable')
+            }
+          })
         }
         // userServiceTable依赖globalDataCenterTable的存在，更新serviceTable时会补充userServices内容
         if (!context.state.tables.userServiceTable.isLoaded) {
@@ -85,7 +92,10 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     void context.dispatch('updateUserQuotaTable')
     void context.dispatch('updateGlobalDataCenterTable').then(() => {
       // globalServiceTable依赖globalDataCenterTable。更新serviceTable时会补充globalServices内容
-      void context.dispatch('updateGlobalServiceTable')
+      void context.dispatch('updateGlobalServiceTable').then(() => {
+        void context.dispatch('loadGlobalNetworkTable')
+        void context.dispatch('loadGlobalImageTable')
+      })
       // userServiceTable依赖globalDataCenterTable的存在，更新serviceTable时会补充userServices内容
       void context.dispatch('updateUserServiceTable').then(() => {
         // 获取依赖userServiceTable的表
@@ -411,6 +421,33 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   },
   /* globalFlavorTable */
 
+  /* globalImageTable -> 依赖 globalServiceTable */
+  async loadGlobalImageTable (context) {
+    for (const serviceId of context.state.tables.globalServiceTable.allIds) {
+      const respImage = await context.dispatch('getImage', { query: { service_id: serviceId } })
+      for (const image of respImage.data) {
+        // 将service 和 localId补充进image对象
+        Object.assign(image, {
+          service: serviceId,
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          localId: `${serviceId}-${image.id}`
+        })
+        context.commit('storeGlobalImageTable', image)
+      }
+    }
+    // console.log(context.state.userImageTable)
+  },
+  getImage (context, payload: { query: { service_id: string } }) {
+    const api = apiBase + '/image/'
+    const config = {
+      params: {
+        service_id: payload.query.service_id
+      }
+    }
+    return axios.get(api, config)
+  },
+  /* globalImageTable */
+
   /* userImageTable -> 依赖 userServiceTable */
   async updateUserImageTable (context) {
     for (const serviceId of context.state.tables.userServiceTable.allIds) {
@@ -438,6 +475,33 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     return response
   },
   /* userImageTable */
+
+  /* globalNetworkTable -> 依赖 globalServiceTable */
+  async loadGlobalNetworkTable (context) {
+    for (const serviceId of context.state.tables.globalServiceTable.allIds) {
+      const respNetwork = await context.dispatch('getNetwork', { query: { service_id: serviceId } })
+      for (const network of respNetwork.data) {
+        // 将service 和 localId补充进network对象
+        Object.assign(network, {
+          service: serviceId,
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          localId: `${serviceId}-${network.id}`
+        })
+        context.commit('storeGlobalNetworkTable', network)
+      }
+    }
+    // console.log(context.state.userNetworkTable)
+  },
+  getNetwork (context, payload: { query: { service_id: string } }) {
+    const api = apiBase + '/network/'
+    const config = {
+      params: {
+        service_id: payload.query.service_id
+      }
+    }
+    return axios.get(api, config)
+  },
+  /* globalNetworkTable */
 
   /* userNetworkTable -> 依赖 userServiceTable */
   async updateUserNetworkTable (context) {
@@ -498,8 +562,8 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     return axios.patch(api, null, config)
   },
   // 更新单个server的信息
-  async updateUserServerTableSingleServer (context, serverId: string) {
-    const respSingleServer = await context.dispatch('fetchSingleServer', serverId)
+  async updateServerTableSingleServer (context, payload: { serverId: string; isGroup:boolean}) {
+    const respSingleServer = await context.dispatch('fetchSingleServer', payload.serverId)
     // 将响应normalize，存入state里的userServerTable
     const service = new schema.Entity('service')
     const user_quota = new schema.Entity('user_quota')
@@ -508,9 +572,13 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
       user_quota
     })
     const normalizedData = normalize(respSingleServer.data.server, server)
-    context.commit('storeUserServerTable', normalizedData.entities.server)
-    // 获取新的server后都需要更新status，写在这里
-    void await context.dispatch('updateUserServerTableSingleStatus', serverId)
+    if (payload.isGroup) {
+      context.commit('storeGroupServerTable', normalizedData.entities.server)
+      void context.dispatch('updateGroupServerTableSingleStatus', payload.serverId)
+    } else {
+      context.commit('storeUserServerTable', normalizedData.entities.server)
+      void context.dispatch('updateUserServerTableSingleStatus', payload.serverId)
+    }
   },
   // 获取并保存单个server的status
   async updateUserServerTableSingleStatus (context, serverId: string) {
@@ -525,6 +593,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
       status_code: respStatus.data.status.status_code
     })
   },
+
   async fetchServerStatus (context, serverId: string) {
     const api = apiBase + '/server/' + serverId + '/status/'
     const response = await axios.get(api)
@@ -553,11 +622,16 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     const response = axios.get(api)
     return response
   },
-  async createServer (context, payload: { service_id: string; network_id: string; image_id: string; flavor_id: string; quota_id: string; remarks?: string; }) {
+  async createServer (context, payload: { service_id: string; network_id?: string; image_id: string; flavor_id: string; quota_id: string; remarks?: string; }) {
     const api = apiBase + '/server/'
     const data = payload
     const response = axios.post(api, data)
     return response
+  },
+  postServer (context, payload: { body: { service_id: string; network_id?: string; image_id: string; flavor_id: string; quota_id: string; remarks?: string; } }) {
+    const api = apiBase + '/server/'
+    const data = payload.body
+    return axios.post(api, data)
   },
   /*  userServerTable */
 
@@ -634,7 +708,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   /*  globalServiceTable */
   async updateGlobalServiceTable (context) {
     // 发送请求
-    const respService = await context.dispatch('fetchService')
+    const respService = await context.dispatch('getService')
     // 将响应normalize，存入state里的serviceTable
     const data_center = new schema.Entity('data_center')
     const service = new schema.Entity('service', { data_center })
@@ -654,7 +728,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   /*  userServiceTable */
   async updateUserServiceTable (context) {
     // 发送请求
-    const respService = await context.dispatch('fetchService', { available_only: true }) // 配额失效则用户看不到相关service信息
+    const respService = await context.dispatch('getService', { available_only: true }) // 配额失效则用户看不到相关service信息
     // 将响应normalize，存入state里的serviceTable
     const data_center = new schema.Entity('data_center')
     const service = new schema.Entity('service', { data_center })
@@ -669,18 +743,12 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
       })
     })
   },
-  async fetchService (context, payload?: { page?: number; page_size?: number; center_id?: string; available_only?: boolean; }) {
+  getService (context, payload?: { query: { page?: number; page_size?: number; center_id?: string; available_only?: boolean; } }) {
     const api = apiBase + '/service/'
-    let response
-    if (payload) {
-      const config = {
-        params: payload
-      }
-      response = await axios.get(api, config)
-    } else {
-      response = await axios.get(api)
+    const config = {
+      params: payload
     }
-    return response
+    return axios.get(api, config)
   },
   /*  userServiceTable */
 

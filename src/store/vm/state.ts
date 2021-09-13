@@ -186,6 +186,18 @@ export interface VmModuleInterface {
       allIds: string[]
       isLoaded: boolean
     }
+    // 全局的network -> 依赖globalServiceTable
+    globalNetworkTable: {
+      byLocalId: Record<string, NetworkInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
+      allLocalIds: string[]
+      isLoaded: boolean
+    }
+    // 全局image -> 依赖globalServiceTable
+    globalImageTable: {
+      byLocalId: Record<string, ImageInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
+      allLocalIds: string[]
+      isLoaded: boolean
+    }
     /* 全局table */
 
     /* 个人table */
@@ -274,6 +286,16 @@ function state (): VmModuleInterface {
       globalServiceTable: {
         byId: {},
         allIds: [],
+        isLoaded: false
+      },
+      globalNetworkTable: {
+        byLocalId: {},
+        allLocalIds: [],
+        isLoaded: false
+      },
+      globalImageTable: {
+        byLocalId: {},
+        allLocalIds: [],
         isLoaded: false
       },
       userServiceTable: {
