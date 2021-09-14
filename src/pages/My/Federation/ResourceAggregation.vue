@@ -85,11 +85,11 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const ids = computed(() => $store.getters['vm/getAllIds']())
+    // const ids = computed(() => $store.getters['vm/getAllIds']())
     const privateNum = computed(() => $store.getters['vm/getPrivateNum']())
     const shareNum = computed(() => $store.getters['vm/getShareNum']())
     return {
-      ids,
+      // ids,
       privateNum,
       shareNum
     }

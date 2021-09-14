@@ -8,7 +8,8 @@ import {
   FlavorInterface,
   VpnInterface,
   QuotaInterface,
-  ServerInterface, UserPersonalServerInterface, PersonalUserQuota, PrivateQuotaInterface, ShareQuotaInterface
+  ServerInterface,
+  PersonalUserQuota, ServiceQuotaStatInterface
 } from './state'
 
 const mutation: MutationTree<VmModuleInterface> = {
@@ -129,37 +130,37 @@ const mutation: MutationTree<VmModuleInterface> = {
     state.tables.groupServerTable.allIds = []
     state.tables.groupServerTable.isLoaded = false
   },
-  clearUserPersonalServerTable (state) {
-    state.tables.userPersonalServerTable.byId = {}
-    state.tables.userPersonalServerTable.allIds = []
-    state.tables.userPersonalServerTable.isLoaded = false
+  clearProviderServerTable (state) {
+    state.tables.providerServerTable.byId = {}
+    state.tables.providerServerTable.allIds = []
+    state.tables.providerServerTable.isLoaded = false
   },
   // duyukuan
-  storeUserPersonalServerTable (state, tableObj: Record<string, UserPersonalServerInterface>) {
-    Object.assign(state.tables.userPersonalServerTable.byId, tableObj)
-    state.tables.userPersonalServerTable.allIds.unshift(Object.keys(tableObj)[0])
-    state.tables.userPersonalServerTable.allIds = [...new Set(state.tables.userPersonalServerTable.allIds)]
-    state.tables.userPersonalServerTable.isLoaded = true
+  storeProviderServerTable (state, tableObj: Record<string, ServerInterface>) {
+    Object.assign(state.tables.providerServerTable.byId, tableObj)
+    state.tables.providerServerTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.tables.providerServerTable.allIds = [...new Set(state.tables.providerServerTable.allIds)]
+    state.tables.providerServerTable.isLoaded = true
   },
-  storeUserPersonalQuotaTable (state, tableObj: Record<string, PersonalUserQuota>) {
-    Object.assign(state.tables.userPersonalQuotaTable.byId, tableObj)
-    state.tables.userPersonalQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
-    state.tables.userPersonalQuotaTable.allIds = [...new Set(state.tables.userPersonalQuotaTable.allIds)]
-    state.tables.userPersonalQuotaTable.isLoaded = true
+  storeProviderQuotaTable (state, tableObj: Record<string, PersonalUserQuota>) {
+    Object.assign(state.tables.providerQuotaTable.byId, tableObj)
+    state.tables.providerQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.tables.providerQuotaTable.allIds = [...new Set(state.tables.providerQuotaTable.allIds)]
+    state.tables.providerQuotaTable.isLoaded = true
   },
   // 存入服务私有配额
-  storePrivateQuotaTable (state, tableObj: Record<string, PrivateQuotaInterface>) {
-    Object.assign(state.tables.privateQuotaTable.byId, tableObj)
-    state.tables.privateQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
-    state.tables.privateQuotaTable.allIds = [...new Set(state.tables.privateQuotaTable.allIds)]
-    state.tables.privateQuotaTable.isLoaded = true
+  storePrivateServiceQuotaStatTable (state, tableObj: Record<string, ServiceQuotaStatInterface>) {
+    Object.assign(state.tables.privateServiceQuotaStatTable.byId, tableObj)
+    state.tables.privateServiceQuotaStatTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.tables.privateServiceQuotaStatTable.allIds = [...new Set(state.tables.privateServiceQuotaStatTable.allIds)]
+    state.tables.privateServiceQuotaStatTable.isLoaded = true
   },
   // 存入服务共享配额
-  storeShareQuotaTable (state, tableObj: Record<string, ShareQuotaInterface>) {
-    Object.assign(state.tables.shareQuotaTable.byId, tableObj)
-    state.tables.shareQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
-    state.tables.shareQuotaTable.allIds = [...new Set(state.tables.shareQuotaTable.allIds)]
-    state.tables.shareQuotaTable.isLoaded = true
+  storeSharedServiceQuotaStatTable (state, tableObj: Record<string, ServiceQuotaStatInterface>) {
+    Object.assign(state.tables.sharedServiceQuotaStatTable.byId, tableObj)
+    state.tables.sharedServiceQuotaStatTable.allIds.unshift(Object.keys(tableObj)[0])
+    state.tables.sharedServiceQuotaStatTable.allIds = [...new Set(state.tables.sharedServiceQuotaStatTable.allIds)]
+    state.tables.sharedServiceQuotaStatTable.isLoaded = true
   },
   storeUserServerTable (state, tableObj: Record<string, ServerInterface>) {
     Object.assign(state.tables.userServerTable.byId, tableObj)

@@ -1,5 +1,10 @@
 <template>
   <div class="Manage">
+    <div class="row justify-end">
+      <div class="col-3">
+        <q-select outlined dense stack-label label="筛选" :options="filterOptions" v-model="filterSelection" @change="change"/>
+      </div>
+    </div>
     <q-table
       flat
       card-class=""
@@ -15,19 +20,29 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="ipv4" :props="props">
-            <q-btn
-              class="q-ma-none" :label="props.row.ipv4" color="primary" padding="none" flat dense unelevated
-              :to="{path: '/my/group/server/detail/' + props.row.id}">
-              <q-tooltip>
-                {{ $t('进入云主机详情') }}
-              </q-tooltip>
-            </q-btn>
+            {{props.row.ipv4}}
+<!--            <q-btn-->
+<!--              class="q-ma-none" :label="props.row.ipv4" color="primary" padding="none" flat dense unelevated-->
+<!--              :to="{path: '/my/group/server/detail/' + props.row.id}">-->
+<!--              <q-tooltip>-->
+<!--                {{ $t('进入云主机详情') }}-->
+<!--              </q-tooltip>-->
+<!--            </q-btn>-->
+          </q-td>
+          <q-td key="service" :props="props">
+            <div>{{ $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name }}</div>
+          </q-td>
+          <q-td key="user" :props="props">
+            {{ props.row.user.username }}
+          </q-td>
+          <q-td key="remark" :props="props">
+            {{ props.row.remarks }}
           </q-td>
           <q-td key="configuration" :props="props">
-            {{ `${props.row.vcpus}核${props.row.ram / 1024}GB` }}
+            {{ `${props.row.vcpus}核/${props.row.ram / 1024}GB` }}
           </q-td>
           <q-td key="public_ip" :props="props">
-            {{ props.row.public_ip === true ? '公网' : '非公网' }}
+            {{ props.row.public_ip === true ? '公网' : '私网' }}
           </q-td>
           <q-td key="creation_time" :props="props">
             {{ new Date(props.row.creation_time).toLocaleString() }}
@@ -35,18 +50,15 @@
           <q-td key="expiration_time" :props="props">
             {{ new Date(props.row.expiration_time).toLocaleString() }}
           </q-td>
-          <q-td key="service" :props="props">
-            <div>{{ $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name }}</div>
-          </q-td>
-          <q-td key="user_quota" :props="props">
-            {{ !$store.state.vm.tables.userPersonalQuotaTable.byId[props.row.user_quota]?.display ? '暂时为空' : $store.state.vm.tables.userPersonalQuotaTable.byId[props.row.user_quota]?.display}}
-          </q-td>
+
+<!--          <q-td key="user_quota" :props="props">-->
+<!--            {{ !$store.state.vm.tables.providerServerTable.byId[props.row.user_quota]?.display ? '暂时为空' : $store.state.vm.tables.providerServerTable.byId[props.row.user_quota]?.display}}-->
+<!--          </q-td>-->
+
           <q-td key="center_quota" :props="props">
-            {{ props.row.center_quota === 1 ? '服务器的私有资源配额' : '服务器的分享资源配额' }}
+            {{ props.row.center_quota === 1 ? '私有配额' : '共享配额' }}
           </q-td>
-          <q-td key="user" :props="props">
-            {{ props.row.user.username }}
-          </q-td>
+
         </q-tr>
       </template>
     </q-table>
@@ -95,6 +107,27 @@ export default defineComponent({
         style: 'padding: 15px 5px'
       },
       {
+        name: 'service',
+        label: '服务节点',
+        field: 'service',
+        align: 'center',
+        style: 'padding: 15px 5px'
+      },
+      {
+        name: 'user',
+        label: '用户',
+        field: 'user',
+        align: 'center',
+        style: 'padding: 15px 5px'
+      },
+      {
+        name: 'remark',
+        label: '备注',
+        field: 'remark',
+        align: 'center',
+        style: 'padding: 15px 5px'
+      },
+      {
         name: 'configuration',
         label: 'CPU/内存',
         field: 'configuration',
@@ -123,33 +156,45 @@ export default defineComponent({
         align: 'center',
         style: 'padding: 15px 5px'
       },
-      {
-        name: 'service',
-        label: '服务节点',
-        field: 'service',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'user_quota',
-        label: '配额情况',
-        field: 'user_quota',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
+      // {
+      //   name: 'user_quota',
+      //   label: '配额情况',
+      //   field: 'user_quota',
+      //   align: 'center',
+      //   style: 'padding: 15px 5px'
+      // },
       {
         name: 'center_quota',
         label: '配额类型',
         field: 'center_quota',
         align: 'center',
         style: 'padding: 15px 5px'
+      }
+    ]
+    const filterSelection = ref({
+      label: '全部服务',
+      value: ''
+    })
+    const filterOptions = [
+      {
+        label: '全部服务',
+        value: ''
       },
       {
-        name: 'user',
-        label: '用户',
-        field: 'user',
-        align: 'center',
-        style: 'padding: 15px 5px'
+        label: '科技云联邦研发与运行',
+        value: '1'
+      },
+      {
+        label: '大规模对象存储',
+        value: '2'
+      },
+      {
+        label: '国家基础学科公共科学数据中心',
+        value: '2ed4f32c-e8fc-11eb-bc44-c8009fe2eb03'
+      },
+      {
+        label: '中国科技云智能运管',
+        value: '82a060ea-b93b-11eb-90bc-c8009fe2eb03'
       }
     ]
 
@@ -167,6 +212,9 @@ export default defineComponent({
       service_id: 1,
       'as-admin': true
     }
+    const change = () => {
+      console.log(filterSelection.value)
+    }
     const changePagination = (val: number) => {
       payload.page = val
       void $store.dispatch('vm/loadUserServerTable', payload)
@@ -181,7 +229,10 @@ export default defineComponent({
       paginationTable,
       columns,
       rows,
-      changePagination
+      filterOptions,
+      filterSelection,
+      changePagination,
+      change
     }
   }
 })

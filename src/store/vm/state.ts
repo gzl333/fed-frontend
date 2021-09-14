@@ -57,6 +57,7 @@ export interface ServerInterface {
     id: string
     username: string
   }
+  lock: string
 
   // 来自status接口 根据status_code映射为文字状态
   vnc?: string
@@ -73,33 +74,33 @@ export interface PersonalUserQuota {
   deleted: boolean,
   display: string
 }
-export interface UserPersonalServerInterface {
-    id: string
-    name: string
-    vcpus: number
-    ram: number
-    ipv4: string
-    public_ip: boolean
-    image: string
-    creation_time: string
-    remarks: string
-    endpoint_url: string
-    service: string
-    user_quota: string
-    expiration_time: string | null
-    deleted: boolean
-    display: []
-    center_quota: number
-    classification: string
-    vo_id: string | null
-    user: {
-      id: string
-      username: string
-    }
-    lock: string
-}
+// export interface UserPersonalServerInterface {
+//     id: string
+//     name: string
+//     vcpus: number
+//     ram: number
+//     ipv4: string
+//     public_ip: boolean
+//     image: string
+//     creation_time: string
+//     remarks: string
+//     endpoint_url: string
+//     service: string
+//     user_quota: string
+//     expiration_time: string | null
+//     deleted: boolean
+//     display: []
+//     center_quota: number
+//     classification: string
+//     vo_id: string | null
+//     user: {
+//       id: string
+//       username: string
+//     }
+//     lock: string
+// }
 // 服务私有配额 duyukuan
-export interface PrivateQuotaInterface {
+export interface ServiceQuotaStatInterface {
   private_ip_total: number
   public_ip_total: number
   vcpu_total: number
@@ -113,21 +114,7 @@ export interface PrivateQuotaInterface {
   creation_time: number
   enable: number
 }
-// 服务共享配额 duyukuan
-export interface ShareQuotaInterface {
-  private_ip_total: number
-  public_ip_total: number
-  vcpu_total: number
-  ram_total: number
-  disk_size_total: number
-  private_ip_used: number
-  public_ip_used: number
-  vcpu_used: number
-  ram_used: number
-  disk_size_used: number
-  creation_time: number
-  enable: number
-}
+
 export interface NetworkInterface {
   // 来自network接口
   id: string
@@ -327,29 +314,35 @@ export interface VmModuleInterface {
       isLoaded: boolean
     }
     /* 组table */
+
+    /* provider table */
     // 个人服务器table duyukuan
-    userPersonalServerTable: {
-      byId: Record<string, UserPersonalServerInterface>
+    providerServerTable: {
+      byId: Record<string, ServerInterface>
       allIds: string[]
       isLoaded: boolean
     }
-    userPersonalQuotaTable: {
+    providerQuotaTable: {
       byId: Record<string, PersonalUserQuota>
       allIds: string[]
       isLoaded: boolean
     }
+    /* provider table */
+
+    /* federation management */
     // 服务私有配额 table
-    privateQuotaTable: {
-      byId: Record<string, PrivateQuotaInterface>
+    privateServiceQuotaStatTable: {
+      byId: Record<string, ServiceQuotaStatInterface>
       allIds: string[]
       isLoaded: boolean
     }
     // 服务共享配额 table
-    shareQuotaTable: {
-      byId: Record<string, PrivateQuotaInterface>
+    sharedServiceQuotaStatTable: {
+      byId: Record<string, ServiceQuotaStatInterface>
       allIds: string[]
       isLoaded: boolean
     }
+    /* federation management */
   }
 }
 
@@ -435,22 +428,22 @@ function state (): VmModuleInterface {
         isLoaded: false
       },
       // duyukuan
-      userPersonalServerTable: {
+      providerServerTable: {
         byId: {},
         allIds: [],
         isLoaded: false
       },
-      userPersonalQuotaTable: {
+      providerQuotaTable: {
         byId: {},
         allIds: [],
         isLoaded: false
       },
-      privateQuotaTable: {
+      privateServiceQuotaStatTable: {
         byId: {},
         allIds: [],
         isLoaded: false
       },
-      shareQuotaTable: {
+      sharedServiceQuotaStatTable: {
         byId: {},
         allIds: [],
         isLoaded: false
