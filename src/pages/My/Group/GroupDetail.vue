@@ -8,7 +8,7 @@
     <div class="row q-mt-xl">
         <div class="text-weight-bold text-subtitle1">云主机</div>
         <div class="q-ml-xl">
-          <q-btn outline color="primary" label="创建云主机"/>
+          <q-btn outline color="primary" label="创建云主机" :to="{path: '/my/group/server/deploy', query: {group: groupId}}"/>
         </div>
     </div>
     <div class="row q-mt-lg q-ml-xl">
@@ -129,11 +129,11 @@
     <div class="row q-mt-xl">
       <div class="text-weight-bold text-subtitle1">组配额</div>
       <div class="q-ml-xl">
-        <q-btn outline style="color: #2E9AFE" class="q-ml-md" label="申请组配额"/>
+        <q-btn outline style="color: #2E9AFE" class="q-ml-md" label="申请组配额" :to="{path: '/my/group/quota/apply', query: {group: groupId} }"/>
       </div>
     </div>
     <div class="q-mt-md">
-      <quota-table :quotas="$store.getters['vm/getGroupQuotasByGroupIdByStatus'](groupId)('valid')" ></quota-table>
+      <quota-table :is-group="true" :quotas="$store.getters['vm/getGroupQuotasByGroupIdByStatus'](groupId)('valid')" ></quota-table>
     </div>
   </div>
 </template>
