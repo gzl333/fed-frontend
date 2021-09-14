@@ -358,7 +358,7 @@ export default defineComponent({
 
     // todo 未传参id时，跳转处理
     // if (!props.serverId) {
-    //   void $router.push({ path: '/my/Personal/vm' })
+    //   void $router.push({ path: '/my/personal/server' })
     // }
 
     // server info

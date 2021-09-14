@@ -14,7 +14,7 @@
           {{ $t('项目组') }}
         </div>
         <div class="row items-center q-gutter-md q-pb-lg">
-          <div class="col-1">
+          <div class="col-auto">
             {{ $t('使用该配额的项目组') }}
           </div>
           <q-select class="col-4" outlined v-model="radioGroup" dense
@@ -190,7 +190,7 @@
 
       </div>
 
-      <div class="section">
+      <div class="summarize-section">
         <div class="text-h7 text-primary section-title">
           所选参数
         </div>
@@ -289,7 +289,7 @@
 
       </div>
 
-      <q-btn color="primary" @click="applyQuota" label="提交配额申请" unelevated :loading="isCreating"/>
+      <q-btn color="primary q-mb-xl" @click="applyQuota" label="提交配额申请" unelevated :loading="isCreating"/>
 
     </div>
   </div>
@@ -477,6 +477,12 @@ export default defineComponent({
   margin-bottom: 30px;
   padding: 10px 20px;
   border: 1px solid $grey-4;
+  border-radius: 5px;
+}
+.summarize-section {
+  margin-bottom: 30px;
+  padding: 10px 20px;
+  border: 1.5px solid $primary;
   border-radius: 5px;
 }
 

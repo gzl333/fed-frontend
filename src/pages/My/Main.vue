@@ -135,9 +135,9 @@
                   </div>
                   <div class="col-auto ">
                     <q-btn class="q-mr-md" flat padding="none" color="primary" icon="add"
-                           :to="{path: '/my/personal/vmcreate'}">新建
+                           :to="{path: '/my/personal/server/deploy'}">新建
                     </q-btn>
-                    <q-btn flat padding="none" color="primary" icon="more_horiz" :to="{path:'/my/personal/vm'}">更多
+                    <q-btn flat padding="none" color="primary" icon="more_horiz" :to="{path:'/my/personal/server'}">更多
                     </q-btn>
                   </div>
                 </div>
@@ -174,7 +174,7 @@
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
-import { StateInterface } from '../../store'
+import { StateInterface } from 'src/store'
 
 import GlobalHeader from 'components/GlobalHeader/GlobalHeader.vue'
 import ServerTable from 'components/Server/ServerTable.vue'

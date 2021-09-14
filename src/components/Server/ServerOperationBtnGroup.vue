@@ -34,7 +34,7 @@
 
         <q-list style="text-align:center">
           <q-item clickable v-close-popup class="bg-white text-primary"
-                  :to="{path: isGroup? `/my/group/server/detail/${props.server.id}` : `/my/personal/vmdetail/${props.server.id}`}">
+                  :to="{path: isGroup? `/my/group/server/detail/${props.server.id}` : `/my/personal/server/detail/${props.server.id}`}">
             <div class="row">
               <q-item-section class="col-auto">
                 <q-icon name="info" size="sm"/>

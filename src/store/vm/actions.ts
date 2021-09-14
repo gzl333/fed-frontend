@@ -114,7 +114,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   /* userQuotaTable */
   deleteAndUpdateUserQuotaTable (context, quotaId: string) {
     // 把整个对话框对象包在promise里。删除成功、失败包装为promise结果值。
-    const promise = new Promise((resolve, reject) => {
+    return new Promise((resolve, reject) => {
       // 操作的确认提示
       Dialog.create({
         class: 'dialog-primary',
@@ -144,7 +144,6 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
         }
       })
     })
-    return promise
   },
   deleteQuotaDialog (context, payload: { quotaId: string; isGroup: boolean }) {
     // 把整个对话框对象包在promise里。删除成功、失败包装为promise结果值。
@@ -622,12 +621,6 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     const response = axios.get(api)
     return response
   },
-  async createServer (context, payload: { service_id: string; network_id?: string; image_id: string; flavor_id: string; quota_id: string; remarks?: string; }) {
-    const api = apiBase + '/server/'
-    const data = payload
-    const response = axios.post(api, data)
-    return response
-  },
   postServer (context, payload: { body: { service_id: string; network_id?: string; image_id: string; flavor_id: string; quota_id: string; remarks?: string; } }) {
     const api = apiBase + '/server/'
     const data = payload.body
@@ -934,7 +927,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
           classes: 'notification-positive shadow-15',
           icon: 'mdi-check-circle',
           textColor: 'light-green',
-          message: '已经云主机备注为：' + respPatchRemark.data.remarks,
+          message: '成功修改云主机备注为：' + respPatchRemark.data.remarks,
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,

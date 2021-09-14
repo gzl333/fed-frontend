@@ -95,7 +95,7 @@
             </div>
 
             <div class="text-h7">2. 使用配额
-              <q-btn class="text-h7" flat color="primary" size="md" padding="none" :to="{path:'/my/personal/vmcreate'}">
+              <q-btn class="text-h7" flat color="primary" size="md" padding="none" :to="{path:'/my/personal/server/deploy'}">
                 创建云主机
               </q-btn>
             </div>

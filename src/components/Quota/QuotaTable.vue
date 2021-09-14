@@ -175,7 +175,7 @@
             <div class="row justify-center items-center q-gutter-xs">
               <q-btn icon="add_circle" flat dense padding="none" color="primary"
                      :disable="props.row.expired || props.row.exhausted"
-                     :to="{path: `/my/personal/vmcreate`, query:{quota:props.row.id}}">
+                     :to="{path: isGroup ? `/my/group/server/deploy` : `/my/personal/server/deploy`, query:{quota:props.row.id}}">
                 <q-tooltip>使用该配额创建云主机</q-tooltip>
               </q-btn>
 
@@ -243,7 +243,7 @@ export default defineComponent({
       },
       {
         name: 'service',
-        label: '服务节点',
+        label: '所属服务节点',
         field: 'service',
         align: 'center',
         style: 'padding: 15px 5px',

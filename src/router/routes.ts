@@ -96,7 +96,8 @@ const routes: RouteRecordRaw[] = [
             props: true // 接收url中的参数
           },
           {
-            path: 'vmdetail/:serverId', // serverId 动态路由匹配
+            // path: 'vmdetail/:serverId', // serverId 动态路由匹配
+            path: 'server/detail/:serverId', // serverId 动态路由匹配
             meta: {
               requireLogin: true
             },

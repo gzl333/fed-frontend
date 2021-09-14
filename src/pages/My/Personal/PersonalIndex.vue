@@ -36,19 +36,8 @@
                     icon="computer"
                     :label="$t('云主机')"
                     :ripple="false"
-                    to="/my/personal/vm"
+                    to="/my/personal/server"
                   />
-                  <!--                  <q-route-tab-->
-                  <!--                    disable-->
-                  <!--                    no-caps-->
-                  <!--                    class="q-px-none q-py-md q-mx-md"-->
-                  <!--                    name="disk"-->
-                  <!--                    icon="fas fa-compact-disc"-->
-                  <!--                    label="云硬盘"-->
-                  <!--                    :ripple="false"-->
-                  <!--                    to="/my/personal/vd"-->
-                  <!--                    exact-->
-                  <!--                  />-->
                   <q-route-tab
                     disable
                     no-caps

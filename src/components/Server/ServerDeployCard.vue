@@ -162,7 +162,7 @@
 
       <div class="col section">
         <div class="text-h7 text-primary section-title">
-          备注(可选)
+          备注
         </div>
         <div class="row item-row">
           <div class="col-6">
@@ -171,7 +171,7 @@
         </div>
       </div>
 
-      <div class="col section">
+      <div class="col summarize-section">
         <div class="text-h7 text-primary section-title">
           所选配置
         </div>
@@ -251,16 +251,15 @@
           <div class="col-shrink item-title-narrow text-grey">
             备注
           </div>
-          <div class="col item-radios">
-            {{
-              inputRemarks
-            }}
+          <div v-if="inputRemarks" class="col item-radios">
+            {{inputRemarks}}
           </div>
+          <div v-else class="text-red">请填写备注</div>
         </div>
 
       </div>
 
-      <q-btn color="primary" @click="deployServer" label="创建云主机" unelevated :loading="isDeploying"/>
+      <q-btn color="primary q-mb-xl" @click="deployServer" label="新建云主机" unelevated :loading="isDeploying"/>
 
     </div>
   </div>
@@ -367,11 +366,11 @@ export default defineComponent({
     })
     /* 在table都加载后，4个radio，随着group/service变化选择默认项 */
 
-    /* 创建云主机 */
+    /* 新建云主机 */
     const isDeploying = ref(false)
     const deployServer = async () => {
       // 如果radio没有选择全，则弹出通知
-      if (!radioService.value || !radioNetwork.value || !radioImage.value || !radioFlavor.value || !radioQuota.value) {
+      if (!radioService.value || !radioNetwork.value || !radioImage.value || !radioFlavor.value || !radioQuota.value || !inputRemarks.value) {
         Notify.create({
           classes: 'notification-negative shadow-15',
           icon: 'error',
@@ -392,63 +391,60 @@ export default defineComponent({
           quota_id: radioQuota.value,
           remarks: inputRemarks.value
         }
-        try {
-          const respPostServer = await $store.dispatch('vm/postServer', { body: selection })
-          console.log(selection)
-          if (respPostServer.status === 201) {
-            // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
-            void await $store.dispatch('vm/updateUserServerTableSingleServer', respPostServer.data.id)
-            // notify
-            Notify.create({
-              classes: 'notification-positive shadow-15',
-              icon: 'check_circle',
-              textColor: 'positive',
-              message: `成功创建云主机: ${$store.state.vm.tables.userServerTable.byId[respPostServer.data.id].ipv4}`,
-              position: 'bottom',
-              closeBtn: true,
-              timeout: 15000,
-              multiLine: false
-            })
-            // 改变按钮状态
-            isDeploying.value = false
-            // 跳转
-            void $router.push({ path: props.isGroup ? '/my/group/server' : '/my/personal/server' })
-          } else if (respPostServer.status === 202) {
-            // notify
-            Notify.create({
-              classes: 'notification-positive shadow-15',
-              icon: 'check_circle',
-              textColor: 'positive',
-              message: '云主机创建中...',
-              position: 'bottom',
-              closeBtn: true,
-              timeout: 15000,
-              multiLine: false
-            })
-            // 改变按钮状态
-            isDeploying.value = false
-            // 跳转
-            void $router.push({ path: props.isGroup ? '/my/group/server' : '/my/personal/server' })
-          }
-        } catch (error) {
+        const respPostServer = await $store.dispatch('vm/postServer', { body: selection })
+        if (respPostServer.status === 201) {
+          // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
+          void await $store.dispatch('vm/updateServerTableSingleServer', { serverId: respPostServer.data.id, isGroup: props.isGroup })
           // notify
           Notify.create({
-            classes: 'notification-negative shadow-15',
-            icon: 'error',
-            textColor: 'negative',
-            message: '创建云主机失败，请重试。',
-            caption: `${error.response.status as string}: ${error.response.data.message as string}`, // 应告诉ts取到的值为string
+            classes: 'notification-positive shadow-15',
+            icon: 'check_circle',
+            textColor: 'positive',
+            message: `成功新建云主机: ${props.isGroup ? $store.state.vm.tables.groupServerTable.byId[respPostServer.data.id].ipv4 : $store.state.vm.tables.userServerTable.byId[respPostServer.data.id].ipv4}`,
             position: 'bottom',
             closeBtn: true,
-            timeout: 5000,
+            timeout: 15000,
             multiLine: false
           })
+          // 改变按钮状态
+          isDeploying.value = false
+          // 跳转
+          void $router.push({ path: props.isGroup ? '/my/group/server' : '/my/personal/server' })
+        } else if (respPostServer.status === 202) {
+          // notify
+          Notify.create({
+            classes: 'notification-positive shadow-15',
+            icon: 'check_circle',
+            textColor: 'positive',
+            message: '云主机新建中，请稍候...',
+            position: 'bottom',
+            closeBtn: true,
+            timeout: 15000,
+            multiLine: false
+          })
+          // 改变按钮状态
+          isDeploying.value = false
+          // 跳转
+          void $router.push({ path: props.isGroup ? '/my/group/server' : '/my/personal/server' })
+        } else {
+          // notify 使用axios统一报错
+          // Notify.create({
+          //   classes: 'notification-negative shadow-15',
+          //   icon: 'error',
+          //   textColor: 'negative',
+          //   message: '新建云主机失败，请重试。',
+          //   caption: `${respPostServer.response.status as string}: ${respPostServer.response.data.message as string}`, // 应告诉ts取到的值为string
+          //   position: 'bottom',
+          //   closeBtn: true,
+          //   timeout: 5000,
+          //   multiLine: false
+          // })
           // 改变按钮状态
           isDeploying.value = false
         }
       }
     }
-    /* 创建云主机 */
+    /* 新建云主机 */
 
     return {
       $store,
@@ -497,6 +493,13 @@ export default defineComponent({
   margin-bottom: 30px;
   padding: 10px 20px;
   border: 1px solid $grey-4;
+  border-radius: 5px;
+}
+
+.summarize-section {
+  margin-bottom: 30px;
+  padding: 10px 20px;
+  border: 1.5px solid $primary;
   border-radius: 5px;
 }
 

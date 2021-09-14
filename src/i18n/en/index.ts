@@ -43,6 +43,9 @@ export default {
   组云主机: 'Group Server',
   组对象存储: 'Group Object Storage',
   组云主机配额: 'Group Server Quota',
+  组长: 'Owner',
+  管理员: 'Manager',
+  成员: 'Member',
 
   // vmtable
   长期: 'Long Term',
@@ -59,12 +62,12 @@ export default {
   云主机详情: 'Server detail',
 
   // 云主机状态
-  获取中: 'Updating...',
+  获取中: 'Updating',
   无法获取状态: 'No State',
   运行中: 'Running',
   已屏蔽: 'Blocked',
   已暂停: 'Paused',
-  正在关机: 'Stopping...',
+  正在关机: 'Stopping',
   已关机: 'Stopped',
   已崩溃: 'Crashed',
   被电源管理器挂起: 'Suspended',

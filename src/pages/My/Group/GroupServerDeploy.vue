@@ -6,7 +6,7 @@
       <div class="col q-pb-md title-area">
         <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                @click="goBack"/>
-        {{ $t('创建项目组云主机') }}
+        {{ $t('新建项目组云主机') }}
       </div>
 
       <div class="col">

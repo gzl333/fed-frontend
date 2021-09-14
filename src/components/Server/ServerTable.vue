@@ -40,7 +40,7 @@
 
             <q-btn
               class="q-ma-none" :label="props.row.ipv4" color="primary" padding="none" flat dense unelevated
-              :to="{path: isGroup ? `/my/group/server/detail/${props.row.id}` : `/my/personal/vmdetail/${props.row.id}`}">
+              :to="{path: isGroup ? `/my/group/server/detail/${props.row.id}` : `/my/personal/server/detail/${props.row.id}`}">
               <q-tooltip>
                 {{ $t('进入云主机详情') }}
               </q-tooltip>
