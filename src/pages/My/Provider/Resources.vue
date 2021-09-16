@@ -1,8 +1,8 @@
 <template>
   <div class="Manage">
-    <div class="row justify-end">
+    <div class="row justify-end q-mb-md">
       <div class="col-3">
-        <q-select outlined dense stack-label label="筛选" :options="filterOptions" v-model="filterSelection" @change="change"/>
+        <q-select map-options emit-value outlined dense stack-label label="筛选" :options="filterOptions" v-model="filterSelection" @update:model-value="change"/>
       </div>
     </div>
     <q-table
@@ -175,33 +175,8 @@ export default defineComponent({
       label: '全部服务',
       value: ''
     })
-    const filterOptions = [
-      {
-        label: '全部服务',
-        value: ''
-      },
-      {
-        label: '科技云联邦研发与运行',
-        value: '1'
-      },
-      {
-        label: '大规模对象存储',
-        value: '2'
-      },
-      {
-        label: '国家基础学科公共科学数据中心',
-        value: '2ed4f32c-e8fc-11eb-bc44-c8009fe2eb03'
-      },
-      {
-        label: '中国科技云智能运管',
-        value: '82a060ea-b93b-11eb-90bc-c8009fe2eb03'
-      }
-    ]
-
     // q-pagination 所需配置对象
     const paginationTable = ref({
-      // sortBy: 'desc',
-      // descending: false,
       page: 1,
       count: 0,
       rowsPerPage: 9999 // 此为能显示的最大行数
@@ -209,16 +184,24 @@ export default defineComponent({
     const payload = {
       page: 1,
       page_size: 15,
-      service_id: 1,
       'as-admin': true
     }
     const change = () => {
-      console.log(filterSelection.value)
+      Object.assign(payload, { service_id: filterSelection.value })
+      paginationTable.value.count = 0
+      paginationTable.value.page = 1
+      payload.page = 1
+      void $store.dispatch('vm/loadUserServerTable', payload).then((res) => {
+        paginationTable.value.count = res.data.count
+      }).catch(() => {
+        paginationTable.value.count = 0
+      })
     }
     const changePagination = (val: number) => {
       payload.page = val
       void $store.dispatch('vm/loadUserServerTable', payload)
     }
+    const filterOptions = computed(() => $store.getters['vm/getGlobalService'])
     onMounted(() => {
       void $store.dispatch('vm/loadUserServerTable', payload).then((res) => {
         paginationTable.value.count = res.data.count

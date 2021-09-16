@@ -198,14 +198,6 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
     }
     return rows.sort(sortFn)
   },
-  // 返回groupServiceTable allIds
-  getAllIds: (state) => (): string[] => {
-    const ids: string[] = []
-    for (const item of state.tables.globalServiceTable.allIds) {
-      ids.push(item)
-    }
-    return ids
-  },
   // 计算总值
   getPrivateNum (state): { private_ip_total: number; public_ip_used: number; public_ip_total: number; private_ip_used: number; vcpu_total: number; ram_total: number; disk_size_total: number; vcpu_used: number; ram_used: number; disk_size_used: number } {
     let public_ip_total = 0
@@ -278,6 +270,23 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
       disk_size_total,
       disk_size_used
     }
+  },
+  // 返回筛选全部项
+  getGlobalService (state): { value: string; label: string; }[] {
+    const serviceOptions = []
+    for (const group of Object.values(state.tables.globalServiceTable.byId)) {
+      serviceOptions.push(
+        {
+          value: group.id,
+          label: group.name
+        }
+      )
+    }
+    serviceOptions.unshift({
+      value: '',
+      label: i18n.global.locale === 'zh' ? '全部服务' : 'All Groups'
+    })
+    return serviceOptions
   },
   getGroupServersByGroupId: (state) => (groupId: string): ServerInterface[] => {
     const sortFn = (a: ServerInterface, b: ServerInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()

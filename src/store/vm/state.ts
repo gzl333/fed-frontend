@@ -74,31 +74,6 @@ export interface PersonalUserQuota {
   deleted: boolean,
   display: string
 }
-// export interface UserPersonalServerInterface {
-//     id: string
-//     name: string
-//     vcpus: number
-//     ram: number
-//     ipv4: string
-//     public_ip: boolean
-//     image: string
-//     creation_time: string
-//     remarks: string
-//     endpoint_url: string
-//     service: string
-//     user_quota: string
-//     expiration_time: string | null
-//     deleted: boolean
-//     display: []
-//     center_quota: number
-//     classification: string
-//     vo_id: string | null
-//     user: {
-//       id: string
-//       username: string
-//     }
-//     lock: string
-// }
 // 服务私有配额 duyukuan
 export interface ServiceQuotaStatInterface {
   private_ip_total: number
