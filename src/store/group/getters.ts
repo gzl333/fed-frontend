@@ -47,7 +47,7 @@ const getters: GetterTree<GroupModuleInterface, StateInterface> = {
     return groups.sort(sortFn)
   },
   // 项目组详情用，根据组员加入时间给成员排序
-  getMemberByTime: (state) => (groupId: string): SingleMemberInterface[] => {
+  getMemberByJoinTime: (state) => (groupId: string): SingleMemberInterface[] => {
     const sortFn = (a: SingleMemberInterface, b: SingleMemberInterface) => new Date(a.join_time).getTime() - new Date(b.join_time).getTime()
     const newArr: SingleMemberInterface[] = []
     state.tables.groupMemberTable.byId[groupId]?.members.forEach((item) => {

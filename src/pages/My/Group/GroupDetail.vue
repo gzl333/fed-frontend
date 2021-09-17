@@ -18,7 +18,7 @@
           <div class="row">
             <div class="col-4">
               <q-card-section>
-                <q-icon name="print" class="text-teal q-mt-lg q-ml-lg" style="font-size: 4.4em;"/>
+                <q-icon name="computer" class="text-teal q-mt-lg q-ml-lg" style="font-size: 4.4em;"/>
               </q-card-section>
             </div>
             <div class="col-8">
@@ -58,7 +58,7 @@
             <q-card-section>
               <div class="q-mt-lg q-ml-md">
                 <q-avatar>
-                  <img src="https://cdn.quasar.dev/img/avatar2.jpg">
+                  <img src="https://cdn.quasar.dev/img/avatar4.jpg">
                 </q-avatar>
               </div>
             </q-card-section>
@@ -112,10 +112,10 @@
                   <div class="row justify-end">
                     <q-btn outline style="color: #2E9AFE;" size="sm" label="移除"
                            @click="$store.dispatch('group/removeSingleGroupMemberDialog', {groupId, username: member.user.username})"/>
-                    <q-btn outline style="color: #2E9AFE; margin-left: 10px" size="sm" label="取消管理员"
+                    <q-btn outline style="color: #2E9AFE" class="q-ml-sm" size="sm" label="取消管理员"
                            v-if="member.role === 'leader'"
                            @click="$store.dispatch('group/editGroupMemberRoleDialog', {groupId, member_id: member.id, role:'member', role_name: '成员'})"/>
-                    <q-btn outline style="color: #2E9AFE; margin-left: 10px" size="sm" label="设置管理员"
+                    <q-btn outline style="color: #2E9AFE" class="q-ml-sm" size="sm" label="设置管理员"
                            v-if="member.role === 'member'"
                            @click="$store.dispatch('group/editGroupMemberRoleDialog', {groupId, member_id: member.id, role:'leader', role_name: '管理员'})"/>
                   </div>
@@ -143,7 +143,6 @@ import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter } from 'vue-router'
-
 import QuotaTable from 'components/Quota/QuotaTable.vue'
 import ServerStatus from 'components/Server/ServerStatus.vue'
 import GroupRoleChip from 'components/Group/GroupRoleChip.vue'
@@ -155,22 +154,21 @@ export default defineComponent({
     ServerStatus,
     GroupRoleChip,
     GroupHeaderInformation
-
   },
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
     const router = useRouter()
     const groupId = router.currentRoute.value.params.id as string
-    const groupMembers = computed(() => $store.getters['group/getMemberByTime'](groupId))
+    const groupMembers = computed(() => $store.getters['group/getMemberByJoinTime'](groupId))
     const goBack = () => {
       router.go(-1)
     }
     return {
       // $store,
       groupId,
-      goBack,
-      groupMembers
+      groupMembers,
+      goBack
     }
   }
 })
@@ -178,6 +176,5 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .GroupDetail {
-
 }
 </style>
