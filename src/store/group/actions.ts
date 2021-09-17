@@ -15,7 +15,13 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
       void context.dispatch('loadGroupTable').then(() => {
         // groupMemberTable 依赖 groupTable, 根据每个groupId建立一个groupMember对象
         if (!context.state.tables.groupMemberTable.isLoaded) {
-          void context.dispatch('loadGroupMemberTableFromGroup')
+          void context.dispatch('loadGroupMemberTableFromGroup').then(() => {
+            // applyQuota/groupApplicationTable 依赖 groupTable， 跨模块调用。
+            // 注意：此表以来groupTable中的myRole字段，而该字段是loadGroupMemberTableFromGroup副产品，所以产生依赖
+            if (!context.rootState.applyQuota.tables.groupQuotaApplicationTable.isLoaded) {
+              void context.dispatch(('applyQuota/loadGroupApplicationTable'), null, { root: true })
+            }
+          })
         }
         // vm/groupQuotaTable 依赖 groupTable， 跨模块调用
         if (!context.rootState.vm.tables.groupQuotaTable.isLoaded) {
@@ -24,10 +30,6 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
         // vm/groupServerTable 依赖 groupTable， 跨模块调用
         if (!context.rootState.vm.tables.groupServerTable.isLoaded) {
           void context.dispatch('vm/loadGroupServerTable', null, { root: true })
-        }
-        // applyQuota/groupApplicationTable 依赖 groupTable， 跨模块调用
-        if (!context.rootState.applyQuota.tables.groupQuotaApplicationTable.isLoaded) {
-          void context.dispatch(('applyQuota/loadGroupApplicationTable'), null, { root: true })
         }
       })
     }

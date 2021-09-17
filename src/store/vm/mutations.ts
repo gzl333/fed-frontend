@@ -198,7 +198,7 @@ const mutation: MutationTree<VmModuleInterface> = {
   storeGlobalServiceTable (state, tableObj: Record<string, ServiceInterface>) {
     // 将service对象补充至globalServiceTable.byId
     Object.assign(state.tables.globalServiceTable.byId, tableObj)
-    console.log(state.tables.globalServiceTable.allIds)
+    // console.log(state.tables.globalServiceTable.allIds)
     // 更新globalServiceTable.allIds，更新后去重
     state.tables.globalServiceTable.allIds.unshift(Object.keys(tableObj)[0])
     state.tables.globalServiceTable.allIds = [...new Set(state.tables.globalServiceTable.allIds)]

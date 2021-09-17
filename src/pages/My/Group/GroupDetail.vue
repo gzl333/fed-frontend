@@ -167,7 +167,7 @@ export default defineComponent({
       router.go(-1)
     }
     return {
-      $store,
+      // $store,
       groupId,
       goBack,
       groupMembers
