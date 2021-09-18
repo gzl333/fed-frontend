@@ -189,7 +189,7 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
     return groupOptions
   },
   // 排序用户个人服务器资源 duyukuan
-  getUserByCreateTime: (state) => (): ServerInterface[] => {
+  getUserByCreateTime (state): ServerInterface[] {
     // 排序函数，根据申请时间降序排列
     const sortFn = (a: ServerInterface, b: ServerInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
     const rows: ServerInterface[] = []
@@ -207,7 +207,7 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
     return ids
   },
   // 计算总值
-  getPrivateNum: (state) => (): { private_ip_total: number; public_ip_used: number; public_ip_total: number; private_ip_used: number; vcpu_total: number; ram_total: number; disk_size_total: number; vcpu_used: number; ram_used: number; disk_size_used: number } => {
+  getPrivateNum (state): { private_ip_total: number; public_ip_used: number; public_ip_total: number; private_ip_used: number; vcpu_total: number; ram_total: number; disk_size_total: number; vcpu_used: number; ram_used: number; disk_size_used: number } {
     let public_ip_total = 0
     let public_ip_used = 0
     let private_ip_total = 0
@@ -243,7 +243,7 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
       disk_size_used
     }
   },
-  getShareNum: (state) => (): { private_ip_total: number; public_ip_used: number; public_ip_total: number; private_ip_used: number; vcpu_total: number; ram_total: number; disk_size_total: number; vcpu_used: number; ram_used: number; disk_size_used: number } => {
+  getShareNum (state): { private_ip_total: number; public_ip_used: number; public_ip_total: number; private_ip_used: number; vcpu_total: number; ram_total: number; disk_size_total: number; vcpu_used: number; ram_used: number; disk_size_used: number } {
     let public_ip_total = 0
     let public_ip_used = 0
     let private_ip_total = 0

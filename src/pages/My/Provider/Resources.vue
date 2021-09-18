@@ -95,7 +95,7 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
     // 获取列表数据
-    const rows = computed(() => $store.getters['vm/getUserByCreateTime']())
+    const rows = computed(() => $store.getters['vm/getUserByCreateTime'])
 
     // 列表分栏定义
     const columns = [

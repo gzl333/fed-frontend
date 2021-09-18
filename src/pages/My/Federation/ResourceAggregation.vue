@@ -1,5 +1,6 @@
 <template>
   <div class="ResourceAggregation">
+
     <div class="q-pa-md row items-start q-gutter-md">
       <div>
         <div class="text-center text-subtitle1 text-weight-bold">服务私有配额</div>
@@ -72,6 +73,9 @@
         </q-card>
       </div>
     </div>
+
+      <pie-chart/>
+
   </div>
 </template>
 
@@ -79,15 +83,18 @@
 import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
+
+import PieChart from 'components/Chart/PieChart.vue'
+
 export default defineComponent({
   name: 'ResourceAggregation',
-  components: {},
+  components: { PieChart },
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
     // const ids = computed(() => $store.getters['vm/getAllIds']())
-    const privateNum = computed(() => $store.getters['vm/getPrivateNum']())
-    const shareNum = computed(() => $store.getters['vm/getShareNum']())
+    const privateNum = computed(() => $store.getters['vm/getPrivateNum'])
+    const shareNum = computed(() => $store.getters['vm/getShareNum'])
     return {
       // ids,
       privateNum,

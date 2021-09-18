@@ -1,21 +1,19 @@
 <template>
   <div class="ServiceList">
-<!--    this is ServiceList-->
-    {{ $t('message.测试') }}
+    this service list
+    <pie-chart/>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import { useQuasar } from 'quasar'
+import PieChart from 'components/Chart/PieChart.vue'
 
 export default defineComponent({
   name: 'ServiceList',
-  components: {},
+  components: { PieChart },
   props: {},
   setup () {
-    const $q = useQuasar()
-    console.log($q.lang.getLocale()) // returns a string
     return {}
   }
 })

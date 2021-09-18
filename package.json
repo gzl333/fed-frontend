@@ -1,9 +1,9 @@
 {
-  "name": "GOSC-frontend",
-  "version": "0.0.2",
-  "description": "GOSC",
+  "name": "CSTCloud Federation",
+  "version": "0.2.0",
+  "description": "A Cloud Federation of CSTCloud.cn",
   "productName": "中国科技云联邦",
-  "author": "CNIC",
+  "author": "FedLab, CNIC",
   "private": true,
   "scripts": {
     "dev": "quasar dev",
@@ -15,6 +15,7 @@
     "@quasar/extras": "^1.10.12",
     "axios": "^0.21.1",
     "core-js": "^3.12.0",
+    "echarts": "^5.2.0",
     "jwt-decode": "^3.1.2",
     "normalizr": "^3.6.1",
     "quasar": "^2.0.4",
