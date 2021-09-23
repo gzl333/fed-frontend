@@ -181,12 +181,12 @@
           </div>
         </div>
 
-        <div class="row item-row items-center">
-          <div class="col-1">工作单位</div>
-          <div class="col-6">
-            <q-input class="input-remarks" v-model="inputUnit" maxlength="50" dense counter/>
-          </div>
-        </div>
+        <!--        <div class="row item-row items-center">-->
+        <!--          <div class="col-1">工作单位</div>-->
+        <!--          <div class="col-6">-->
+        <!--            <q-input class="input-remarks" v-model="inputUnit" maxlength="50" dense counter/>-->
+        <!--          </div>-->
+        <!--        </div>-->
 
       </div>
 
@@ -278,14 +278,14 @@
           </div>
         </div>
 
-        <div class="row item-row">
-          <div class="col-shrink item-title-narrow text-grey">
-            工作单位
-          </div>
-          <div class="col item-radios">
-            {{ inputUnit }}
-          </div>
-        </div>
+        <!--        <div class="row item-row">-->
+        <!--          <div class="col-shrink item-title-narrow text-grey">-->
+        <!--            工作单位-->
+        <!--          </div>-->
+        <!--          <div class="col item-radios">-->
+        <!--            {{ inputUnit }}-->
+        <!--          </div>-->
+        <!--        </div>-->
 
       </div>
 
@@ -371,7 +371,7 @@ export default defineComponent({
     const sliderDisk = ref(0)
     // input状态
     const inputPurpose = ref('')
-    const inputUnit = ref('')
+    // const inputUnit = ref('')
 
     // 按钮状态
     const isCreating = ref(false)
@@ -389,7 +389,7 @@ export default defineComponent({
           timeout: 5000,
           multiLine: false
         })
-      } else if (!inputPurpose.value || !inputUnit.value) {
+      } else if (!inputPurpose.value) {
         Notify.create({
           classes: 'notification-negative shadow-15',
           icon: 'mdi-alert',
@@ -411,9 +411,9 @@ export default defineComponent({
           ram: sliderRam.value,
           disk_size: sliderDisk.value,
           duration_days: sliderDuration.value,
-          company: inputUnit.value,
           purpose: inputPurpose.value,
-          contact: $store.state.account.cstEmail
+          company: $store.state.account.decoded?.orgName,
+          contact: $store.state.account.decoded?.cstnetId
         } : {
           service_id: radioService.value,
           private_ip: sliderPrivate.value,
@@ -422,9 +422,9 @@ export default defineComponent({
           ram: sliderRam.value,
           disk_size: sliderDisk.value,
           duration_days: sliderDuration.value,
-          company: inputUnit.value,
           purpose: inputPurpose.value,
-          contact: $store.state.account.cstEmail
+          company: $store.state.account.decoded?.orgName,
+          contact: $store.state.account.decoded?.cstnetId
         }
         // 提交quota申请
         await $store.dispatch('applyQuota/submitApplyQuota', selection)
@@ -449,7 +449,7 @@ export default defineComponent({
       sliderPublic,
       sliderDisk,
       inputPurpose,
-      inputUnit,
+      // inputUnit,
       isCreating,
       applyQuota
     }
@@ -479,6 +479,7 @@ export default defineComponent({
   border: 1px solid $grey-4;
   border-radius: 5px;
 }
+
 .summarize-section {
   margin-bottom: 30px;
   padding: 10px 20px;

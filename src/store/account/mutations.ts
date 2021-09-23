@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex'
-import { CstJwtInterface, AccountModuleInterface } from './state'
+import { AccountModuleInterface, DecodedToken } from './state'
 import axios from 'axios'
 import jwtDecode from 'jwt-decode'
 
@@ -17,30 +17,25 @@ const mutation: MutationTree<AccountModuleInterface> = {
     state.isRightDrawerOpen = !state.isRightDrawerOpen
   },
   storeUser (/* this: rightType, */state, payload: { access: string; refresh: string; }) {
-    // vuex
     state.isLogin = true
-    state.token = {
-      access: payload.access,
-      refresh: payload.refresh
-    }
-    const decoded = jwtDecode<CstJwtInterface>(payload.access)
-    state.cstTrueName = decoded.trueName
-    state.cstEmail = decoded.cstnetId
-    state.cstId = decoded.umtId
+    state.access = payload.access
+    state.refresh = payload.refresh
+    const decoded = jwtDecode<DecodedToken>(payload.access)
+    state.decoded = decoded
+
     // localStorage
-    localStorage.setItem('access', state.token.access)
-    localStorage.setItem('refresh', state.token.refresh)
+    localStorage.setItem('access', state.access)
+    localStorage.setItem('refresh', state.refresh)
 
     // axios header
-    axios.defaults.headers.common.Authorization = `Bearer ${state.token.access}`
+    axios.defaults.headers.common.Authorization = `Bearer ${state.access}`
   },
   deleteUser (state: AccountModuleInterface) {
     // vuex
     state.isLogin = false
-    delete state.token
-    delete state.cstTrueName
-    delete state.cstEmail
-    delete state.cstId
+    delete state.access
+    delete state.refresh
+    delete state.decoded
     // localStorage
     localStorage.removeItem('access')
     localStorage.removeItem('refresh')

@@ -1,30 +1,23 @@
-export interface TokenInterface {
-  access: string
-  refresh: string
-}
-
-export interface CstJwtInterface {
+export interface DecodedToken {
+  cstnetId: string // cst email
+  cstnetIdStatus: string
+  exp: number
+  iat: number
+  iss: string
+  orgName: string
+  securityEmail: null // ?
   trueName: string
   type: string
   umtId: string
-  securityEmail: string
-  cstnetIdStatus: string
-  cstnetId: string
-  exp: number
-  iss: string
-  iat: number
 }
 
 // Account总体类型
 export interface AccountModuleInterface {
+  // account
   isLogin: boolean
-  cstTrueName?: string
-  cstEmail?: string
-  cstId?: string
-  token?: {
-    access: string
-    refresh: string
-  }
+  access?: string
+  refresh?: string
+  decoded?: DecodedToken
 
   // layout
   isRightDrawerOpen: boolean

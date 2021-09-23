@@ -1,15 +1,15 @@
 <template>
   <div class="HeaderDropdown">
 
-    <q-btn-dropdown :ripple="false" flat class="q-py-sm q-px-none" :label="currentUser.cstEmail" no-caps>
+    <q-btn-dropdown :ripple="false" flat class="q-py-sm q-px-none" :label="$store.state.account.decoded?.cstnetId" no-caps>
 
       <div class="row justify-center no-wrap q-pa-md dropdown-content non-selectable">
         <div class="column items-center">
           <q-avatar size="72px" class="q-mt-lg">
             <img src="img/default-avatar.png">
           </q-avatar>
-          <div class="text-subtitle1 q-ma-none q-mt-md text-white">{{ currentUser.cstTrueName }}</div>
-          <div class="text-subtitle1 q-ma-none q-mb-md text-white">{{ currentUser.cstEmail }}</div>
+          <div class="text-subtitle2 q-ma-none q-mt-md text-white">{{ $store.state.account.decoded?.trueName }}</div>
+          <div class="text-subtitle2 q-ma-none q-mb-md text-white">{{ $store.state.account.decoded?.orgName }}</div>
         </div>
       </div>
 
@@ -32,7 +32,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
@@ -43,14 +43,11 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
-    const currentUser = computed(() => $store.state.account)
-
     const toLogout = () => {
       void $store.dispatch('account/logoutCstUser')
     }
 
     return {
-      currentUser,
       toLogout
     }
   }

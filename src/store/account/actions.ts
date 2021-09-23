@@ -1,9 +1,8 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import {
-  TokenInterface,
   AccountModuleInterface,
-  CstJwtInterface
+  DecodedToken
 } from './state'
 import { Notify } from 'quasar'
 import axios from 'axios'
@@ -16,10 +15,10 @@ const cstApiBase = window.location.protocol + '//gosc-login.cstcloud.cn'
 const actions: ActionTree<AccountModuleInterface, StateInterface> = {
   retainCstToken (context) {
     // console.log('in retain')
-    if (context.state.token) {
-      const tokenRefresh = context.state.token.refresh
-      const tokenAccess = context.state.token.access
-      const decoded = jwtDecode<CstJwtInterface>(tokenAccess)
+    if (context.state.access && context.state.refresh) {
+      const tokenRefresh = context.state.refresh
+      const tokenAccess = context.state.access
+      const decoded = jwtDecode<DecodedToken>(tokenAccess)
       // console.log(decoded)
       if (decoded.exp) {
         // const timeOut = decoded.exp * 1000 - Date.now() - 3595000 // 测试用，快速refresh
@@ -29,7 +28,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
           // https://stackoverflow.com/questions/63488141/promise-returned-in-function-argument-where-a-void-return-was-expected/63488201
           void (async () => {
             try {
-              if (context.state.token) { // 定时器注册后，仅在用户保持登录时更新token，登出则定时器不执行，不再更新
+              if (context.state.access && context.state.refresh) { // 定时器注册后，仅在用户保持登录时更新token，登出则定时器不执行，不再更新
                 // 获取更新到的access token
                 const response = await context.dispatch('fetchCstNewToken', tokenRefresh)
                 if (response.data.code === 200) {
@@ -81,7 +80,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
       }
     }
   },
-  async verifyCstToken (context, payload: TokenInterface) {
+  async verifyCstToken (context, payload: {access: string; refresh: string}) {
     const api = cstApiBase + '/open/api/UMTOauthLogin/checkToken'
     const config = { params: { jwtToken: payload.access } }
     const response = await axios.post(api, null, config)

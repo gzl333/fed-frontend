@@ -40,7 +40,7 @@ export default defineComponent({
     // const $router = useRouter()
     // const { locale } = useI18n({ useScope: 'global' })
 
-    // 绑定div容器的引用，在编译过程中绑定容器引用
+    // 绑定div容器的引用，在vue编译过程中绑定容器引用
     const container = ref<HTMLElement>()
 
     // onMounted时再渲染echarts，否则div容器的引用还未绑定
