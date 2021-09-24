@@ -102,11 +102,11 @@
           <q-td key="operation" :props="props">
             <div v-if="props.row.status === 'wait'">
               <q-btn label="开始审批" flat dense padding="none" color="primary"
-                     @click="suspendAndAudit(props.row.id)"/>
+                     @click="auditQuotaApplicationDialog(props.row.id)"/>
             </div>
             <div v-if="props.row.status === 'pending'">
               <q-btn label="继续审批" flat dense padding="none" color="primary"
-                     @click="audit(props.row.id)"/>
+                     @click="$store.dispatch('applyQuota/auditQuotaApplicationDialog',props.row.id)"/>
             </div>
             <div v-if="props.row.status === 'pass' || props.row.status === 'reject'">
               已审批

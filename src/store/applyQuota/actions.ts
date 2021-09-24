@@ -5,6 +5,7 @@ import axios from 'axios'
 import { normalize, schema } from 'normalizr'
 import { Dialog, Notify } from 'quasar'
 import QuotaApplicationEditCard from 'components/Quota/QuotaApplicationEditCard.vue'
+import ProviderAuditQuotaApplicationCard from 'components/Provider/ProviderAuditQuotaApplicationCard.vue'
 
 const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   /* 初次获取全部applyQuota模块Table，已有则自动忽略 */
@@ -150,6 +151,31 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   /* 挂起配额申请 */
 
   /* 通过配额申请 */
+  async auditQuotaApplicationDialog (context, applyId: string) {
+    // 检查当前申请状态，wait则挂起后再打开对话框
+    const currentApplication = context.state.tables.adminQuotaApplicationTable.byId[applyId]
+    if (currentApplication.status === 'wait') {
+      await context.dispatch('suspendAndUpdateAdminQuotaApplicationTable', applyId)
+    }
+    Dialog.create({
+      component: ProviderAuditQuotaApplicationCard,
+      componentProps: {
+        applyId
+      }
+    }).onOk((val: {isApprove: boolean; reason?: string}) => {
+      if (val.isApprove) {
+        console.log('批准')
+        // 批准申请
+        // 更新table
+        // notify
+      } else {
+        console.log('拒绝')
+        // 拒绝申请
+        // 更新table
+        // notify
+      }
+    })
+  },
   async approveAndUpdateAdminQuotaApplicationTable (context, apply_id: string) {
     const respApprove = await context.dispatch('approveQuotaApplication', apply_id)
     const service = new schema.Entity('service')
