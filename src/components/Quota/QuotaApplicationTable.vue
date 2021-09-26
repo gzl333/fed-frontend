@@ -70,22 +70,10 @@
             {{ props.row.duration_days }}天
           </q-td>
 
-          <q-td key="cpu" :props="props">
-            {{ props.row.vcpu }}核
+          <q-td key="configuration" :props="props">
+            {{ props.row.vcpu }}核 / {{ props.row.ram / 1024 }}GB / {{ props.row.private_ip }}个 / {{ props.row.public_ip }}个 / {{ props.row.disk_size }}GB
           </q-td>
 
-          <q-td key="ram" :props="props">
-            {{ props.row.ram / 1024 }}GB
-          </q-td>
-          <q-td key="private_ip" :props="props">
-            {{ props.row.private_ip }}个
-          </q-td>
-          <q-td key="public_ip" :props="props">
-            {{ props.row.public_ip }}个
-          </q-td>
-          <q-td key="disk" :props="props">
-            {{ props.row.disk_size }}GB
-          </q-td>
           <q-td key="purpose" :props="props">
             {{ props.row.purpose }}
           </q-td>
@@ -342,41 +330,9 @@ export default defineComponent({
         headerStyle: 'padding: 0 5px'
       },
       {
-        name: 'cpu',
-        label: 'CPU',
-        field: 'cpu',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'ram',
-        label: '内存',
-        field: 'ram',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'private_ip',
-        label: '私网IP',
-        field: 'private_ip',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'public_ip',
-        label: '公网IP',
-        field: 'public_ip',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'disk',
-        label: '云硬盘',
-        field: 'disk',
+        name: 'configuration',
+        label: 'CPU/内存/私网IP/公网IP/云硬盘',
+        field: 'configuration',
         align: 'center',
         style: 'padding: 15px 5px',
         headerStyle: 'padding: 0 5px'
@@ -396,7 +352,7 @@ export default defineComponent({
         field: 'applicant',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 150px;padding: 15px 5px',
+        style: 'max-width: 200px;padding: 15px 5px',
         headerStyle: 'padding: 0 5px'
       },
       {
@@ -440,41 +396,9 @@ export default defineComponent({
         headerStyle: 'padding: 0 5px'
       },
       {
-        name: 'cpu',
-        label: 'CPU',
-        field: 'cpu',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'ram',
-        label: '内存',
-        field: 'ram',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'private_ip',
-        label: '私网IP',
-        field: 'private_ip',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'public_ip',
-        label: '公网IP',
-        field: 'public_ip',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'disk',
-        label: '云硬盘',
-        field: 'disk',
+        name: 'configuration',
+        label: 'CPU/内存/私网IP/公网IP/云硬盘',
+        field: 'configuration',
         align: 'center',
         style: 'padding: 15px 5px',
         headerStyle: 'padding: 0 5px'
@@ -494,7 +418,7 @@ export default defineComponent({
         field: 'applicant',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 150px;padding: 15px 5px',
+        style: 'max-width: 200px;padding: 15px 5px',
         headerStyle: 'padding: 0 5px'
       },
       {

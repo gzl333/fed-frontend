@@ -229,7 +229,12 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
-    // 应强制更新table刷新quota状态，该逻辑应转移到调用层
+    // todo 为何报错？ 应强制更新table刷新quota状态，该逻辑应在此，而非在调用层。任何使用quota-table时都应该更新quotaTable
+    // if (props.isGroup) {
+    //   void $store.dispatch('vm/loadGroupQuotaTable')
+    // } else {
+    //   void $store.dispatch('vm/updateUserQuotaTable')
+    // }
 
     // quota列表分栏定义
     const columnsZH = props.isGroup ? [

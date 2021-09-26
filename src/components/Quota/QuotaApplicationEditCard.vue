@@ -136,13 +136,6 @@
           </div>
         </div>
 
-        <div class="row items-center q-pb-md">
-          <div class="col-2 text-grey-7 q-pb-md" >工作单位</div>
-          <div class="col">
-            <q-input v-model="newApplication.company" maxlength="20" outlined dense counter/>
-          </div>
-        </div>
-
       </q-card-section>
 
 <!--      <q-separator/>-->
@@ -233,17 +226,6 @@ export default defineComponent({
           icon: 'mdi-alert',
           textColor: 'negative',
           message: '请填写配额用途',
-          position: 'bottom',
-          closeBtn: true,
-          timeout: 5000,
-          multiLine: false
-        })
-      } else if (newApplication.company === '') {
-        Notify.create({
-          classes: 'notification-negative shadow-15',
-          icon: 'mdi-alert',
-          textColor: 'negative',
-          message: '请填写工作单位',
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,

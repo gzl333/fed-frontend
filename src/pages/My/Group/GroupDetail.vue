@@ -1,10 +1,11 @@
 <template>
   <div class="GroupDetail">
+
     <div class="text-weight-bold text-h6 text-primary">
       <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense @click="goBack"/>
       项目组详情
     </div>
-    <group-header-information></group-header-information>
+
     <div class="row q-mt-xl">
         <div class="text-weight-bold text-subtitle1">云主机</div>
         <div class="q-ml-xl">
@@ -133,7 +134,7 @@
       </div>
     </div>
     <div class="q-mt-md">
-      <quota-table :is-group="true" :quotas="$store.getters['vm/getGroupQuotasByGroupIdByStatus'](groupId)('valid')" ></quota-table>
+      <quota-table :is-group="true" :quotas="$store.getters['vm/getGroupQuotasByGroupIdByStatus'](groupId,'valid')" ></quota-table>
     </div>
   </div>
 </template>
@@ -146,14 +147,12 @@ import { useRouter } from 'vue-router'
 import QuotaTable from 'components/Quota/QuotaTable.vue'
 import ServerStatus from 'components/Server/ServerStatus.vue'
 import GroupRoleChip from 'components/Group/GroupRoleChip.vue'
-import GroupHeaderInformation from 'pages/My/Group/GroupHeaderInformation.vue'
 export default defineComponent({
   name: 'GroupDetail',
   components: {
     QuotaTable,
     ServerStatus,
-    GroupRoleChip,
-    GroupHeaderInformation
+    GroupRoleChip
   },
   props: {},
   setup () {

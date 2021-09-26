@@ -21,16 +21,11 @@
                 项目组名称
               </div>
               <div class="col-3">
-                <q-input outlined dense v-model="groupName"  />
-              </div>
-            </div>
-
-            <div class="row items-center q-pb-md">
-              <div class="col-1 text-grey">
-                所属单位
-              </div>
-              <div class="col-3">
-                <q-input outlined dense v-model="groupCompany"  />
+                <q-input outlined dense v-model="groupName"  >
+                  <template v-if="groupName !== ''" v-slot:append>
+                    <q-icon name="close" @click="groupName = ''" class="cursor-pointer" />
+                  </template>
+                </q-input>
               </div>
             </div>
 
@@ -39,7 +34,24 @@
                 项目组描述
               </div>
               <div class="col-3">
-                <q-input outlined dense v-model="groupDesc"  />
+                <q-input outlined dense v-model="groupDesc"  >
+                  <template v-if="groupDesc !== ''" v-slot:append>
+                    <q-icon name="close" @click="groupDesc = ''" class="cursor-pointer" />
+                  </template>
+                </q-input>
+              </div>
+            </div>
+
+            <div class="row items-center q-pb-md">
+              <div class="col-1 text-grey">
+                所属单位
+              </div>
+              <div class="col-3">
+                <q-input outlined dense v-model="groupCompany"  >
+                  <template v-if="groupCompany !== ''" v-slot:append>
+                    <q-icon name="close" @click="groupCompany = ''" class="cursor-pointer" />
+                  </template>
+                </q-input>
               </div>
             </div>
 
@@ -68,7 +80,7 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
+import { defineComponent, ref, computed } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter } from 'vue-router'
@@ -89,8 +101,8 @@ export default defineComponent({
     }
 
     const groupName = ref('')
-    const groupCompany = ref('')
     const groupDesc = ref('')
+    const groupCompany = ref(computed(() => $store.state.account.decoded?.orgName).value)
 
     return {
       $store,

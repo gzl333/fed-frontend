@@ -73,22 +73,10 @@
             {{ props.row.duration_days }}天
           </q-td>
 
-          <q-td key="cpu" :props="props">
-            {{ props.row.vcpu }}核
+          <q-td key="configuration" :props="props">
+            {{ props.row.vcpu }}核 / {{ props.row.ram / 1024 }}GB / {{ props.row.private_ip }}个 / {{ props.row.public_ip }}个 / {{ props.row.disk_size }}GB
           </q-td>
 
-          <q-td key="ram" :props="props">
-            {{ props.row.ram / 1024 }}GB
-          </q-td>
-          <q-td key="private_ip" :props="props">
-            {{ props.row.private_ip }}个
-          </q-td>
-          <q-td key="public_ip" :props="props">
-            {{ props.row.public_ip }}个
-          </q-td>
-          <q-td key="disk" :props="props">
-            {{ props.row.disk_size }}GB
-          </q-td>
           <q-td key="vo" :props="props">
             {{ props.row.classification === 'vo' ? $t('项目组') : $t('个人') }}
           </q-td>
@@ -102,7 +90,7 @@
           <q-td key="operation" :props="props">
             <div v-if="props.row.status === 'wait'">
               <q-btn label="开始审批" flat dense padding="none" color="primary"
-                     @click="auditQuotaApplicationDialog(props.row.id)"/>
+                     @click="$store.dispatch('applyQuota/auditQuotaApplicationDialog',props.row.id)"/>
             </div>
             <div v-if="props.row.status === 'pending'">
               <q-btn label="继续审批" flat dense padding="none" color="primary"
@@ -117,98 +105,99 @@
           </q-td>
         </q-tr>
       </template>
-
-      <template v-slot:bottom>
-      </template>
-
+      <!--      <template v-slot:bottom>-->
+      <!--      todo 批量操作-->
+      <!--      </template>-->
     </q-table>
 
-    <q-dialog v-model="isShowAudit">
-      <q-card class="application-card">
-        <q-card-section class="row items-center justify-center q-pb-sm">
-          <div class="text-primary">配额审批</div>
-          <q-space/>
-          <q-btn icon="close" flat dense size="sm" v-close-popup/>
-        </q-card-section>
+    <q-separator/>
 
-        <q-separator/>
+    <!--    <q-dialog v-model="isShowAudit">-->
+    <!--      <q-card class="application-card">-->
+    <!--        <q-card-section class="row items-center justify-center q-pb-sm">-->
+    <!--          <div class="text-primary">配额审批</div>-->
+    <!--          <q-space/>-->
+    <!--          <q-btn icon="close" flat dense size="sm" v-close-popup/>-->
+    <!--        </q-card-section>-->
 
-        <q-card-section>
-          <div class="row q-py-sm">
-            <div class="col-3 text-grey-7">申请时间</div>
-            <div class="col">{{ new Date(currentApplication.creation_time).toLocaleString() }}</div>
-          </div>
+    <!--        <q-separator/>-->
 
-          <div class="row q-py-sm">
-            <div class="col-3 text-grey-7">服务节点</div>
-            <div class="col">
-              {{
-                $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[currentApplication.service].data_center].name
-              }}
-              - {{ $store.state.vm.tables.globalServiceTable.byId[currentApplication.service].name }}
-            </div>
-          </div>
+    <!--        <q-card-section>-->
+    <!--          <div class="row q-py-sm">-->
+    <!--            <div class="col-3 text-grey-7">申请时间</div>-->
+    <!--            <div class="col">{{ new Date(currentApplication.creation_time).toLocaleString() }}</div>-->
+    <!--          </div>-->
 
-          <div class="row q-py-sm">
-            <div class="col-3 text-grey-7">云主机时长</div>
-            <div class="col">{{ currentApplication.duration_days }}天</div>
-          </div>
+    <!--          <div class="row q-py-sm">-->
+    <!--            <div class="col-3 text-grey-7">服务节点</div>-->
+    <!--            <div class="col">-->
+    <!--              {{-->
+    <!--                $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[currentApplication.service].data_center].name-->
+    <!--              }}-->
+    <!--              - {{ $store.state.vm.tables.globalServiceTable.byId[currentApplication.service].name }}-->
+    <!--            </div>-->
+    <!--          </div>-->
 
-          <div class="row q-py-sm">
-            <div class="col-3 text-grey-7">CPU</div>
-            <div class="col">{{ currentApplication.vcpu }}核</div>
-          </div>
+    <!--          <div class="row q-py-sm">-->
+    <!--            <div class="col-3 text-grey-7">云主机时长</div>-->
+    <!--            <div class="col">{{ currentApplication.duration_days }}天</div>-->
+    <!--          </div>-->
 
-          <div class="row q-py-sm">
-            <div class="col-3 text-grey-7">内存</div>
-            <div class="col">{{ currentApplication.ram / 1024 }}GB</div>
-          </div>
+    <!--          <div class="row q-py-sm">-->
+    <!--            <div class="col-3 text-grey-7">CPU</div>-->
+    <!--            <div class="col">{{ currentApplication.vcpu }}核</div>-->
+    <!--          </div>-->
 
-          <div class="row q-py-sm">
-            <div class="col-3 text-grey-7">私网IP</div>
-            <div class="col">{{ currentApplication.private_ip }}个</div>
-          </div>
+    <!--          <div class="row q-py-sm">-->
+    <!--            <div class="col-3 text-grey-7">内存</div>-->
+    <!--            <div class="col">{{ currentApplication.ram / 1024 }}GB</div>-->
+    <!--          </div>-->
 
-          <div class="row q-py-sm">
-            <div class="col-3 text-grey-7">公网IP</div>
-            <div class="col">{{ currentApplication.public_ip }}个</div>
-          </div>
+    <!--          <div class="row q-py-sm">-->
+    <!--            <div class="col-3 text-grey-7">私网IP</div>-->
+    <!--            <div class="col">{{ currentApplication.private_ip }}个</div>-->
+    <!--          </div>-->
 
-          <div class="row q-py-sm">
-            <div class="col-3 text-grey-7">云硬盘</div>
-            <div class="col">{{ currentApplication.disk_size }}GB</div>
-          </div>
+    <!--          <div class="row q-py-sm">-->
+    <!--            <div class="col-3 text-grey-7">公网IP</div>-->
+    <!--            <div class="col">{{ currentApplication.public_ip }}个</div>-->
+    <!--          </div>-->
 
-          <div class="row q-py-sm">
-            <div class="col-3 text-grey-7">配额类型</div>
-            <div class="col">{{ currentApplication.classification === 'vo' ? $t('项目组') : $t('个人') }}</div>
-          </div>
+    <!--          <div class="row q-py-sm">-->
+    <!--            <div class="col-3 text-grey-7">云硬盘</div>-->
+    <!--            <div class="col">{{ currentApplication.disk_size }}GB</div>-->
+    <!--          </div>-->
 
-          <div class="row q-py-sm">
-            <div class="col-3 text-grey-7">用途</div>
-            <div class="col">{{ currentApplication.purpose }}</div>
-          </div>
+    <!--          <div class="row q-py-sm">-->
+    <!--            <div class="col-3 text-grey-7">配额类型</div>-->
+    <!--            <div class="col">{{ currentApplication.classification === 'vo' ? $t('项目组') : $t('个人') }}</div>-->
+    <!--          </div>-->
 
-          <div class="row q-py-sm">
-            <div class="col-3 text-grey-7">申请人</div>
-            <div class="col">
-              <div>{{ currentApplication.contact }}</div>
-              <div>{{ currentApplication.company }}</div>
-            </div>
-          </div>
+    <!--          <div class="row q-py-sm">-->
+    <!--            <div class="col-3 text-grey-7">用途</div>-->
+    <!--            <div class="col">{{ currentApplication.purpose }}</div>-->
+    <!--          </div>-->
 
-        </q-card-section>
+    <!--          <div class="row q-py-sm">-->
+    <!--            <div class="col-3 text-grey-7">申请人</div>-->
+    <!--            <div class="col">-->
+    <!--              <div>{{ currentApplication.contact }}</div>-->
+    <!--              <div>{{ currentApplication.company }}</div>-->
+    <!--            </div>-->
+    <!--          </div>-->
 
-        <q-separator/>
+    <!--        </q-card-section>-->
 
-        <q-card-actions align="right">
-          <q-btn v-close-popup flat color="primary" label="通过"
-                 @click="$store.dispatch('applyQuota/approveAndUpdateAdminQuotaApplicationTable',currentApplication.id)"/>
-          <q-btn v-close-popup flat color="red" label="拒绝"
-                 @click="$store.dispatch('applyQuota/rejectAndUpdateAdminQuotaApplicationTable',currentApplication.id)"/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
+    <!--        <q-separator/>-->
+
+    <!--        <q-card-actions align="right">-->
+    <!--          <q-btn v-close-popup flat color="primary" label="通过"-->
+    <!--                 @click="$store.dispatch('applyQuota/approveAndUpdateAdminQuotaApplicationTable',currentApplication.id)"/>-->
+    <!--          <q-btn v-close-popup flat color="red" label="拒绝"-->
+    <!--                 @click="$store.dispatch('applyQuota/rejectAndUpdateAdminQuotaApplicationTable',currentApplication.id)"/>-->
+    <!--        </q-card-actions>-->
+    <!--      </q-card>-->
+    <!--    </q-dialog>-->
 
   </div>
 </template>
@@ -297,37 +286,9 @@ export default defineComponent({
         style: 'padding: 15px 5px'
       },
       {
-        name: 'cpu',
-        label: 'CPU',
-        field: 'cpu',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'ram',
-        label: '内存',
-        field: 'ram',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'private_ip',
-        label: '私网IP',
-        field: 'private_ip',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'public_ip',
-        label: '公网IP',
-        field: 'public_ip',
-        align: 'center',
-        style: 'padding: 15px 5px'
-      },
-      {
-        name: 'disk',
-        label: '云硬盘',
-        field: 'disk',
+        name: 'configuration',
+        label: 'CPU/内存/私网IP/公网IP/云硬盘',
+        field: 'configuration',
         align: 'center',
         style: 'padding: 15px 5px'
       },
@@ -344,7 +305,7 @@ export default defineComponent({
         field: 'purpose',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 200px;padding: 15px 5px'
+        style: 'max-width: 150px;padding: 15px 5px'
       },
       {
         name: 'applicant',
@@ -352,7 +313,7 @@ export default defineComponent({
         field: 'applicant',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 150px;padding: 15px 5px'
+        style: 'max-width: 200px;padding: 15px 5px'
       },
       {
         name: 'operation',

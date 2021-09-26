@@ -1,12 +1,12 @@
 <template>
   <!-- notice dialogRef here -->
-  <q-dialog ref="dialogRef" @hide="onDialogHide" persistent>
+  <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin dialog-primary">
       <!--
         ...content
         ... use q-card-section for it?
       -->
-      <q-card-section class="row items-center justify-center q-pb-sm">
+      <q-card-section class="row items-center justify-center q-pb-md">
         <div class="text-primary">配额审批</div>
         <q-space/>
         <q-btn icon="close" flat dense size="sm" v-close-popup/>
@@ -17,7 +17,7 @@
       <q-card-section>
         <div class="row q-py-sm">
           <div class="col-3 text-grey-7">申请时间</div>
-          <div class="col">{{ new Date(currentApplication.creation_time).toLocaleString() }}</div>
+          <div class="col">{{ new Date(currentApplication.creation_time).toLocaleString(locale) }}</div>
         </div>
 
         <div class="row q-py-sm">
@@ -62,7 +62,7 @@
 
         <div class="row q-py-sm">
           <div class="col-3 text-grey-7">配额类型</div>
-          <div class="col">{{ currentApplication.classification === 'vo' ? $t('项目组') : $t('个人') }}</div>
+          <div class="col">{{ currentApplication.classification === 'vo' ? $t('项目组配额') : $t('个人配额') }}</div>
         </div>
 
         <div class="row q-py-sm">
@@ -72,21 +72,40 @@
 
         <div class="row q-py-sm">
           <div class="col-3 text-grey-7">申请人</div>
-          <div class="col">
+          <div class="col-auto">
             <div>{{ currentApplication.contact }}</div>
+          </div>
+          <q-btn class="col-shrink q-px-xs q-ma-none" flat dense icon="content_copy" size="xs" color="primary"
+                 @click="clickToCopy(currentApplication.contact)">
+            <q-tooltip>
+              {{ $t('复制到剪切板') }}
+            </q-tooltip>
+          </q-btn>
+        </div>
+
+        <div class="row q-py-sm">
+          <div class="col-3 text-grey-7">工作单位</div>
+          <div class="col">
             <div>{{ currentApplication.company }}</div>
           </div>
         </div>
 
       </q-card-section>
 
-      <!-- buttons example -->
-      <q-card-actions align="right">
-        <q-btn color="primary" unelevated @click="onApprove">
+      <!--      <q-separator/>-->
+
+      <q-card-actions class="q-pa-md" align="between">
+
+        <div class="row">
+          <q-btn color="negative" unelevated icon="close" @click="onReject">
+            {{ $t('拒绝') }}
+          </q-btn>
+          <q-input ref="input" class="q-px-sm" color="negative" outlined v-model="reason" :label="$t('拒绝原因')"
+                   stack-label dense/>
+        </div>
+
+        <q-btn color="positive" unelevated icon="check" @click="onApprove">
           {{ $t('批准') }}
-        </q-btn>
-        <q-btn color="primary" outline @click="onReject">
-          {{ $t('拒绝') }}
         </q-btn>
       </q-card-actions>
 
@@ -96,9 +115,11 @@
 
 <script lang="ts">
 import { defineComponent, ref, computed } from 'vue'
-import { useDialogPluginComponent } from 'quasar'
+import { Notify, useDialogPluginComponent } from 'quasar'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
+import useCopyToClipboard from 'src/hooks/useCopyToClipboard'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'ProviderAuditQuotaApplicationCard',
@@ -124,7 +145,11 @@ export default defineComponent({
     } = useDialogPluginComponent()
 
     const $store = useStore<StateInterface>()
+    const { locale } = useI18n({ useScope: 'global' })
+
     const currentApplication = computed(() => $store.state.applyQuota.tables.adminQuotaApplicationTable.byId[props.applyId])
+    // input
+    const input = ref<HTMLElement>()
     // 拒绝的原因
     const reason = ref('')
 
@@ -134,11 +159,31 @@ export default defineComponent({
       })
     }
     const onReject = () => {
-      onDialogOK({
-        isApprove: false,
-        reason: reason.value
-      })
+      // reason不可为空
+      if (reason.value === '') {
+        // notify
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '请填写拒绝原因',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+        // focus
+        input.value?.focus()
+      } else {
+        onDialogOK({
+          isApprove: false,
+          reason: reason.value
+        })
+      }
     }
+
+    // 复制信息到剪切板
+    const clickToCopy = useCopyToClipboard()
 
     return {
       // This is REQUIRED;
@@ -156,7 +201,10 @@ export default defineComponent({
       onApprove,
       onReject,
       currentApplication,
-      reason
+      reason,
+      clickToCopy,
+      locale,
+      input
     }
   }
 })

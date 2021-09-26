@@ -358,8 +358,7 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
       const respPostVO = await context.dispatch('postVO', { data: payload })
       if (respPostVO.status === 200) {
         // 添加role字段，正在创建项目组，则必然是owner
-        const myRole = 'owner'
-        Object.assign(respPostVO.data, { myRole })
+        Object.assign(respPostVO.data, { myRole: 'owner' })
         // normalize
         const group = new schema.Entity('group')
         const normalizedData = normalize(respPostVO.data, group)
@@ -378,18 +377,7 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
           timeout: 5000,
           multiLine: false
         })
-      } else {
-        Notify.create({
-          classes: 'notification-negative shadow-15',
-          icon: 'mdi-alert',
-          textColor: 'negative',
-          message: '创建项目组失败，请重试',
-          position: 'bottom',
-          closeBtn: true,
-          timeout: 5000,
-          multiLine: false
-        })
-      }
+      } // 失败则由axios统一报错
     }
   },
   postVO (context, payload: { data: { name: string; company: string; description: string; } }) {

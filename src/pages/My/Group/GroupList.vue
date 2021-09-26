@@ -78,9 +78,7 @@
           </q-td>
 
           <q-td key="quota" :props="props">
-            {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id)('valid').length }} /
-            {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id)('expired').length }} /
-            {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id)('exhausted').length }}
+            {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id,'valid').length }}个
           </q-td>
 
           <q-td key="server" :props="props">
@@ -223,7 +221,7 @@ export default defineComponent({
       },
       {
         name: 'quota',
-        label: '可用配额 / 过期配额 / 用尽配额',
+        label: '可用配额',
         field: 'quota',
         align: 'center',
         style: 'padding: 15px 0px',
@@ -231,7 +229,7 @@ export default defineComponent({
       },
       {
         name: 'server',
-        label: '云主机数量',
+        label: '云主机',
         field: 'server',
         align: 'center',
         style: 'padding: 15px 0px',
@@ -239,7 +237,7 @@ export default defineComponent({
       },
       {
         name: 'member',
-        label: '组员数量',
+        label: '组员',
         field: 'member',
         align: 'center',
         style: 'padding: 15px 0px',

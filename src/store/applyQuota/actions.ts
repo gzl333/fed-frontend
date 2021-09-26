@@ -22,48 +22,6 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   },
   /* 初次获取全部applyQuota模块Table，已有则自动忽略 */
 
-  // /* 修改配额申请 */
-  // async patchAndUpdateUserQuotaApplicationTable (context, payload: {
-  //   apply_id: string;
-  //   data: {
-  //     service_id: string;
-  //     duration_days: number;
-  //     vcpu: number;
-  //     ram: number;
-  //     private_ip: number;
-  //     public_ip: number;
-  //     disk_size: number;
-  //     company: string;
-  //     contact: string;
-  //     purpose: string;
-  //   }
-  // }) {
-  //   const respPatch = await context.dispatch('patchQuotaApplication', payload)
-  //   const service = new schema.Entity('service')
-  //   const quotaApplication = new schema.Entity('quotaApplication', { service })
-  //   const normalizedData = normalize(respPatch.data, quotaApplication)
-  //   context.commit('storeUserQuotaApplicationTable', normalizedData.entities.quotaApplication)
-  // },
-  // async patchQuotaApplication (context, payload: {
-  //   apply_id: string;
-  //   data: {
-  //     service_id: string;
-  //     duration_days: number;
-  //     vcpu: number;
-  //     ram: number;
-  //     private_ip: number;
-  //     public_ip: number;
-  //     disk_size: number;
-  //     company: string;
-  //     contact: string;
-  //     purpose: string;
-  //   }
-  // }) {
-  //   const api = apiBase + '/apply/quota/' + payload.apply_id + '/'
-  //   const response = await axios.patch(api, payload.data)
-  //   return response
-  // },
-
   // 修改quota申请
   editQuotaApplicationDialog (context, payload: { apply_id: string; isGroup?: boolean }) {
     Dialog.create({
@@ -75,7 +33,7 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
     }).onOk(async (val: { data: Record<string, string | number> }) => {
       const respPatchApplyQuota = await context.dispatch('patchApplyQuota', {
         path: { apply_id: payload.apply_id },
-        body: { data: val.data }
+        body: val.data
       })
       if (respPatchApplyQuota.status === 200) {
         if (payload.isGroup) {
@@ -116,94 +74,109 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   async patchApplyQuota (context, payload: {
     path: { apply_id: string };
     body: {
-      data: {
-        service_id: string;
-        duration_days: number;
-        vcpu: number;
-        ram: number;
-        private_ip: number;
-        public_ip: number;
-        disk_size: number;
-        company: string;
-        contact: string;
-        purpose: string;
-      }
+      service_id: string;
+      duration_days: number;
+      vcpu: number;
+      ram: number;
+      private_ip: number;
+      public_ip: number;
+      disk_size: number;
+      company: string;
+      contact: string;
+      purpose: string;
     }
   }) {
     const api = apiBase + '/apply/quota/' + payload.path.apply_id + '/'
-    return axios.patch(api, payload.body.data)
+    return axios.patch(api, payload.body)
   },
   /* 修改配额申请 */
 
-  /* 挂起配额申请 */
-  async suspendAndUpdateAdminQuotaApplicationTable (context, apply_id: string) {
-    const respSuspend = await context.dispatch('suspendQuotaApplication', apply_id)
-    const service = new schema.Entity('service')
-    const quotaApplication = new schema.Entity('quotaApplication', { service })
-    const normalizedData = normalize(respSuspend.data, quotaApplication)
-    context.commit('storeAdminQuotaApplicationTable', normalizedData.entities.quotaApplication)
-  },
-  async suspendQuotaApplication (context, apply_id: string) {
-    const api = apiBase + '/apply/quota/' + apply_id + '/pending/'
-    const response = await axios.post(api)
-    return response
-  },
-  /* 挂起配额申请 */
-
-  /* 通过配额申请 */
+  /* 审批配额申请dialog */
   async auditQuotaApplicationDialog (context, applyId: string) {
     // 检查当前申请状态，wait则挂起后再打开对话框
     const currentApplication = context.state.tables.adminQuotaApplicationTable.byId[applyId]
     if (currentApplication.status === 'wait') {
-      await context.dispatch('suspendAndUpdateAdminQuotaApplicationTable', applyId)
+      // 挂起
+      const respSuspend = await context.dispatch('postApplyQuotaPending', { path: { apply_id: applyId } })
+      // 修改table
+      const service = new schema.Entity('service')
+      const quotaApplication = new schema.Entity('quotaApplication', { service })
+      const normalizedData = normalize(respSuspend.data, quotaApplication)
+      context.commit('storeAdminQuotaApplicationTable', normalizedData.entities.quotaApplication)
     }
     Dialog.create({
       component: ProviderAuditQuotaApplicationCard,
       componentProps: {
         applyId
       }
-    }).onOk((val: {isApprove: boolean; reason?: string}) => {
+    }).onOk(async (val: { isApprove: true } | { isApprove: false, reason: string }) => {
       if (val.isApprove) {
-        console.log('批准')
         // 批准申请
-        // 更新table
-        // notify
+        const respApprove = await context.dispatch('postApplyQuotaPass', { path: { apply_id: applyId } })
+        // 批准成功
+        if (respApprove.status === 200) {
+          // 更新table
+          const service = new schema.Entity('service')
+          const quotaApplication = new schema.Entity('quotaApplication', { service })
+          const normalizedData = normalize(respApprove.data, quotaApplication)
+          context.commit('storeAdminQuotaApplicationTable', normalizedData.entities.quotaApplication)
+          // notify
+          Notify.create({
+            classes: 'notification-positive shadow-15',
+            icon: 'mdi-check-circle',
+            textColor: 'light-green',
+            message: '批准配额申请成功',
+            position: 'bottom',
+            closeBtn: true,
+            timeout: 5000,
+            multiLine: false
+          })
+        } // 不成功由axios统一通知
       } else {
-        console.log('拒绝')
         // 拒绝申请
-        // 更新table
-        // notify
+        const respReject = await context.dispatch('postApplyQuotaReject', {
+          body: { reason: val.reason },
+          path: { apply_id: applyId }
+        })
+        // 成功拒绝
+        if (respReject.status === 200) {
+          // 更新table
+          const service = new schema.Entity('service')
+          const quotaApplication = new schema.Entity('quotaApplication', { service })
+          const normalizedData = normalize(respReject.data, quotaApplication)
+          context.commit('storeAdminQuotaApplicationTable', normalizedData.entities.quotaApplication)
+          // notify
+          Notify.create({
+            classes: 'notification-positive shadow-15',
+            icon: 'mdi-check-circle',
+            textColor: 'light-green',
+            message: '拒绝配额申请成功',
+            position: 'bottom',
+            closeBtn: true,
+            timeout: 5000,
+            multiLine: false
+          })
+        }
       }
     })
   },
-  async approveAndUpdateAdminQuotaApplicationTable (context, apply_id: string) {
-    const respApprove = await context.dispatch('approveQuotaApplication', apply_id)
-    const service = new schema.Entity('service')
-    const quotaApplication = new schema.Entity('quotaApplication', { service })
-    const normalizedData = normalize(respApprove.data, quotaApplication)
-    context.commit('storeAdminQuotaApplicationTable', normalizedData.entities.quotaApplication)
-  },
-  async approveQuotaApplication (context, apply_id: string) {
-    const api = apiBase + '/apply/quota/' + apply_id + '/pass/'
-    const response = await axios.post(api)
-    return response
+
+  /* 挂起配额申请 */
+  postApplyQuotaPending (context, payload: { path: { apply_id: string } }) {
+    const api = apiBase + '/apply/quota/' + payload.path.apply_id + '/pending'
+    return axios.post(api)
   },
   /* 通过配额申请 */
-
-  /* 拒绝配额申请 */
-  async rejectAndUpdateAdminQuotaApplicationTable (context, apply_id: string) {
-    const respReject = await context.dispatch('rejectQuotaApplication', apply_id)
-    const service = new schema.Entity('service')
-    const quotaApplication = new schema.Entity('quotaApplication', { service })
-    const normalizedData = normalize(respReject.data, quotaApplication)
-    context.commit('storeAdminQuotaApplicationTable', normalizedData.entities.quotaApplication)
-  },
-  async rejectQuotaApplication (context, apply_id: string) {
-    const api = apiBase + '/apply/quota/' + apply_id + '/reject/'
-    const response = await axios.post(api)
-    return response
+  postApplyQuotaPass (context, payload: { path: { apply_id: string } }) {
+    const api = apiBase + '/apply/quota/' + payload.path.apply_id + '/pass'
+    return axios.post(api)
   },
   /* 拒绝配额申请 */
+  postApplyQuotaReject (context, payload: { body: { reason: string }, path: { apply_id: string } }) {
+    const api = apiBase + '/apply/quota/' + payload.path.apply_id + '/reject'
+    const data = payload.body
+    return axios.post(api, data)
+  },
 
   /* 删除配额申请记录 */
   deleteGroupQuotaApplicationDialog (context, payload: { apply_id: string; isGroup?: boolean }) {

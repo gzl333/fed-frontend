@@ -21,7 +21,6 @@
                        label="申请记录"
                        to="/my/group/quota/application"/>
         </q-tabs>
-
       </div>
 
       <div class="col-auto">

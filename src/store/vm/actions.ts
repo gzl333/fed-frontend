@@ -218,7 +218,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     // 将响应normalize
     const service = new schema.Entity('service')
     const quota = new schema.Entity('quota', { service })
-    const respQuota = await context.dispatch('getQuota')
+    const respQuota = await context.dispatch('getQuota', { query: { deleted: false } })
     // quota数组
     for (const data of respQuota.data.results) {
       /* 增加补充字段 */
@@ -249,8 +249,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
       context.commit('storeUserQuotaTable', normalizedData.entities.quota)
     }
   },
-  // todo 加delete筛选
-  getQuota (context, payload?: { query: { page?: number; page_size?: number; service?: string; usable?: boolean; } }) {
+  getQuota (context, payload?: { query: { page?: number; page_size?: number; service?: string; usable?: boolean; deleted?: boolean } }) {
     const api = apiBase + '/quota/'
     const config = {
       params: payload?.query
@@ -570,7 +569,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     return axios.patch(api, null, config)
   },
   // 更新单个server的信息
-  async updateServerTableSingleServer (context, payload: { serverId: string; isGroup:boolean}) {
+  async updateServerTableSingleServer (context, payload: { serverId: string; isGroup: boolean }) {
     const respSingleServer = await context.dispatch('fetchSingleServer', payload.serverId)
     // 将响应normalize，存入state里的userServerTable
     const service = new schema.Entity('service')

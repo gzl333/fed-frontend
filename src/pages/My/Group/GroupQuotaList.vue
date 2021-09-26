@@ -47,7 +47,7 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
-    void $store.dispatch('vm/loadGroupQuotaTable')
+    // void $store.dispatch('vm/loadGroupQuotaTable')
 
     // application filter
     const filterSelection = ref({
