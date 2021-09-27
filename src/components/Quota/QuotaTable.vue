@@ -146,7 +146,7 @@
 
           <q-td key="expiration_time" :props="props">
             <div v-if="!props.row.expiration_time">长期有效</div>
-            <div v-else>
+            <div v-else :class="props.row.expired?'text-grey':'text-black'">
               <div v-if="locale==='zh'">
                 <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(' ')[0] }}</div>
                 <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(' ')[1] }}</div>
@@ -156,18 +156,17 @@
                 <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(',')[1] }}</div>
               </div>
             </div>
+            <div v-if="props.row.expired" class="text-grey">
+              已过期
+            </div>
           </q-td>
 
           <q-td key="status" :props="props">
-            <div v-if="!props.row.expired && !props.row.exhausted" class="text-light-green">可用</div>
+            <div v-if="!props.row.expired && !props.row.exhausted" class="text-light-green">
+                <q-icon name="check_circle_outline" size="sm"/>可用
+            </div>
             <div v-else class="text-red">
-              不可用
-              <div v-if="props.row.expired" class="text-grey">
-                过期
-              </div>
-              <div v-if="props.row.exhausted" class="text-grey">
-                用尽
-              </div>
+              <q-icon name="highlight_off" size="sm"/>不可用
             </div>
           </q-td>
 

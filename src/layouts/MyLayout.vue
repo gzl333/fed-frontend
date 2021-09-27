@@ -50,19 +50,19 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     /* my内页所有table加载起始点 */
     void $store.dispatch('vm/updateVmTable').then(() => {
-      if (!process.env.PROD) {
-        console.log('$STORE-vm:', $store.state.vm)
-      }
+      // if (!process.env.PROD) {
+      console.log('$STORE-vm:', $store.state.vm)
+      // }
     })
     void $store.dispatch('applyQuota/updateQuotaApplicationTable').then(() => {
-      if (!process.env.PROD) {
-        console.log('$STORE-applyQuota:', $store.state.applyQuota)
-      }
+      // if (!process.env.PROD) {
+      console.log('$STORE-applyQuota:', $store.state.applyQuota)
+      // }
     })
     void $store.dispatch('group/loadGroupModuleTable').then(() => {
-      if (!process.env.PROD) {
-        console.log('$STORE-group:', $store.state.group)
-      }
+      // if (!process.env.PROD) {
+      console.log('$STORE-group:', $store.state.group)
+      // }
     })
     /* my内页所有table加载起始点 */
 

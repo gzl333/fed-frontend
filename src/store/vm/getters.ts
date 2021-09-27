@@ -290,7 +290,6 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
   },
   getGroupServersByGroupId: (state) => (groupId: string): ServerInterface[] => {
     const sortFn = (a: ServerInterface, b: ServerInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
-
     if (groupId === '0') {
       return Object.values(state.tables.groupServerTable.byId).sort(sortFn)
     } else {

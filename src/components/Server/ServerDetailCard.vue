@@ -260,7 +260,7 @@
                       <!--                      {{ quota?.display }}-->
                     </div>
 
-                    <div v-else>所用配额已删除或未使用配额创建</div>
+                    <div v-else>所用配额已删除</div>
 
                   </div>
                 </div>
@@ -274,7 +274,15 @@
 
                 <div class="row q-pb-md items-center">
                   <div class="col-2 text-grey">云主机ID</div>
-                  <div class="col"> {{ server.id }}</div>
+                  <div class="col">
+                    {{ server.id }}
+                    <q-btn class="q-px-xs" flat color="primary" icon="content_copy" size="sm"
+                           @click="clickToCopy(server.id)">
+                      <q-tooltip>
+                        复制
+                      </q-tooltip>
+                    </q-btn>
+                  </div>
                 </div>
 
                 <div class="row q-pb-md items-center">

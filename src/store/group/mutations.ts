@@ -2,6 +2,11 @@ import { MutationTree } from 'vuex'
 import { GroupInterface, GroupMemberInterface, GroupModuleInterface, SingleMemberInterface } from './state'
 
 const mutation: MutationTree<GroupModuleInterface> = {
+  clearGroupTable (state) {
+    state.tables.groupTable.byId = {}
+    state.tables.groupTable.allIds = []
+    state.tables.groupTable.isLoaded = false
+  },
   storeGroupTable (state, tableObj: Record<string, GroupInterface>) {
     Object.assign(state.tables.groupTable.byId, tableObj)
     state.tables.groupTable.allIds.unshift(Object.keys(tableObj)[0])

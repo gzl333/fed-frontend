@@ -1,5 +1,6 @@
 <template>
   <div class="GroupEdit">
+
     <div class="column items-center justify-center q-py-md">
       <div class="col q-pa-none">
 
@@ -124,43 +125,61 @@
             </div>
             <!--项目组详情结束-->
 
-            <div class="column items-start q-py-none q-px-none">
+            <div class="column items-start q-py-none q-px-none q-pt-sm">
 
               <div class="col-auto">
-                <q-tabs
-                  v-model="tab"
-                  active-color="primary"
-                  align="left"
-                  narrow-indicator
-                >
-                  <q-tab class="q-px-none q-py-none q-mr-md"
-                               :ripple="false"
-                               name="member"
-                               label="人员"/>
-                  <q-tab class="q-px-none q-py-none q-mr-md"
-                               :ripple="false"
-                               name="server"
-                               label="云主机"/>
-                  <q-tab class="q-px-none q-py-none q-mr-md"
-                         :ripple="false"
-                         name="quota"
-                         label="云主机配额"/>
-                </q-tabs>
+                <div class="row no-wrap justify-between items-center q-pt-lg  content-area">
+
+                  <q-tabs
+                    class="col-auto"
+                    v-model="tab"
+                    active-color="primary"
+                    align="left"
+                    narrow-indicator
+                  >
+                    <q-tab class="q-px-none q-py-none q-mr-md"
+                           :ripple="false"
+                           name="member"
+                           label="人员"/>
+                    <q-tab class="q-px-none q-py-none q-mr-md"
+                           :ripple="false"
+                           name="server"
+                           label="云主机"/>
+                    <q-tab class="q-px-none q-py-none q-mr-md"
+                           :ripple="false"
+                           name="quota"
+                           label="云主机配额"/>
+                  </q-tabs>
+
+                  <q-btn v-show="tab==='member'" class="col-shrink" icon="add" size="md" unelevated dense padding="xs" color="primary">
+                    新增人员
+                  </q-btn>
+
+                  <q-btn v-show="tab==='server'" class="col-shrink" icon="add" size="md" unelevated dense padding="xs" color="primary">
+                    新建云主机
+                  </q-btn>
+
+                  <q-btn v-show="tab==='quota'" class="col-shrink" icon="add" size="md" unelevated dense padding="xs" color="primary">
+                    申请新配额
+                  </q-btn>
+
+                </div>
+
+                <q-separator/>
 
               </div>
-<!--todo 宽度问题-->
-              <div class="col-auto content-fixed-width">
-                <q-separator/>
+              <div class="col-auto content-area">
+
                 <q-tab-panels v-model="tab" animated>
-                  <q-tab-panel name="member">
+                  <q-tab-panel class="q-pa-none" name="member" style="overflow: hidden;">
                     <group-member-table :group-id="group.id"/>
                   </q-tab-panel>
 
-                  <q-tab-panel name="server">
+                  <q-tab-panel class="q-pa-none" name="server" style="overflow: hidden;">
                     <server-table is-group :servers="servers"/>
                   </q-tab-panel>
 
-                  <q-tab-panel name="quota">
+                  <q-tab-panel class="q-pa-none" name="quota" style="overflow: hidden;">
                     <quota-table :quotas="quotas" is-group/>
                   </q-tab-panel>
                 </q-tab-panels>
@@ -168,73 +187,13 @@
 
             </div>
 
-<!--            &lt;!&ndash;人员列表开始&ndash;&gt;-->
-<!--            <div class="row">-->
-<!--              <div class="col">-->
-<!--                <div class="row justify-between items-center q-pt-lg q-pb-sm ">-->
-<!--                  <div class="col-auto text-grey">-->
-<!--                    人员-->
-<!--                  </div>-->
-<!--                  <div class="col-auto">-->
-<!--                    <q-btn icon="add" size="md" unelevated dense padding="xs" color="primary"-->
-<!--                           @click="$store.dispatch('group/addGroupMemberDialog', group.id)">-->
-<!--                      增加人员-->
-<!--                    </q-btn>-->
-<!--                  </div>-->
-<!--                </div>-->
-
-<!--                <group-member-table :group-id="group.id"/>-->
-
-<!--              </div>-->
-<!--            </div>-->
-<!--            &lt;!&ndash;人员列表结束&ndash;&gt;-->
-
-<!--            &lt;!&ndash;云主机列表开始&ndash;&gt;-->
-<!--            <div class="row">-->
-<!--              <div class="col">-->
-<!--                <div class="row justify-between items-center q-pt-lg q-pb-sm ">-->
-<!--                  <div class="col-auto text-grey">-->
-<!--                    云主机-->
-<!--                  </div>-->
-<!--                  <div class="col-auto">-->
-<!--                    <q-btn icon="add" size="md" unelevated dense padding="xs" color="primary">-->
-<!--                      新建云主机-->
-<!--                    </q-btn>-->
-<!--                  </div>-->
-<!--                </div>-->
-
-<!--                <server-table is-group :servers="servers"/>-->
-
-<!--              </div>-->
-<!--            </div>-->
-<!--            &lt;!&ndash;云主机列表结束&ndash;&gt;-->
-
-<!--            &lt;!&ndash;云主机配额列表开始&ndash;&gt;-->
-<!--            <div class="row">-->
-<!--              <div class="col">-->
-<!--                <div class="row justify-between items-center q-pt-lg q-pb-sm ">-->
-<!--                  <div class="col-auto text-grey">-->
-<!--                    云主机配额-->
-<!--                  </div>-->
-<!--                  <div class="col-auto">-->
-<!--                    <q-btn icon="add" size="md" unelevated dense padding="xs" color="primary">-->
-<!--                      申请新配额-->
-<!--                    </q-btn>-->
-<!--                  </div>-->
-<!--                </div>-->
-
-<!--                <quota-table :quotas="quotas" is-group/>-->
-
-<!--              </div>-->
-<!--            </div>-->
-<!--            &lt;!&ndash;云主机配额列表结束&ndash;&gt;-->
-
           </div>
         </div>
 
       </div>
 
     </div>
+
   </div>
 </template>
 
@@ -250,7 +209,7 @@ import ServerTable from 'components/Server/ServerTable.vue'
 import QuotaTable from 'components/Quota/QuotaTable.vue'
 
 export default defineComponent({
-  name: 'GroupEdit',
+  name: 'GroupDetail',
   components: {
     GroupMemberTable,
     ServerTable,
@@ -289,7 +248,7 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.GroupEdit {
+.GroupDetail {
 }
 
 .title-area {

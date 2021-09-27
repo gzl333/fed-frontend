@@ -38,16 +38,16 @@
                     :ripple="false"
                     to="/my/personal/server"
                   />
-                  <q-route-tab
-                    disable
-                    no-caps
-                    class="q-px-none q-py-md q-mx-md"
-                    name="obs"
-                    icon="fas fa-database"
-                    label="对象存储"
-                    :ripple="false"
-                    to="/my/personal/obs"
-                  />
+<!--                  <q-route-tab-->
+<!--                    disable-->
+<!--                    no-caps-->
+<!--                    class="q-px-none q-py-md q-mx-md"-->
+<!--                    name="obs"-->
+<!--                    icon="fas fa-database"-->
+<!--                    label="对象存储"-->
+<!--                    :ripple="false"-->
+<!--                    to="/my/personal/obs"-->
+<!--                  />-->
                   <q-route-tab
                     no-caps
                     class="q-px-none q-py-md q-mx-md"

@@ -255,7 +255,8 @@ const routes: RouteRecordRaw[] = [
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/My/Group/GroupDetail.vue')
+            component: () => import('pages/My/Group/GroupDetail.vue'),
+            props: true // 接收url中的参数
           },
           {
             path: 'member/:id', // groupId 动态路由匹配
@@ -263,13 +264,6 @@ const routes: RouteRecordRaw[] = [
               requireLogin: true
             },
             component: () => import('pages/My/Group/GroupMember.vue')
-          },
-          {
-            path: 'edit/:id', // groupId 动态路由匹配
-            meta: {
-              requireLogin: true
-            },
-            component: () => import('pages/My/Group/GroupEdit.vue')
           },
           {
             path: 'create',

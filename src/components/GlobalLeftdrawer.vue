@@ -89,6 +89,7 @@
           </q-item>
 
         </q-list>
+        <div class="text-grey text-body2 text-center">beta 0.2.0</div>
       </q-scroll-area>
     </div>
   </q-drawer>

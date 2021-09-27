@@ -48,16 +48,16 @@
                     :ripple="false"
                     to="/my/group/server"
                   />
-                  <q-route-tab
-                    disable
-                    no-caps
-                    class="q-px-none q-py-md q-mx-md"
-                    name="obs"
-                    icon="fas fa-database"
-                    :label="$t('组对象存储')"
-                    :ripple="false"
-                    to="/my/group/obs"
-                  />
+<!--                  <q-route-tab-->
+<!--                    disable-->
+<!--                    no-caps-->
+<!--                    class="q-px-none q-py-md q-mx-md"-->
+<!--                    name="obs"-->
+<!--                    icon="fas fa-database"-->
+<!--                    :label="$t('组对象存储')"-->
+<!--                    :ripple="false"-->
+<!--                    to="/my/group/obs"-->
+<!--                  />-->
                   <q-route-tab
                     no-caps
                     class="q-px-none q-py-md q-mx-md"

@@ -192,16 +192,16 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
           })
           resolve(true)
         } else {
-          Notify.create({
-            classes: 'notification-negative shadow-15',
-            icon: 'mdi-alert',
-            textColor: 'negative',
-            message: '配额删除失败，请重试',
-            position: 'bottom',
-            closeBtn: true,
-            timeout: 5000,
-            multiLine: false
-          })
+          // Notify.create({
+          //   classes: 'notification-negative shadow-15',
+          //   icon: 'mdi-alert',
+          //   textColor: 'negative',
+          //   message: '配额删除失败，请重试',
+          //   position: 'bottom',
+          //   closeBtn: true,
+          //   timeout: 5000,
+          //   multiLine: false
+          // })
           reject(false) // 都是resolve? 信息用boolean表达是否删除。因为接收处用的await语法，用reject会被catch。
         }
       })

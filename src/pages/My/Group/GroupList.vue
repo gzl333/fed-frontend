@@ -77,16 +77,22 @@
             <GroupRoleChip class="non-selectable" :role="props.row.myRole"/>
           </q-td>
 
-          <q-td key="quota" :props="props">
-            {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id,'valid').length }}个
+          <q-td key="member" :props="props">
+             <q-btn color="primary" flat padding="none" dense :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'member'} }">
+               {{ $store.state.group.tables.groupMemberTable.byId[props.row.id]?.members.length }}人
+             </q-btn>
           </q-td>
 
           <q-td key="server" :props="props">
-            {{ $store.getters['vm/getGroupServersByGroupId'](props.row.id).length }}台
+            <q-btn color="primary" flat padding="none" dense :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'server'} }">
+              {{ $store.getters['vm/getGroupServersByGroupId'](props.row.id).length }}台
+            </q-btn>
           </q-td>
 
-          <q-td key="member" :props="props">
-            {{ $store.state.group.tables.groupMemberTable.byId[props.row.id]?.members.length }}人
+          <q-td key="quota" :props="props">
+            <q-btn color="primary" flat padding="none" dense :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'quota'} }">
+              {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id,'valid').length }}个
+            </q-btn>
           </q-td>
 
           <q-td key="desc" :props="props">
@@ -101,10 +107,11 @@
                 <q-tooltip>详情</q-tooltip>
               </q-btn>
 
-              <q-btn :disable="props.row.myRole!=='owner'" icon="settings" flat dense padding="none" color="primary"
-                     :to="{path: `/my/group/edit/${props.row.id}`}">
-                <q-tooltip>设置</q-tooltip>
-              </q-btn>
+<!--              <q-btn :disable="props.row.myRole!=='owner'" icon="settings" flat dense padding="none" color="primary"-->
+<!--                     :to="{path: `/my/group/edit/${props.row.id}`}">-->
+<!--                <q-tooltip>设置</q-tooltip>-->
+<!--              </q-btn>-->
+
             </div>
 
           </q-td>
@@ -144,13 +151,13 @@ export default defineComponent({
     // application filter
     const filterSelection = ref({
       label: locale.value === 'zh' ? '全部项目组' : 'All Groups',
-      value: '0'
+      value: 'all'
     })
 
     const filterOptionsZH = [
       {
         label: '全部项目组',
-        value: '0'
+        value: 'all'
       },
       {
         label: '作为组长',
@@ -168,7 +175,7 @@ export default defineComponent({
     const filterOptionsEN = [
       {
         label: 'All Groups',
-        value: '0'
+        value: 'all'
       },
       {
         label: 'As Group Owner',
@@ -220,9 +227,9 @@ export default defineComponent({
         headerStyle: 'padding: 0 5px'
       },
       {
-        name: 'quota',
-        label: '可用配额',
-        field: 'quota',
+        name: 'member',
+        label: '组员',
+        field: 'member',
         align: 'center',
         style: 'padding: 15px 0px',
         headerStyle: 'padding: 0 5px'
@@ -236,9 +243,9 @@ export default defineComponent({
         headerStyle: 'padding: 0 5px'
       },
       {
-        name: 'member',
-        label: '组员',
-        field: 'member',
+        name: 'quota',
+        label: '可用配额',
+        field: 'quota',
         align: 'center',
         style: 'padding: 15px 0px',
         headerStyle: 'padding: 0 5px'
@@ -277,7 +284,6 @@ export default defineComponent({
     const groups = computed(() => $store.getters['group/getGroupsByFilter'](filterSelection.value.value))
 
     return {
-      $store,
       locale,
       filterSelection,
       filterOptions,

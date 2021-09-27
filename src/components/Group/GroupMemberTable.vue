@@ -32,7 +32,15 @@
           </q-td>
 
           <q-td key="time" :props="props">
-            {{ new Date(props.row.join_time).toLocaleString(locale) }}
+            <div v-if="locale==='zh'">
+              <div>{{ new Date(props.row.join_time).toLocaleString(locale).split(' ')[0] }}</div>
+              <div>{{ new Date(props.row.join_time).toLocaleString(locale).split(' ')[1] }}</div>
+            </div>
+
+            <div v-else>
+              <div>{{ new Date(props.row.join_time).toLocaleString(locale).split(',')[0] }}</div>
+              <div>{{ new Date(props.row.join_time).toLocaleString(locale).split(',')[1] }}</div>
+            </div>
           </q-td>
 
           <q-td key="inviter" :props="props">
@@ -52,7 +60,7 @@
                 <q-tooltip>取消管理员</q-tooltip>
               </q-btn>
 
-              <q-btn icon="mdi-close-thick" flat dense padding="none" color="primary"
+              <q-btn icon="remove_circle" flat dense padding="none" color="primary"
                      @click="$store.dispatch('group/removeSingleGroupMemberDialog', {groupId, username: props.row.user.username})">
                 <q-tooltip>移出项目组</q-tooltip>
               </q-btn>

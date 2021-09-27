@@ -1,173 +1,262 @@
 <template>
   <div class="GroupDetail">
 
-    <div class="text-weight-bold text-h6 text-primary">
-      <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense @click="goBack"/>
-      项目组详情
+    <div class="column items-center justify-center q-py-md">
+      <div class="col q-pa-none">
+
+        <div class="row title-area">
+          <div class="col">
+            <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
+                   @click="$router.go(-1)"/>
+            项目组详情
+          </div>
+        </div>
+
+        <!--直接从url进入本页面时，tables尚未载入，应显示loading界面。对取属性进行缓冲，不出现undefined错误-->
+        <div class="row content-area">
+          <div v-if="!groupMember || !group" class="col">
+            正在加载，请稍候
+          </div>
+
+          <div v-else class="col">
+
+            <!--项目组详情开始-->
+            <div class="row items-center justify-evenly detail-area ">
+
+              <div class="col-auto ">
+                <div class="column justify-start items-center" style="height: 120px">
+                  <div class="col-2 text-grey">
+                    项目组名称
+                  </div>
+                  <div class="col-10">
+                    <div class="row justify-center items-center text-bold" style="height: 70px">
+                      {{ group.name }}
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-auto ">
+                <div class="column justify-start items-center" style="height: 120px">
+                  <div class="col-2 text-grey">
+                    所属单位
+                  </div>
+                  <div class="col-10">
+                    <div class="row justify-center items-center" style="height: 70px">
+                      {{ group.company }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-auto ">
+                <div class="column justify-start items-center" style="height: 120px">
+                  <div class="col-2 text-grey">
+                    组长
+                  </div>
+                  <div class="col-10">
+                    <div class="row justify-center items-center" style="height: 70px">
+                      {{ group.owner.username }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-auto ">
+                <div class="column justify-start items-center" style="height: 120px">
+                  <div class="col-2 text-grey">
+                    备注
+                  </div>
+                  <div class="col-10">
+                    <div class="row justify-center items-center" style="height: 70px">
+                      {{ group.description }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-auto ">
+                <div class="column justify-start items-center" style="height: 120px">
+                  <div class="col-2 text-grey">
+                    建立时间
+                  </div>
+                  <div class="col-10">
+                    <div class="row justify-center items-center" style="height: 70px">
+
+                      <div v-if="locale==='zh'" class="column justify-center items-center">
+                        <div class="col">{{ new Date(group.creation_time).toLocaleString(locale).split(' ')[0] }}</div>
+                        <div class="col">{{ new Date(group.creation_time).toLocaleString(locale).split(' ')[1] }}</div>
+                      </div>
+
+                      <div v-else class="column justify-center items-center">
+                        <div class="col">{{ new Date(group.creation_time).toLocaleString(locale).split(',')[0] }}</div>
+                        <div class="col">{{ new Date(group.creation_time).toLocaleString(locale).split(',')[1] }}</div>
+                      </div>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div v-if="group.myRole !== 'member'" class="col-auto ">
+                <div class="column justify-start items-center" style="height: 120px">
+                  <div class="col-2 text-grey">
+                    操作
+                  </div>
+                  <div class="col-10">
+                    <div class="row justify-center items-center q-gutter-sm" style="height: 70px">
+
+                      <q-btn icon="edit" flat padding="none" color="primary" size="md"
+                             @click="$store.dispatch('group/editGroupDialog', group.id)">
+                        <q-tooltip>编辑项目组信息</q-tooltip>
+                      </q-btn>
+
+                      <q-btn v-if="group.myRole ==='owner'" icon="group_off" flat padding="none"
+                             color="primary" size="md"
+                             @click="$store.dispatch('group/deleteGroupDialog', groupId)">
+                        <q-tooltip>解散项目组</q-tooltip>
+                      </q-btn>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+            <!--项目组详情结束-->
+
+            <div class="column items-start q-py-none q-px-none">
+
+              <div class="col-auto">
+                <div class="row no-wrap justify-between items-center q-pt-lg  content-area">
+
+                  <q-tabs
+                    class="col-auto"
+                    v-model="tab"
+                    active-color="primary"
+                    align="left"
+                    inline-label
+                  >
+                    <q-tab class="q-px-none q-py-none q-mr-md"
+                           no-caps
+                           :ripple="false"
+                           name="member"
+                           icon="group"
+                           :label="$t('本组人员')"/>
+                    <q-tab class="q-px-none q-py-none q-mr-md"
+                           no-caps
+                           :ripple="false"
+                           name="server"
+                           icon="computer"
+                           :label="$t('本组云主机')"/>
+                    <q-tab class="q-px-none q-py-none q-mr-md"
+                           no-caps
+                           :ripple="false"
+                           name="quota"
+                           icon="fas fa-file-alt"
+                           :label="$t('本组云主机配额')"/>
+                  </q-tabs>
+
+                  <q-btn v-show="tab==='member' && group.myRole !== 'member' " class="col-shrink" icon="add" size="md"
+                         unelevated dense padding="xs"
+                         color="primary" @click="$store.dispatch('group/addGroupMemberDialog', groupId)">
+                    新增人员
+                  </q-btn>
+
+                  <q-btn v-show="tab==='server' && group.myRole !== 'member'" class="col-shrink" icon="add" size="md"
+                         unelevated dense padding="xs"
+                         color="primary" :to="{path: '/my/group/server/deploy', query: {group: groupId} }">
+                    新建云主机
+                  </q-btn>
+
+                  <q-btn v-show="tab==='quota' && group.myRole !== 'member'" class="col-shrink" icon="add" size="md"
+                         unelevated dense padding="xs"
+                         color="primary" :to="{path: '/my/group/quota/apply', query: {group: groupId} }">
+                    申请新配额
+                  </q-btn>
+
+                </div>
+
+                <q-separator/>
+
+              </div>
+              <div class="col-auto content-area">
+
+                <q-tab-panels v-model="tab" animated>
+                  <q-tab-panel class="q-pa-none overflow-hidden" name="member">
+                    <group-member-table :group-id="group.id"/>
+                  </q-tab-panel>
+
+                  <q-tab-panel class="q-pa-none overflow-hidden" name="server">
+                    <server-table is-group :servers="servers"/>
+                  </q-tab-panel>
+
+                  <q-tab-panel class="q-pa-none overflow-hidden" name="quota">
+                    <quota-table :quotas="quotas" is-group/>
+                  </q-tab-panel>
+                </q-tab-panels>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+
     </div>
 
-    <div class="row q-mt-xl">
-        <div class="text-weight-bold text-subtitle1">云主机</div>
-        <div class="q-ml-xl">
-          <q-btn outline color="primary" label="创建云主机" :to="{path: '/my/group/server/deploy', query: {group: groupId}}"/>
-        </div>
-    </div>
-    <div class="row q-mt-lg q-ml-xl">
-      <div class="col-3 q-ml-xl q-mt-lg" v-for="server in $store.getters['vm/getGroupServersByGroupId'](groupId)"
-           :key="server.id">
-        <q-card class="my-card">
-          <div class="row">
-            <div class="col-4">
-              <q-card-section>
-                <q-icon name="computer" class="text-teal q-mt-lg q-ml-lg" style="font-size: 4.4em;"/>
-              </q-card-section>
-            </div>
-            <div class="col-8">
-              <q-card-section>
-                <div class="column items-center">
-                  <q-btn flat color="primary" padding="none" size="lg" :to="{path: '/my/group/server/detail/' + server.id}" >
-                    {{ server.ipv4 }}
-                  </q-btn>
-                  <server-status :server="server" :is-group="true"/>
-                  <div class="col-6">
-                    <q-btn v-show="$store.state.vm.tables.groupServerTable.byId[server.id]?.status === 5" push color="white" text-color="black" icon="cloud_upload" size="sm" label="开机"
-                           @click="$store.dispatch('vm/serverOperationDialog', {serverId: server.id, action:'start', isGroup: true} )"/>
-                    <q-btn v-show="$store.state.vm.tables.groupServerTable.byId[server.id]?.status === 1" push color="white" text-color="black" icon="cloud_upload" size="sm" label="关机"
-                           @click="$store.dispatch('vm/serverOperationDialog', {serverId: server.id, action:'shutdown', isGroup: true} )"/>
-                    <q-btn v-show="$store.state.vm.tables.groupServerTable.byId[server.id]?.status === ''" flat color="white" size="sm"/>
-                  </div>
-                  <div class="col-3 text-weight-light text-caption">
-                    <span>{{ `由${server.user.username}创建` }}</span>
-                  </div>
-                </div>
-              </q-card-section>
-            </div>
-          </div>
-        </q-card>
-      </div>
-    </div>
-    <div class="row q-mt-xl">
-      <div class="text-weight-bold text-subtitle1">组员列表</div>
-      <div class="q-ml-xl">
-        <q-btn outline style="color: #2E9AFE;" label="添加组员" @click="$store.dispatch('group/addGroupMemberDialog', groupId)"/>
-      </div>
-    </div>
-    <div class="row q-mt-lg">
-      <div class="col-5 q-ml-xl q-mt-lg">
-        <q-card class="my-card row">
-          <div class="col-2">
-            <q-card-section>
-              <div class="q-mt-lg q-ml-md">
-                <q-avatar>
-                  <img src="https://cdn.quasar.dev/img/avatar4.jpg">
-                </q-avatar>
-              </div>
-            </q-card-section>
-          </div>
-          <div class="col-10">
-            <q-card-section>
-              <div class="row">
-                <div class="text-light-blue-9 q-mt-sm cursor-pointer">
-                  <span>{{ $store.state.group.tables.groupMemberTable.byId[groupId]?.owner.username }}</span>
-                </div>
-                <div class="q-ml-md">
-                  <group-role-chip role="owner"></group-role-chip>
-                </div>
-              </div>
-              <div class="q-mt-lg q-pb-lg">
-                <q-btn class="col-shrink" flat dense size="md" color="primary" label="云主机创建详情"/>
-              </div>
-            </q-card-section>
-          </div>
-        </q-card>
-      </div>
-      <div class="col-5 q-ml-xl q-mt-lg" v-for="(member, index) in groupMembers" :key="index">
-        <q-card class="my-card row">
-          <div class="col-2">
-            <q-card-section>
-              <div class="q-mt-lg q-ml-md">
-                <q-avatar>
-                  <img src="https://cdn.quasar.dev/img/avatar1.jpg">
-                </q-avatar>
-              </div>
-            </q-card-section>
-          </div>
-          <div class="col-10">
-            <q-card-section>
-              <div class="column">
-                <div class="text-light-blue-9 row">
-                  <div class="q-mt-sm cursor-pointer"><span>{{ member.user.username }}</span></div>
-                  <div class="q-ml-md">
-                    <group-role-chip :role="member.role"></group-role-chip>
-                  </div>
-                </div>
-                <div>
-                  <div>
-                    <span>{{ `由${member.inviter}邀请加入` }}</span>
-                  </div>
-                  <div>
-                    <q-btn class="col-shrink" flat dense size="md" color="primary" label="云主机创建详情"/>
-                  </div>
-                </div>
-                <div>
-                  <div class="row justify-end">
-                    <q-btn outline style="color: #2E9AFE;" size="sm" label="移除"
-                           @click="$store.dispatch('group/removeSingleGroupMemberDialog', {groupId, username: member.user.username})"/>
-                    <q-btn outline style="color: #2E9AFE" class="q-ml-sm" size="sm" label="取消管理员"
-                           v-if="member.role === 'leader'"
-                           @click="$store.dispatch('group/editGroupMemberRoleDialog', {groupId, member_id: member.id, role:'member', role_name: '成员'})"/>
-                    <q-btn outline style="color: #2E9AFE" class="q-ml-sm" size="sm" label="设置管理员"
-                           v-if="member.role === 'member'"
-                           @click="$store.dispatch('group/editGroupMemberRoleDialog', {groupId, member_id: member.id, role:'leader', role_name: '管理员'})"/>
-                  </div>
-                </div>
-              </div>
-            </q-card-section>
-          </div>
-        </q-card>
-      </div>
-    </div>
-    <div class="row q-mt-xl">
-      <div class="text-weight-bold text-subtitle1">组配额</div>
-      <div class="q-ml-xl">
-        <q-btn outline style="color: #2E9AFE" class="q-ml-md" label="申请组配额" :to="{path: '/my/group/quota/apply', query: {group: groupId} }"/>
-      </div>
-    </div>
-    <div class="q-mt-md">
-      <quota-table :is-group="true" :quotas="$store.getters['vm/getGroupQuotasByGroupIdByStatus'](groupId,'valid')" ></quota-table>
-    </div>
   </div>
 </template>
-
 <script lang="ts">
-import { computed, defineComponent } from 'vue'
+import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
-import { useRouter } from 'vue-router'
+import { useRoute } from 'vue-router'
+import { useI18n } from 'vue-i18n'
+
+import GroupMemberTable from 'components/Group/GroupMemberTable.vue'
+import ServerTable from 'components/Server/ServerTable.vue'
 import QuotaTable from 'components/Quota/QuotaTable.vue'
-import ServerStatus from 'components/Server/ServerStatus.vue'
-import GroupRoleChip from 'components/Group/GroupRoleChip.vue'
+
 export default defineComponent({
   name: 'GroupDetail',
   components: {
-    QuotaTable,
-    ServerStatus,
-    GroupRoleChip
+    GroupMemberTable,
+    ServerTable,
+    QuotaTable
   },
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const router = useRouter()
-    const groupId = router.currentRoute.value.params.id as string
-    const groupMembers = computed(() => $store.getters['group/getMemberByJoinTime'](groupId))
-    const goBack = () => {
-      router.go(-1)
-    }
+    const $route = useRoute()
+    const { locale } = useI18n({ useScope: 'global' })
+
+    // url传参
+    const show = $route.query.show as string // 子tab展示哪个部分
+
+    // 从route对象中读取id参数
+    const groupId = $route.params.id as string
+    // group对象
+    const group = computed(() => $store.state.group.tables.groupTable.byId[groupId])
+    // groupMember
+    const groupMember = computed(() => $store.state.group.tables.groupMemberTable.byId[groupId])
+    // groupServer
+    const servers = computed(() => $store.getters['vm/getGroupServersByGroupId'](groupId))
+    // groupQuota
+    const quotas = computed(() => $store.getters['vm/getGroupQuotasByGroupIdByStatus'](groupId, 'all'))
+
+    const tab = ref(show ?? 'member')
+
     return {
-      // $store,
+      locale,
       groupId,
-      groupMembers,
-      goBack
+      groupMember,
+      group,
+      servers,
+      quotas,
+      tab
     }
   }
 })
@@ -175,5 +264,25 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .GroupDetail {
+}
+
+.title-area {
+  width: $general-width-no-padding;
+  text-align: left;
+  color: $primary;
+  font-size: large;
+  font-weight: bold;
+}
+
+.content-area {
+  width: $general-width-no-padding;
+}
+
+.detail-area {
+  margin-top: 10px;
+  padding: 15px 0;
+  height: 120px;
+  border: $grey-4 1px solid;
+  border-radius: 5px;
 }
 </style>

@@ -10,6 +10,9 @@ body {
   padding: 0 30px;
   width: $general-width;
 }
+.content-fixed-width-no-padding {
+  width: $general-width;
+}
 
 // 对话栏自定义样式
 .dialog-primary {

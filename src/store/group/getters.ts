@@ -6,7 +6,7 @@ const getters: GetterTree<GroupModuleInterface, StateInterface> = {
   getGroupsByFilter: (state) => (filter: string): GroupInterface[] => {
     // 排序函数，按照组创建时间降序排列
     const sortFn = (a: GroupInterface, b: GroupInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
-    if (filter === '0') {
+    if (filter === 'all') {
       return Object.values(state.tables.groupTable.byId).sort(sortFn)
     } else {
       const groups: GroupInterface[] = []

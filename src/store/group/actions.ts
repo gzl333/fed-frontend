@@ -34,10 +34,28 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
       })
     }
   },
+  // 强制加载group模块内全部table
+  forceLoadGroupModuleTable (context) {
+    void context.dispatch('loadGroupTable').then(() => {
+      // groupMemberTable 依赖 groupTable, 根据每个groupId建立一个groupMember对象
+      void context.dispatch('loadGroupMemberTableFromGroup').then(() => {
+        // applyQuota/groupApplicationTable 依赖 groupTable， 跨模块调用。
+        // 注意：此表以来groupTable中的myRole字段，而该字段是loadGroupMemberTableFromGroup副产品，所以产生依赖
+        void context.dispatch(('applyQuota/loadGroupApplicationTable'), null, { root: true })
+      })
+      // vm/groupQuotaTable 依赖 groupTable， 跨模块调用
+      void context.dispatch('vm/loadGroupQuotaTable', null, { root: true })
+      // vm/groupServerTable 依赖 groupTable， 跨模块调用
+      void context.dispatch('vm/loadGroupServerTable', null, { root: true })
+    })
+  },
 
   /* groupTable */
   // 加载groupTable
   async loadGroupTable (context) {
+    // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
+    context.commit('clearGroupTable')
+    // 发送请求
     const respGroup = await context.dispatch('fetchGroup')
     // normalize
     const group = new schema.Entity('group')
@@ -53,14 +71,10 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
   },
   fetchGroup (context, payload: { page?: number; page_size?: number; owner?: boolean; member?: boolean }) {
     const api = apiBase + '/vo/'
-    if (payload) {
-      const config = {
-        params: payload
-      }
-      return axios.get(api, config)
-    } else {
-      return axios.get(api)
+    const config = {
+      params: payload
     }
+    return axios.get(api, config)
   },
   /* groupTable */
 
@@ -357,15 +371,8 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
     } else {
       const respPostVO = await context.dispatch('postVO', { data: payload })
       if (respPostVO.status === 200) {
-        // 添加role字段，正在创建项目组，则必然是owner
-        Object.assign(respPostVO.data, { myRole: 'owner' })
-        // normalize
-        const group = new schema.Entity('group')
-        const normalizedData = normalize(respPostVO.data, group)
-        context.commit('storeGroupTable', normalizedData.entities.group)
-        // 跳转到group list
-        // @ts-ignore
-        this.$router.push({ path: '/my/group/list' })
+        // 更新table，因为group是个根依赖，新增一个组，要牵涉数据非常多，不如直接全部重读组相关数
+        void await context.dispatch('forceLoadGroupModuleTable')
         // 通知
         Notify.create({
           classes: 'notification-positive shadow-15',
@@ -377,13 +384,82 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
           timeout: 5000,
           multiLine: false
         })
+        // 跳转到group list
+        // @ts-ignore
+        this.$router.push({ path: '/my/group/list' })
       } // 失败则由axios统一报错
     }
   },
   postVO (context, payload: { data: { name: string; company: string; description: string; } }) {
     const api = apiBase + '/vo/'
     return axios.post(api, payload.data)
+  },
+  /* 新建group */
+
+  /* 删除group */
+  deleteGroupDialog (context, groupId: string) {
+    // 检查组内云主机是否删除干净
+    const countServers = context.rootGetters['vm/getGroupServersByGroupId'](groupId)
+    if (countServers.length > 0) {
+      Notify.create({
+        classes: 'notification-negative shadow-15',
+        icon: 'mdi-check-circle',
+        textColor: 'red',
+        message: '请将组内的云主机全部删除后，再解散该项目组',
+        position: 'bottom',
+        closeBtn: true,
+        timeout: 5000,
+        multiLine: false
+      })
+    } else {
+      // 操作的确认提示
+      Dialog.create({
+        class: 'dialog-primary',
+        title: '解散项目组',
+        message:
+          '解散后的项目组无法恢复。 确认解散？',
+        focus: 'cancel',
+        ok: {
+          label: '确认',
+          push: false,
+          outline: true,
+          color: 'primary'
+        },
+        cancel: {
+          label: '放弃',
+          push: false,
+          unelevated: true,
+          color: 'primary'
+        }
+      }).onOk(async () => {
+        // 发送请求
+        const respDeleteVO = await context.dispatch('deleteVO', { path: { id: groupId } })
+        if (respDeleteVO.status === 204) {
+          // 更新table，因为group是个根依赖，删除一个组，要牵涉数据非常多，不如直接全部重读组相关数据
+          void await context.dispatch('forceLoadGroupModuleTable')
+          // notify
+          Notify.create({
+            classes: 'notification-positive shadow-15',
+            icon: 'mdi-check-circle',
+            textColor: 'light-green',
+            message: '解散项目组成功',
+            position: 'bottom',
+            closeBtn: true,
+            timeout: 5000,
+            multiLine: false
+          })
+          // jump
+          // @ts-ignore
+          this.$router.push('/my/group/list')
+        }
+      })
+    }
+  },
+  deleteVO (context, payload: { path: { id: string } }) {
+    const api = apiBase + '/vo/' + payload.path.id
+    return axios.delete(api)
   }
+  /* 删除group */
 }
 
 export default actions
