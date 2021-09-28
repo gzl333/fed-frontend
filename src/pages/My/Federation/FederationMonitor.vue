@@ -1,6 +1,5 @@
 <template>
-  <div class="GroupQuotaIndex">
-
+  <div class="FederationMonitor">
     <div class="column items-start q-py-none q-px-none">
 
       <div class="col-auto">
@@ -14,25 +13,24 @@
           <q-route-tab class="q-px-none q-py-none q-mr-md"
                        :ripple="false"
                        name="quota"
-                       icon="fas fa-file-alt"
-                       :label="$t('现有组配额')"
-                       to="/my/group/quota/list"/>
+                       icon="mdi-database"
+                       :label="$t('存储集群')"
+                       to="/my/federation/monitor/storage"/>
           <q-route-tab class="q-px-none q-py-none q-mr-md"
                        :ripple="false"
                        name="application"
-                       icon="rule"
-                       :label="$t('申请记录')"
-                       to="/my/group/quota/application"/>
+                       icon="mdi-server"
+                       :label="$t('主机集群')"
+                       to="/my/federation/monitor/server"/>
         </q-tabs>
       </div>
 
       <div class="col-auto">
-        <q-separator/>
+        <q-separator />
         <router-view class="content-fixed-width-no-padding"/>
       </div>
 
     </div>
-
   </div>
 </template>
 
@@ -40,19 +38,18 @@
 import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
-  name: 'GroupQuotaIndex',
+  name: 'FederationMonitor',
   components: {},
   props: {},
   setup () {
-    const tab = ref('quota')
     return {
-      tab
+      tab: ref('storage')
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.GroupQuotaIndex {
+.FederationMonitor {
 }
 </style>

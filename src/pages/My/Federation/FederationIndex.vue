@@ -24,36 +24,25 @@
                 <q-tabs
                   v-model="activeTab"
                   indicator-color="primary"
-                  active-color="primary"
+                  active-color=""
                   align="left"
                   inline-label
                 >
                   <q-route-tab
                     class="q-px-none q-py-md q-mr-md"
-                    name="service"
-                    icon="task_alt"
-                    label="服务列表"
+                    name="resource"
+                    icon="insert_chart_outlined"
+                    :label="$t('联邦资源统计')"
                     :ripple="false"
-                    to="/my/federation/service_list"
-                    exact
+                    to="/my/federation/resource"
                   />
                   <q-route-tab
                     class="q-px-none q-py-md q-mx-md"
-                    name="institution"
-                    icon="task_alt"
-                    label="机构列表"
+                    name="monitor"
+                    icon="insights"
+                    :label="$t('联邦监控')"
                     :ripple="false"
-                    to="/my/federation/institution_list"
-                    exact
-                  />
-                  <q-route-tab
-                    class="q-px-none q-py-md q-mx-md"
-                    name="audit"
-                    icon="task_alt"
-                    label="审批列表"
-                    :ripple="false"
-                    to="/my/federation/audit_list"
-                    exact
+                    to="/my/federation/monitor"
                   />
                   <q-route-tab
                     class="q-px-none q-py-md q-mx-md"
@@ -62,14 +51,13 @@
                     label="资源汇聚"
                     :ripple="false"
                     to="/my/federation/resourceAggregation"
-                    exact
                   />
                 </q-tabs>
               </div>
 
-              <div class="col-1">
-                <global-add-button/>
-              </div>
+<!--              <div class="col-1">-->
+<!--                <global-add-button/>-->
+<!--              </div>-->
 
             </div>
           </div>
@@ -93,13 +81,13 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader/GlobalHeader.vue'
-import GlobalAddButton from 'components/Personal/PersonalAddButton.vue'
+// import GlobalAddButton from 'components/Personal/PersonalAddButton.vue'
 
 export default defineComponent({
   name: 'Federation',
   components: {
-    GlobalHeader,
-    GlobalAddButton
+    GlobalHeader/*,
+    GlobalAddButton */
   },
   props: {},
   setup () {

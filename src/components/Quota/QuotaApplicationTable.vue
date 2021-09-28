@@ -19,34 +19,37 @@
 
           <q-td key="status" :props="props">
 
-            <q-badge v-if="props.row.status === 'wait'" color="black" outline>
-              {{$t('待审批')}}
-            </q-badge>
-            <q-badge v-if="props.row.status === 'pending'" color="primary" outline>
-              {{$t('审批中')}}
-            </q-badge>
-            <q-badge v-if="props.row.status === 'pass'" color="light-green" outline>
-              {{$t('已通过')}}
-            </q-badge>
-            <div v-if="props.row.status === 'reject'">
-              <q-badge color="red" outline>
-                {{$t('已拒绝')}}
+            <div class="auto">
+              <q-badge v-if="props.row.status === 'wait'" color="black" outline>
+                {{$t('待审批')}}
               </q-badge>
-              <div>
-                <q-icon name="help_outline" color="red" size="xs">
-                  <q-tooltip>{{$t('拒绝原因: ')}}{{props.row.result_desc }}</q-tooltip>
-                </q-icon>
+              <q-badge v-if="props.row.status === 'pending'" color="primary" outline>
+                {{$t('审批中')}}
+              </q-badge>
+              <q-badge v-if="props.row.status === 'pass'" color="light-green" outline>
+                {{$t('已通过')}}
+              </q-badge>
+              <div v-if="props.row.status === 'reject'">
+                <q-badge color="red" outline>
+                  {{$t('已拒绝')}}
+                </q-badge>
+                <div>
+                  <q-icon name="help_outline" color="red" size="xs">
+                    <q-tooltip>{{$t('拒绝原因: ')}}{{props.row.result_desc }}</q-tooltip>
+                  </q-icon>
+                </div>
               </div>
-            </div>
+              <q-badge v-if="props.row.status === 'cancel'" color="grey" outline>
+                {{$t('已取消')}}
+              </q-badge>
+              <!--创建时间距离当下小于1小时则打上new标记-->
 
-            <q-badge v-if="props.row.status === 'cancel'" color="grey" outline>
-              {{$t('已取消')}}
-            </q-badge>
-            <!--创建时间距离当下小于1小时则打上new标记-->
-            <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
-                     color="light-green" floating transparent rounded align="middle">
-              new
-            </q-badge>
+              <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
+                       color="light-green" floating transparent rounded align="middle">
+                new
+              </q-badge>
+
+            </div>
 
           </q-td>
 

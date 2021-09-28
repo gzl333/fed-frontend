@@ -37,7 +37,6 @@
             active-class="active-item"
             to='/my/personal'
           >
-
             <q-item-section class="column items-center">
               <q-icon name="person" size="lg"/>
               <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('个人资源') }}</div>
@@ -45,14 +44,12 @@
           </q-item>
 
           <q-item
-            :disable="process?.env.PROD"
             clickable
             :active="activeItem === 'group'"
             @click="activeItem = 'group'"
             active-class="active-item"
             to='/my/group'
           >
-
             <q-item-section class="column items-center">
               <q-icon name="group" size="lg"/>
               <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('项目组资源') }}</div>
@@ -69,7 +66,6 @@
             <q-item-section class="column items-center">
               <q-icon name="cloud_upload" size="lg"/>
               <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('资源提供') }}</div>
-              <div>dev</div>
             </q-item-section>
           </q-item>
 
@@ -84,12 +80,12 @@
             <q-item-section class="column items-center">
               <q-icon name="construction" size="lg"/>
               <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('联邦管理') }}</div>
-              <div>dev</div>
             </q-item-section>
           </q-item>
 
         </q-list>
-        <div class="text-grey text-body2 text-center">beta 0.2.0</div>
+
+        <div class="text-grey text-body2 text-center q-pt-xl">v0.2.0 beta</div>
       </q-scroll-area>
     </div>
   </q-drawer>

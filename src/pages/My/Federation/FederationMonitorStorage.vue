@@ -1,17 +1,15 @@
 <template>
-  <div class="ServiceList">
-    this service list
-    <pie-chart/>
+  <div class="FederationMonitorStorage">
+    this is FederationMonitorStorage
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import PieChart from 'components/Chart/PieChart.vue'
 
 export default defineComponent({
-  name: 'ServiceList',
-  components: { PieChart },
+  name: 'FederationMonitorStorage',
+  components: {},
   props: {},
   setup () {
     return {}
@@ -20,6 +18,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.ServiceList {
+.FederationMonitorStorage {
 }
 </style>

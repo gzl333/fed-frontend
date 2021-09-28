@@ -278,17 +278,24 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'provider',
         component: () => import('pages/My/Provider/ProviderIndex.vue'),
-        redirect: '/my/provider/manage',
+        redirect: '/my/provider/quota',
         meta: {
           title: '资源提供-中国科技云联邦'
         },
         children: [
           {
-            path: 'manage',
+            path: 'quota',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/My/Provider/Manage.vue')
+            component: () => import('pages/My/Provider/QuotaAudit.vue')
+          },
+          {
+            path: 'server',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/My/Provider/ServerCreated.vue')
           },
           {
             path: 'provided',
@@ -303,13 +310,6 @@ const routes: RouteRecordRaw[] = [
               requireLogin: true
             },
             component: () => import('pages/My/Provider/Service.vue')
-          },
-          {
-            path: 'resources',
-            meta: {
-              requireLogin: true
-            },
-            component: () => import('pages/My/Provider/Resources.vue')
           },
           {
             path: 'join_service',
@@ -344,31 +344,41 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'federation',
         component: () => import('pages/My/Federation/FederationIndex.vue'),
-        redirect: '/my/federation/service_list',
+        redirect: '/my/federation/resource',
         meta: {
           title: '联邦管理-中国科技云联邦'
         },
         children: [
           {
-            path: 'service_list',
+            path: 'resource',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/My/Federation/ServiceList.vue')
+            component: () => import('pages/My/Federation/FederationResource.vue')
           },
           {
-            path: 'institution_list',
+            path: 'monitor',
             meta: {
               requireLogin: true
             },
-            component: () => import('pages/My/Federation/InstitutionList.vue')
-          },
-          {
-            path: 'audit_list',
-            meta: {
-              requireLogin: true
-            },
-            component: () => import('pages/My/Federation/AuditList.vue')
+            redirect: '/my/federation/monitor/storage',
+            component: () => import('pages/My/Federation/FederationMonitor.vue'),
+            children: [
+              {
+                path: 'storage',
+                meta: {
+                  requireLogin: true
+                },
+                component: () => import('pages/My/Federation/FederationMonitorStorage.vue')
+              },
+              {
+                path: 'server',
+                meta: {
+                  requireLogin: true
+                },
+                component: () => import('pages/My/Federation/FederationMonitorServer.vue')
+              }
+            ]
           },
           {
             path: 'resourceAggregation',

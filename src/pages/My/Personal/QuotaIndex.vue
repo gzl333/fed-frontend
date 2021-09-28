@@ -6,19 +6,22 @@
       <div class="col-auto">
         <q-tabs
           v-model="tab"
-          active-color="primary"
+          indicator-color="primary"
+          active-color=""
           align="left"
-          narrow-indicator
+          inline-label
         >
           <q-route-tab class="q-px-none q-py-none q-mr-md"
                        :ripple="false"
                        name="quota"
-                       label="现有配额"
+                       icon="fas fa-file-alt"
+                       :label="$t('现有配额')"
                        to="/my/personal/quota/list"/>
           <q-route-tab class="q-px-none q-py-none q-mr-md"
                        :ripple="false"
                        name="application"
-                       label="申请记录"
+                       icon="rule"
+                       :label="$t('申请记录')"
                        to="/my/personal/quota/application"/>
         </q-tabs>
 
@@ -26,7 +29,7 @@
 
       <div class="col-auto">
         <q-separator />
-        <router-view class="router-view"/>
+        <router-view class="content-fixed-width-no-padding"/>
       </div>
 
     </div>
@@ -52,9 +55,5 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .QuotaIndex {
-}
-
-.router-view {
-  width: $general-width-no-padding;
 }
 </style>

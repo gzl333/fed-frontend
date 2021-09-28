@@ -25,56 +25,51 @@
                 <q-tabs
                   v-model="activeTab"
                   indicator-color="primary"
-                  active-color="primary"
+                  active-color=""
                   align="left"
                   inline-label
                 >
                   <q-route-tab
                     class="q-px-none q-py-md q-mr-md"
-                    name="manage"
+                    name="quota"
                     icon="rule"
-                    label="用户配额审批"
+                    :label="$t('用户配额审批')"
                     :ripple="false"
-                    to="/my/provider/manage"
-                    exact
+                    to="/my/provider/quota"
                   />
                   <q-route-tab
-                    :disable="isProd"
                     class="q-px-none q-py-md q-mx-md"
-                    name="provided"
-                    icon="task_alt"
-                    label="已供资源列表"
+                    name="server"
+                    icon="computer"
+                    :label="$t('在用云主机统计')"
                     :ripple="false"
-                    to="/my/provider/provided"
-                    exact
+                    to="/my/provider/server"
                   />
-                  <q-route-tab
-                    :disable="isProd"
-                    class="q-px-none q-py-md q-mx-md"
-                    name="service"
-                    icon="task_alt"
-                    label="接入服务列表"
-                    :ripple="false"
-                    to="/my/provider/service"
-                    exact
-                  />
-                  <q-route-tab
-                    :disable="isProd"
-                    class="q-px-none q-py-md q-mx-md"
-                    name="resources"
-                    icon="view_agenda"
-                    label="资源信息"
-                    :ripple="false"
-                    to="/my/provider/resources"
-                    exact
-                  />
+<!--                  <q-route-tab-->
+<!--                    :disable="process?.env.PROD"-->
+<!--                    class="q-px-none q-py-md q-mx-md"-->
+<!--                    name="provided"-->
+<!--                    icon="task_alt"-->
+<!--                    label="已供资源列表"-->
+<!--                    :ripple="false"-->
+<!--                    to="/my/provider/provided"-->
+<!--                  />-->
+<!--                  <q-route-tab-->
+<!--                    :disable="process?.env.PROD"-->
+<!--                    class="q-px-none q-py-md q-mx-md"-->
+<!--                    name="service"-->
+<!--                    icon="task_alt"-->
+<!--                    label="接入服务列表"-->
+<!--                    :ripple="false"-->
+<!--                    to="/my/provider/service"-->
+<!--                  />-->
 
                 </q-tabs>
               </div>
 
-              <div class="col-1">
-                <provider-add-button/>
-              </div>
+<!--              <div class="col-1">-->
+<!--                <provider-add-button/>-->
+<!--              </div>-->
 
             </div>
           </div>
@@ -98,20 +93,18 @@
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 import GlobalHeader from 'components/GlobalHeader/GlobalHeader.vue'
-import ProviderAddButton from 'components/Provider/ProviderAddButton.vue'
+// import ProviderAddButton from 'components/Provider/ProviderAddButton.vue'
 
 export default defineComponent({
   name: 'Provider',
   components: {
-    GlobalHeader,
-    ProviderAddButton
+    GlobalHeader/*,
+    ProviderAddButton */
   },
   props: {},
   setup () {
-    const isProd = process.env.PROD
     return {
-      isProd,
-      activeTab: ref('manage')
+      activeTab: ref('quota')
     }
   }
 })

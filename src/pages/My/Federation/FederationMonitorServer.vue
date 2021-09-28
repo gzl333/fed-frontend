@@ -1,6 +1,6 @@
 <template>
-  <div class="QuitList">
-    this is QuitList
+  <div class="FederationMonitorServer">
+    this is FederationMonitorServer
   </div>
 </template>
 
@@ -8,7 +8,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'QuitList',
+  name: 'FederationMonitorServer',
   components: {},
   props: {},
   setup () {
@@ -18,6 +18,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.QuitList {
+.FederationMonitorServer {
 }
 </style>

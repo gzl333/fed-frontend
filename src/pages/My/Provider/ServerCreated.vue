@@ -1,7 +1,7 @@
 <template>
   <div class="Manage">
     <div class="row justify-end q-mb-md">
-      <div class="col-3">
+      <div class="col-2">
         <q-select map-options emit-value outlined dense stack-label label="筛选" :options="filterOptions" v-model="filterSelection" @update:model-value="change"/>
       </div>
     </div>
