@@ -2,7 +2,7 @@
 export default {
   // 静态资源
   resource: {
-    title: 'title_en_2.png'
+    title: 'title_en.png'
   },
   // 文字翻译
 
