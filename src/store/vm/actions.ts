@@ -120,39 +120,6 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   /* 强制更新全部vmtable */
 
   /* userQuotaTable */
-  // deleteAndUpdateUserQuotaTable (context, quotaId: string) {
-  //   // 把整个对话框对象包在promise里。删除成功、失败包装为promise结果值。
-  //   return new Promise((resolve, reject) => {
-  //     // 操作的确认提示
-  //     Dialog.create({
-  //       class: 'dialog-primary',
-  //       title: '删除配额',
-  //       message:
-  //         '删除后的配额无法恢复。 确认删除此配额？',
-  //       focus: 'cancel',
-  //       ok: {
-  //         label: '确认',
-  //         push: false,
-  //         outline: true,
-  //         color: 'primary'
-  //       },
-  //       cancel: {
-  //         label: '放弃',
-  //         push: false,
-  //         unelevated: true,
-  //         color: 'primary'
-  //       }
-  //     }).onOk(async () => {
-  //       const respDelete = await context.dispatch('deleteUserQuota', quotaId)
-  //       if (respDelete.status === 204) {
-  //         context.commit('deleteUserQuotaTable', quotaId)
-  //         resolve(true)
-  //       } else {
-  //         reject(false) // 都是resolve，信息用boolean表达是否删除。因为接收处用的await语法，用reject会被catch。
-  //       }
-  //     })
-  //   })
-  // },
   deleteQuotaDialog (context, payload: { quotaId: string; isGroup: boolean }) {
     // 把整个对话框对象包在promise里。删除成功、失败包装为promise结果值。
     const promise = new Promise((resolve, reject) => {

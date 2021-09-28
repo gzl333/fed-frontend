@@ -1,6 +1,7 @@
 <template>
   <div class="FederationResource">
     this is FederationResource
+    {{}}
   </div>
 </template>
 
