@@ -199,78 +199,78 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
     return rows.sort(sortFn)
   },
   // 计算总值
-  getPrivateNum (state): { private_ip_total: number; public_ip_used: number; public_ip_total: number; private_ip_used: number; vcpu_total: number; ram_total: number; disk_size_total: number; vcpu_used: number; ram_used: number; disk_size_used: number } {
-    let public_ip_total = 0
-    let public_ip_used = 0
-    let private_ip_total = 0
-    let private_ip_used = 0
-    let vcpu_total = 0
-    let vcpu_used = 0
-    let ram_total = 0
-    let ram_used = 0
-    let disk_size_total = 0
-    let disk_size_used = 0
-    for (const item of state.tables.privateServiceQuotaStatTable.allIds) {
-      public_ip_total = public_ip_total + state.tables.privateServiceQuotaStatTable.byId[item].public_ip_total
-      public_ip_used = public_ip_used + state.tables.privateServiceQuotaStatTable.byId[item].public_ip_used
-      private_ip_total = private_ip_total + state.tables.privateServiceQuotaStatTable.byId[item].private_ip_total
-      private_ip_used = private_ip_used + state.tables.privateServiceQuotaStatTable.byId[item].private_ip_used
-      vcpu_total = vcpu_total + state.tables.privateServiceQuotaStatTable.byId[item].vcpu_total
-      vcpu_used = vcpu_used + state.tables.privateServiceQuotaStatTable.byId[item].vcpu_used
-      ram_total = ram_total + state.tables.privateServiceQuotaStatTable.byId[item].ram_total
-      ram_used = ram_used + state.tables.privateServiceQuotaStatTable.byId[item].ram_used
-      disk_size_total = disk_size_total + state.tables.privateServiceQuotaStatTable.byId[item].disk_size_total
-      disk_size_used = disk_size_used + state.tables.privateServiceQuotaStatTable.byId[item].disk_size_used
-    }
-    return {
-      public_ip_total,
-      public_ip_used,
-      private_ip_total,
-      private_ip_used,
-      vcpu_total,
-      vcpu_used,
-      ram_total,
-      ram_used,
-      disk_size_total,
-      disk_size_used
-    }
-  },
-  getShareNum (state): { private_ip_total: number; public_ip_used: number; public_ip_total: number; private_ip_used: number; vcpu_total: number; ram_total: number; disk_size_total: number; vcpu_used: number; ram_used: number; disk_size_used: number } {
-    let public_ip_total = 0
-    let public_ip_used = 0
-    let private_ip_total = 0
-    let private_ip_used = 0
-    let vcpu_total = 0
-    let vcpu_used = 0
-    let ram_total = 0
-    let ram_used = 0
-    let disk_size_total = 0
-    let disk_size_used = 0
-    for (const item of state.tables.sharedServiceQuotaStatTable.allIds) {
-      public_ip_total = public_ip_total + state.tables.sharedServiceQuotaStatTable.byId[item].public_ip_total
-      public_ip_used = public_ip_used + state.tables.sharedServiceQuotaStatTable.byId[item].public_ip_used
-      private_ip_total = private_ip_total + state.tables.sharedServiceQuotaStatTable.byId[item].private_ip_total
-      private_ip_used = private_ip_used + state.tables.sharedServiceQuotaStatTable.byId[item].private_ip_used
-      vcpu_total = vcpu_total + state.tables.sharedServiceQuotaStatTable.byId[item].vcpu_total
-      vcpu_used = vcpu_used + state.tables.sharedServiceQuotaStatTable.byId[item].vcpu_used
-      ram_total = ram_total + state.tables.sharedServiceQuotaStatTable.byId[item].ram_total
-      ram_used = ram_used + state.tables.sharedServiceQuotaStatTable.byId[item].ram_used
-      disk_size_total = disk_size_total + state.tables.sharedServiceQuotaStatTable.byId[item].disk_size_total
-      disk_size_used = disk_size_used + state.tables.sharedServiceQuotaStatTable.byId[item].disk_size_used
-    }
-    return {
-      public_ip_total,
-      public_ip_used,
-      private_ip_total,
-      private_ip_used,
-      vcpu_total,
-      vcpu_used,
-      ram_total,
-      ram_used,
-      disk_size_total,
-      disk_size_used
-    }
-  },
+  // getPrivateNum (state): { private_ip_total: number; public_ip_used: number; public_ip_total: number; private_ip_used: number; vcpu_total: number; ram_total: number; disk_size_total: number; vcpu_used: number; ram_used: number; disk_size_used: number } {
+  //   let public_ip_total = 0
+  //   let public_ip_used = 0
+  //   let private_ip_total = 0
+  //   let private_ip_used = 0
+  //   let vcpu_total = 0
+  //   let vcpu_used = 0
+  //   let ram_total = 0
+  //   let ram_used = 0
+  //   let disk_size_total = 0
+  //   let disk_size_used = 0
+  //   for (const item of state.tables.privateServiceQuotaStatTable.allIds) {
+  //     public_ip_total = public_ip_total + state.tables.privateServiceQuotaStatTable.byId[item].public_ip_total
+  //     public_ip_used = public_ip_used + state.tables.privateServiceQuotaStatTable.byId[item].public_ip_used
+  //     private_ip_total = private_ip_total + state.tables.privateServiceQuotaStatTable.byId[item].private_ip_total
+  //     private_ip_used = private_ip_used + state.tables.privateServiceQuotaStatTable.byId[item].private_ip_used
+  //     vcpu_total = vcpu_total + state.tables.privateServiceQuotaStatTable.byId[item].vcpu_total
+  //     vcpu_used = vcpu_used + state.tables.privateServiceQuotaStatTable.byId[item].vcpu_used
+  //     ram_total = ram_total + state.tables.privateServiceQuotaStatTable.byId[item].ram_total
+  //     ram_used = ram_used + state.tables.privateServiceQuotaStatTable.byId[item].ram_used
+  //     disk_size_total = disk_size_total + state.tables.privateServiceQuotaStatTable.byId[item].disk_size_total
+  //     disk_size_used = disk_size_used + state.tables.privateServiceQuotaStatTable.byId[item].disk_size_used
+  //   }
+  //   return {
+  //     public_ip_total,
+  //     public_ip_used,
+  //     private_ip_total,
+  //     private_ip_used,
+  //     vcpu_total,
+  //     vcpu_used,
+  //     ram_total,
+  //     ram_used,
+  //     disk_size_total,
+  //     disk_size_used
+  //   }
+  // },
+  // getShareNum (state): { private_ip_total: number; public_ip_used: number; public_ip_total: number; private_ip_used: number; vcpu_total: number; ram_total: number; disk_size_total: number; vcpu_used: number; ram_used: number; disk_size_used: number } {
+  //   let public_ip_total = 0
+  //   let public_ip_used = 0
+  //   let private_ip_total = 0
+  //   let private_ip_used = 0
+  //   let vcpu_total = 0
+  //   let vcpu_used = 0
+  //   let ram_total = 0
+  //   let ram_used = 0
+  //   let disk_size_total = 0
+  //   let disk_size_used = 0
+  //   for (const item of state.tables.sharedServiceQuotaStatTable.allIds) {
+  //     public_ip_total = public_ip_total + state.tables.sharedServiceQuotaStatTable.byId[item].public_ip_total
+  //     public_ip_used = public_ip_used + state.tables.sharedServiceQuotaStatTable.byId[item].public_ip_used
+  //     private_ip_total = private_ip_total + state.tables.sharedServiceQuotaStatTable.byId[item].private_ip_total
+  //     private_ip_used = private_ip_used + state.tables.sharedServiceQuotaStatTable.byId[item].private_ip_used
+  //     vcpu_total = vcpu_total + state.tables.sharedServiceQuotaStatTable.byId[item].vcpu_total
+  //     vcpu_used = vcpu_used + state.tables.sharedServiceQuotaStatTable.byId[item].vcpu_used
+  //     ram_total = ram_total + state.tables.sharedServiceQuotaStatTable.byId[item].ram_total
+  //     ram_used = ram_used + state.tables.sharedServiceQuotaStatTable.byId[item].ram_used
+  //     disk_size_total = disk_size_total + state.tables.sharedServiceQuotaStatTable.byId[item].disk_size_total
+  //     disk_size_used = disk_size_used + state.tables.sharedServiceQuotaStatTable.byId[item].disk_size_used
+  //   }
+  //   return {
+  //     public_ip_total,
+  //     public_ip_used,
+  //     private_ip_total,
+  //     private_ip_used,
+  //     vcpu_total,
+  //     vcpu_used,
+  //     ram_total,
+  //     ram_used,
+  //     disk_size_total,
+  //     disk_size_used
+  //   }
+  // },
   // 返回筛选全部项
   getGlobalService (state): { value: string; label: string; }[] {
     const serviceOptions = []

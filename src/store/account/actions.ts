@@ -7,6 +7,7 @@ import {
 import { Notify } from 'quasar'
 import axios from 'axios'
 import jwtDecode from 'jwt-decode'
+import { apiFed, apiLogin } from 'boot/axios'
 
 // import api from '../api'
 
@@ -43,10 +44,14 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
                 } else {
                   void await context.dispatch('logoutCstUser')
                   Notify.create({
-                    color: 'nord11',
+                    classes: 'notification-negative shadow-15',
+                    icon: 'mdi-alert',
+                    textColor: 'negative',
                     message: '登录失效，请重新登录',
-                    closeBtn: false,
-                    timeout: 2000
+                    position: 'bottom',
+                    closeBtn: true,
+                    timeout: 5000,
+                    multiLine: false
                   })
                 }
               }
@@ -62,6 +67,8 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
     const api = cstApiBase + '/open/api/UMTOauthLogin/refreshToken'
     // 更新token时应删除请求头中的gosc token
     delete axios.defaults.headers.common.Authorization
+    delete apiFed.defaults.headers.common.Authorization // apiFed对象已经生成，只把token写在axios对象上不行，也要补充给apiFed对象
+    delete apiLogin.defaults.headers.common.Authorization // todo 是否有必要待定
     const config = {
       params: { refreshToken: refreshToken }
     }

@@ -362,7 +362,7 @@ const routes: RouteRecordRaw[] = [
               requireLogin: true
             },
             redirect: '/my/federation/monitor/storage',
-            component: () => import('pages/My/Federation/FederationMonitor.vue'),
+            component: () => import('pages/My/Federation/FederationMonitorIndex.vue'),
             children: [
               {
                 path: 'storage',
@@ -379,13 +379,6 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/My/Federation/FederationMonitorServer.vue')
               }
             ]
-          },
-          {
-            path: 'resourceAggregation',
-            meta: {
-              requireLogin: true
-            },
-            component: () => import('pages/My/Federation/ResourceAggregation.vue')
           }
         ]
       }

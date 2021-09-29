@@ -1,11 +1,11 @@
 import { Module } from 'vuex'
 import { StateInterface } from '../index'
-import state, { ObsStateInterface } from './state'
+import state, { FedModuleInterface } from './state'
 import actions from './actions'
 import getters from './getters'
 import mutations from './mutations'
 
-const exampleModule: Module<ObsStateInterface, StateInterface> = {
+const fedModule: Module<FedModuleInterface, StateInterface> = {
   namespaced: true,
   actions,
   getters,
@@ -13,4 +13,4 @@ const exampleModule: Module<ObsStateInterface, StateInterface> = {
   state
 }
 
-export default exampleModule
+export default fedModule

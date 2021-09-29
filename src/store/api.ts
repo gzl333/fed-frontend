@@ -5,19 +5,49 @@ import { apiFed /*, apiLogin */ } from 'boot/axios'
 const api = {
   login: {},
   apply: {
-    getApplyOrganization (payload: { query?: { page?: number; page_size?: number; deleted?: boolean; status?: 'wait' | 'cancel' | 'pending' | 'reject' | 'pass' } }) {
+    getApplyOrganization (payload: {
+      query?: {
+        page?: number;
+        page_size?: number;
+        deleted?: boolean;
+        status?: 'wait' | 'cancel' | 'pending' | 'reject' | 'pass';
+      }
+    }) {
       const config = {
         params: payload.query
       }
       return apiFed.get('/apply/organization', config)
     },
-    postApplyOrganization (payload: { body: { name: string; name_en: string; abbreviation: string; independent_legal_person: boolean; country: string; city: string; postal_code?: string; address: string; endpoint_vms?: string; endpoint_object?: string; endpoint_compute?: string; endpoint_monitor?: string; desc?: string; logo_url?: string; certification_url?: string } }) {
-      const config = {
-        data: payload.body
+    postApplyOrganization (payload: {
+      body: {
+        name: string;
+        name_en: string;
+        abbreviation: string;
+        independent_legal_person: boolean;
+        country: string;
+        city: string;
+        postal_code?: string;
+        address: string;
+        endpoint_vms?: string;
+        endpoint_object?: string;
+        endpoint_compute?: string;
+        endpoint_monitor?: string;
+        desc?: string;
+        logo_url?: string;
+        certification_url?: string;
       }
-      return apiFed.post('/apply/organization', config)
+    }) {
+      const data = payload.body
+      return apiFed.post('/apply/organization', data)
     },
-    getApplyOrganizationAdmin (payload: { query?: { page?: number; page_size?: number; deleted?: boolean; status?: 'wait' | 'cancel' | 'pending' | 'reject' | 'pass' } }) {
+    getApplyOrganizationAdmin (payload: {
+      query?: {
+        page?: number;
+        page_size?: number;
+        deleted?: boolean;
+        status?: 'wait' | 'cancel' | 'pending' | 'reject' | 'pass';
+      }
+    }) {
       const config = {
         params: payload.query
       }
@@ -26,7 +56,12 @@ const api = {
     deleteApplyOrganization (payload: { path: { id: string } }) {
       return apiFed.delete('/apply/organization/' + payload.path.id)
     },
-    postApplyOrganizationAction (payload: { path: { action: string; id: string } }) {
+    postApplyOrganizationAction (payload: {
+      path: {
+        action: string;
+        id: string;
+      }
+    }) {
       return apiFed.post('/apply/organization/' + payload.path.id + '/action/' + payload.path.action)
     },
     getApplyQuota (payload: { query?: { page?: number; page_size?: number; deleted?: boolean; service?: string; status?: string[] } }) {
@@ -35,11 +70,23 @@ const api = {
       }
       return apiFed.get('/apply/quota', config)
     },
-    postApplyQuota (payload: { body: { vo_id?: string; service_id: string; private_ip?: number; public_ip?: number; vcpu?: number; ram?: number; disk_size?: number; duration_days: number; company?: string; contact?: string; purpose?: string } }) {
-      const config = {
-        data: payload.body
+    postApplyQuota (payload: {
+      body: {
+        vo_id?: string;
+        service_id: string;
+        private_ip?: number;
+        public_ip?: number;
+        vcpu?: number;
+        ram?: number;
+        disk_size?: number;
+        duration_days: number;
+        company?: string;
+        contact?: string;
+        purpose?: string;
       }
-      return apiFed.post('/apply/quota', config)
+    }) {
+      const data = payload.body
+      return apiFed.post('/apply/quota', data)
     },
     getApplyQuotaAdmin (payload: { query?: { page?: number; page_size?: number; deleted?: boolean; service?: string; status?: string[] } }) {
       const config = {
@@ -68,20 +115,27 @@ const api = {
     getApplyQuotaApplyIdAdmin (payload: { path: { apply_id: string } }) {
       return apiFed.get('/apply/quota/' + payload.path.apply_id + '/admin')
     },
-    postApplyQuotaApplyIdCancel (payload: { path: { apply_id: string } }) {
+    postApplyQuotaApplyIdCancel (payload: {
+      path: { apply_id: string }
+    }) {
       return apiFed.post('/apply/quota/' + payload.path.apply_id + '/cancel')
     },
-    postApplyQuotaApplyIdPass (payload: { path: { apply_id: string } }) {
+    postApplyQuotaApplyIdPass (payload: {
+      path: { apply_id: string }
+    }) {
       return apiFed.post('/apply/quota/' + payload.path.apply_id + '/pass')
     },
-    postApplyQuotaApplyIdPending (payload: { path: { apply_id: string } }) {
+    postApplyQuotaApplyIdPending (payload: {
+      path: { apply_id: string }
+    }) {
       return apiFed.post('/apply/quota/' + payload.path.apply_id + '/pending')
     },
-    postApplyQuotaApplyIdReject (payload: { path: { apply_id: string }, body: { reason: string } }) {
-      const config = {
-        data: payload.body
-      }
-      return apiFed.post('/apply/quota/' + payload.path.apply_id + '/reject', config)
+    postApplyQuotaApplyIdReject (payload: {
+      path: { apply_id: string },
+      body: { reason: string }
+    }) {
+      const data = payload.body
+      return apiFed.post('/apply/quota/' + payload.path.apply_id + '/reject', data)
     },
     getApplyService (payload: { query?: { page?: number; page_size?: number; deleted?: boolean; organization?: string; status?: string[] } }) {
       const config = {
@@ -89,11 +143,38 @@ const api = {
       }
       return apiFed.get('/apply/service', config)
     },
-    postApplyService (payload: { body: { organization_id: string; name: string; name_en: string; service_type: string; endpoint_url: string; region?: string; api_version?: string; username: string; password: string; project_name?: string; project_domain_name?: string; user_domain_name?: string; remarks?: string; need_vpn: boolean; vpn_endpoint_url?: string; vpn_api_version?: string; vpn_username?: string; vpn_password?: string; longitude?: number; latitude?: number; contact_person: string; contact_email: string; contact_telephone: string; contact_fixed_phone?: string; contact_address: string; logo_url?: string } }) {
-      const config = {
-        data: payload.body
+    postApplyService (payload: {
+      body: {
+        organization_id: string;
+        name: string;
+        name_en: string;
+        service_type: string;
+        endpoint_url: string;
+        region?: string;
+        api_version?: string;
+        username: string;
+        password: string;
+        project_name?: string;
+        project_domain_name?: string;
+        user_domain_name?: string;
+        remarks?: string;
+        need_vpn: boolean;
+        vpn_endpoint_url?: string;
+        vpn_api_version?: string;
+        vpn_username?: string;
+        vpn_password?: string;
+        longitude?: number;
+        latitude?: number;
+        contact_person: string;
+        contact_email: string;
+        contact_telephone: string;
+        contact_fixed_phone?: string;
+        contact_address: string;
+        logo_url?: string;
       }
-      return apiFed.post('/apply/service', config)
+    }) {
+      const data = payload.body
+      return apiFed.post('/apply/service', data)
     },
     getApplyServiceAdmin (payload: { query?: { page?: number; page_size?: number; deleted?: boolean; organization?: string; status?: string[] } }) {
       const config = {
@@ -104,7 +185,12 @@ const api = {
     deleteApplyService (payload: { path: { id: string } }) {
       return apiFed.delete('/apply/service/' + payload.path.id)
     },
-    postApplyServiceAction (payload: { path: { action: string; id: string } }) {
+    postApplyServiceAction (payload: {
+      path: {
+        action: string;
+        id: string;
+      }
+    }) {
       return apiFed.post('/apply/service/' + payload.path.id + '/action/' + payload.path.action)
     }
   },
@@ -203,11 +289,28 @@ const api = {
       }
       return apiFed.get('/quota-activity', config)
     },
-    postQuotaActivity (payload: { body: { service_id: string; name: string; name_en: string; start_time: string; end_time: string; count: number; times_per_user: number; status: string; tag: string; cpus: number; private_ip: number; public_ip: number; ram: number; disk_size: number; expiration_time: string; duration_days: number } }) {
-      const config = {
-        data: payload.body
+    postQuotaActivity (payload: {
+      body: {
+        service_id: string;
+        name: string;
+        name_en: string;
+        start_time: string;
+        end_time: string;
+        count: number;
+        times_per_user: number;
+        status: string;
+        tag: string;
+        cpus: number;
+        private_ip: number;
+        public_ip: number;
+        ram: number;
+        disk_size: number;
+        expiration_time: string;
+        duration_days: number
       }
-      return apiFed.post('/quota-activity', config)
+    }) {
+      const data = payload.body
+      return apiFed.post('/quota-activity', data)
     },
     getQuotaActivityGet (payload: { path: { id: string } }) {
       return apiFed.get('/quota-activity/' + payload.path.id + '/get')
@@ -225,11 +328,18 @@ const api = {
       }
       return apiFed.get('/server', config)
     },
-    postServer (payload: { body: { service_id: string; image_id: string; flavor_id: string; network_id?: string; quota_id: string; remarks?: string; } }) {
-      const config = {
-        data: payload.body
+    postServer (payload: {
+      body: {
+        service_id: string;
+        image_id: string;
+        flavor_id: string;
+        network_id?: string;
+        quota_id: string;
+        remarks?: string;
       }
-      return apiFed.post('/server', config)
+    }) {
+      const data = payload.body
+      return apiFed.post('/server', data)
     },
     getServerVo (payload: { path: { vo_id: string }, query?: { page?: number; page_size?: number; service_id?: string } }) {
       const config = {
@@ -249,17 +359,21 @@ const api = {
       }
       return apiFed.delete('/server/' + payload.path.id, config)
     },
-    postServerAction (payload: { path: { id: string }, body: { action: string } }) {
-      const config = {
-        data: payload.body
-      }
-      return apiFed.post('/server/' + payload.path.id + '/action', config)
+    postServerAction (payload: {
+      path: { id: string },
+      body: { action: string }
+    }) {
+      const data = payload.body
+      return apiFed.post('/server/' + payload.path.id + '/action', data)
     },
-    postServerLock (payload: { path: { id: string }, query: { lock: string } }) {
+    postServerLock (payload: {
+      path: { id: string },
+      query: { lock: string }
+    }) {
       const config = {
-        data: payload.query
+        params: payload.query
       }
-      return apiFed.post('/server/' + payload.path.id + '/lock', config)
+      return apiFed.post('/server/' + payload.path.id + '/lock', {}, config)
     },
     patchServerRemark (payload: { path: { id: string }, query: { remark: string } }) {
       const config = {
@@ -292,9 +406,16 @@ const api = {
     }
   },
   service: {
-    getService (payload: { query?: { page?: number; page_size?: number; center_id?: string; available_only?: boolean } }) {
+    getService (payload?: {
+      query?: {
+        page?: number;
+        page_size?: number;
+        center_id?: string;
+        available_only?: boolean;
+      }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/service', config)
     },
@@ -313,59 +434,109 @@ const api = {
     getServicePQuota (payload: { path: { id: string } }) {
       return apiFed.get('/service/' + payload.path.id + '/p-quota')
     },
-    postServicePQuota (payload: { body: { private_ip_total: number; public_ip_total: number; vcpu_total: number; ram_total: number; disk_size_total: number; }, path: { id: string } }) {
-      const config = {
-        data: payload.body
-      }
-      return apiFed.post('/service/' + payload.path.id + '/p-quota', config)
+    postServicePQuota (payload: {
+      body: {
+        private_ip_total: number;
+        public_ip_total: number;
+        vcpu_total: number;
+        ram_total: number;
+        disk_size_total: number;
+      },
+      path: { id: string }
+    }) {
+      const data = payload.body
+      return apiFed.post('/service/' + payload.path.id + '/p-quota', data)
     },
     getServiceSQuota (payload: { path: { id: string } }) {
       return apiFed.get('/service/' + payload.path.id + '/s-quota')
     },
-    postServiceSQuota (payload: { body: { private_ip_total: number; public_ip_total: number; vcpu_total: number; ram_total: number; disk_size_total: number; }, path: { id: string } }) {
-      const config = {
-        data: payload.body
-      }
-      return apiFed.post('/service/' + payload.path.id + '/s-quota', config)
+    postServiceSQuota (payload: {
+      body: {
+        private_ip_total: number;
+        public_ip_total: number;
+        vcpu_total: number;
+        ram_total: number;
+        disk_size_total: number;
+      },
+      path: { id: string }
+    }) {
+      const data = payload.body
+      return apiFed.post('/service/' + payload.path.id + '/s-quota', data)
     }
   },
   user: {
-    getUserAccount (payload: { query?: { page?: number; page_size?: number } }) {
+    getUserAccount (payload?: {
+      query?: {
+        page?: number;
+        page_size?: number
+      }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/user/account', config)
+    },
+    getUserPermissionPolicy (payload?: {
+      query?: {
+        page: number;
+        page_size: number;
+      }
+    }) {
+      const config = {
+        params: payload?.query
+      }
+      return apiFed.get('/user/permission-policy', config)
     }
-    // todo  getUserPermissionPolicy
   },
   vms: {
-    getVmsServicePQuota (payload: { query?: { page?: number; page_size: number; service_id?: string } }) {
+    getVmsServicePQuota (payload?: {
+      query?: {
+        page?: number;
+        page_size?: number;
+        service_id?: string;
+      }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/vms/service/p-quota', config)
+    },
+    getVmsServiceSQuota (payload?: {
+      query?: {
+        page?: number;
+        page_size?: number;
+        service_id?: string;
+      }
+    }) {
+      const config = {
+        params: payload?.query
+      }
+      return apiFed.get('/vms/service/s-quota', config)
     }
   },
   vo: {
-    getVmsServiceSQuota (payload: { query?: { page?: number; page_size: number; service_id?: string } }) {
-      const config = {
-        params: payload.query
-      }
-      return apiFed.get('/vms/service/s-quota', config)
-    },
     getVo (payload: { query?: { page?: number; page_size?: number; owner?: boolean; member?: boolean } }) {
       const config = {
         params: payload.query
       }
       return apiFed.get('/vo', config)
     },
-    postVo (payload: { body: { name: string; company: string; description: string } }) {
-      const config = {
-        data: payload.body
+    postVo (payload: {
+      body: {
+        name: string;
+        company: string;
+        description: string;
       }
-      return apiFed.post('/vo', config)
+    }) {
+      const data = payload.body
+      return apiFed.post('/vo', data)
     },
-    postVoMembersRole (payload: { path: { member_id: string; role: string } }) {
+    postVoMembersRole (payload: {
+      path: {
+        member_id: string;
+        role: string;
+      }
+    }) {
       return apiFed.post('/vo/members/' + payload.path.member_id + '/role/' + payload.path.role)
     },
     patchVo (payload: { path: { id: string }, body: { data: { name: string; company: string; description: string } } }) {
@@ -377,20 +548,22 @@ const api = {
     deleteVo (payload: { path: { id: string } }) {
       return apiFed.delete('/vo/' + payload.path.id)
     },
-    postVoAddMembers (payload: { path: { id: string }, body: { usernames: string[] } }) {
-      const config = {
-        data: payload.body
-      }
-      return apiFed.post('/vo/' + payload.path.id + '/add-members', config)
+    postVoAddMembers (payload: {
+      path: { id: string },
+      body: { usernames: string[] }
+    }) {
+      const data = payload.body
+      return apiFed.post('/vo/' + payload.path.id + '/add-members', data)
     },
     getVoListMembers (payload: { path: { id: string } }) {
       return apiFed.get('/vo/' + payload.path.id + 'list-members')
     },
-    postVoRemoveMembers (payload: { path: { id: string }, body: { usernames: string[] } }) {
-      const config = {
-        data: payload.body
-      }
-      return apiFed.post('/vo/' + payload.path.id + '/remove-members', config)
+    postVoRemoveMembers (payload: {
+      path: { id: string },
+      body: { usernames: string[] }
+    }) {
+      const data = payload.body
+      return apiFed.post('/vo/' + payload.path.id + '/remove-members', data)
     }
   },
   vpn: {

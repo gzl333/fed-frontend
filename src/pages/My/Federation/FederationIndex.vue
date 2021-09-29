@@ -24,7 +24,7 @@
                 <q-tabs
                   v-model="activeTab"
                   indicator-color="primary"
-                  active-color=""
+                  active-color="primary"
                   align="left"
                   inline-label
                 >
@@ -43,14 +43,6 @@
                     :label="$t('联邦监控')"
                     :ripple="false"
                     to="/my/federation/monitor"
-                  />
-                  <q-route-tab
-                    class="q-px-none q-py-md q-mx-md"
-                    name="quota"
-                    icon="task_alt"
-                    label="资源汇聚"
-                    :ripple="false"
-                    to="/my/federation/resourceAggregation"
                   />
                 </q-tabs>
               </div>

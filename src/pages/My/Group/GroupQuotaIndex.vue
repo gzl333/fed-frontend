@@ -7,7 +7,7 @@
         <q-tabs
           v-model="tab"
           indicator-color="primary"
-          active-color=""
+          active-color="primary"
           align="left"
           inline-label
         >

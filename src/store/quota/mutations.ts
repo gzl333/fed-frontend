@@ -1,9 +1,9 @@
 import { MutationTree } from 'vuex'
-import { ObsStateInterface } from './state'
+import { QuotaModuleInterface } from './state'
 
-const mutation: MutationTree<ObsStateInterface> = {
+const mutation: MutationTree<QuotaModuleInterface> = {
   someMutation (/* state: ExampleStateInterface */) {
-    // this.$router.push
+    // your code
   }
 }
 

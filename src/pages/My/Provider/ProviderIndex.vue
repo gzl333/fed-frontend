@@ -25,7 +25,7 @@
                 <q-tabs
                   v-model="activeTab"
                   indicator-color="primary"
-                  active-color=""
+                  active-color="primary"
                   align="left"
                   inline-label
                 >

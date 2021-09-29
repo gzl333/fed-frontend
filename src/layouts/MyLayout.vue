@@ -49,6 +49,11 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
     /* my内页所有table加载起始点 */
+    void $store.dispatch('fed/loadFedModuleTable').then(() => {
+      // if (!process.env.PROD) {
+      console.log('$store-fed:', $store.state.fed)
+      // }
+    })
     void $store.dispatch('vm/updateVmTable').then(() => {
       // if (!process.env.PROD) {
       console.log('$STORE-vm:', $store.state.vm)

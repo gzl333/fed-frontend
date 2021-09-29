@@ -63,6 +63,7 @@ export interface ServerInterface {
   vnc?: string
   status?: string
 }
+
 // duyukuan
 export interface PersonalUserQuota {
   id: string
@@ -74,6 +75,7 @@ export interface PersonalUserQuota {
   deleted: boolean,
   display: string
 }
+
 // 服务私有配额 duyukuan
 export interface ServiceQuotaStatInterface {
   private_ip_total: number
@@ -189,9 +191,9 @@ export interface ArchivedServerInterface {
 // Vm总接口
 export interface VmModuleInterface {
   pages: { // 各个页面所需vuex数据
-    vmCreate: {
-      serviceId: string // serviceId serviceId选择结果影响后面所有选项的options
-    }
+    // vmCreate: {
+    //   serviceId: string // serviceId serviceId选择结果影响后面所有选项的options
+    // }
   }
   tables: { // 扁平的data table
     /* 全局table */
@@ -228,7 +230,7 @@ export interface VmModuleInterface {
     /* 全局table */
 
     /* 个人table */
-    // 用户可用的service
+    // 用户可用的service todo -> personalServiceTable
     userServiceTable: {
       byId: Record<string, ServiceInterface>
       allIds: string[]
@@ -304,29 +306,15 @@ export interface VmModuleInterface {
     }
     /* provider table */
 
-    /* federation management */
-    // 服务私有配额 table
-    privateServiceQuotaStatTable: {
-      byId: Record<string, ServiceQuotaStatInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
-    // 服务共享配额 table
-    sharedServiceQuotaStatTable: {
-      byId: Record<string, ServiceQuotaStatInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
-    /* federation management */
   }
 }
 
 function state (): VmModuleInterface {
   return {
     pages: {
-      vmCreate: {
-        serviceId: '0'
-      }
+      // vmCreate: {
+      //   serviceId: '0'
+      // }
     },
     tables: {
       globalDataCenterTable: {
@@ -409,16 +397,6 @@ function state (): VmModuleInterface {
         isLoaded: false
       },
       providerQuotaTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
-      privateServiceQuotaStatTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
-      sharedServiceQuotaStatTable: {
         byId: {},
         allIds: [],
         isLoaded: false

@@ -1,6 +1,6 @@
 import { createStore } from 'vuex'
-// import example from './module-example'
-// import { ExampleStateInterface } from './module-example/state'
+
+// old modules
 import accountModule from './account'
 import { AccountModuleInterface } from 'src/store/account/state'
 import vmModule from './vm'
@@ -10,7 +10,18 @@ import { ApplyQuotaModuleInterface } from 'src/store/applyQuota/state'
 import groupModule from './group'
 import { GroupModuleInterface } from 'src/store/group/state'
 
+// new modules
+import fedModule from './fed'
+import { FedModuleInterface } from './fed/state'
+import providerModule from 'src/store/provider'
+import { ProviderModuleInterface } from 'src/store/provider/state'
+import quotaModule from 'src/store/quota'
+import { QuotaModuleInterface } from 'src/store/quota/state'
+import serverModule from './server'
+import { ServerModuleInterface } from './server/state'
+
 /* 全局API BASE */
+// todo api整理结束后删除
 // 根据用户访问协议来决定api地址的https/http
 export const apiBase = window.location.protocol + '//vms.cstcloud.cn/api'
 /* 全局API BASE */
@@ -28,21 +39,31 @@ export interface StateInterface {
   // Define your own store structure, using submodules if needed
   // example: ExampleStateInterface;
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
-  // example: ExampleStateInterface
-
   account: AccountModuleInterface,
   vm: VmModuleInterface,
   applyQuota: ApplyQuotaModuleInterface,
-  group: GroupModuleInterface
+  group: GroupModuleInterface,
+
+  // new modules
+  fed: FedModuleInterface
+  provider: ProviderModuleInterface
+  quota: QuotaModuleInterface
+  server: ServerModuleInterface
 }
 
 const store = createStore<StateInterface>({
   modules: {
-    // example
+    // old
     account: accountModule,
     vm: vmModule,
     applyQuota: applyQuotaModule,
-    group: groupModule
+    group: groupModule,
+
+    // new modules
+    fed: fedModule,
+    provider: providerModule,
+    quota: quotaModule,
+    server: serverModule
   },
 
   // enable strict mode (adds overhead!)
