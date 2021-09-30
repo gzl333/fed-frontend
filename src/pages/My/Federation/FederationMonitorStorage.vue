@@ -3,42 +3,57 @@
     <div class="box" v-for="(item, index) in listData" :key="index">
       <div class="row justify-between q-mt-sm">
         <div class="text-subtitle1 text-weight-bold">{{item.name}}</div>
-        <q-select outlined v-model="filterSelection" :options="filterOptions" label="Outlined" class="col-2"/>
+        <q-select outlined v-model="filterSelection" :options="filterOptions" label="刷新时间" class="col-2"/>
       </div>
       <div class="row q-mt-md">
-        <div class="col-6 row">
+        <div class="col-6 row q-mt-md">
             <div class="col-3">
-              <q-card flat bordered class="q-pb-xl q-pt-sm">
+              <q-card flat bordered class="q-pb-lg q-pt-xs">
                 <q-card-section>
-                  <div class="text-center">集群状态</div>
+                  <div class="row justify-center">
+                    <div class="col-11 text-center">集群状态</div>
+                    <q-icon name="loop" class="col-1" size="xs" @click="refresh"/>
+                  </div>
                   <div :class="item.clusterStatus === 'Healthy' ? 'text-positive text-center text-h4 text-weight-bold q-mt-xl' : item.clusterStatus === 'Warning' ? 'text-warning text-center text-h4 text-weight-bold q-mt-xl' : 'text-negative text-center text-h4 text-weight-bold q-mt-xl'">{{item.clusterStatus}}</div>
                 </q-card-section>
               </q-card>
             </div>
             <div class="col-3 q-ml-xl">
-              <q-card flat bordered class="q-pb-xl q-pt-sm">
+              <q-card flat bordered class="q-pb-lg q-pt-xs">
                 <q-card-section>
-                  <div class="text-center">集群容量</div>
+                  <div class="row justify-center">
+                    <div class="col-11 text-center">集群容量</div>
+                    <q-icon name="loop" class="col-1" size="xs" @click="refresh"/>
+                  </div>
                   <div class="text-center text-h4 text-weight-medium q-mt-xl">{{ item.clusterCapacity + 'TB' }}</div>
                 </q-card-section>
               </q-card>
             </div>
             <div class="col-3 q-ml-xl">
-              <q-card flat bordered class="q-pb-xl q-pt-sm">
+              <q-card flat bordered class="q-pb-lg q-pt-xs">
                 <q-card-section>
-                  <div class="text-center">当前容量</div>
+                  <div class="row justify-center">
+                    <div class="col-11 text-center">当前容量</div>
+                    <q-icon name="loop" class="col-1" size="xs" @click="refresh"/>
+                  </div>
                   <div class="text-center text-h4 text-weight-medium q-mt-xl">{{item.currentCapacity + 'GB'}}</div>
                 </q-card-section>
               </q-card>
             </div>
         </div>
         <div class="col-5 right">
-          <div class="text-center q-mb-xs">OSD状态</div>
+          <div class="row justify-center">
+            <div class="col-11 text-center">OSD状态</div>
+            <q-icon name="loop" class="col-1" size="xs" @click="refresh"/>
+          </div>
           <div class="row q-ml-md">
-            <div class="col-4 q-mt-sm">
+              <div class="col-4 q-mt-sm">
               <q-card flat bordered class="my-card q-pb-md">
                 <q-card-section>
-                  <div class="text-center">OSD总数</div>
+                  <div class="row justify-center">
+                    <div class="col-11 text-center">OSD总数</div>
+                    <q-icon name="loop" class="col-1" size="xs" @click="refresh"/>
+                  </div>
                   <div class="text-center text-h4 text-weight-medium q-mt-xl">{{ item.OSDTotal }}</div>
                 </q-card-section>
               </q-card>
@@ -68,7 +83,7 @@
                     </q-card-section>
                   </q-card>
                 </div>
-                <div class="col-5 q-mt-xs q-ml-lg">
+                <div class="col-5 q-ml-lg q-mt-xs">
                   <q-card flat bordered class="my-card">
                     <q-card-section>
                       <div class="text-center">OSD DOWN</div>
@@ -80,12 +95,12 @@
           </div>
         </div>
         <div class="col-1">
-          <q-card flat bordered class="my-card q-pb-lg">
+          <q-card flat bordered class="my-card q-pb-md">
             <q-card-section>
               <div class="text-center q-mt-xl">
-                <p>Go To</p>
-                <p>Grafana</p>
-                <p>详细信息</p>
+                <p class="text-primary">Go To</p>
+                <p class="text-primary">Grafana</p>
+                <p class="text-primary">详细信息</p>
               </div>
             </q-card-section>
           </q-card>
@@ -183,10 +198,14 @@ export default defineComponent({
         value: '5'
       }
     ]
+    const refresh = () => {
+      console.log('刷新')
+    }
     return {
       listData,
       filterOptions,
-      filterSelection
+      filterSelection,
+      refresh
     }
   }
 })
