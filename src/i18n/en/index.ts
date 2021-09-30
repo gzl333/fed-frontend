@@ -22,10 +22,10 @@ export default {
   个人资源: 'Personal Resource',
   项目组资源: 'Group Resource',
   资源提供: 'Resource Provider',
-  联邦管理: 'Federation Management',
+  联邦管理: 'Monitor Management',
 
   // main page
-  联邦机构: 'Federation Organizations',
+  联邦机构: 'Monitor Organizations',
   接入机构: 'Organization Connected',
   接入服务: 'Service Connected',
   在用资源: 'Resource in Use',
