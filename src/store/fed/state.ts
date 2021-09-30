@@ -74,7 +74,7 @@ export interface FedModuleInterface {
       isLoaded: boolean
     }
     // 全部service的 自主资源配置(autonomous resource allocation)，服务各自管理
-    autonomousAllocationTable: {
+    serviceAllocationTable: {
       byId: Record<string, AllocationInterface>
       allIds: string[]
       isLoaded: boolean
@@ -102,7 +102,7 @@ function state (): FedModuleInterface {
         allIds: [],
         isLoaded: false
       },
-      autonomousAllocationTable: {
+      serviceAllocationTable: {
         byId: {},
         allIds: [],
         isLoaded: false

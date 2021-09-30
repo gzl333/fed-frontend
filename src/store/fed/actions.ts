@@ -11,11 +11,20 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
       void context.dispatch('loadDataCenterTable').then(() => {
         if (!context.state.tables.serviceTable.isLoaded) {
           void context.dispatch('loadServiceTable').then(() => {
-            if (!context.state.tables.autonomousAllocationTable.isLoaded) {
-              void context.dispatch('loadAutonomousAllocationTable')
+            if (!context.state.tables.serviceAllocationTable.isLoaded) {
+              void context.dispatch('loadServiceAllocationTable')
             }
             if (!context.state.tables.fedAllocationTable.isLoaded) {
               void context.dispatch('loadFedAllocationTable')
+            }
+            if (!context.rootState.server.tables.userVpnTable.isLoaded) {
+              void context.dispatch('server/loadUserVpnTable', null, { root: true })
+            }
+            if (!context.rootState.server.tables.serviceNetworkTable.isLoaded) {
+              void context.dispatch('server/loadServiceNetworkTable', null, { root: true })
+            }
+            if (!context.rootState.server.tables.serviceImageTable.isLoaded) {
+              void context.dispatch('server/loadServiceImageTable', null, { root: true })
             }
           })
         }
@@ -61,9 +70,9 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
       })
     })
   },
-  /* autonomousAllocationTable */
-  async loadAutonomousAllocationTable (context) {
-    context.commit('clearTable', context.state.tables.autonomousAllocationTable)
+  /* serviceAllocationTable */
+  async loadServiceAllocationTable (context) {
+    context.commit('clearTable', context.state.tables.serviceAllocationTable)
     const respPQuota = await api.vms.getVmsServicePQuota()
     const service = new schema.Entity('service')
     const allocation = new schema.Entity('allocation', { service })
@@ -71,7 +80,7 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
       Object.assign(data, { id: data.service.id })
       const normalizedData = normalize(data, allocation)
       context.commit('storeTable', {
-        table: context.state.tables.autonomousAllocationTable,
+        table: context.state.tables.serviceAllocationTable,
         tableObj: normalizedData.entities.allocation
       })
     }

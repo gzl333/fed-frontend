@@ -14,11 +14,20 @@
           {{ $t('项目组') }}
         </div>
         <div class="row items-center q-gutter-md q-pb-lg">
-          <div class="col-auto">
+          <div class="col-auto ">
             {{ $t('使用该云主机的项目组') }}
           </div>
-          <q-select class="col-4" outlined v-model="radioGroup" dense
+          <q-select v-if="groups.length !== 0" class="col-4" outlined v-model="radioGroup" dense
                     :options="groups" map-options emit-value option-label="name" option-value="id"/>
+          <div v-else>
+            <div class="row items-center">
+              暂无项目组，请
+              <q-btn v-if="isGroup" flat padding="none" color="primary"
+                     :to="'/my/group/create'">
+                {{ $t('创建项目组') }}
+              </q-btn>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -176,6 +185,18 @@
           所选配置
         </div>
 
+        <div v-if="isGroup" class="row item-row">
+          <div class="col-shrink item-title-narrow text-grey">
+            项目组
+          </div>
+          <div class="col item-radios">
+            <div v-if="radioGroup !== ''">
+              {{ $store.state.group.tables.groupTable.byId[radioGroup]?.name }}
+            </div>
+            <div v-else class="text-red">请选择项目组</div>
+          </div>
+        </div>
+
         <div class="row item-row">
           <div class="col-shrink item-title-narrow text-grey">
             服务节点
@@ -229,7 +250,7 @@
             <div v-if="$store.state.vm.tables.globalImageTable.byLocalId[`${radioService}-${radioImage}`]?.name">
               {{ $store.state.vm.tables.globalImageTable.byLocalId[`${radioService}-${radioImage}`]?.name }}
             </div>
-            <div v-else class="text-red">选择系统镜像</div>
+            <div v-else class="text-red">请选择系统镜像</div>
           </div>
         </div>
 
@@ -252,7 +273,7 @@
             备注
           </div>
           <div v-if="inputRemarks" class="col item-radios">
-            {{inputRemarks}}
+            {{ inputRemarks }}
           </div>
           <div v-else class="text-red">请填写备注</div>
         </div>
@@ -394,7 +415,10 @@ export default defineComponent({
         const respPostServer = await $store.dispatch('vm/postServer', { body: selection })
         if (respPostServer.status === 201) {
           // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
-          void await $store.dispatch('vm/updateServerTableSingleServer', { serverId: respPostServer.data.id, isGroup: props.isGroup })
+          void await $store.dispatch('vm/updateServerTableSingleServer', {
+            serverId: respPostServer.data.id,
+            isGroup: props.isGroup
+          })
           // notify
           Notify.create({
             classes: 'notification-positive shadow-15',

@@ -200,7 +200,9 @@ const api = {
     }
   },
   image: {
-    getImage (payload: { query: { service_id: string } }) {
+    getImage (payload: {
+      query: { service_id: string }
+    }) {
       const config = {
         params: payload.query
       }
@@ -240,7 +242,9 @@ const api = {
     }
   },
   network: {
-    getNetwork (payload: { query: { service_id: string } }) {
+    getNetwork (payload: {
+      query: { service_id: string }
+    }) {
       const config = {
         params: payload.query
       }
@@ -254,9 +258,17 @@ const api = {
     }
   },
   quota: {
-    getQuota (payload: { query?: { page?: number; page_size?: number; service?: string; usable?: boolean; deleted?: boolean } }) {
+    getQuota (payload?: {
+      query?: {
+        page?: number;
+        page_size?: number;
+        service?: string;
+        usable?: boolean;
+        deleted?: boolean
+      }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/quota', config)
     },
@@ -275,7 +287,13 @@ const api = {
     deleteQuotaId (payload: { path: { id: string } }) {
       return apiFed.get('/quota/' + payload.path.id)
     },
-    getQuotaServers (payload: { query?: { page?: number; page_size?: number; }, path: { id: string } }) {
+    getQuotaServers (payload: {
+      query?: {
+        page?: number;
+        page_size?: number;
+      },
+      path: { id: string }
+    }) {
       const config = {
         params: payload.query
       }
@@ -567,7 +585,9 @@ const api = {
     }
   },
   vpn: {
-    getVpn (payload: { path: { service_id: string } }) {
+    getVpn (payload: {
+      path: { service_id: string }
+    }) {
       return apiFed.get('/vpn/' + payload.path.service_id)
     },
     patchVpn (payload: { path: { service_id: string }, body: { password: string } }) {

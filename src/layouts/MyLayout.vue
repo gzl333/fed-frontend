@@ -49,26 +49,15 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
     /* my内页所有table加载起始点 */
-    void $store.dispatch('fed/loadFedModuleTable').then(() => {
-      // if (!process.env.PROD) {
-      console.log('$store-fed:', $store.state.fed)
-      // }
-    })
-    void $store.dispatch('vm/updateVmTable').then(() => {
-      // if (!process.env.PROD) {
-      console.log('$STORE-vm:', $store.state.vm)
-      // }
-    })
-    void $store.dispatch('applyQuota/updateQuotaApplicationTable').then(() => {
-      // if (!process.env.PROD) {
-      console.log('$STORE-applyQuota:', $store.state.applyQuota)
-      // }
-    })
-    void $store.dispatch('group/loadGroupModuleTable').then(() => {
-      // if (!process.env.PROD) {
-      console.log('$STORE-group:', $store.state.group)
-      // }
-    })
+    console.log('$store:', $store.state)
+    // new modules
+    void $store.dispatch('fed/loadFedModuleTable')
+    void $store.dispatch('server/loadServerModuleTable')
+
+    // old modules
+    void $store.dispatch('vm/updateVmTable')
+    void $store.dispatch('applyQuota/updateQuotaApplicationTable')
+    void $store.dispatch('group/loadGroupModuleTable')
     /* my内页所有table加载起始点 */
 
     const currentUser = $store.state.account

@@ -14,11 +14,20 @@
           {{ $t('项目组') }}
         </div>
         <div class="row items-center q-gutter-md q-pb-lg">
-          <div class="col-auto">
+          <div class="col-auto ">
             {{ $t('使用该配额的项目组') }}
           </div>
-          <q-select class="col-4" outlined v-model="radioGroup" dense
+          <q-select v-if="groups.length !== 0" class="col-4" outlined v-model="radioGroup" dense
                     :options="groups" map-options emit-value option-label="name" option-value="id"/>
+          <div v-else>
+            <div class="row items-center">
+              暂无项目组，请
+              <q-btn v-if="isGroup" flat padding="none" color="primary"
+                     :to="'/my/group/create'">
+                {{ $t('创建项目组') }}
+              </q-btn>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -200,7 +209,10 @@
             项目组
           </div>
           <div class="col item-radios">
-            {{ $store.state.group.tables.groupTable.byId[radioGroup]?.name }}
+            <div v-if="radioGroup !== ''">
+              {{ $store.state.group.tables.groupTable.byId[radioGroup]?.name }}
+            </div>
+            <div v-else class="text-red">请选择项目组</div>
           </div>
         </div>
 
@@ -274,7 +286,8 @@
             配额用途
           </div>
           <div class="col item-radios">
-            {{ inputPurpose }}
+            <div v-if="inputPurpose !== ''"> {{ inputPurpose }}</div>
+            <div v-else class="text-red">请填写备注</div>
           </div>
         </div>
 
@@ -350,9 +363,7 @@ export default defineComponent({
       if (props.groupId) {
         radioGroup.value = props.groupId
       } else {
-        // if ($store.state.group.tables.groupTable.isLoaded) {
-        radioGroup.value = groups.value[0]?.id
-        // }
+        radioGroup.value = groups.value[0]?.id || ''
       }
     }
     // setup时调用一次 (3) 没有传参时要选一次默认值
@@ -378,7 +389,18 @@ export default defineComponent({
 
     const applyQuota = async () => {
       // 如果没有选择ip地址，则弹出通知
-      if (!sliderPublic.value && !sliderPrivate.value) {
+      if (!radioGroup.value) {
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '请选择项目组',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      } else if (!sliderPublic.value && !sliderPrivate.value) { // 如果没有选择ip地址，则弹出通知
         Notify.create({
           classes: 'notification-negative shadow-15',
           icon: 'mdi-alert',

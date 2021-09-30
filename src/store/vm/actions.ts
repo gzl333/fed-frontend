@@ -69,6 +69,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
             // userServerTable虽然不依赖userServiceTable，但是userVpnTable的更新依赖userServiceTable
             if (!context.state.tables.userServerTable.isLoaded) {
               void context.dispatch('updateUserServerTable').then(() => {
+                // 新module里只有统一的vpn table
                 if (!context.state.tables.userVpnTable.isLoaded.server) {
                   void context.dispatch('updateUserVpnTableFromServer')
                 }

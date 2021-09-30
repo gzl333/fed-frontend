@@ -157,7 +157,7 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
-    const vpns = computed(() => Object.values($store.state.vm.tables.userVpnTable.byId))
+    const vpns = computed(() => Object.values($store.state.server.tables.userVpnTable.byId))
 
     const tab = ref('1')
 

@@ -18,6 +18,9 @@
 
           <div v-if="!server || !service || !vpn" class="col">
             正在加载，请稍候
+            <pre>{{ server }}</pre>
+            <pre> {{ service }}</pre>
+            <pre>{{ vpn }}</pre>
           </div>
 
           <div v-else class="col content-area">
@@ -375,8 +378,8 @@ export default defineComponent({
     const service = computed(() => $store.state.vm.tables.globalServiceTable.byId[server.value.service])
     // quota info
     const quota = computed(() => props.isGroup ? $store.state.vm.tables.groupQuotaTable.byId[server.value.user_quota] : $store.state.vm.tables.userQuotaTable.byId[server.value.user_quota])
-    // vpn info todo groupVpnTable
-    const vpn = computed(() => $store.state.vm.tables.userVpnTable.byId[server.value.service])
+    // vpn info
+    const vpn = computed(() => $store.state.server.tables.userVpnTable.byId[server.value.service])
 
     // password可见性
     const isPwd = ref(true)
