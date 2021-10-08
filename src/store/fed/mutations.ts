@@ -30,6 +30,14 @@ const mutation: MutationTree<FedModuleInterface> = {
     state.tables.dataCenterTable.byId[payload.dataCenterId].services.unshift(payload.serviceId)
     state.tables.dataCenterTable.byId[payload.dataCenterId].services = [...new Set(state.tables.dataCenterTable.byId[payload.dataCenterId].services)]
   }
+
+  /* 泛型尝试，vuex4.0似乎不支持泛型 */
+  // storeItemInTable<T> (state: ApplyQuotaInterface, table: { allIds: string[], isLoaded: boolean; byId: Record<string, T> }, item: Record<string, T>) {
+  //   Object.assign(table.byId, item)
+  //   table.allIds.unshift(Object.keys(item)[0])
+  //   table.allIds = [...new Set(table.allIds)]
+  //   table.isLoaded = true
+  // }
 }
 
 export default mutation

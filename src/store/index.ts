@@ -5,8 +5,8 @@ import accountModule from './account'
 import { AccountModuleInterface } from 'src/store/account/state'
 import vmModule from './vm'
 import { VmModuleInterface } from 'src/store/vm/state'
-import applyQuotaModule from './applyQuota'
-import { ApplyQuotaModuleInterface } from 'src/store/applyQuota/state'
+// import applyQuotaModule from './applyQuota_obsolete'
+// import { ApplyQuotaModuleInterface } from 'src/store/applyQuota_obsolete/state'
 import groupModule from './group'
 import { GroupModuleInterface } from 'src/store/group/state'
 
@@ -15,8 +15,6 @@ import fedModule from './fed'
 import { FedModuleInterface } from './fed/state'
 import providerModule from 'src/store/provider'
 import { ProviderModuleInterface } from 'src/store/provider/state'
-import quotaModule from 'src/store/quota'
-import { QuotaModuleInterface } from 'src/store/quota/state'
 import serverModule from './server'
 import { ServerModuleInterface } from './server/state'
 
@@ -41,13 +39,12 @@ export interface StateInterface {
   // Declared as unknown to avoid linting issue. Best to strongly type as per the line above.
   account: AccountModuleInterface,
   vm: VmModuleInterface,
-  applyQuota: ApplyQuotaModuleInterface,
+  // applyQuota: ApplyQuotaModuleInterface,
   group: GroupModuleInterface,
 
   // new modules
   fed: FedModuleInterface
   provider: ProviderModuleInterface
-  quota: QuotaModuleInterface
   server: ServerModuleInterface
 }
 
@@ -56,13 +53,12 @@ const store = createStore<StateInterface>({
     // old
     account: accountModule,
     vm: vmModule,
-    applyQuota: applyQuotaModule,
+    // applyQuota: applyQuotaModule,
     group: groupModule,
 
     // new modules
     fed: fedModule,
     provider: providerModule,
-    quota: quotaModule,
     server: serverModule
   },
 

@@ -192,7 +192,7 @@ export default defineComponent({
     const { locale } = useI18n({ useScope: 'global' })
 
     // radio 设计模式：创建一个reactive响应式对象，初始值来自另一个computed响应式对象
-    const currentApplication = computed(() => props.isGroup ? $store.state.applyQuota.tables.groupQuotaApplicationTable.byId[props.applyId] : $store.state.applyQuota.tables.userQuotaApplicationTable.byId[props.applyId])
+    const currentApplication = computed(() => props.isGroup ? $store.state.server.tables.groupQuotaApplicationTable.byId[props.applyId] : $store.state.server.tables.personalQuotaApplicationTable.byId[props.applyId])
     const newApplication = reactive({
       service_id: currentApplication.value.service,
       duration_days: currentApplication.value.duration_days,

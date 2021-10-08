@@ -449,7 +449,7 @@ export default defineComponent({
           contact: $store.state.account.decoded?.cstnetId
         }
         // 提交quota申请
-        await $store.dispatch('applyQuota/submitApplyQuota', selection)
+        await $store.dispatch('server/submitApplyQuota', selection)
 
         // 改变按钮状态
         isCreating.value = false

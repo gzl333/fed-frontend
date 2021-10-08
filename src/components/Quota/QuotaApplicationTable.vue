@@ -21,26 +21,26 @@
 
             <div class="auto">
               <q-badge v-if="props.row.status === 'wait'" color="black" outline>
-                {{$t('待审批')}}
+                {{ $t('待审批') }}
               </q-badge>
               <q-badge v-if="props.row.status === 'pending'" color="primary" outline>
-                {{$t('审批中')}}
+                {{ $t('审批中') }}
               </q-badge>
               <q-badge v-if="props.row.status === 'pass'" color="light-green" outline>
-                {{$t('已通过')}}
+                {{ $t('已通过') }}
               </q-badge>
               <div v-if="props.row.status === 'reject'">
                 <q-badge color="red" outline>
-                  {{$t('已拒绝')}}
+                  {{ $t('已拒绝') }}
                 </q-badge>
                 <div>
                   <q-icon name="help_outline" color="red" size="xs">
-                    <q-tooltip>{{$t('拒绝原因: ')}}{{props.row.result_desc }}</q-tooltip>
+                    <q-tooltip>{{ $t('拒绝原因: ') }}{{ props.row.result_desc }}</q-tooltip>
                   </q-icon>
                 </div>
               </div>
               <q-badge v-if="props.row.status === 'cancel'" color="grey" outline>
-                {{$t('已取消')}}
+                {{ $t('已取消') }}
               </q-badge>
               <!--创建时间距离当下小于1小时则打上new标记-->
 
@@ -110,17 +110,17 @@
 
               <div v-if="props.row.status === 'wait'">
                 <q-btn label="修改申请" flat dense padding="none" color="primary"
-                       @click="$store.dispatch('applyQuota/editQuotaApplicationDialog',{apply_id: props.row.id, isGroup})"/>
+                       @click="$store.dispatch('server/editQuotaApplicationDialog',{apply_id: props.row.id, isGroup})"/>
               </div>
 
               <div v-if="props.row.status === 'wait'">
                 <q-btn label="取消申请" flat dense padding="none" color="primary"
-                       @click="$store.dispatch('applyQuota/cancelGroupQuotaApplicationDialog',{apply_id: props.row.id, isGroup})"/>
+                       @click="$store.dispatch('server/cancelQuotaApplicationDialog',{apply_id: props.row.id, isGroup})"/>
               </div>
 
               <div>
                 <q-btn label="删除记录" flat dense padding="none" color="primary"
-                       @click="$store.dispatch('applyQuota/deleteGroupQuotaApplicationDialog', {apply_id: props.row.id, isGroup})"
+                       @click="$store.dispatch('server/deleteQuotaApplicationDialog', {apply_id: props.row.id, isGroup})"
                 />
               </div>
             </div>
@@ -275,7 +275,7 @@
         <q-card-actions align="right">
           <q-btn v-close-popup unelevated color="primary" label="放弃"/>
           <q-btn v-close-popup outline color="primary" label="保存"
-                 @click="$store.dispatch('applyQuota/patchAndUpdateUserQuotaApplicationTable', {apply_id, data: newApplication})"/>
+                 @click="$store.dispatch('applyQuota_obsolete/patchAndUpdateUserQuotaApplicationTable', {apply_id, data: newApplication})"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -284,7 +284,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, reactive, ref, watch } from 'vue'
-import { ApplicationQuotaInterface } from 'src/store/applyQuota/state'
+import { ApplicationQuotaInterface } from 'src/store/server/state'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
@@ -470,7 +470,7 @@ export default defineComponent({
     // 当前正在修改的application id， 要从tr里传参出来
     const apply_id = ref('0')
 
-    const currentApplication = computed(() => $store.state.applyQuota.tables.userQuotaApplicationTable.byId[apply_id.value])
+    const currentApplication = computed(() => $store.state.server.tables.personalQuotaApplicationTable.byId[apply_id.value])
     const showModify = (id: string) => {
       apply_id.value = id
       isShowModify.value = true

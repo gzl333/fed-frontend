@@ -79,7 +79,7 @@ export default defineComponent({
       }
     ]
     // 获取quota列表数据
-    const applications = computed(() => $store.getters['applyQuota/getGroupApplicationsByFilter'](filterSelection.value.value))
+    const applications = computed(() => $store.getters['server/getGroupApplicationsByFilter'](filterSelection.value.value))
 
     return {
       $store,

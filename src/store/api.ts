@@ -64,9 +64,17 @@ const api = {
     }) {
       return apiFed.post('/apply/organization/' + payload.path.id + '/action/' + payload.path.action)
     },
-    getApplyQuota (payload: { query?: { page?: number; page_size?: number; deleted?: boolean; service?: string; status?: string[] } }) {
+    getApplyQuota (payload?: {
+      query?: {
+        page?: number;
+        page_size?: number;
+        deleted?: boolean;
+        service?: string;
+        status?: string[]
+      }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/apply/quota', config)
     },
@@ -88,26 +96,55 @@ const api = {
       const data = payload.body
       return apiFed.post('/apply/quota', data)
     },
-    getApplyQuotaAdmin (payload: { query?: { page?: number; page_size?: number; deleted?: boolean; service?: string; status?: string[] } }) {
+    getApplyQuotaAdmin (payload?: {
+      query?: {
+        page?: number;
+        page_size?: number;
+        deleted?: boolean;
+        service?: string;
+        status?: string[]
+      }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/apply/quota/admin', config)
     },
-    getApplyQuotaVo (payload: { query?: { page?: number; page_size?: number; deleted?: boolean; service?: string; status?: string[] }, path: { vo_id: string } }) {
+    getApplyQuotaVo (payload: {
+      query?: {
+        page?: number;
+        page_size?: number;
+        deleted?: boolean;
+        service?: string;
+        status?: string[]
+      },
+      path: { vo_id: string }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/apply/quota/vo/' + payload.path.vo_id, config)
     },
     getApplyQuotaApplyId (payload: { path: { apply_id: string } }) {
       return apiFed.get('/apply/quota/' + payload.path.apply_id)
     },
-    patchApplyQuota (payload: { body: { service_id: string; private_ip: number; public_ip: number; vcpu: number; ram: number; disk_size: number; duration_days: number; company: string; contact: string; purpose: string }, path: { apply_id: string } }) {
-      const config = {
-        data: payload.body
-      }
-      return apiFed.patch('/apply/quota/' + payload.path.apply_id, config)
+    patchApplyQuota (payload: {
+      body: {
+        service_id: string;
+        private_ip: number;
+        public_ip: number;
+        vcpu: number;
+        ram: number;
+        disk_size: number;
+        duration_days: number;
+        company: string;
+        contact: string;
+        purpose: string
+      },
+      path: { apply_id: string }
+    }) {
+      const data = payload.body
+      return apiFed.patch('/apply/quota/' + payload.path.apply_id, data)
     },
     deleteApplyQuota (payload: { path: { apply_id: string } }) {
       return apiFed.delete('/apply/quota/' + payload.path.apply_id)
@@ -115,22 +152,16 @@ const api = {
     getApplyQuotaApplyIdAdmin (payload: { path: { apply_id: string } }) {
       return apiFed.get('/apply/quota/' + payload.path.apply_id + '/admin')
     },
-    postApplyQuotaApplyIdCancel (payload: {
-      path: { apply_id: string }
-    }) {
+    postApplyQuotaCancel (payload: { path: { apply_id: string } }) {
       return apiFed.post('/apply/quota/' + payload.path.apply_id + '/cancel')
     },
-    postApplyQuotaApplyIdPass (payload: {
-      path: { apply_id: string }
-    }) {
+    postApplyQuotaPass (payload: { path: { apply_id: string } }) {
       return apiFed.post('/apply/quota/' + payload.path.apply_id + '/pass')
     },
-    postApplyQuotaApplyIdPending (payload: {
-      path: { apply_id: string }
-    }) {
+    postApplyQuotaPending (payload: { path: { apply_id: string } }) {
       return apiFed.post('/apply/quota/' + payload.path.apply_id + '/pending')
     },
-    postApplyQuotaApplyIdReject (payload: {
+    postApplyQuotaReject (payload: {
       path: { apply_id: string },
       body: { reason: string }
     }) {
@@ -272,9 +303,17 @@ const api = {
       }
       return apiFed.get('/quota', config)
     },
-    getQuotaVo (payload: { query?: { page?: number; page_size?: number; service?: string; usable?: boolean }, path: { vo_id: string } }) {
+    getQuotaVo (payload: {
+      query?: {
+        page?: number;
+        page_size?: number;
+        service?: string;
+        usable?: boolean
+      },
+      path: { vo_id: string }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/quota/vo/' + payload.path.vo_id, config)
     },
@@ -301,9 +340,17 @@ const api = {
     }
   },
   quota_activity: {
-    getQuotaActivity (payload: { query?: { page?: number; page_size?: number; status: string; 'exclude-not-start': boolean; 'exclude-ended': boolean } }) {
+    getQuotaActivity (payload: {
+      query?: {
+        page?: number;
+        page_size?: number;
+        status?: string;
+        'exclude-not-start'?: boolean;
+        'exclude-ended'?: boolean
+      }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/quota-activity', config)
     },
@@ -340,9 +387,18 @@ const api = {
     }
   },
   server: {
-    getServer (payload: { query?: { page?: number; page_size?: number; service_id?: string; user_id?: string; vo_id?: string; 'as-admin': boolean } }) {
+    getServer (payload?: {
+      query?: {
+        page?: number;
+        page_size?: number;
+        service_id?: string;
+        user_id?: string;
+        vo_id?: string;
+        'as-admin': boolean
+      }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/server', config)
     },
@@ -359,9 +415,16 @@ const api = {
       const data = payload.body
       return apiFed.post('/server', data)
     },
-    getServerVo (payload: { path: { vo_id: string }, query?: { page?: number; page_size?: number; service_id?: string } }) {
+    getServerVo (payload: {
+      path: { vo_id: string },
+      query?: {
+        page?: number;
+        page_size?: number;
+        service_id?: string
+      }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/server/vo/' + payload.path.vo_id, config)
     },
@@ -399,9 +462,12 @@ const api = {
       }
       return apiFed.patch('/server/' + payload.path.id + '/remark', config)
     },
-    getServerStatus (payload: { path: { id: string }, query: { 'as-admin': string } }) {
+    getServerStatus (payload: {
+      path: { id: string },
+      query?: { 'as-admin'?: string }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/server/' + payload.path.id + '/status', config)
     },
@@ -533,9 +599,16 @@ const api = {
     }
   },
   vo: {
-    getVo (payload: { query?: { page?: number; page_size?: number; owner?: boolean; member?: boolean } }) {
+    getVo (payload?: {
+      query?: {
+        page?: number;
+        page_size?: number;
+        owner?: boolean;
+        member?: boolean
+      }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/vo', config)
     },
@@ -574,7 +647,7 @@ const api = {
       return apiFed.post('/vo/' + payload.path.id + '/add-members', data)
     },
     getVoListMembers (payload: { path: { id: string } }) {
-      return apiFed.get('/vo/' + payload.path.id + 'list-members')
+      return apiFed.get('/vo/' + payload.path.id + '/list-members')
     },
     postVoRemoveMembers (payload: {
       path: { id: string },

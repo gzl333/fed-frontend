@@ -52,7 +52,37 @@ const mutation: MutationTree<AccountModuleInterface> = {
     // @ts-ignore
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     this.$router.push('/') // 登出后的路由目标均为首页，其跳转写在这里
+  },
+
+  /* 新模块 */
+  // 向本模块table中保存对象的通用方法
+  storeTable<T> (state: AccountModuleInterface, payload: {
+    table: {
+      byId: Record<string, T>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    tableObj: Record<string, T>
+  }) {
+    Object.assign(payload.table.byId, payload.tableObj)
+    payload.table.allIds.unshift(Object.keys(payload.tableObj)[0])
+    payload.table.allIds = [...new Set(payload.table.allIds)]
+    payload.table.isLoaded = true
+  },
+  // 清空本模块table的通用方法
+  clearTable<T> (state: AccountModuleInterface, table: {
+    byId: Record<string, T>
+    allIds: string[]
+    isLoaded: boolean
+  }) {
+    table.byId = {}
+    table.allIds = []
+    table.isLoaded = false
+  },
+  storeRoleGroupTable (state, payload: { groupId: string; myRole: 'owner' | 'leader' | 'member' }) {
+    state.tables.groupTable.byId[payload.groupId].myRole = payload.myRole
   }
+  /* 新模块 */
 }
 
 export default mutation

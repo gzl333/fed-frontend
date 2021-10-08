@@ -92,11 +92,11 @@
           <q-td key="operation" :props="props">
             <div v-if="props.row.status === 'wait'">
               <q-btn label="开始审批" flat dense padding="none" color="primary"
-                     @click="$store.dispatch('applyQuota/auditQuotaApplicationDialog',props.row.id)"/>
+                     @click="$store.dispatch('provider/auditQuotaApplicationDialog',props.row.id)"/>
             </div>
             <div v-if="props.row.status === 'pending'">
               <q-btn label="继续审批" flat dense padding="none" color="primary"
-                     @click="$store.dispatch('applyQuota/auditQuotaApplicationDialog',props.row.id)"/>
+                     @click="$store.dispatch('provider/auditQuotaApplicationDialog',props.row.id)"/>
             </div>
             <div v-if="props.row.status === 'pass' || props.row.status === 'reject'">
               已审批
@@ -132,7 +132,7 @@ export default defineComponent({
     const { locale } = useI18n({ useScope: 'global' })
 
     // adminQuotaApplicationTable数据更新来自后台，进入页面后应强制更新table
-    void $store.dispatch('applyQuota/updateAdminQuotaApplicationTable')
+    void $store.dispatch('provider/loadAdminQuotaApplicationTable')
 
     // list filter
     const filterSelection = ref({
@@ -168,7 +168,7 @@ export default defineComponent({
     ]
 
     // 获取列表数据
-    const rows = computed(() => $store.getters['applyQuota/getAdminApplicationsByFilter'](filterSelection.value.value))
+    const rows = computed(() => $store.getters['provider/getAdminApplicationsByFilter'](filterSelection.value.value))
 
     // 列表分栏定义
     const columns = [
@@ -250,7 +250,7 @@ export default defineComponent({
     // 正在操作的applicationId
     const currentId = ref('')
     // 正在操作的application对象
-    const currentApplication = computed(() => $store.state.applyQuota.tables.adminQuotaApplicationTable.byId[currentId.value])
+    const currentApplication = computed(() => $store.state.provider.tables.adminQuotaApplicationTable.byId[currentId.value])
 
     return {
       $store,

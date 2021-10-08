@@ -51,12 +51,11 @@ export default defineComponent({
     /* my内页所有table加载起始点 */
     console.log('$store:', $store.state)
     // new modules
-    void $store.dispatch('fed/loadFedModuleTable')
-    void $store.dispatch('server/loadServerModuleTable')
+    void $store.dispatch('fed/loadAllTables')
 
     // old modules
     void $store.dispatch('vm/updateVmTable')
-    void $store.dispatch('applyQuota/updateQuotaApplicationTable')
+    // void $store.dispatch('applyQuota_obsolete/updateQuotaApplicationTable')
     void $store.dispatch('group/loadGroupModuleTable')
     /* my内页所有table加载起始点 */
 

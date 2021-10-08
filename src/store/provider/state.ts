@@ -1,10 +1,25 @@
+import { ApplicationQuotaInterface } from 'src/store/server/state'
+
 export interface ProviderModuleInterface {
-  prop: boolean;
+  tables: {
+    // 管理员有权限审批的quota申请
+    adminQuotaApplicationTable: {
+      byId: Record<string, ApplicationQuotaInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+  }
 }
 
 function state (): ProviderModuleInterface {
   return {
-    prop: false
+    tables: {
+      adminQuotaApplicationTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      }
+    }
   }
 }
 

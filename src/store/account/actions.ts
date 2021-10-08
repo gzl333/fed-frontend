@@ -8,8 +8,8 @@ import { Notify } from 'quasar'
 import axios from 'axios'
 import jwtDecode from 'jwt-decode'
 import { apiFed, apiLogin } from 'boot/axios'
-
-// import api from '../api'
+import { normalize, schema } from 'normalizr'
+import api from '../api'
 
 // 科技云通行证登录的api地址，当前为测试环境，上线后需要修改
 const cstApiBase = window.location.protocol + '//gosc-login.cstcloud.cn'
@@ -89,7 +89,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
       }
     }
   },
-  async verifyCstToken (context, payload: {access: string; refresh: string}) {
+  async verifyCstToken (context, payload: { access: string; refresh: string }) {
     const api = cstApiBase + '/open/api/UMTOauthLogin/checkToken'
     const config = { params: { jwtToken: payload.access } }
     const response = await axios.post(api, null, config)
@@ -123,7 +123,61 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
     const config = { params: { clientUrl: redirect } }
     const response = await axios.post(api, null, config)
     return response
+  },
+
+  /* 新模块 */
+  // 加载groupTable
+  async loadGroupTable (context) {
+    // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
+    context.commit('clearTable', context.state.tables.groupTable)
+    // 发送请求
+    const respGroup = await api.vo.getVo()
+    // normalize
+    const group = new schema.Entity('group')
+    for (const data of respGroup.data.results) {
+      // 添加role字段
+      const currentId = context.state.decoded?.cstnetId
+      const myRole = currentId === data.owner.username ? 'owner' : 'member'
+      Object.assign(data, { myRole })
+      // normalize
+      const normalizedData = normalize(data, group)
+      context.commit('storeTable', {
+        table: context.state.tables.groupTable,
+        tableObj: normalizedData.entities.group
+      })
+    }
+  },
+  // 根据groupTable,建立groupMemberTable
+  async loadGroupMemberTable (context) {
+    // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
+    context.commit('clearTable', context.state.tables.groupMemberTable)
+    for (const groupId of context.state.tables.groupTable.allIds) {
+      const respGroupMember = await api.vo.getVoListMembers({ path: { id: groupId } })
+      // 把groupId字段补充进去
+      Object.assign(respGroupMember.data, { id: groupId })
+      // normalize
+      const groupMember = new schema.Entity('groupMember')
+      const normalizedData = normalize(respGroupMember.data, groupMember)
+      // 存入state
+      context.commit('storeTable', {
+        table: context.state.tables.groupMemberTable,
+        tableObj: normalizedData.entities.groupMember
+      })
+
+      // 给groupTable补充role字段
+      const currentId = context.state.decoded?.cstnetId
+      for (const member of respGroupMember.data.members) {
+        if (member.user.username === currentId && member.role === 'leader') {
+          const myRole = 'leader'
+          context.commit('storeRoleGroupTable', {
+            groupId,
+            myRole
+          })
+        }
+      }
+    }
   }
+  /* 新模块 */
 }
 
 export default actions

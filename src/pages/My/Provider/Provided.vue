@@ -179,16 +179,16 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
 
     // // adminQuotaApplicationTable数据更新来自后台，进入页面后应强制更新table
-    // void $store.dispatch('applyQuota/updateAdminQuotaApplicationTable')
+    // void $store.dispatch('applyQuota_obsolete/updateAdminQuotaApplicationTable')
 
     // list filter
     const filterSelection = ref({
       label: '全部状态',
       value: '0'
     })
-    // $store.commit('applyQuota/storeManageFilter', '0')
+    // $store.commit('applyQuota_obsolete/storeManageFilter', '0')
     // watch(filterSelection, () => {
-    //   $store.commit('applyQuota/storeManageFilter', filterSelection.value.value)
+    //   $store.commit('applyQuota_obsolete/storeManageFilter', filterSelection.value.value)
     // })
     const filterOptions = [
       {

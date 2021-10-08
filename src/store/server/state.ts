@@ -78,6 +78,86 @@ export interface QuotaInterface {
   exhausted: boolean
 }
 
+export interface ServerInterface {
+  // 来自server接口
+  id: string
+  name: string
+  vcpus: number
+  ram: number
+  ipv4: string
+  public_ip: boolean
+  image: string
+  creation_time: string
+  expiration_time: string | null
+  remarks: string
+  classification: string
+  image_id: string
+  image_desc: string
+  default_user: string
+  default_password: string
+  endpoint_url: string
+  service: string
+  user_quota: string
+  center_quota: number
+  vo_id: string | null
+  user: {
+    id: string
+    username: string
+  }
+  lock: string
+
+  // 来自status接口 根据status_code映射为文字状态
+  vnc?: string
+  status?: string
+}
+
+// 配额申请接口
+export interface ApplicationQuotaInterface {
+  private_ip: number
+  public_ip: number
+  vcpu: number
+  ram: number
+  disk_size: number
+  duration_days: number
+  company: string
+  contact: string
+  purpose: string
+  id: string
+  creation_time: string
+  status: string
+  service: string
+  deleted: boolean
+  classification: 'personal' | 'vo'
+  result_desc: string // 拒绝理由
+
+  // 来自补充
+  vo_id?: string
+}
+
+// 赠送配额活动
+export interface QuotaActivity {
+  'id': string
+  'got_count': number
+  'service': string // service id
+  'user': string // user id
+  'creation_time': string
+  'name': string
+  'name_en': string
+  'start_time': string
+  'end_time': string
+  'count': number
+  'times_per_user': number
+  'status': string
+  'tag': string
+  'cpus': number
+  'private_ip': number
+  'public_ip': number
+  'ram': number
+  'disk_size': number
+  'expiration_time': string
+  'duration_days': number
+}
+
 export interface ServerModuleInterface {
   pages: {
     // pages
@@ -86,6 +166,12 @@ export interface ServerModuleInterface {
     // 所有人一样的云主机配置选项
     fedFlavorTable: {
       byId: Record<string, FlavorInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 联邦配额赠送活动
+    fedQuotaActivityTable: {
+      byId: Record<string, QuotaActivity>
       allIds: string[]
       isLoaded: boolean
     }
@@ -107,15 +193,39 @@ export interface ServerModuleInterface {
       allIds: string[]
       isLoaded: boolean
     }
+    // 个人云主机配额申请
+    personalQuotaApplicationTable: {
+      byId: Record<string, ApplicationQuotaInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
     // 个人云主机配额
     personalQuotaTable: {
       byId: Record<string, QuotaInterface>
       allIds: string[]
       isLoaded: boolean
     }
+    // 个人云主机
+    personalServerTable: {
+      byId: Record<string, ServerInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 项目组云主机配额申请
+    groupQuotaApplicationTable: {
+      byId: Record<string, ApplicationQuotaInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
     // 项目组云主机配额
     groupQuotaTable: {
       byId: Record<string, QuotaInterface>
+      allIds: string[]
+      isLoaded: boolean
+    }
+    // 项目组云主机
+    groupServerTable: {
+      byId: Record<string, ServerInterface>
       allIds: string[]
       isLoaded: boolean
     }
@@ -127,6 +237,11 @@ function state (): ServerModuleInterface {
     pages: {},
     tables: {
       fedFlavorTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      fedQuotaActivityTable: {
         byId: {},
         allIds: [],
         isLoaded: false
@@ -146,12 +261,32 @@ function state (): ServerModuleInterface {
         allIds: [],
         isLoaded: false
       },
+      personalQuotaApplicationTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
       personalQuotaTable: {
         byId: {},
         allIds: [],
         isLoaded: false
       },
+      personalServerTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      groupQuotaApplicationTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
       groupQuotaTable: {
+        byId: {},
+        allIds: [],
+        isLoaded: false
+      },
+      groupServerTable: {
         byId: {},
         allIds: [],
         isLoaded: false

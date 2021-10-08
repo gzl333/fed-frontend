@@ -5,8 +5,8 @@ import api from '../api'
 import { normalize, schema } from 'normalizr'
 
 const actions: ActionTree<FedModuleInterface, StateInterface> = {
-  /* fed模块起点 */
-  loadFedModuleTable (context) {
+  /* $store加载总起点 */
+  loadAllTables (context) {
     if (!context.state.tables.dataCenterTable.isLoaded) {
       void context.dispatch('loadDataCenterTable').then(() => {
         if (!context.state.tables.serviceTable.isLoaded) {
@@ -26,11 +26,53 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
             if (!context.rootState.server.tables.serviceImageTable.isLoaded) {
               void context.dispatch('server/loadServiceImageTable', null, { root: true })
             }
+            if (!context.rootState.server.tables.personalServerTable.isLoaded) {
+              void context.dispatch('server/loadPersonalServerTable', null, { root: true })
+            }
           })
         }
       })
     }
+
+    if (!context.rootState.server.tables.fedFlavorTable.isLoaded) {
+      void context.dispatch('server/loadFedFlavorTable', null, { root: true })
+    }
+    if (!context.rootState.server.tables.personalQuotaTable.isLoaded) {
+      void context.dispatch('server/loadPersonalQuotaTable', null, { root: true })
+    }
+    if (!context.rootState.server.tables.personalQuotaApplicationTable.isLoaded) {
+      void context.dispatch('server/loadPersonalQuotaApplicationTable', null, { root: true })
+    }
+    if (!context.rootState.server.tables.fedQuotaActivityTable.isLoaded) {
+      void context.dispatch('server/loadFedQuotaActivityTable', null, { root: true })
+    }
+
+    if (!context.rootState.account.tables.groupTable.isLoaded) {
+      void context.dispatch('account/loadGroupTable', null, { root: true }).then(() => {
+        // groupMemberTable 依赖 groupTable, 根据每个groupId建立一个groupMember对象
+        if (!context.rootState.account.tables.groupMemberTable.isLoaded) {
+          void context.dispatch('account/loadGroupMemberTable', null, { root: true }).then(() => {
+            // 注意：此表依赖groupTable中的myRole字段，而该字段是loadGroupMemberTableFromGroup副产品，所以产生依赖
+            if (!context.rootState.server.tables.groupQuotaApplicationTable.isLoaded) {
+              void context.dispatch('server/loadGroupQuotaApplicationTable', null, { root: true })
+            }
+          })
+        }
+        if (!context.rootState.server.tables.groupServerTable.isLoaded) {
+          void context.dispatch('server/loadGroupServerTable', null, { root: true })
+        }
+        if (!context.rootState.server.tables.groupQuotaTable.isLoaded) {
+          void context.dispatch('server/loadGroupQuotaTable', null, { root: true })
+        }
+      })
+    }
+
+    if (!context.rootState.provider.tables.adminQuotaApplicationTable.isLoaded) {
+      void context.dispatch('provider/loadAdminQuotaApplicationTable', null, { root: true })
+    }
   },
+  /* $store加载总起点 */
+
   /* dataCenterTable */
   async loadDataCenterTable (context) {
     // 清空table

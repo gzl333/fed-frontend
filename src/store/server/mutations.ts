@@ -1,5 +1,5 @@
 import { MutationTree } from 'vuex'
-import { ServerModuleInterface } from './state'
+import { ServerInterface, ServerModuleInterface } from './state'
 
 const mutation: MutationTree<ServerModuleInterface> = {
   // 向本模块table中保存对象的通用方法
@@ -8,7 +8,7 @@ const mutation: MutationTree<ServerModuleInterface> = {
       byId: Record<string, T>
       allIds: string[]
       isLoaded: boolean
-    },
+    }
     tableObj: Record<string, T>
   }) {
     Object.assign(payload.table.byId, payload.tableObj)
@@ -21,7 +21,7 @@ const mutation: MutationTree<ServerModuleInterface> = {
       byLocalId: Record<string, T>
       allLocalIds: string[]
       isLoaded: boolean
-    },
+    }
     tableObj: Record<string, T>
   }) {
     Object.assign(payload.table.byLocalId, payload.tableObj)
@@ -38,6 +38,33 @@ const mutation: MutationTree<ServerModuleInterface> = {
     table.byId = {}
     table.allIds = []
     table.isLoaded = false
+  },
+  // 删除本模块table单个对象的通用方法
+  deleteSingleObject<T> (state: ServerModuleInterface, payload: {
+    table: {
+      byId: Record<string, T>
+      allIds: string[]
+      isLoaded: boolean
+    },
+    id: string
+  }) {
+    payload.table.allIds = payload.table.allIds.filter(id => id !== payload.id)
+    delete payload.table.byId[payload.id]
+    if (payload.table.allIds.length === 0) {
+      payload.table.isLoaded = false
+    }
+  },
+  // 保存单个server的status
+  storeSingleServerStatus (state: ServerModuleInterface, payload: {
+    table: {
+      byId: Record<string, ServerInterface> // 此处固定为ServerInterface
+      allIds: string[]
+      isLoaded: boolean
+    }
+    serverId: string
+    status_code: string
+  }) {
+    payload.table.byId[payload.serverId].status = payload.status_code
   }
 }
 

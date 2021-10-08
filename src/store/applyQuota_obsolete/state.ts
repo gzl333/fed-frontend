@@ -56,11 +56,11 @@ export interface ApplyQuotaModuleInterface {
   // eslint-disable-next-line @typescript-eslint/ban-types
   tables: {
     // 用户自己提出的quota申请，只保存undeleted
-    userQuotaApplicationTable: {
-      byId: Record<string, ApplicationQuotaInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // userQuotaApplicationTable: {
+    //   byId: Record<string, ApplicationQuotaInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
     // 用户自己提出的quota申请，只保存deleted，回收站用
     // userQuotaApplicationDeletedTable: {
     //   byId: Record<string, ApplicationQuotaInterface>
@@ -68,30 +68,30 @@ export interface ApplyQuotaModuleInterface {
     //   isLoaded: boolean
     // }
     // 项目组内提出的quota申请，只保存undeleted
-    groupQuotaApplicationTable: {
-      byId: Record<string, ApplicationQuotaInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // groupQuotaApplicationTable: {
+    //   byId: Record<string, ApplicationQuotaInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
     // 项目组内提出的quota申请，只保存deleted，回收站用
     // groupQuotaApplicationDeletedTable: {
     //   byId: Record<string, ApplicationQuotaInterface>
     //   allIds: string[]
     //   isLoaded: boolean
     // }
-    // 管理员有权限审批的quota申请
-    adminQuotaApplicationTable: {
-      byId: Record<string, ApplicationQuotaInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // // 管理员有权限审批的quota申请
+    // adminQuotaApplicationTable: {
+    //   byId: Record<string, ApplicationQuotaInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
 
     // 赠送配额活动
-    globalQuotaActivityTable: {
-      byId: Record<string, QuotaActivity>
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // globalQuotaActivityTable: {
+    //   byId: Record<string, QuotaActivity>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
   }
 }
 
@@ -103,26 +103,26 @@ function state (): ApplyQuotaModuleInterface {
       }
     },
     tables: {
-      userQuotaApplicationTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
-      groupQuotaApplicationTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
-      adminQuotaApplicationTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
-      globalQuotaActivityTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      }
+      // userQuotaApplicationTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // },
+      // groupQuotaApplicationTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // },
+      // adminQuotaApplicationTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // },
+      // globalQuotaActivityTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // }
     }
   }
 }

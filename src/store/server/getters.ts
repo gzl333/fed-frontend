@@ -1,10 +1,42 @@
 import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ServerModuleInterface } from './state'
+import { ApplicationQuotaInterface } from 'src/store/server/state'
 
 const getters: GetterTree<ServerModuleInterface, StateInterface> = {
-  someGetter (/* context */) {
-    // your code
+  // 根据用户选择的filter来返回application数组
+  getPersonalApplicationsByFilter: (state) => (filter: string): ApplicationQuotaInterface[] => {
+    // 排序函数，根据申请时间降序排列
+    const sortFn = (a: ApplicationQuotaInterface, b: ApplicationQuotaInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
+
+    if (filter === '0') {
+      return Object.values(state.tables.personalQuotaApplicationTable.byId).sort(sortFn)
+    } else {
+      const rows: ApplicationQuotaInterface[] = []
+      for (const application of Object.values(state.tables.personalQuotaApplicationTable.byId)) {
+        if (application.status === filter) {
+          rows.push(application)
+        }
+      }
+      return rows.sort(sortFn)
+    }
+  },
+  // 根据用户选择的filter来返回application数组
+  getGroupApplicationsByFilter: (state) => (filter: string): ApplicationQuotaInterface[] => {
+    // 排序函数，根据申请时间降序排列
+    const sortFn = (a: ApplicationQuotaInterface, b: ApplicationQuotaInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
+
+    if (filter === '0') {
+      return Object.values(state.tables.groupQuotaApplicationTable.byId).sort(sortFn)
+    } else {
+      const rows: ApplicationQuotaInterface[] = []
+      for (const application of Object.values(state.tables.groupQuotaApplicationTable.byId)) {
+        if (application.status === filter) {
+          rows.push(application)
+        }
+      }
+      return rows.sort(sortFn)
+    }
   }
 }
 

@@ -81,7 +81,7 @@
 
                     <q-card-actions align="between">
                       <q-btn outline label="领取配额" :disable="activity.count === activity.got_count"
-                             @click="$store.dispatch('applyQuota/getActivityQuotaAndUpdateGlobalQuotaActivityTable', activity.id)"/>
+                             @click="$store.dispatch('server/claimActivityQuotaDialog', activity.id)"/>
                       <div class="text-h7">活动剩余：{{ activity.count - activity.got_count }}个</div>
                     </q-card-actions>
                   </q-card>
@@ -120,7 +120,7 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const quotaActivities = computed(() => Object.values($store.state.applyQuota.tables.globalQuotaActivityTable.byId))
+    const quotaActivities = computed(() => Object.values($store.state.server.tables.fedQuotaActivityTable.byId))
 
     const gotoManual = () => {
       // 中文访问/manual 英文访问/manual/en

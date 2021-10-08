@@ -47,8 +47,8 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
-    // 进入本页面强制更新userQuotaApplicationTable
-    void $store.dispatch('applyQuota/updateUserQuotaApplicationTable')
+    // 进入本页面强制更新personalQuotaApplicationTable
+    void $store.dispatch('server/loadPersonalQuotaApplicationTable')
 
     // application filter
     const filterSelection = ref({
@@ -83,7 +83,7 @@ export default defineComponent({
       }
     ]
     // 获取quota列表数据
-    const applications = computed(() => $store.getters['applyQuota/getUserApplicationsByFilter'](filterSelection.value.value))
+    const applications = computed(() => $store.getters['server/getPersonalApplicationsByFilter'](filterSelection.value.value))
 
     return {
       $store,

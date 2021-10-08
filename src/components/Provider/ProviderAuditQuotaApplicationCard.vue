@@ -147,7 +147,7 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
-    const currentApplication = computed(() => $store.state.applyQuota.tables.adminQuotaApplicationTable.byId[props.applyId])
+    const currentApplication = computed(() => $store.state.provider.tables.adminQuotaApplicationTable.byId[props.applyId])
     // input
     const input = ref<HTMLElement>()
     // 拒绝的原因
