@@ -5,102 +5,87 @@
         <div class="text-subtitle1 text-weight-bold">{{item.name}}</div>
         <q-select outlined v-model="filterSelection" :options="filterOptions" label="刷新时间" class="col-2"/>
       </div>
-      <div class="row q-mt-md">
+      <div class="row q-mt-xs">
         <div class="col-6 row q-mt-md">
             <div class="col-3">
-              <q-card flat bordered class="q-pb-lg q-pt-xs">
-                <q-card-section>
-                  <div class="row justify-center">
+              <q-card flat bordered class="q-pb-md no-border-radius">
+                  <div class="row">
                     <div class="col-11 text-center">集群状态</div>
-                    <q-icon name="loop" class="col-1" size="xs" @click="refresh"/>
+                    <q-icon class="col-1" name="loop" size="xs" @click="refresh"/>
                   </div>
-                  <div :class="item.clusterStatus === 'Healthy' ? 'text-positive text-center text-h4 text-weight-bold q-mt-xl' : item.clusterStatus === 'Warning' ? 'text-warning text-center text-h4 text-weight-bold q-mt-xl' : 'text-negative text-center text-h4 text-weight-bold q-mt-xl'">{{item.clusterStatus}}</div>
-                </q-card-section>
+                  <div :class="item.clusterStatus === 'Healthy' ? 'text-positive text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : item.clusterStatus === 'Warning' ? 'text-warning text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : 'text-negative text-center text-h4 text-weight-bold q-mt-xl q-pb-xl'">{{item.clusterStatus}}</div>
               </q-card>
             </div>
             <div class="col-3 q-ml-xl">
-              <q-card flat bordered class="q-pb-lg q-pt-xs">
-                <q-card-section>
-                  <div class="row justify-center">
+              <q-card flat bordered class="q-pb-md no-border-radius">
+                  <div class="row">
                     <div class="col-11 text-center">集群容量</div>
                     <q-icon name="loop" class="col-1" size="xs" @click="refresh"/>
                   </div>
-                  <div class="text-center text-h4 text-weight-medium q-mt-xl">{{ item.clusterCapacity + 'TB' }}</div>
-                </q-card-section>
+                  <div class="text-center text-h4 text-weight-medium q-mt-xl q-pb-xl">{{ item.clusterCapacity + 'TB' }}</div>
               </q-card>
             </div>
             <div class="col-3 q-ml-xl">
-              <q-card flat bordered class="q-pb-lg q-pt-xs">
-                <q-card-section>
-                  <div class="row justify-center">
+              <q-card flat bordered class="q-pb-md no-border-radius">
+                  <div class="row">
                     <div class="col-11 text-center">当前容量</div>
                     <q-icon name="loop" class="col-1" size="xs" @click="refresh"/>
                   </div>
-                  <div class="text-center text-h4 text-weight-medium q-mt-xl">{{item.currentCapacity + 'GB'}}</div>
-                </q-card-section>
+                  <div class="text-center text-h4 text-weight-medium q-mt-xl q-pb-xl">{{item.currentCapacity + 'GB'}}</div>
               </q-card>
             </div>
         </div>
         <div class="col-5 right">
-          <div class="row justify-center">
+          <div class="row">
             <div class="col-11 text-center">OSD状态</div>
             <q-icon name="loop" class="col-1" size="xs" @click="refresh"/>
           </div>
           <div class="row q-ml-md">
-              <div class="col-4 q-mt-sm">
-              <q-card flat bordered class="my-card q-pb-md">
-                <q-card-section>
-                  <div class="row justify-center">
+              <div class="col-4 q-mt-md">
+              <q-card flat bordered class="no-border-radius q-pb-md">
+                  <div class="row">
                     <div class="col-11 text-center">OSD总数</div>
                     <q-icon name="loop" class="col-1" size="xs" @click="refresh"/>
                   </div>
-                  <div class="text-center text-h4 text-weight-medium q-mt-xl">{{ item.OSDTotal }}</div>
-                </q-card-section>
+                  <div class="text-center text-h4 text-weight-medium q-mt-lg q-pb-lg q-pa-lg">{{ item.OSDTotal }}</div>
               </q-card>
             </div>
-            <div class="col-7 q-ml-lg row">
+            <q-separator vertical inset class="q-ml-md"/>
+            <div class="row col-7 q-ml-md q-mt-sm">
                 <div class="col-5">
-                  <q-card flat bordered class="my-card">
-                    <q-card-section>
+                  <q-card flat bordered class="no-border-radius">
                       <div class="text-center">OSD IN</div>
-                      <div class="text-center text-h5 text-weight-bold text-positive">{{ item.OSDIN }}</div>
-                    </q-card-section>
+                      <div class="text-center text-h5 text-weight-bold text-positive q-mt-md q-pb-sm">{{ item.OSDIN }}</div>
                   </q-card>
                 </div>
                 <div class="col-5 q-ml-lg">
-                  <q-card flat bordered class="my-card">
-                    <q-card-section>
+                  <q-card flat bordered class="no-border-radius">
                       <div class="text-center">OSD UP</div>
-                      <div class="text-center text-h5 text-weight-bold text-positive">{{ item.OSDUP }}</div>
-                    </q-card-section>
+                      <div class="text-center text-h5 text-weight-bold text-positive q-mt-md q-pb-sm">{{ item.OSDUP }}</div>
                   </q-card>
                 </div>
-                <div class="col-5 q-mt-xs">
-                  <q-card flat bordered class="my-card">
-                    <q-card-section>
+                <div class="col-5 q-mt-sm">
+                  <q-card flat bordered class="no-border-radius">
                       <div class="text-center">OSD OUT</div>
-                      <div class="text-center text-h5 text-weight-bold">{{ item.OSDOUT }}</div>
-                    </q-card-section>
+                      <div class="text-center text-h5 text-weight-bold q-mt-md q-pb-sm">{{ item.OSDOUT }}</div>
                   </q-card>
                 </div>
-                <div class="col-5 q-ml-lg q-mt-xs">
-                  <q-card flat bordered class="my-card">
-                    <q-card-section>
+                <div class="col-5 q-ml-lg q-mt-sm">
+                  <q-card flat bordered class="no-border-radius">
                       <div class="text-center">OSD DOWN</div>
-                      <div class="text-center text-h5 text-weight-bold">{{ item.OSDDOWN }}</div>
-                    </q-card-section>
+                      <div class="text-center text-h5 text-weight-bold q-mt-md q-pb-sm">{{ item.OSDDOWN }}</div>
                   </q-card>
                 </div>
             </div>
           </div>
         </div>
         <div class="col-1">
-          <q-card flat bordered class="my-card q-pb-md">
+          <q-card flat bordered class="no-border-radius q-pb-md">
             <q-card-section>
               <div class="text-center q-mt-xl">
                 <p class="text-primary">Go To</p>
                 <p class="text-primary">Grafana</p>
-                <p class="text-primary">详细信息</p>
+                <p>详细信息</p>
               </div>
             </q-card-section>
           </q-card>
