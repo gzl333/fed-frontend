@@ -1,9 +1,11 @@
 <template>
   <div class="FederationMonitorStorage">
-    <div class="box" v-for="(item, index) in listData" :key="index">
+    <div class="row justify-end">
+      <q-select outlined v-model="filterSelection" :options="filterOptions" label="刷新时间" class="col-3"/>
+    </div>
+    <div class="box" v-for="(item, index) in $store.state.obs.tables.cephTable.allIds" :key="index">
       <div class="row justify-between q-mt-sm">
-        <div class="text-subtitle1 text-weight-bold">{{item.name}}</div>
-        <q-select outlined v-model="filterSelection" :options="filterOptions" label="刷新时间" class="col-2"/>
+        <div class="text-subtitle1 text-weight-bold">{{ $store.state.obs.tables.cephTable.byId[item]?.name }}</div>
       </div>
       <div class="row q-mt-xs">
         <div class="col-6 row q-mt-md">
@@ -13,7 +15,12 @@
                     <div class="col-11 text-center">集群状态</div>
                     <q-icon class="col-1" name="loop" size="xs" @click="refresh"/>
                   </div>
-                  <div :class="item.clusterStatus === 'Healthy' ? 'text-positive text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : item.clusterStatus === 'Warning' ? 'text-warning text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : 'text-negative text-center text-h4 text-weight-bold q-mt-xl q-pb-xl'">{{item.clusterStatus}}</div>
+                  <div :class="$store.state.obs.tables.cephTable.byId[item]?.health_status[1] === '0' ?
+                  'text-positive text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' :
+                  $store.state.obs.tables.cephTable.byId[item]?.health_status === '1' ?
+                  'text-warning text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : 'text-negative text-center text-h4 text-weight-bold q-mt-xl q-pb-xl'">
+                    {{$store.state.obs.tables.cephTable.byId[item]?.health_status[1] === '0' ? 'Healthy' : $store.state.obs.tables.cephTable.byId[item]?.health_status[1] === '1' ? 'Warning' : 'Fatal' }}
+                  </div>
               </q-card>
             </div>
             <div class="col-3 q-ml-xl">
@@ -22,7 +29,7 @@
                     <div class="col-11 text-center">集群容量</div>
                     <q-icon name="loop" class="col-1" size="xs" @click="refresh"/>
                   </div>
-                  <div class="text-center text-h4 text-weight-medium q-mt-xl q-pb-xl">{{ item.clusterCapacity + 'TB' }}</div>
+                  <div class="text-center text-h4 text-weight-medium q-mt-xl q-pb-xl">{{ ($store.state.obs.tables.cephTable.byId[item]?.cluster_total_bytes[1] / Math.pow(1024, 5)).toFixed(2) + 'PiB' }}</div>
               </q-card>
             </div>
             <div class="col-3 q-ml-xl">
@@ -31,7 +38,7 @@
                     <div class="col-11 text-center">当前容量</div>
                     <q-icon name="loop" class="col-1" size="xs" @click="refresh"/>
                   </div>
-                  <div class="text-center text-h4 text-weight-medium q-mt-xl q-pb-xl">{{item.currentCapacity + 'GB'}}</div>
+                  <div class="text-center text-h4 text-weight-medium q-mt-xl q-pb-xl">{{ ($store.state.obs.tables.cephTable.byId[item]?.cluster_total_used_bytes[1] / Math.pow(1024, 4)).toFixed(2) + 'TiB' }}</div>
               </q-card>
             </div>
         </div>
@@ -47,7 +54,7 @@
                     <div class="col-11 text-center">OSD总数</div>
                     <q-icon name="loop" class="col-1" size="xs" @click="refresh"/>
                   </div>
-                  <div class="text-center text-h4 text-weight-medium q-mt-lg q-pb-lg q-pa-lg">{{ item.OSDTotal }}</div>
+                  <div class="text-center text-h4 text-weight-medium q-mt-lg q-pb-lg q-pa-lg">{{ 200 }}</div>
               </q-card>
             </div>
             <q-separator vertical inset class="q-ml-md"/>
@@ -55,25 +62,25 @@
                 <div class="col-5">
                   <q-card flat bordered class="no-border-radius">
                       <div class="text-center">OSD IN</div>
-                      <div class="text-center text-h5 text-weight-bold text-positive q-mt-md q-pb-sm">{{ item.OSDIN }}</div>
+                      <div class="text-center text-h5 text-weight-bold text-positive q-mt-md q-pb-sm">{{ $store.state.obs.tables.cephTable.byId[item]?.osd_in[1] }}</div>
                   </q-card>
                 </div>
                 <div class="col-5 q-ml-lg">
                   <q-card flat bordered class="no-border-radius">
                       <div class="text-center">OSD UP</div>
-                      <div class="text-center text-h5 text-weight-bold text-positive q-mt-md q-pb-sm">{{ item.OSDUP }}</div>
+                      <div class="text-center text-h5 text-weight-bold text-positive q-mt-md q-pb-sm">{{ $store.state.obs.tables.cephTable.byId[item]?.osd_up[1] }}</div>
                   </q-card>
                 </div>
                 <div class="col-5 q-mt-sm">
                   <q-card flat bordered class="no-border-radius">
                       <div class="text-center">OSD OUT</div>
-                      <div class="text-center text-h5 text-weight-bold q-mt-md q-pb-sm">{{ item.OSDOUT }}</div>
+                      <div class="text-center text-h5 text-weight-bold q-mt-md q-pb-sm">{{ $store.state.obs.tables.cephTable.byId[item]?.osd_out[1] }}</div>
                   </q-card>
                 </div>
                 <div class="col-5 q-ml-lg q-mt-sm">
                   <q-card flat bordered class="no-border-radius">
                       <div class="text-center">OSD DOWN</div>
-                      <div class="text-center text-h5 text-weight-bold q-mt-md q-pb-sm">{{ item.OSDDOWN }}</div>
+                      <div class="text-center text-h5 text-weight-bold q-mt-md q-pb-sm">{{ $store.state.obs.tables.cephTable.byId[item]?.osd_down[1] }}</div>
                   </q-card>
                 </div>
             </div>
@@ -96,13 +103,15 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref } from 'vue'
-
+import { defineComponent, ref, onMounted } from 'vue'
+import { useStore } from 'vuex'
+import { StateInterface } from 'src/store'
 export default defineComponent({
   name: 'FederationMonitorStorage',
   components: {},
   props: {},
   setup () {
+    const $store = useStore<StateInterface>()
     const listData = ref([
       {
         id: 0,
@@ -186,6 +195,10 @@ export default defineComponent({
     const refresh = () => {
       console.log('刷新')
     }
+    onMounted(() => {
+      // void $store.dispatch('obs/loadCephTable')
+      console.log($store.state.obs)
+    })
     return {
       listData,
       filterOptions,
