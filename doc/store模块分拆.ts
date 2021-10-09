@@ -18,7 +18,8 @@ const $store = {
     // 联邦监控
   },
   provider: { // 资源提供者信息，管理
-    adminQuotaApplicationTable: {} // 管理员有权限审批的quota申请
+    adminQuotaApplicationTable: {}, // 管理员有权限审批的quota申请
+    serviceServerTable: {} // todo 当前服务下创建的所有虚拟机
   },
   /* 管理部分 */
 

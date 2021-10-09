@@ -48,7 +48,7 @@ export default defineComponent({
     const { locale } = useI18n({ useScope: 'global' })
 
     // service_id下拉列表
-    const serviceOptions = computed(() => $store.getters['vm/getServiceOptions'])
+    const serviceOptions = computed(() => $store.getters['fed/getServiceOptions'])
     const serviceSelection = ref({
       label: locale.value === 'zh' ? '全部服务节点' : 'All Service Nodes',
       value: '0'
@@ -60,7 +60,7 @@ export default defineComponent({
     // })
 
     // 获取云主机列表数据
-    const rows = computed(() => $store.getters['vm/getServersByServiceId'](serviceSelection.value.value))
+    const rows = computed(() => $store.getters['server/getPersonalServersByServiceId'](serviceSelection.value.value))
 
     return {
       $store,

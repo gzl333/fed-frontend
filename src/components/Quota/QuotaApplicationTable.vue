@@ -81,10 +81,10 @@
 
           <q-td key="service" :props="props">
             <div>{{
-                $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[props.row.service]?.data_center]?.name
+                $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name
               }}
             </div>
-            <div>{{ $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name }}</div>
+            <div>{{ $store.state.fed.tables.serviceTable.byId[props.row.service]?.name }}</div>
           </q-td>
 
           <q-td key="duration_days" :props="props">
@@ -152,9 +152,9 @@
             <div class="col-3 text-grey-7">服务节点</div>
             <div class="col">
               {{
-                $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[currentApplication.service].data_center].name
+                $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[currentApplication.service].data_center].name
               }}
-              - {{ $store.state.vm.tables.globalServiceTable.byId[currentApplication.service].name }}
+              - {{ $store.state.fed.tables.serviceTable.byId[currentApplication.service].name }}
             </div>
           </div>
 

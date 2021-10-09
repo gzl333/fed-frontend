@@ -51,7 +51,7 @@
                     </span>
 
                     <q-btn class="col-shrink q-px-xs" flat dense icon="edit" size="sm" color="primary"
-                           @click="$store.dispatch('vm/editServerNoteDialog',{serverId:server.id, isGroup})">
+                           @click="$store.dispatch('server/editServerNoteDialog',{serverId:server.id, isGroup})">
                       <q-tooltip>
                         编辑备注
                       </q-tooltip>
@@ -64,7 +64,7 @@
                 <q-btn v-if="server.status==1"
                        :disable="!server.status"
                        unelevated flat padding="none" size="lg" color="primary" icon="computer"
-                       @click="$store.dispatch('vm/gotoVNC',server.id)">
+                       @click="$store.dispatch('server/gotoVNC',server.id)">
                   <q-tooltip>
                     远程控制
                   </q-tooltip>
@@ -80,7 +80,7 @@
                 <q-btn v-if="server.status !== 1"
                        color="nord4" icon="play_arrow" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="$store.dispatch('vm/serverOperationDialog',{serverId: server.id, action: 'start', isGroup})">
+                       @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'start', isGroup})">
                   <q-tooltip>
                     开机
                   </q-tooltip>
@@ -89,7 +89,7 @@
                 <q-btn v-if="server.status !== 5"
                        color="nord4" icon="power_settings_new" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="$store.dispatch('vm/serverOperationDialog',{ serverId: server.id, action: 'shutdown', isGroup})">
+                       @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'shutdown', isGroup})">
                   <q-tooltip>
                     关机
                   </q-tooltip>
@@ -98,7 +98,7 @@
                 <q-btn v-if="server.status !== 5"
                        color="nord4" icon="restart_alt" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="$store.dispatch('vm/serverOperationDialog',{ serverId: server.id, action: 'reboot', isGroup})">
+                       @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'reboot', isGroup})">
                   <q-tooltip>
                     重启
                   </q-tooltip>
@@ -107,7 +107,7 @@
                 <q-btn v-if="server.status !== 5"
                        color="nord4" icon="power_off" text-color="primary"
                        unelevated flat padding="none" size="lg"
-                       @click="$store.dispatch('vm/serverOperationDialog',{serverId: server.id, action: 'poweroff', isGroup})">
+                       @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'poweroff', isGroup})">
                   <q-tooltip>
                     强制断电
                   </q-tooltip>
@@ -116,7 +116,7 @@
                 <q-btn v-if="server.status !== 1"
                        color="nord4" icon="delete" text-color="red"
                        unelevated flat padding="none" size="lg"
-                       @click="$store.dispatch('vm/serverOperationDialog',{ serverId: server.id, action: 'delete', isGroup})">
+                       @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'delete', isGroup})">
                   <q-tooltip>
                     删除
                   </q-tooltip>
@@ -125,7 +125,7 @@
                 <q-btn v-if="server.status"
                        color="nord4" icon="delete_forever" text-color="red"
                        unelevated flat padding="none" size="lg"
-                       @click="$store.dispatch('vm/serverOperationDialog',{ id: server.id, action: 'delete_force', isGroup})">
+                       @click="$store.dispatch('server/serverOperationDialog',{ id: server.id, action: 'delete_force', isGroup})">
                   <q-tooltip>
                     强制删除
                   </q-tooltip>
@@ -206,7 +206,7 @@
                           </q-tooltip>
                         </q-btn>
                         <q-btn icon="edit" size="sm" dense flat color="primary"
-                               @click="$store.dispatch('vm/popEditVpnPass',  vpn)">
+                               @click="$store.dispatch('server/popEditVpnPass',  vpn)">
                           <q-tooltip>
                             修改
                           </q-tooltip>
@@ -315,7 +315,7 @@
                 <div class="row q-pb-md">
                   <div class="col-2 text-grey">所属机构</div>
                   <div class="col">
-                    {{ $store.state.vm.tables.globalDataCenterTable.byId[service.data_center]?.name }}
+                    {{ $store.state.fed.tables.dataCenterTable.byId[service.data_center]?.name }}
                   </div>
                 </div>
 
@@ -373,11 +373,11 @@ export default defineComponent({
     // }
 
     // server info
-    const server = computed(() => props.isGroup ? $store.state.vm.tables.groupServerTable.byId[props.serverId] : $store.state.vm.tables.userServerTable.byId[props.serverId])
+    const server = computed(() => props.isGroup ? $store.state.server.tables.groupServerTable.byId[props.serverId] : $store.state.server.tables.personalServerTable.byId[props.serverId])
     // service info
-    const service = computed(() => $store.state.vm.tables.globalServiceTable.byId[server.value.service])
+    const service = computed(() => $store.state.fed.tables.serviceTable.byId[server.value.service])
     // quota info
-    const quota = computed(() => props.isGroup ? $store.state.vm.tables.groupQuotaTable.byId[server.value.user_quota] : $store.state.vm.tables.userQuotaTable.byId[server.value.user_quota])
+    const quota = computed(() => props.isGroup ? $store.state.server.tables.groupQuotaTable.byId[server.value.user_quota] : $store.state.server.tables.personalQuotaTable.byId[server.value.user_quota])
     // vpn info
     const vpn = computed(() => $store.state.server.tables.userVpnTable.byId[server.value.service])
 

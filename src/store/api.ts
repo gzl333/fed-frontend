@@ -428,9 +428,12 @@ const api = {
       }
       return apiFed.get('/server/vo/' + payload.path.vo_id, config)
     },
-    getServerId (payload: { path: { id: string }, query: { 'as-admin': boolean } }) {
+    getServerId (payload: {
+      path: { id: string },
+      query?: { 'as-admin': boolean }
+    }) {
       const config = {
-        params: payload.query
+        params: payload?.query
       }
       return apiFed.get('/server/' + payload.path.id, config)
     },
@@ -456,11 +459,14 @@ const api = {
       }
       return apiFed.post('/server/' + payload.path.id + '/lock', {}, config)
     },
-    patchServerRemark (payload: { path: { id: string }, query: { remark: string } }) {
+    patchServerRemark (payload: {
+      path: { id: string },
+      query: { remark: string }
+    }) {
       const config = {
-        data: payload.query
+        params: payload.query
       }
-      return apiFed.patch('/server/' + payload.path.id + '/remark', config)
+      return apiFed.patch('/server/' + payload.path.id + '/remark', null, config)
     },
     getServerStatus (payload: {
       path: { id: string },

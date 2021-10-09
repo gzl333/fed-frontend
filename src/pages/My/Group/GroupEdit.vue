@@ -228,9 +228,9 @@ export default defineComponent({
     // groupMember
     const groupMember = computed(() => $store.state.group.tables.groupMemberTable.byId[groupId])
     // groupServer
-    const servers = computed(() => $store.getters['vm/getGroupServersByGroupId'](groupId))
+    const servers = computed(() => $store.getters['server/getGroupServersByGroupId'](groupId))
     // groupQuota
-    const quotas = computed(() => $store.getters['vm/getGroupQuotasByGroupIdByStatus'](groupId, 'all'))
+    const quotas = computed(() => $store.getters['server/getGroupQuotasByGroupIdByStatus'](groupId, 'all'))
 
     const tab = ref('member')
 

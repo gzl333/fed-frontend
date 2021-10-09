@@ -6,7 +6,7 @@
         <div class="row title-area">
           <div class="col">
             <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
-                   @click="goBack"/>
+                   @click="$router.back()"/>
             配额详情
           </div>
         </div>
@@ -30,10 +30,10 @@
                     <div class="column justify-center items-center" style="height: 100px">
 
                       <div>{{
-                          $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[quota.service]?.data_center]?.name
+                          $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[quota.service]?.data_center]?.name
                         }}
                       </div>
-                      <div>{{ $store.state.vm.tables.globalServiceTable.byId[quota.service]?.name }}</div>
+                      <div>{{ $store.state.fed.tables.serviceTable.byId[quota.service]?.name }}</div>
 
                     </div>
                   </div>
@@ -316,9 +316,9 @@ export default defineComponent({
     // void $store.dispatch('vm/updateVmTable')
 
     // 获取quota对象
-    const quota = computed(() => props.isGroup ? $store.state.vm.tables.groupQuotaTable.byId[props.quotaId] : $store.state.vm.tables.userQuotaTable.byId[props.quotaId])
+    const quota = computed(() => props.isGroup ? $store.state.server.tables.groupQuotaTable.byId[props.quotaId] : $store.state.server.tables.personalQuotaTable.byId[props.quotaId])
     // 根据quota.servers获取server对象数组
-    const servers = computed(() => quota.value.servers?.map((serverId) => props.isGroup ? $store.state.vm.tables.groupServerTable.byId[serverId] : $store.state.vm.tables.userServerTable.byId[serverId]))
+    const servers = computed(() => quota.value.servers?.map((serverId) => props.isGroup ? $store.state.server.tables.groupServerTable.byId[serverId] : $store.state.server.tables.personalServerTable.byId[serverId]))
 
     const deleteAndJump = async () => {
       const isDeleted = await $store.dispatch('vm/deleteQuotaDialog', {
@@ -330,14 +330,8 @@ export default defineComponent({
         void $router.back()
       }
     }
-    // 返回上一页
-    const goBack = () => {
-      $router.go(-1)
-    }
-
     return {
       $store,
-      goBack,
       quota,
       servers,
       deleteAndJump

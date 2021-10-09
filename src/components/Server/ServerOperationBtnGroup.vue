@@ -11,20 +11,20 @@
       </q-btn>
       <q-btn v-if="props.server.status && props.server.status!==1 && props.server.status!==5" padding="sm" color="nord4"
              text-color="primary" icon="refresh"
-             @click="$store.dispatch('vm/updateUserServerTableSingleStatus', props.server.id)">
+             @click="$store.dispatch('server/loadSingleServerStatus', {isGroup, serverId: props.server.id})">
         <q-tooltip>
           {{ $t('刷新云主机状态') }}
         </q-tooltip>
       </q-btn>
       <q-btn v-if="props.server.status==5" color="nord4" icon="play_arrow" text-color="primary" padding="sm"
-             @click="$store.dispatch('vm/serverOperationDialog',{serverId: props.server.id, action: 'start', isGroup})">
+             @click="$store.dispatch('server/serverOperationDialog',{serverId: props.server.id, action: 'start', isGroup})">
         <q-tooltip>
           {{ $t('开机') }}
         </q-tooltip>
       </q-btn>
       <q-btn v-if="props.server.status==1" color="nord4" icon="power_settings_new" text-color="primary"
              padding="sm"
-             @click="$store.dispatch('vm/serverOperationDialog',{serverId: props.server.id, action: 'shutdown', isGroup})">
+             @click="$store.dispatch('server/serverOperationDialog',{serverId: props.server.id, action: 'shutdown', isGroup})">
         <q-tooltip>
           {{ $t('关机') }}
         </q-tooltip>
@@ -50,7 +50,7 @@
           <q-separator/>
 
           <q-item v-if="props.server.status!==1" clickable v-close-popup class="bg-white text-primary"
-                  @click="$store.dispatch('vm/serverOperationDialog',{ serverId: props.server.id, action: 'start'}, isGroup)">
+                  @click="$store.dispatch('server/serverOperationDialog',{ serverId: props.server.id, action: 'start'}, isGroup)">
             <div class="row">
               <q-item-section class="col-auto">
                 <q-icon name="play_arrow" size="sm"/>
@@ -64,7 +64,7 @@
           </q-item>
 
           <q-item v-if="props.server.status!==5" clickable v-close-popup class="bg-white text-primary"
-                  @click="$store.dispatch('vm/serverOperationDialog',{serverId: props.server.id, action: 'reboot',isGroup})">
+                  @click="$store.dispatch('server/serverOperationDialog',{serverId: props.server.id, action: 'reboot',isGroup})">
             <div class="row">
               <q-item-section class="col-auto">
                 <q-icon name="restart_alt" size="sm"/>
@@ -78,7 +78,7 @@
           </q-item>
 
           <q-item v-if="props.server.status!==5" clickable v-close-popup class="bg-white text-primary"
-                  @click="$store.dispatch('vm/serverOperationDialog',{serverId: props.server.id, action: 'shutdown',isGroup})">
+                  @click="$store.dispatch('server/serverOperationDialog',{serverId: props.server.id, action: 'shutdown',isGroup})">
             <div class="row">
               <q-item-section class="col-auto">
                 <q-icon name="power_settings_new" size="sm"/>
@@ -92,7 +92,7 @@
           </q-item>
 
           <q-item v-if="props.server.status!==5" clickable v-close-popup class="bg-white text-primary"
-                  @click="$store.dispatch('vm/serverOperationDialog',{serverId: props.server.id, action: 'poweroff',isGroup})">
+                  @click="$store.dispatch('server/serverOperationDialog',{serverId: props.server.id, action: 'poweroff',isGroup})">
             <div class="row">
               <q-item-section class="col-auto">
                 <q-icon name="power_off" size="sm"/>
@@ -108,7 +108,7 @@
           <q-separator/>
 
           <q-item v-if="props.server.status!==1" clickable v-close-popup class="bg-white text-red"
-                  @click="$store.dispatch('vm/serverOperationDialog',{serverId: props.server.id, action: 'delete',isGroup})">
+                  @click="$store.dispatch('server/serverOperationDialog',{serverId: props.server.id, action: 'delete',isGroup})">
             <div class="row">
               <q-item-section class="col-auto">
                 <q-icon name="delete" size="sm"/>
@@ -122,7 +122,7 @@
           </q-item>
 
           <q-item clickable v-close-popup class="bg-white text-red"
-                  @click="$store.dispatch('vm/serverOperationDialog',{serverId: props.server.id, action: 'delete_force',isGroup})">
+                  @click="$store.dispatch('server/serverOperationDialog',{serverId: props.server.id, action: 'delete_force',isGroup})">
             <div class="row">
               <q-item-section class="col-auto">
                 <q-icon name="delete_forever" size="sm"/>

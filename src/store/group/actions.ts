@@ -24,13 +24,13 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
           })
         }
         // vm/groupQuotaTable 依赖 groupTable， 跨模块调用
-        if (!context.rootState.vm.tables.groupQuotaTable.isLoaded) {
-          void context.dispatch('vm/loadGroupQuotaTable', null, { root: true })
-        }
+        // if (!context.rootState.vm.tables.groupQuotaTable.isLoaded) {
+        //   void context.dispatch('vm/loadGroupQuotaTable', null, { root: true })
+        // }
         // vm/groupServerTable 依赖 groupTable， 跨模块调用
-        if (!context.rootState.vm.tables.groupServerTable.isLoaded) {
-          void context.dispatch('vm/loadGroupServerTable', null, { root: true })
-        }
+        // if (!context.rootState.vm.tables.groupServerTable.isLoaded) {
+        //   void context.dispatch('vm/loadGroupServerTable', null, { root: true })
+        // }
       })
     }
   },
@@ -44,9 +44,9 @@ const actions: ActionTree<GroupModuleInterface, StateInterface> = {
         void context.dispatch(('applyQuota_obsolete/loadGroupApplicationTable'), null, { root: true })
       })
       // vm/groupQuotaTable 依赖 groupTable， 跨模块调用
-      void context.dispatch('vm/loadGroupQuotaTable', null, { root: true })
+      // void context.dispatch('vm/loadGroupQuotaTable', null, { root: true })
       // vm/groupServerTable 依赖 groupTable， 跨模块调用
-      void context.dispatch('vm/loadGroupServerTable', null, { root: true })
+      // void context.dispatch('vm/loadGroupServerTable', null, { root: true })
     })
   },
 

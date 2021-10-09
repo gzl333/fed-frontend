@@ -30,7 +30,7 @@
 <!--            </q-btn>-->
           </q-td>
           <q-td key="service" :props="props">
-            <div>{{ $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name }}</div>
+            <div>{{ $store.state.fed.tables.serviceTable.byId[props.row.service]?.name }}</div>
           </q-td>
           <q-td key="user" :props="props">
             {{ props.row.user.username }}
@@ -201,7 +201,7 @@ export default defineComponent({
       payload.page = val
       void $store.dispatch('vm/loadUserServerTable', payload)
     }
-    const filterOptions = computed(() => $store.getters['vm/getGlobalService'])
+    const filterOptions = computed(() => $store.getters['fed/getServices'])
     onMounted(() => {
       void $store.dispatch('vm/loadUserServerTable', payload).then((res) => {
         paginationTable.value.count = res.data.count

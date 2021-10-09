@@ -85,11 +85,11 @@ export default defineComponent({
             // data数组可用getter写
             data: [
               {
-                name: $store.state.vm.tables.globalServiceTable.byId[1]?.name,
+                name: $store.state.fed.tables.serviceTable.byId[1]?.name,
                 value: 999
               },
               {
-                name: $store.state.vm.tables.globalServiceTable.byId[2]?.name,
+                name: $store.state.fed.tables.serviceTable.byId[2]?.name,
                 value: 555
               }
 

@@ -43,7 +43,7 @@
 
           <div class="col item-radios">
             <div class="row items-center q-pb-sm"
-                 v-for="service in dataCenter.globalServices.map(id => $store.state.vm.tables.globalServiceTable.byId[id])"
+                 v-for="service in dataCenter.globalServices.map(id => $store.state.fed.tables.serviceTable.byId[id])"
                  :key="service.id">
 
               <q-radio class="col-auto" dense v-model="radioService" :val="service.id"
@@ -203,9 +203,9 @@
           </div>
           <div class="col item-radios">
             <div
-              v-if="$store.state.vm.tables.globalDataCenterTable.byId[radioDataCenter] && $store.state.vm.tables.globalServiceTable.byId[radioService]">
+              v-if="$store.state.fed.tables.dataCenterTable.byId[radioDataCenter] && $store.state.fed.tables.serviceTable.byId[radioService]">
               {{
-                `${$store.state.vm.tables.globalDataCenterTable.byId[radioDataCenter].name} - ${$store.state.vm.tables.globalServiceTable.byId[radioService].name}`
+                `${$store.state.fed.tables.dataCenterTable.byId[radioDataCenter].name} - ${$store.state.fed.tables.serviceTable.byId[radioService].name}`
               }}
             </div>
             <div v-else class="text-red">请选择服务节点</div>
@@ -235,8 +235,8 @@
             网络类型
           </div>
           <div class="col item-radios">
-            <div v-if="$store.state.vm.tables.globalNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name">
-              {{ $store.state.vm.tables.globalNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name }}
+            <div v-if="$store.state.server.tables.serviceNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name">
+              {{ $store.state.server.tables.serviceNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name }}
             </div>
             <div v-else class="text-red">请选择网络类型</div>
           </div>
@@ -259,9 +259,9 @@
             CPU/内存
           </div>
           <div class="col item-radios">
-            <div v-if="$store.state.vm.tables.globalFlavorTable.byId[radioFlavor]">
+            <div v-if="$store.state.server.tables.fedFlavorTable.byId[radioFlavor]">
               {{
-                `${$store.state.vm.tables.globalFlavorTable.byId[radioFlavor].vcpus}核/${$store.state.vm.tables.globalFlavorTable.byId[radioFlavor].ram / 1024}GB`
+                `${$store.state.server.tables.fedFlavorTable.byId[radioFlavor].vcpus}核/${$store.state.server.tables.fedFlavorTable.byId[radioFlavor].ram / 1024}GB`
               }}
             </div>
             <div v-else class="text-red">请选择配置</div>
@@ -329,21 +329,21 @@ export default defineComponent({
     // // 全局数据
     // owner/leader权限才能建立云主机， member不能建立
     const groups = computed(() => $store.getters['group/getGroupsByMyRole'](['owner', 'leader']))
-    const dataCenters = computed(() => Object.values($store.state.vm.tables.globalDataCenterTable.byId))
-    const services = computed(() => Object.values($store.state.vm.tables.globalServiceTable.byId))
-    const flavors = computed(() => Object.values($store.state.vm.tables.globalFlavorTable.byId))
+    const dataCenters = computed(() => Object.values($store.state.fed.tables.dataCenterTable.byId))
+    const services = computed(() => Object.values($store.state.fed.tables.serviceTable.byId))
+    const flavors = computed(() => Object.values($store.state.server.tables.fedFlavorTable.byId))
     // radioService的选项数据根据dataCenters动态生成,此处没有
     // //依赖radioService Id选择值的数据
-    const publicNetworks = computed(() => $store.getters['vm/getPublicNetworksByServiceId'](radioService.value))
-    const privateNetworks = computed(() => $store.getters['vm/getPrivateNetworksByServicedId'](radioService.value))
-    const images = computed(() => $store.getters['vm/getImagesByServiceId'](radioService.value))
-    const quotasValid = computed(() => props.isGroup ? $store.getters['vm/getGroupValidQuotasByServiceId'](radioService.value, radioGroup.value) : $store.getters['vm/getPersonalValidQuotasByServiceId'](radioService.value))
-    const quotasInvalid = computed(() => props.isGroup ? $store.getters['vm/getGroupInvalidQuotasByServiceId'](radioService.value, radioGroup.value) : $store.getters['vm/getPersonalInvalidQuotasByServiceId'](radioService.value))
+    const publicNetworks = computed(() => $store.getters['server/getPublicNetworksByServiceId'](radioService.value))
+    const privateNetworks = computed(() => $store.getters['server/getPrivateNetworksByServicedId'](radioService.value))
+    const images = computed(() => $store.getters['server/getImagesByServiceId'](radioService.value))
+    const quotasValid = computed(() => props.isGroup ? $store.getters['server/getGroupValidQuotasByServiceId'](radioService.value, radioGroup.value) : $store.getters['server/getPersonalValidQuotasByServiceId'](radioService.value))
+    const quotasInvalid = computed(() => props.isGroup ? $store.getters['server/getGroupInvalidQuotasByServiceId'](radioService.value, radioGroup.value) : $store.getters['server/getPersonalInvalidQuotasByServiceId'](radioService.value))
 
     // radio选项 初始状态 (1)
     const radioGroup = ref('')
     const radioService = ref('')
-    const radioDataCenter = computed(() => $store.state.vm.tables.globalServiceTable.byId[radioService.value]?.data_center || '')
+    const radioDataCenter = computed(() => $store.state.fed.tables.serviceTable.byId[radioService.value]?.data_center || '')
     const radioQuota = ref('')
     const radioNetwork = ref('')
     const radioImage = ref('')
@@ -357,8 +357,8 @@ export default defineComponent({
         // quota使用指定id
         radioQuota.value = props.quotaId
         // group和service用quota的归属信息算出来
-        radioGroup.value = $store.state.vm.tables.groupQuotaTable.byId[props.quotaId]?.vo_id as string
-        radioService.value = $store.state.vm.tables.groupQuotaTable.byId[props.quotaId]?.service
+        radioGroup.value = $store.state.server.tables.groupQuotaTable.byId[props.quotaId]?.vo_id as string
+        radioService.value = $store.state.server.tables.groupQuotaTable.byId[props.quotaId]?.service
       } else {
         radioGroup.value = props.groupId || groups.value[0]?.id || ''
         radioService.value = props.serviceId || services.value[0]?.id || ''
@@ -372,7 +372,7 @@ export default defineComponent({
     // setup时调用一次 (3) table已加载时进入页面要选一次默认值
     chooseRadioEntering()
     // 根据table的变化情况再调用 (4) table未加载时进入页面，每变化一次都要选一次默认值
-    watch([$store.state.vm.tables, $store.state.group.tables], chooseRadioEntering)
+    watch([$store.state.server.tables, $store.state.account.tables.groupTable, $store.state.account.tables.groupMemberTable], chooseRadioEntering)
     /* table 进入页面过程中选择默认项 */
 
     /* 在table都加载后，4个radio，随着group/service变化选择默认项 */
@@ -415,7 +415,7 @@ export default defineComponent({
         const respPostServer = await $store.dispatch('vm/postServer', { body: selection })
         if (respPostServer.status === 201) {
           // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
-          void await $store.dispatch('vm/updateServerTableSingleServer', {
+          void await $store.dispatch('server/loadSingleServer', {
             serverId: respPostServer.data.id,
             isGroup: props.isGroup
           })
@@ -424,7 +424,7 @@ export default defineComponent({
             classes: 'notification-positive shadow-15',
             icon: 'check_circle',
             textColor: 'positive',
-            message: `成功新建云主机: ${props.isGroup ? $store.state.vm.tables.groupServerTable.byId[respPostServer.data.id].ipv4 : $store.state.vm.tables.userServerTable.byId[respPostServer.data.id].ipv4}`,
+            message: `成功新建云主机: ${props.isGroup ? $store.state.server.tables.groupServerTable.byId[respPostServer.data.id].ipv4 : $store.state.server.tables.personalServerTable.byId[respPostServer.data.id].ipv4}`,
             position: 'bottom',
             closeBtn: true,
             timeout: 15000,

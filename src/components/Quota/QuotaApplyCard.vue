@@ -43,7 +43,7 @@
 
           <div class="col">
             <q-radio
-              v-for="service in dataCenter.globalServices.map(id => $store.state.vm.tables.globalServiceTable.byId[id])"
+              v-for="service in dataCenter.globalServices.map(id => $store.state.fed.tables.serviceTable.byId[id])"
               dense v-model="radioService" :val="service.id"
               :label=" locale === 'zh' ? service.name : service.name_en" :key="service.id"
               class="q-pb-sm q-mr-lg"/>
@@ -222,8 +222,8 @@
           </div>
           <div class="col item-radios">
             {{
-              $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[radioService]?.data_center]?.name
-            }} - {{ $store.state.vm.tables.globalServiceTable.byId[radioService]?.name }}
+              $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[radioService]?.data_center]?.name
+            }} - {{ $store.state.fed.tables.serviceTable.byId[radioService]?.name }}
           </div>
         </div>
 
@@ -337,7 +337,7 @@ export default defineComponent({
     const { locale } = useI18n({ useScope: 'global' })
 
     // radio选项数据
-    const dataCenters = computed(() => Object.values($store.state.vm.tables.globalDataCenterTable.byId))
+    const dataCenters = computed(() => Object.values($store.state.fed.tables.dataCenterTable.byId))
     // owner/leader权限才能申请配额
     const groups = computed(() => $store.getters['group/getGroupsByMyRole'](['owner', 'leader']))
 
@@ -354,8 +354,8 @@ export default defineComponent({
       if (props.serviceId) {
         radioService.value = props.serviceId
       } else {
-        // if ($store.state.vm.tables.globalServiceTable.isLoaded) {
-        radioService.value = $store.state.vm.tables.globalServiceTable.allIds[0]
+        // if ($store.state.fed.tables.serviceTable.isLoaded) {
+        radioService.value = $store.state.fed.tables.serviceTable.allIds[0]
         // }
       }
     }
@@ -370,7 +370,7 @@ export default defineComponent({
     chooseRadioService()
     chooseRadioGroup()
     // watch根据table的变化情况，再调用 (4)
-    watch($store.state.vm.tables.globalServiceTable, chooseRadioService)
+    watch($store.state.fed.tables.serviceTable, chooseRadioService)
     watch($store.state.group.tables.groupTable, chooseRadioGroup)
 
     // slider状态

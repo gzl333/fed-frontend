@@ -65,18 +65,18 @@
           <q-td key="serviceNode" :props="props">
             <div>
               {{
-                locale === 'zh' ? $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name : $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.name_en
+                locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[props.row.service]?.name : $store.state.fed.tables.serviceTable.byId[props.row.service]?.name_en
               }}
             </div>
             <div>
               {{
-                locale === 'zh' ? $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[props.row.service]?.data_center]?.name :
-                  $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[props.row.service]?.data_center]?.name_en
+                locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name :
+                  $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name_en
               }}
             </div>
           </q-td>
           <q-td key="serviceType" :props="props">
-            {{ $store.state.vm.tables.globalServiceTable.byId[props.row.service]?.service_type }}
+            {{ $store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type }}
           </q-td>
           <q-td key="image" :props="props">
             {{ props.row.image }}
@@ -119,7 +119,7 @@
 
               <q-btn v-if="hoverRow === props.row.name"
                      class="col-shrink q-px-none q-ma-none" flat dense icon="edit" size="xs" color="primary"
-                     @click="$store.dispatch('vm/editServerNoteDialog',{serverId:props.row.id, isGroup})">
+                     @click="$store.dispatch('server/editServerNoteDialog',{serverId:props.row.id, isGroup})">
                 <q-tooltip>
                   {{ $t('编辑备注') }}
                 </q-tooltip>
@@ -133,7 +133,7 @@
           <q-td key="vnc" :props="props" class="non-selectable q-pa-none">
             <q-btn v-if="props.row.status === 1" unelevated flat padding="none" size="lg" color="primary"
                    icon="computer"
-                   @click="$store.dispatch('vm/gotoVNC',props.row.id)">
+                   @click="$store.dispatch('server/gotoVNC',props.row.id)">
               <q-tooltip>{{ $t('进入远程控制') }}</q-tooltip>
             </q-btn>
             <q-btn v-else unelevated flat padding="none" size="lg" color="grey-5" icon="computer">

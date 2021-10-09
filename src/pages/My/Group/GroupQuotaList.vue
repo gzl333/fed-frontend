@@ -70,7 +70,7 @@ export default defineComponent({
       }
     ]
 
-    const quotas = computed(() => $store.getters['vm/getGroupQuotasByFilter'](filterSelection.value.value))
+    const quotas = computed(() => $store.getters['server/getGroupQuotasByFilter'](filterSelection.value.value))
 
     return {
       quotas,

@@ -51,9 +51,9 @@ export default defineComponent({
       value: '0'
     })
 
-    const filterOptions = computed(() => $store.getters['vm/getGroupOptions'])
+    const filterOptions = computed(() => $store.getters['account/getGroupOptions'])
 
-    const rows = computed(() => $store.getters['vm/getGroupServersByGroupId'](filterSelection.value.value))
+    const rows = computed(() => $store.getters['server/getGroupServersByGroupId'](filterSelection.value.value))
 
     return {
       $store,

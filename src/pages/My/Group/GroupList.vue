@@ -85,13 +85,13 @@
 
           <q-td key="server" :props="props">
             <q-btn color="primary" flat padding="none" dense :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'server'} }">
-              {{ $store.getters['vm/getGroupServersByGroupId'](props.row.id).length }}台
+              {{ $store.getters['server/getGroupServersByGroupId'](props.row.id).length }}台
             </q-btn>
           </q-td>
 
           <q-td key="quota" :props="props">
             <q-btn color="primary" flat padding="none" dense :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'quota'} }">
-              {{ $store.getters['vm/getGroupQuotasByGroupIdByStatus'](props.row.id,'valid').length }}个
+              {{ $store.getters['server/getGroupQuotasByGroupIdByStatus'](props.row.id,'valid').length }}个
             </q-btn>
           </q-td>
 

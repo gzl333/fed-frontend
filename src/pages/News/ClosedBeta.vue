@@ -33,7 +33,7 @@
                       <div class="row q-pb-xs">
                         <div class="col-3 text-grey-4">所属机构</div>
                         <div class="col"> {{
-                            $store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[activity.service]?.data_center]?.name
+                            $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[activity.service]?.data_center]?.name
                           }}
                         </div>
                       </div>
@@ -41,7 +41,7 @@
                       <div class="row q-pb-xs">
                         <div class="col-3 text-grey-4">所属服务</div>
                         <div class="col"> {{
-                            $store.state.vm.tables.globalServiceTable.byId[activity.service]?.name
+                            $store.state.fed.tables.serviceTable.byId[activity.service]?.name
                           }}
                         </div>
                       </div>

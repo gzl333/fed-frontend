@@ -40,7 +40,7 @@ const mutation: MutationTree<ServerModuleInterface> = {
     table.isLoaded = false
   },
   // 删除本模块table单个对象的通用方法
-  deleteSingleObject<T> (state: ServerModuleInterface, payload: {
+  deleteSingleItem<T> (state: ServerModuleInterface, payload: {
     table: {
       byId: Record<string, T>
       allIds: string[]
@@ -65,6 +65,18 @@ const mutation: MutationTree<ServerModuleInterface> = {
     status_code: string
   }) {
     payload.table.byId[payload.serverId].status = payload.status_code
+  },
+  // 保存单个server的remarks
+  storeSingleServerRemarks (state: ServerModuleInterface, payload: {
+    table: {
+      byId: Record<string, ServerInterface> // 此处固定为ServerInterface
+      allIds: string[]
+      isLoaded: boolean
+    }
+    serverId: string
+    remarks: string
+  }) {
+    payload.table.byId[payload.serverId].remarks = payload.remarks
   }
 }
 

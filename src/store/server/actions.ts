@@ -3,11 +3,48 @@ import { StateInterface } from '../index'
 import { ServerModuleInterface } from './state'
 import api from '../api'
 import { normalize, schema } from 'normalizr'
-import { ServerInterface } from 'src/store/vm/state'
+import { ServerInterface, VpnInterface } from 'src/store/vm/state'
 import { Dialog, Notify } from 'quasar'
 import QuotaApplicationEditCard from 'components/Quota/QuotaApplicationEditCard.vue'
+import { i18n } from 'boot/i18n'
+import axios from 'axios'
+
+/* const statusCodeMap = new Map<number, string>(
+  [
+    [0, '无法获取状态'],
+    [1, '运行中'],
+    [2, '已屏蔽'],
+    [3, '已暂停'],
+    [4, '正在关机'],
+    [5, '已关机'],
+    [6, '已崩溃'],
+    [7, '被电源管理器挂起'],
+    [9, '与宿主机通讯失败'],
+    [10, '已丢失'],
+    [11, '正在创建'],
+    [12, '创建失败']
+  ]
+) */
+const actionMap = new Map<string, string>(
+  [
+    ['start', '开机'],
+    ['reboot', '重启'],
+    ['shutdown', '关机'],
+    ['poweroff', '强制断电'],
+    ['delete', '删除'],
+    ['delete_force', '强制删除']
+  ]
+)
 
 const actions: ActionTree<ServerModuleInterface, StateInterface> = {
+  /* 杂项 */
+  // 打开vnc
+  async gotoVNC (context, id: string) {
+    const response = await api.server.getServerVnc({ path: { id } })
+    const url = response.data.vnc.url
+    window.open(url)
+  },
+
   /* tables */
   async loadFedFlavorTable (context) {
     context.commit('clearTable', context.state.tables.fedFlavorTable)
@@ -121,7 +158,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     // 建立personalServerTable之后，分别更新每个server status, 并发更新，无需await
     for (const serverId of context.state.tables.personalServerTable.allIds) {
       void context.dispatch('loadSingleServerStatus', {
-        table: context.state.tables.personalServerTable,
+        isGroup: false,
         serverId
       })
     }
@@ -151,7 +188,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       // 建立groupServerTable之后，分别更新每个server status, 并发更新，无需await
       for (const serverId of context.state.tables.groupServerTable.allIds) {
         void context.dispatch('loadSingleServerStatus', {
-          table: context.state.tables.groupServerTable,
+          isGroup: true,
           serverId
         })
       }
@@ -159,25 +196,58 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   },
   // 获取并保存单个server的status
   async loadSingleServerStatus (context, payload: {
-    table: {
-      byId: Record<string, ServerInterface> // 此处固定为ServerInterface
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // table: {
+    //   byId: Record<string, ServerInterface> // 此处固定为ServerInterface
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
+    isGroup: boolean
     serverId: string
   }) {
+    const table = payload.isGroup ? context.state.tables.groupServerTable : context.state.tables.personalServerTable
     // 先清空server status，让状态变为空，UI则显示为获取中
     context.commit('storeSingleServerStatus', {
-      table: payload.table,
+      table,
       serverId: payload.serverId,
       status_code: '' // 有状态的状态码为integer
     })
     const respStatus = await api.server.getServerStatus({ path: { id: payload.serverId } })
     context.commit('storeSingleServerStatus', {
-      table: payload.table,
+      table,
       serverId: payload.serverId,
       status_code: respStatus.data.status.status_code
     })
+  },
+  // 更新单个server的信息
+  async loadSingleServer (context, payload: { serverId: string; isGroup: boolean }) {
+    const respSingleServer = await api.server.getServerId({ path: { id: payload.serverId } })
+    // 将响应normalize，存入state里的userServerTable
+    const service = new schema.Entity('service')
+    const user_quota = new schema.Entity('user_quota')
+    const server = new schema.Entity('server', {
+      service,
+      user_quota
+    })
+    const normalizedData = normalize(respSingleServer.data.server, server)
+    if (payload.isGroup) {
+      context.commit('storeTable', {
+        table: context.state.tables.groupServerTable,
+        tableObj: normalizedData.entities.server
+      })
+      void context.dispatch('loadSingleServerStatus', {
+        isGroup: true,
+        serverId: payload.serverId
+      })
+    } else {
+      context.commit('storeTable', {
+        table: context.state.tables.personalServerTable,
+        tableObj: normalizedData.entities.server
+      })
+      void context.dispatch('loadSingleServerStatus', {
+        isGroup: false,
+        serverId: payload.serverId
+      })
+    }
   },
   // 所有groupQuota根据quotaId存在一个对象里，不区分group，getter里区分group取
   async loadGroupQuotaTable (context) {
@@ -381,7 +451,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     }).onOk(async () => {
       const respDelete = await api.apply.deleteApplyQuota({ path: { apply_id: payload.apply_id } })
       if (respDelete.status === 204) {
-        context.commit('deleteSingleObject', {
+        context.commit('deleteSingleItem', {
           table: payload.isGroup ? context.state.tables.groupQuotaApplicationTable : context.state.tables.personalQuotaApplicationTable,
           id: payload.apply_id
         })
@@ -499,7 +569,6 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     //   status: 200,
     //   statusText: 'OK'
     // }
-
     // code 200 -> 正确领取：1.提示领取成功 2.更新personalQuotaTable(更新领取的新配额)和fedQuotaActivityTable(更新剩余数量)
     if (respQuota.status === 200) {
       // 提示成功
@@ -535,8 +604,175 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         }
       })
     } */
-  }
+  },
+  // 修改vpn密码
+  popEditVpnPass (context, vpn: VpnInterface) {
+    Dialog.create({
+      class: 'dialog-primary',
+      title: `修改${context.rootState.fed.tables.serviceTable.byId[vpn.id].name}的VPN密码`,
+      message: '新密码长度为6-64位',
+      prompt: {
+        model: `${vpn.password}`,
+        counter: true,
+        maxlength: 64,
+        isValid: (val: string) => {
+          return !(val.trim().length < 6 || val.trim().length > 64)
+        },
+        type: 'text' // optional
+      },
+      color: 'primary',
+      ok: {
+        label: i18n.global.tc('确认'),
+        push: false,
+        // flat: true,
+        outline: true,
+        color: 'primary'
+      },
+      cancel: {
+        label: i18n.global.tc('放弃'),
+        push: false,
+        flat: false,
+        unelevated: true,
+        color: 'primary'
+      }
+    }).onOk((data: string) => {
+      const payload = {
+        serviceId: vpn.id,
+        password: data.trim()
+      }
+      void context.dispatch('patchVpnPassword', payload).then((value) => {
+        // 把响应的新vpn信息补充id信息，并更新至table
+        context.commit('storeUserVpnTableSingle', Object.assign(value.data.vpn, { id: vpn.id }))
+      })
+    })
+  },
+  serverOperationDialog (context, payload: { serverId: string; action: string; isGroup?: boolean }) {
+    // 操作的确认提示 todo 输入删除两个字以确认
+    Dialog.create({
+      class: 'dialog-primary',
+      title: `${i18n.global.tc(actionMap.get(payload.action) as string) || ''}`,
+      focus: 'cancel',
+      message:
+        `${payload.action === 'delete' || payload.action === 'delete_force' ? '被删除的云主机将无法自行恢复，如需恢复请联系云联邦管理员。' : ''}确认执行？`,
+      ok: {
+        label: i18n.global.tc('确认'),
+        push: false,
+        // flat: true,
+        outline: true,
+        color: 'primary'
+      },
+      cancel: {
+        label: i18n.global.tc('放弃'),
+        push: false,
+        flat: false,
+        unelevated: true,
+        color: 'primary'
+      }
+    }).onOk(async () => {
+      // 将主机状态清空，界面将显示loading
+      if (payload.isGroup) {
+        context.commit('storeSingleServerStatus', {
+          table: context.state.tables.groupServerTable,
+          serverId: payload.serverId,
+          status_code: ''
+        })
+      } else {
+        context.commit('storeSingleServerStatus', {
+          table: context.state.tables.personalServerTable,
+          serverId: payload.serverId,
+          status_code: ''
+        })
+      }
+      // 发送请求
+      const server = payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId] : context.state.tables.personalServerTable.byId[payload.serverId]
+      // 去掉协议
+      const endpoint_url = server.endpoint_url.substr(server.endpoint_url.indexOf('//'))
+      // 判断结尾有没有'/'，并加上当前用户使用的协议
+      // todo 为什么没有处理成功???
+      console.log(endpoint_url.endsWith('/'))
+      const api = window.location.protocol + endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/action/' : endpoint_url + '/api/server/' + payload.serverId + '/action/'
+      const data = { action: payload.action }
+      void await axios.post(api, data)
 
+      // 如果删除主机，重新获取userServerTable或groupServerTable
+      if (payload.action === 'delete' || payload.action === 'delete_force') {
+        Notify.create({
+          classes: 'notification-primary shadow-15',
+          textColor: 'primary',
+          spinner: true,
+          message: `正在删除云主机${server.ipv4 || ''} ，请稍候`,
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 3000,
+          multiLine: false
+        })
+        // 应延时
+        void await new Promise(resolve => (
+          setTimeout(resolve, 5000)
+        ))
+        // 更新userServerTable或groupServerTable
+        payload.isGroup ? void await context.dispatch('loadGroupServerTable') : void await context.dispatch('loadUserServerTable')
+      } else {
+        // 其它操作只更新该主机状态
+        // 应延时
+        void await new Promise(resolve => (
+          setTimeout(resolve, 5000)
+        ))
+        // 更新单个server status
+        void context.dispatch('loadSingleServerStatus', {
+          isGroup: payload.isGroup,
+          serverId: payload.serverId
+        })
+      }
+    })
+  },
+  // 编辑云主机备注
+  editServerNoteDialog (context, payload: { serverId: string; isGroup?: boolean }) {
+    Dialog.create({
+      class: 'dialog-primary',
+      title: `编辑${payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId].ipv4 : context.state.tables.personalServerTable.byId[payload.serverId].ipv4}的备注信息`,
+      // message: '长度限制为30个字',
+      prompt: {
+        model: `${payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId].remarks : context.state.tables.personalServerTable.byId[payload.serverId].remarks}`,
+        counter: true,
+        maxlength: 30,
+        type: 'text' // optional
+      },
+      color: 'primary',
+      cancel: true
+    }).onOk(async (data: string) => {
+      const respPatchRemark = await api.server.patchServerRemark({
+        path: { id: payload.serverId },
+        query: { remark: data.trim() }
+      })
+      if (respPatchRemark.status === 200) {
+        if (payload.isGroup) {
+          context.commit('storeSingleServerRemarks', {
+            table: context.state.tables.groupServerTable,
+            serverId: payload.serverId,
+            remarks: respPatchRemark.data.remarks
+          })
+        } else {
+          context.commit('storeSingleServerRemarks', {
+            table: context.state.tables.personalServerTable,
+            serverId: payload.serverId,
+            remarks: respPatchRemark.data.remarks
+          })
+        }
+        // 弹出通知
+        Notify.create({
+          classes: 'notification-positive shadow-15',
+          icon: 'mdi-check-circle',
+          textColor: 'light-green',
+          message: '成功修改云主机备注为：' + respPatchRemark.data.remarks,
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      }
+    })
+  }
   /* dialogs */
 }
 

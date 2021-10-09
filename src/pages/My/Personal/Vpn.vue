@@ -17,7 +17,7 @@
               <q-tab :ripple="false"
                      v-for="vpn in vpns" :key="vpn.id" :name="vpn.id"
               >
-                <div class="text-left">{{ $store.state.vm.tables.globalServiceTable.byId[vpn.id]?.name }}</div>
+                <div class="text-left">{{ $store.state.fed.tables.serviceTable.byId[vpn.id]?.name }}</div>
               </q-tab>
             </q-tabs>
           </div>
@@ -35,7 +35,7 @@
 
                 <div class="row q-pb-sm items-center">
                   <div class="col q-pb-lg text-primary">
-                    {{$store.state.vm.tables.globalDataCenterTable.byId[$store.state.vm.tables.globalServiceTable.byId[vpn.id]?.data_center].name}} - {{ $store.state.vm.tables.globalServiceTable.byId[vpn.id]?.name }}
+                    {{$store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[vpn.id]?.data_center].name}} - {{ $store.state.fed.tables.serviceTable.byId[vpn.id]?.name }}
                   </div>
                   <div class="col"></div>
                 </div>
@@ -101,7 +101,7 @@
                           </q-tooltip>
                         </q-btn>
                         <q-btn icon="edit" size="sm" dense flat color="primary"
-                               @click="$store.dispatch('vm/popEditVpnPass',  vpn)">
+                               @click="$store.dispatch('server/popEditVpnPass',  vpn)">
                           <q-tooltip>
                             修改
                           </q-tooltip>

@@ -421,7 +421,7 @@ export default defineComponent({
       step.value = 1
     }
 
-    const dataCenterOptions = computed(() => $store.getters['vm/getDataCenterOptions'])
+    const dataCenterOptions = computed(() => $store.getters['fed/getDataCenterOptions'])
     const options = ref(dataCenterOptions)
     const selection = ref(null)
     return {

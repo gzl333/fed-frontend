@@ -198,77 +198,77 @@ export interface VmModuleInterface {
   tables: { // 扁平的data table
     /* 全局table */
     // 全局统一的datacenter
-    globalDataCenterTable: {
-      byId: Record<string, DataCenterInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
-    // 全局统一的flavor
-    globalFlavorTable: {
-      byId: Record<string, FlavorInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // globalDataCenterTable: {
+    //   byId: Record<string, DataCenterInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
+    // // 全局统一的flavor
+    // globalFlavorTable: {
+    //   byId: Record<string, FlavorInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
     // 全局统一的service
-    globalServiceTable: {
-      byId: Record<string, ServiceInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // globalServiceTable: {
+    //   byId: Record<string, ServiceInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
     // 全局的network -> 依赖globalServiceTable
-    globalNetworkTable: {
-      byLocalId: Record<string, NetworkInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
-      allLocalIds: string[]
-      isLoaded: boolean
-    }
+    // globalNetworkTable: {
+    //   byLocalId: Record<string, NetworkInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
+    //   allLocalIds: string[]
+    //   isLoaded: boolean
+    // }
     // 全局image -> 依赖globalServiceTable
-    globalImageTable: {
-      byLocalId: Record<string, ImageInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
-      allLocalIds: string[]
-      isLoaded: boolean
-    }
+    // globalImageTable: {
+    //   byLocalId: Record<string, ImageInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
+    //   allLocalIds: string[]
+    //   isLoaded: boolean
+    // }
     /* 全局table */
 
     /* 个人table */
-    // 用户可用的service todo -> personalServiceTable
-    userServiceTable: {
-      byId: Record<string, ServiceInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // // 用户可用的service todo -> personalServiceTable
+    // userServiceTable: {
+    //   byId: Record<string, ServiceInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
     // 用户可用的network -> 依赖userServiceTable
-    userNetworkTable: {
-      byLocalId: Record<string, NetworkInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
-      allLocalIds: string[]
-      isLoaded: boolean
-    }
+    // userNetworkTable: {
+    //   byLocalId: Record<string, NetworkInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
+    //   allLocalIds: string[]
+    //   isLoaded: boolean
+    // }
     // 用户可用的image -> 依赖userServiceTable
-    userImageTable: {
-      byLocalId: Record<string, ImageInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
-      allLocalIds: string[]
-      isLoaded: boolean
-    }
+    // userImageTable: {
+    //   byLocalId: Record<string, ImageInterface> // ***与service_id拼接后的id*** 原始id在系统中不唯一
+    //   allLocalIds: string[]
+    //   isLoaded: boolean
+    // }
     // 用户可用的Vpn -> 依赖userServiceTable
-    userVpnTable: {
-      byId: Record<string, VpnInterface> // 后端没有id，自加id，与serviceId同。service不一定有vpn
-      allIds: string[]
-      isLoaded: {
-        service: boolean
-        server: boolean
-      }
-    }
+    // userVpnTable: {
+    //   byId: Record<string, VpnInterface> // 后端没有id，自加id，与serviceId同。service不一定有vpn
+    //   allIds: string[]
+    //   isLoaded: {
+    //     service: boolean
+    //     server: boolean
+    //   }
+    // }
     // 用户可用的userQuota -> 依赖userServiceTable
-    userQuotaTable: {
-      byId: Record<string, QuotaInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // userQuotaTable: {
+    //   byId: Record<string, QuotaInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
     // 用户可用的server -> api返回的天然是用户的server，不依赖serviceId，显示时可用serviceId筛选
-    userServerTable: {
-      byId: Record<string, ServerInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // userServerTable: {
+    //   byId: Record<string, ServerInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
     // 用户可用的archivedServer *暂未使用
     /*  userArchivedServerTable: {
         byId: Record<string, ArchivedServerInterface>
@@ -279,17 +279,17 @@ export interface VmModuleInterface {
 
     /* 组table */
     // 组quota，依赖globalServiceTable, groupTable, quotaId -> quota, 所有组quota存一起不区分group，在getter里区分
-    groupQuotaTable: {
-      byId: Record<string, QuotaInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // groupQuotaTable: {
+    //   byId: Record<string, QuotaInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
     // 组server, 依赖group/groupTable, serverId -> server, 所有组server存一起不区分group，在getter里区分
-    groupServerTable: {
-      byId: Record<string, ServerInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // groupServerTable: {
+    //   byId: Record<string, ServerInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
     /* 组table */
 
     /* provider table */
@@ -317,79 +317,79 @@ function state (): VmModuleInterface {
       // }
     },
     tables: {
-      globalDataCenterTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
-      globalFlavorTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
-      globalServiceTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
-      globalNetworkTable: {
-        byLocalId: {},
-        allLocalIds: [],
-        isLoaded: false
-      },
-      globalImageTable: {
-        byLocalId: {},
-        allLocalIds: [],
-        isLoaded: false
-      },
-      userServiceTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
-      userNetworkTable: {
-        byLocalId: {},
-        allLocalIds: [],
-        isLoaded: false
-      },
-      userImageTable: {
-        byLocalId: {},
-        allLocalIds: [],
-        isLoaded: false
-      },
-      userVpnTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: {
-          service: false,
-          server: false
-        }
-      },
-      userServerTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
-      userQuotaTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
+      // globalDataCenterTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // },
+      // globalFlavorTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // },
+      // globalServiceTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // },
+      // globalNetworkTable: {
+      //   byLocalId: {},
+      //   allLocalIds: [],
+      //   isLoaded: false
+      // },
+      // globalImageTable: {
+      //   byLocalId: {},
+      //   allLocalIds: [],
+      //   isLoaded: false
+      // },
+      // userServiceTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // },
+      // userNetworkTable: {
+      //   byLocalId: {},
+      //   allLocalIds: [],
+      //   isLoaded: false
+      // },
+      // userImageTable: {
+      //   byLocalId: {},
+      //   allLocalIds: [],
+      //   isLoaded: false
+      // },
+      // userVpnTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: {
+      //     service: false,
+      //     server: false
+      //   }
+      // },
+      // userServerTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // },
+      // userQuotaTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // },
       //   userArchivedServerTable: {
       //   byId: {},
       //   allIds: [],
       //   isLoaded: false
       // }
-      groupQuotaTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
-      groupServerTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
+      // groupQuotaTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // },
+      // groupServerTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // },
       // duyukuan
       providerServerTable: {
         byId: {},

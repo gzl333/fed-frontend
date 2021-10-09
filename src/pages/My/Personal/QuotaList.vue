@@ -94,7 +94,7 @@ export default defineComponent({
     ]
 
     // 获取quota数据
-    const quotas = computed(() => $store.getters['vm/getUserQuotasByFilter'](filterSelection.value.value))
+    const quotas = computed(() => $store.getters['server/getPersonalQuotasByFilter'](filterSelection.value.value))
 
     return {
       quotas,

@@ -54,13 +54,13 @@
                           <div class="col-auto">
                             当前机构数量：
                             <span class="text-primary text-h4">
-                              {{ $store.state.vm.tables.globalDataCenterTable.allIds?.length }}
+                              {{ $store.state.fed.tables.dataCenterTable.allIds?.length }}
                             </span>
                           </div>
                           <div class="col-auto">
                             当前服务数量：
                             <span class="text-primary text-h4">
-                              {{ $store.state.vm.tables.globalServiceTable.allIds?.length }}
+                              {{ $store.state.fed.tables.serviceTable.allIds?.length }}
                             </span>
                           </div>
                         </div>
@@ -196,7 +196,7 @@ export default defineComponent({
     const tab2 = ref('')
 
     // 获取云主机列表数据
-    const servers = computed(() => $store.getters['vm/getServers'].slice(0, 3))
+    const servers = computed(() => $store.getters['server/getPersonalServers'].slice(0, 3))
 
     // 获取对象存储桶数据列表，目前是测试数据
     // const buckets = [
