@@ -294,16 +294,16 @@ export interface VmModuleInterface {
 
     /* provider table */
     // 个人服务器table duyukuan
-    providerServerTable: {
-      byId: Record<string, ServerInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
-    providerQuotaTable: {
-      byId: Record<string, PersonalUserQuota>
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // providerServerTable: {
+    //   byId: Record<string, ServerInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
+    // providerQuotaTable: {
+    //   byId: Record<string, PersonalUserQuota>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
     /* provider table */
 
   }
@@ -391,16 +391,16 @@ function state (): VmModuleInterface {
       //   isLoaded: false
       // },
       // duyukuan
-      providerServerTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
-      providerQuotaTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      }
+      // providerServerTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // },
+      // providerQuotaTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // }
     }
   }
 }

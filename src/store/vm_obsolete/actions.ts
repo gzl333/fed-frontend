@@ -1,9 +1,9 @@
 import { ActionTree } from 'vuex'
-import { StateInterface, apiBase } from '../index'
-import { ServerInterface, VmModuleInterface/*, VpnInterface */ } from './state'
-import axios from 'axios'
-import { normalize, schema } from 'normalizr'
-import { Dialog, Notify } from 'quasar'
+import { StateInterface/*, apiBase */ } from '../index'
+import { /* ServerInterface */ VmModuleInterface/*, VpnInterface */ } from './state'
+// import axios from 'axios'
+// import { normalize, schema } from 'normalizr'
+// import { Dialog, Notify } from 'quasar'
 // import { i18n } from '../../boot/i18n'
 
 /* const statusCodeMap = new Map<number, string>(
@@ -91,7 +91,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
     //     // }
     //   })
     // }
-  },
+  }
   /* 初次获取全部Vm模块Table，已有则自动忽略 */
 
   /* 强制更新全部vmtable */
@@ -120,168 +120,168 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   /* 强制更新全部vmtable */
 
   /* userQuotaTable */
-  deleteQuotaDialog (context, payload: { quotaId: string; isGroup: boolean }) {
-    // 把整个对话框对象包在promise里。删除成功、失败包装为promise结果值。
-    const promise = new Promise((resolve, reject) => {
-      // 操作的确认提示
-      Dialog.create({
-        class: 'dialog-primary',
-        title: '删除配额',
-        message:
-          '删除后的配额无法恢复。 确认删除此配额？',
-        focus: 'cancel',
-        ok: {
-          label: '确认',
-          push: false,
-          outline: true,
-          color: 'primary'
-        },
-        cancel: {
-          label: '放弃',
-          push: false,
-          unelevated: true,
-          color: 'primary'
-        }
-      }).onOk(async () => {
-        const respDelete = await context.dispatch('deleteQuota', payload.quotaId)
-        if (respDelete.status === 204) {
-          payload.isGroup ? context.commit('deleteGroupQuotaTableSingleQuota', payload.quotaId) : context.commit('deleteUserQuotaTableSingleQuota', payload.quotaId)
-          // 通知
-          Notify.create({
-            classes: 'notification-positive shadow-15',
-            icon: 'mdi-check-circle',
-            textColor: 'light-green',
-            message: '配额删除成功',
-            position: 'bottom',
-            closeBtn: true,
-            timeout: 5000,
-            multiLine: false
-          })
-          resolve(true)
-        } else {
-          // Notify.create({
-          //   classes: 'notification-negative shadow-15',
-          //   icon: 'mdi-alert',
-          //   textColor: 'negative',
-          //   message: '配额删除失败，请重试',
-          //   position: 'bottom',
-          //   closeBtn: true,
-          //   timeout: 5000,
-          //   multiLine: false
-          // })
-          reject(false) // 都是resolve? 信息用boolean表达是否删除。因为接收处用的await语法，用reject会被catch。
-        }
-      })
-    })
-    return promise
-  },
-  async deleteQuota (context, quotaId: string) {
-    const api = apiBase + '/quota/' + quotaId + '/'
-    return axios.delete(api)
-  },
-  async updateUserQuotaTable (context) {
-    // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
-    context.commit('clearUserQuotaTable')
-    // 将响应normalize
-    const service = new schema.Entity('service')
-    const quota = new schema.Entity('quota', { service })
-    const respQuota = await context.dispatch('getQuota', { query: { deleted: false } })
-    // quota数组
-    for (const data of respQuota.data.results) {
-      /* 增加补充字段 */
-      // 获取quota下对应的server列表
-      const respQuotaServers = await context.dispatch('getQuotaServers', {
-        path: {
-          quotaId: data.id
-        }
-      })
-      const servers: string[] = []
-      respQuotaServers.data.results.forEach((server: ServerInterface) => {
-        servers.push(server.id)
-      })
-      // 给data增加servers字段
-      Object.assign(data, { servers })
-      // 给data增加expired字段
-      const expired = !!data.expiration_time && (new Date(data.expiration_time).getTime() < new Date().getTime())
-      Object.assign(data, { expired })
-      // 给data增加exhausted字段,该字段的判断方式可能后期更改
-      const exhausted = data.vcpu_used === data.vcpu_total ||
-        data.ram_used === data.ram_total ||
-        (data.private_ip_used === data.private_ip_total && data.public_ip_used === data.public_ip_total)
-      Object.assign(data, { exhausted })
-      /* 增加补充字段 */
-
-      // normalize data
-      const normalizedData = normalize(data, quota)
-      context.commit('storeUserQuotaTable', normalizedData.entities.quota)
-    }
-  },
-  getQuota (context, payload?: { query: { page?: number; page_size?: number; service?: string; usable?: boolean; deleted?: boolean } }) {
-    const api = apiBase + '/quota/'
-    const config = {
-      params: payload?.query
-    }
-    return axios.get(api, config)
-  },
-  getQuotaServers (context, payload: { path: { quotaId: string }, query: { page?: number; page_size?: number; } }) {
-    const api = apiBase + '/quota/' + payload.path.quotaId + '/servers/'
-    const config = {
-      params: payload.query
-    }
-    return axios.get(api, config)
-  },
+  // deleteQuotaDialog (context, payload: { quotaId: string; isGroup: boolean }) {
+  //   // 把整个对话框对象包在promise里。删除成功、失败包装为promise结果值。
+  //   const promise = new Promise((resolve, reject) => {
+  //     // 操作的确认提示
+  //     Dialog.create({
+  //       class: 'dialog-primary',
+  //       title: '删除配额',
+  //       message:
+  //         '删除后的配额无法恢复。 确认删除此配额？',
+  //       focus: 'cancel',
+  //       ok: {
+  //         label: '确认',
+  //         push: false,
+  //         outline: true,
+  //         color: 'primary'
+  //       },
+  //       cancel: {
+  //         label: '放弃',
+  //         push: false,
+  //         unelevated: true,
+  //         color: 'primary'
+  //       }
+  //     }).onOk(async () => {
+  //       const respDelete = await context.dispatch('deleteQuota', payload.quotaId)
+  //       if (respDelete.status === 204) {
+  //         payload.isGroup ? context.commit('deleteGroupQuotaTableSingleQuota', payload.quotaId) : context.commit('deleteUserQuotaTableSingleQuota', payload.quotaId)
+  //         // 通知
+  //         Notify.create({
+  //           classes: 'notification-positive shadow-15',
+  //           icon: 'mdi-check-circle',
+  //           textColor: 'light-green',
+  //           message: '配额删除成功',
+  //           position: 'bottom',
+  //           closeBtn: true,
+  //           timeout: 5000,
+  //           multiLine: false
+  //         })
+  //         resolve(true)
+  //       } else {
+  //         // Notify.create({
+  //         //   classes: 'notification-negative shadow-15',
+  //         //   icon: 'mdi-alert',
+  //         //   textColor: 'negative',
+  //         //   message: '配额删除失败，请重试',
+  //         //   position: 'bottom',
+  //         //   closeBtn: true,
+  //         //   timeout: 5000,
+  //         //   multiLine: false
+  //         // })
+  //         reject(false) // 都是resolve? 信息用boolean表达是否删除。因为接收处用的await语法，用reject会被catch。
+  //       }
+  //     })
+  //   })
+  //   return promise
+  // },
+  // async deleteQuota (context, quotaId: string) {
+  //   const api = apiBase + '/quota/' + quotaId + '/'
+  //   return axios.delete(api)
+  // },
+  // async updateUserQuotaTable (context) {
+  //   // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
+  //   context.commit('clearUserQuotaTable')
+  //   // 将响应normalize
+  //   const service = new schema.Entity('service')
+  //   const quota = new schema.Entity('quota', { service })
+  //   const respQuota = await context.dispatch('getQuota', { query: { deleted: false } })
+  //   // quota数组
+  //   for (const data of respQuota.data.results) {
+  //     /* 增加补充字段 */
+  //     // 获取quota下对应的server列表
+  //     const respQuotaServers = await context.dispatch('getQuotaServers', {
+  //       path: {
+  //         quotaId: data.id
+  //       }
+  //     })
+  //     const servers: string[] = []
+  //     respQuotaServers.data.results.forEach((server: ServerInterface) => {
+  //       servers.push(server.id)
+  //     })
+  //     // 给data增加servers字段
+  //     Object.assign(data, { servers })
+  //     // 给data增加expired字段
+  //     const expired = !!data.expiration_time && (new Date(data.expiration_time).getTime() < new Date().getTime())
+  //     Object.assign(data, { expired })
+  //     // 给data增加exhausted字段,该字段的判断方式可能后期更改
+  //     const exhausted = data.vcpu_used === data.vcpu_total ||
+  //       data.ram_used === data.ram_total ||
+  //       (data.private_ip_used === data.private_ip_total && data.public_ip_used === data.public_ip_total)
+  //     Object.assign(data, { exhausted })
+  //     /* 增加补充字段 */
+  //
+  //     // normalize data
+  //     const normalizedData = normalize(data, quota)
+  //     context.commit('storeUserQuotaTable', normalizedData.entities.quota)
+  //   }
+  // },
+  // getQuota (context, payload?: { query: { page?: number; page_size?: number; service?: string; usable?: boolean; deleted?: boolean } }) {
+  //   const api = apiBase + '/quota/'
+  //   const config = {
+  //     params: payload?.query
+  //   }
+  //   return axios.get(api, config)
+  // },
+  // getQuotaServers (context, payload: { path: { quotaId: string }, query: { page?: number; page_size?: number; } }) {
+  //   const api = apiBase + '/quota/' + payload.path.quotaId + '/servers/'
+  //   const config = {
+  //     params: payload.query
+  //   }
+  //   return axios.get(api, config)
+  // },
   /* userQuotaTable */
 
   /* groupQuotaTable -> 依赖groupTable,根据组列表来分别获取组的配额，调用点在group模块里 */
   // 所有groupQuota根据quotaId存在一个对象里，不区分group，getter里区分group取
-  async loadGroupQuotaTable (context) {
-    // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
-    context.commit('clearGroupQuotaTable')
-    // 根据groupTable,建立groupQuotaTable
-    for (const groupId of context.rootState.group.tables.groupTable.allIds) {
-      // 获取响应
-      const respGroupQuota = await context.dispatch('fetchGroupQuota', { vo_id: groupId })
-      // 将响应normalize
-      const service = new schema.Entity('service')
-      const quota = new schema.Entity('quota', { service })
-      // quota数组
-      for (const data of respGroupQuota.data.results) {
-        /* 增加补充字段 */
-        // 补充vo_id字段
-        Object.assign(data, { vo_id: groupId })
-        // 获取quota下对应的server列表
-        const respQuotaServers = await context.dispatch('getQuotaServers', {
-          path: {
-            quotaId: data.id
-          }
-        })
-        const servers: string[] = []
-        respQuotaServers.data.results.forEach((server: ServerInterface) => {
-          servers.push(server.id)
-        })
-        // 给data增加servers字段
-        Object.assign(data, { servers })
-        // 给data增加expired字段
-        const expired = !!data.expiration_time && (new Date(data.expiration_time).getTime() < new Date().getTime())
-        Object.assign(data, { expired })
-        // 给data增加exhausted字段,该字段的判断方式可能后期更改
-        const exhausted = data.vcpu_used === data.vcpu_total ||
-          data.ram_used === data.ram_total ||
-          (data.private_ip_used === data.private_ip_total && data.public_ip_used === data.public_ip_total)
-        Object.assign(data, { exhausted })
-        /* 增加补充字段 */
-
-        // normalize data
-        const normalizedData = normalize(data, quota)
-        // 存入groupQuotaTable
-        context.commit('storeGroupQuotaTable', normalizedData.entities.quota)
-      }
-    }
-  },
-  async fetchGroupQuota (context, payload: { vo_id: string; page?: number; page_size?: number; service?: string; usable?: boolean }) {
-    const api = apiBase + '/quota/vo/' + payload.vo_id + '/'
-    return axios.get(api)
-  },
+  // async loadGroupQuotaTable (context) {
+  //   // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
+  //   context.commit('clearGroupQuotaTable')
+  //   // 根据groupTable,建立groupQuotaTable
+  //   for (const groupId of context.rootState.group_obsolete.tables.groupTable.allIds) {
+  //     // 获取响应
+  //     const respGroupQuota = await context.dispatch('fetchGroupQuota', { vo_id: groupId })
+  //     // 将响应normalize
+  //     const service = new schema.Entity('service')
+  //     const quota = new schema.Entity('quota', { service })
+  //     // quota数组
+  //     for (const data of respGroupQuota.data.results) {
+  //       /* 增加补充字段 */
+  //       // 补充vo_id字段
+  //       Object.assign(data, { vo_id: groupId })
+  //       // 获取quota下对应的server列表
+  //       const respQuotaServers = await context.dispatch('getQuotaServers', {
+  //         path: {
+  //           quotaId: data.id
+  //         }
+  //       })
+  //       const servers: string[] = []
+  //       respQuotaServers.data.results.forEach((server: ServerInterface) => {
+  //         servers.push(server.id)
+  //       })
+  //       // 给data增加servers字段
+  //       Object.assign(data, { servers })
+  //       // 给data增加expired字段
+  //       const expired = !!data.expiration_time && (new Date(data.expiration_time).getTime() < new Date().getTime())
+  //       Object.assign(data, { expired })
+  //       // 给data增加exhausted字段,该字段的判断方式可能后期更改
+  //       const exhausted = data.vcpu_used === data.vcpu_total ||
+  //         data.ram_used === data.ram_total ||
+  //         (data.private_ip_used === data.private_ip_total && data.public_ip_used === data.public_ip_total)
+  //       Object.assign(data, { exhausted })
+  //       /* 增加补充字段 */
+  //
+  //       // normalize data
+  //       const normalizedData = normalize(data, quota)
+  //       // 存入groupQuotaTable
+  //       context.commit('storeGroupQuotaTable', normalizedData.entities.quota)
+  //     }
+  //   }
+  // },
+  // async fetchGroupQuota (context, payload: { vo_id: string; page?: number; page_size?: number; service?: string; usable?: boolean }) {
+  //   const api = apiBase + '/quota/vo/' + payload.vo_id + '/'
+  //   return axios.get(api)
+  // },
   /* groupQuotaTable */
 
   /* vpn操作 */
@@ -327,15 +327,15 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   //   })
   // },
   // 下载vpn ca
-  fetchCa (context, serviceId: string) {
-    const url = apiBase + '/vpn/' + serviceId + '/ca/'
-    window.open(url)
-  },
+  // fetchCa (context, serviceId: string) {
+  //   const url = apiBase + '/vpn/' + serviceId + '/ca/'
+  //   window.open(url)
+  // },
   // 下载vpn config
-  fetchConfig (context, serviceId: string) {
-    const url = apiBase + '/vpn/' + serviceId + '/config/'
-    window.open(url)
-  },
+  // fetchConfig (context, serviceId: string) {
+  //   const url = apiBase + '/vpn/' + serviceId + '/config/'
+  //   window.open(url)
+  // },
   /* vpn操作 */
 
   /* userVpnTable */
@@ -366,19 +366,19 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   //   }
   //   // console.log(context.state.tables.userVpnTable)
   // },
-  async fetchVpn (context, serviceId: string) {
-    const api = apiBase + '/vpn/' + serviceId + '/'
-    const response = await axios.get(api)
-    return response
-  },
-  async patchVpnPassword (context, payload: { serviceId: string; password: string }) {
-    const api = apiBase + '/vpn/' + payload.serviceId + '/'
-    const data = {
-      password: payload.password
-    }
-    const response = await axios.patch(api, data)
-    return response
-  },
+  // async fetchVpn (context, serviceId: string) {
+  //   const api = apiBase + '/vpn/' + serviceId + '/'
+  //   const response = await axios.get(api)
+  //   return response
+  // },
+  // async patchVpnPassword (context, payload: { serviceId: string; password: string }) {
+  //   const api = apiBase + '/vpn/' + payload.serviceId + '/'
+  //   const data = {
+  //     password: payload.password
+  //   }
+  //   const response = await axios.patch(api, data)
+  //   return response
+  // },
   /* userVpnTable */
 
   /* globalFlavorTable */
@@ -389,10 +389,10 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   //   }
   //   // console.log(context.state.globalFlavorTable)
   // },
-  async fetchFlavor () {
-    const api = apiBase + '/flavor/'
-    return axios.get(api)
-  },
+  // async fetchFlavor () {
+  //   const api = apiBase + '/flavor/'
+  //   return axios.get(api)
+  // },
   /* globalFlavorTable */
 
   /* globalImageTable -> 依赖 globalServiceTable */
@@ -411,15 +411,15 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   //   }
   //   // console.log(context.state.userImageTable)
   // },
-  getImage (context, payload: { query: { service_id: string } }) {
-    const api = apiBase + '/image/'
-    const config = {
-      params: {
-        service_id: payload.query.service_id
-      }
-    }
-    return axios.get(api, config)
-  },
+  // getImage (context, payload: { query: { service_id: string } }) {
+  //   const api = apiBase + '/image/'
+  //   const config = {
+  //     params: {
+  //       service_id: payload.query.service_id
+  //     }
+  //   }
+  //   return axios.get(api, config)
+  // },
   /* globalImageTable */
 
   /* userImageTable -> 依赖 userServiceTable */
@@ -438,16 +438,16 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   //   }
   //   // console.log(context.state.userImageTable)
   // },
-  async fetchImage (context, payload: string) {
-    const api = apiBase + '/image/'
-    const config = {
-      params: {
-        service_id: payload
-      }
-    }
-    const response = await axios.get(api, config)
-    return response
-  },
+  // async fetchImage (context, payload: string) {
+  //   const api = apiBase + '/image/'
+  //   const config = {
+  //     params: {
+  //       service_id: payload
+  //     }
+  //   }
+  //   const response = await axios.get(api, config)
+  //   return response
+  // },
   /* userImageTable */
 
   /* globalNetworkTable -> 依赖 globalServiceTable */
@@ -466,15 +466,15 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   //   }
   //   // console.log(context.state.userNetworkTable)
   // },
-  getNetwork (context, payload: { query: { service_id: string } }) {
-    const api = apiBase + '/network/'
-    const config = {
-      params: {
-        service_id: payload.query.service_id
-      }
-    }
-    return axios.get(api, config)
-  },
+  // getNetwork (context, payload: { query: { service_id: string } }) {
+  //   const api = apiBase + '/network/'
+  //   const config = {
+  //     params: {
+  //       service_id: payload.query.service_id
+  //     }
+  //   }
+  //   return axios.get(api, config)
+  // },
   /* globalNetworkTable */
 
   /* userNetworkTable -> 依赖 userServiceTable */
@@ -493,16 +493,16 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   //   }
   //   // console.log(context.state.userNetworkTable)
   // },
-  async fetchNetwork (context, serviceId: string) {
-    const api = apiBase + '/network/'
-    const config = {
-      params: {
-        service_id: serviceId
-      }
-    }
-    const response = await axios.get(api, config)
-    return response
-  },
+  // async fetchNetwork (context, serviceId: string) {
+  //   const api = apiBase + '/network/'
+  //   const config = {
+  //     params: {
+  //       service_id: serviceId
+  //     }
+  //   }
+  //   const response = await axios.get(api, config)
+  //   return response
+  // },
   /* userNetworkTable */
 
   /*  userServerTable */
@@ -568,39 +568,39 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   //   })
   // },
 
-  async fetchServerStatus (context, serverId: string) {
-    const api = apiBase + '/server/' + serverId + '/status/'
-    const response = await axios.get(api)
-    return response
-  },
-  async fetchServerVNC (context, serverId: string) {
-    const api = apiBase + '/server/' + serverId + '/vnc/'
-    const response = await axios.get(api)
-    return response
-  },
-  async fetchUserServer (context, payload?: { page?: number; page_size?: number; service_id?: string; }) {
-    const api = apiBase + '/server/'
-    let response
-    if (payload) {
-      const config = {
-        params: payload
-      }
-      response = await axios.get(api, config)
-    } else {
-      response = await axios.get(api)
-    }
-    return response
-  },
-  async fetchSingleServer (context, id: string) {
-    const api = apiBase + '/server/' + id + '/'
-    const response = axios.get(api)
-    return response
-  },
-  postServer (context, payload: { body: { service_id: string; network_id?: string; image_id: string; flavor_id: string; quota_id: string; remarks?: string; } }) {
-    const api = apiBase + '/server/'
-    const data = payload.body
-    return axios.post(api, data)
-  },
+  // async fetchServerStatus (context, serverId: string) {
+  //   const api = apiBase + '/server/' + serverId + '/status/'
+  //   const response = await axios.get(api)
+  //   return response
+  // },
+  // async fetchServerVNC (context, serverId: string) {
+  //   const api = apiBase + '/server/' + serverId + '/vnc/'
+  //   const response = await axios.get(api)
+  //   return response
+  // },
+  // async fetchUserServer (context, payload?: { page?: number; page_size?: number; service_id?: string; }) {
+  //   const api = apiBase + '/server/'
+  //   let response
+  //   if (payload) {
+  //     const config = {
+  //       params: payload
+  //     }
+  //     response = await axios.get(api, config)
+  //   } else {
+  //     response = await axios.get(api)
+  //   }
+  //   return response
+  // },
+  // async fetchSingleServer (context, id: string) {
+  //   const api = apiBase + '/server/' + id + '/'
+  //   const response = axios.get(api)
+  //   return response
+  // },
+  // postServer (context, payload: { body: { service_id: string; network_id?: string; image_id: string; flavor_id: string; quota_id: string; remarks?: string; } }) {
+  //   const api = apiBase + '/server/'
+  //   const data = payload.body
+  //   return axios.post(api, data)
+  // },
   /*  userServerTable */
 
   /* groupServerTable */
@@ -609,7 +609,7 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   //   // 先清空groupServerTable，避免多次更新时数据累加
   //   context.commit('clearGroupServerTable')
   //   // 根据groupTable,建立groupServerTable
-  //   for (const groupId of context.rootState.group.tables.groupTable.allIds) {
+  //   for (const groupId of context.rootState.group_obsolete.tables.groupTable.allIds) {
   //     // 发送请求
   //     const respGroupServer = await context.dispatch('fetchGroupServer', { vo_id: groupId })
   //     // 将响应normalize
@@ -630,42 +630,37 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   //     }
   //   }
   // },
-  async fetchGroupServer (context, payload: { vo_id: string; page?: number; page_size?: number; service_id?: string; }) {
-    const api = apiBase + '/server/vo/' + payload.vo_id + '/'
-    const config = {
-      params: payload
-    }
-    const response = await axios.get(api, config)
-    return response
-  },
+  // async fetchGroupServer (context, payload: { vo_id: string; page?: number; page_size?: number; service_id?: string; }) {
+  //   const api = apiBase + '/server/vo/' + payload.vo_id + '/'
+  //   const config = {
+  //     params: payload
+  //   }
+  //   const response = await axios.get(api, config)
+  //   return response
+  // },
   // duyukuan
-  getServer (context, payload?: { query?: { page?: number; page_size?: number; service_id?: string; user_id?: string; vo_id?: string; 'as-admin'?: boolean } }) {
-    const api = apiBase + '/server/'
-    const config = {
-      params: payload?.query
-    }
-    return axios.get(api, config)
-  },
-  async loadUserServerTable (context, payload: { page?: number; page_size?: number }) {
-    context.commit('clearProviderServerTable')
-    const respGroupServer = await context.dispatch('getServer', { query: payload })
-    const service = new schema.Entity('service')
-    const user_quota = new schema.Entity('user_quota')
-    const server = new schema.Entity('server', {
-      service,
-      user_quota
-    })
-    if (respGroupServer.data) {
-      for (const data of respGroupServer.data.servers) {
-        const normalizedData = normalize(data, server)
-        context.commit('storeProviderServerTable', normalizedData.entities.server)
-        if (normalizedData.entities.user_quota) {
-          context.commit('storeProviderQuotaTable', normalizedData.entities.user_quota)
-        }
-      }
-    }
-    return respGroupServer
-  },
+  // getServer (context, payload?: { query?: { page?: number; page_size?: number; service_id?: string; user_id?: string; vo_id?: string; 'as-admin'?: boolean } }) {
+  //   const api = apiBase + '/server/'
+  //   const config = {
+  //     params: payload?.query
+  //   }
+  //   return axios.get(api, config)
+  // },
+  // async loadUserServerTable (context, payload: { page?: number; page_size?: number }) {
+  //   context.commit('clearProviderServerTable')
+  //   const respGroupServer = await context.dispatch('getServer', { query: payload })
+  //   const service = new schema.Entity('service')
+  //   const server = new schema.Entity('server', {
+  //     service
+  //   })
+  //   if (respGroupServer.data) {
+  //     for (const data of respGroupServer.data.servers) {
+  //       const normalizedData = normalize(data, server)
+  //       context.commit('storeProviderServerTable', normalizedData.entities.server)
+  //     }
+  //   }
+  //   return respGroupServer
+  // },
   // // 服务私有配额actions
   // getServicePQuota (context, payload: { path: { id: string } }) {
   //   const api = apiBase + '/service/' + payload.path.id + '/p-quota/'
@@ -714,43 +709,43 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   /* groupServerTable */
 
   /*  globalDataCenterTable */
-  async updateGlobalDataCenterTable (context) {
-    const respDataCenters = await context.dispatch('fetchDataCenters')
-    const dataCenter = new schema.Entity('dataCenter', {})
-    respDataCenters.data.registries.forEach((data: Record<string, never>) => {
-      const normalizedData = normalize(data, dataCenter)
-      // 添加上userServices/globalServices空字段
-      Object.values(normalizedData.entities.dataCenter!)[0].userServices = []
-      Object.values(normalizedData.entities.dataCenter!)[0].globalServices = []
-      context.commit('storeGlobalDataCenterTable', normalizedData.entities.dataCenter)
-    })
-    // console.log(context.state.globalDataCenterTable)
-  },
-  async fetchDataCenters () {
-    const api = apiBase + '/registry/'
-    const response = await axios.get(api)
-    return response
-  },
+  // async updateGlobalDataCenterTable (context) {
+  //   const respDataCenters = await context.dispatch('fetchDataCenters')
+  //   const dataCenter = new schema.Entity('dataCenter', {})
+  //   respDataCenters.data.registries.forEach((data: Record<string, never>) => {
+  //     const normalizedData = normalize(data, dataCenter)
+  //     // 添加上userServices/globalServices空字段
+  //     Object.values(normalizedData.entities.dataCenter!)[0].userServices = []
+  //     Object.values(normalizedData.entities.dataCenter!)[0].globalServices = []
+  //     context.commit('storeGlobalDataCenterTable', normalizedData.entities.dataCenter)
+  //   })
+  //   // console.log(context.state.globalDataCenterTable)
+  // },
+  // async fetchDataCenters () {
+  //   const api = apiBase + '/registry/'
+  //   const response = await axios.get(api)
+  //   return response
+  // },
   /*  globalDataCenterTable */
 
   /*  globalServiceTable */
-  async updateGlobalServiceTable (context) {
-    // 发送请求
-    const respService = await context.dispatch('getService')
-    // 将响应normalize，存入state里的serviceTable
-    const data_center = new schema.Entity('data_center')
-    const service = new schema.Entity('service', { data_center })
-    respService.data.results.forEach((data: Record<string, never>) => {
-      const normalizedData = normalize(data, service)
-      context.commit('storeGlobalServiceTable', normalizedData.entities.service)
-
-      // 将本serviceId补充进对应dataCenter的globalServices字段
-      context.commit('storeGlobalDataCenterTableGlobalServices', {
-        dataCenterId: Object.values(normalizedData.entities.service!)[0].data_center,
-        serviceId: Object.values(normalizedData.entities.service!)[0].id
-      })
-    })
-  },
+  // async updateGlobalServiceTable (context) {
+  //   // 发送请求
+  //   const respService = await context.dispatch('getService')
+  //   // 将响应normalize，存入state里的serviceTable
+  //   const data_center = new schema.Entity('data_center')
+  //   const service = new schema.Entity('service', { data_center })
+  //   respService.data.results.forEach((data: Record<string, never>) => {
+  //     const normalizedData = normalize(data, service)
+  //     context.commit('storeGlobalServiceTable', normalizedData.entities.service)
+  //
+  //     // 将本serviceId补充进对应dataCenter的globalServices字段
+  //     context.commit('storeGlobalDataCenterTableGlobalServices', {
+  //       dataCenterId: Object.values(normalizedData.entities.service!)[0].data_center,
+  //       serviceId: Object.values(normalizedData.entities.service!)[0].id
+  //     })
+  //   })
+  // },
   /*  globalServiceTable */
 
   /*  userServiceTable */
@@ -771,13 +766,13 @@ const actions: ActionTree<VmModuleInterface, StateInterface> = {
   //     })
   //   })
   // },
-  getService (context, payload?: { query: { page?: number; page_size?: number; center_id?: string; available_only?: boolean; } }) {
-    const api = apiBase + '/service/'
-    const config = {
-      params: payload
-    }
-    return axios.get(api, config)
-  }
+  // getService (context, payload?: { query: { page?: number; page_size?: number; center_id?: string; available_only?: boolean; } }) {
+  //   const api = apiBase + '/service/'
+  //   const config = {
+  //     params: payload
+  //   }
+  //   return axios.get(api, config)
+  // }
   /*  userServiceTable */
 
   /* vmlist页面中的云主机操作 */

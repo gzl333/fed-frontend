@@ -108,7 +108,7 @@
                     <div class="row justify-center items-center q-gutter-sm" style="height: 70px">
 
                       <q-btn icon="edit" flat padding="none" color="primary" size="sm"
-                             @click="$store.dispatch('group/editGroupDialog', group.id)">
+                             @click="$store.dispatch('account/editGroupDialog', group.id)">
                         <q-tooltip>编辑项目组信息</q-tooltip>
                       </q-btn>
 
@@ -224,9 +224,9 @@ export default defineComponent({
     // 从route对象中读取id参数
     const groupId = $route.params.id as string
     // group对象
-    const group = computed(() => $store.state.group.tables.groupTable.byId[groupId])
+    const group = computed(() => $store.state.account.tables.groupTable.byId[groupId])
     // groupMember
-    const groupMember = computed(() => $store.state.group.tables.groupMemberTable.byId[groupId])
+    const groupMember = computed(() => $store.state.account.tables.groupMemberTable.byId[groupId])
     // groupServer
     const servers = computed(() => $store.getters['server/getGroupServersByGroupId'](groupId))
     // groupQuota

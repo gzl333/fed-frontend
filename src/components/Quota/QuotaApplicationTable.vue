@@ -55,7 +55,7 @@
 
           <q-td key="group" :props="props">
             <q-btn
-              class="q-ma-none" :label="$store.state.group.tables.groupTable.byId[props.row.vo_id]?.name"
+              class="q-ma-none" :label="$store.state.account.tables.groupTable.byId[props.row.vo_id]?.name"
               color="primary"
               padding="xs" flat dense unelevated
               :to="{path: `/my/group/detail/${props.row.vo_id}`}">
@@ -105,7 +105,8 @@
             <div>{{ props.row.company }}</div>
           </q-td>
           <q-td key="operation" :props="props">
-            <div v-if="$store.state.group.tables.groupTable.byId[props.row.vo_id]?.myRole === 'member'">普通组员没有修改权限</div>
+            <div v-if="$store.state.account.tables.groupTable.byId[props.row.vo_id]?.myRole === 'member'">普通组员没有修改权限
+            </div>
             <div v-else>
 
               <div v-if="props.row.status === 'wait'">
@@ -136,154 +137,11 @@
 
     <q-separator/>
 
-    <q-dialog v-model="isShowModify">
-      <q-card class="application-card">
-        <q-card-section class="row items-center justify-center q-pb-sm">
-          <div class="text-primary">修改申请</div>
-          <q-space/>
-          <q-btn icon="close" flat dense size="sm" v-close-popup/>
-        </q-card-section>
-
-        <q-separator/>
-
-        <q-card-section>
-
-          <div class="row q-py-lg">
-            <div class="col-3 text-grey-7">服务节点</div>
-            <div class="col">
-              {{
-                $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[currentApplication.service].data_center].name
-              }}
-              - {{ $store.state.fed.tables.serviceTable.byId[currentApplication.service].name }}
-            </div>
-          </div>
-
-          <div class="row q-pb-md">
-            <div class="col-3 text-grey-7">资源有效期</div>
-            <div class="col">
-              <q-slider
-                v-model="newApplication.duration_days"
-                :min="1"
-                :max="365"
-                :step="1"
-                label
-                :label-value="newApplication.duration_days + '天'"
-                label-always
-                color="primary"
-              />
-            </div>
-          </div>
-
-          <div class="row q-pb-md">
-            <div class="col-3 text-grey-7">CPU</div>
-            <div class="col">
-              <q-slider
-                v-model="newApplication.vcpu"
-                :min="1"
-                :max="16"
-                :step="1"
-                label
-                :label-value="newApplication.vcpu + '核'"
-                label-always
-                color="primary"
-              />
-            </div>
-          </div>
-
-          <div class="row q-pb-md">
-            <div class="col-3 text-grey-7">内存</div>
-            <div class="col">
-              <q-slider
-                v-model="newApplication.ram"
-                :min="1024"
-                :max="32768"
-                :step="1024"
-                label
-                :label-value="newApplication.ram/1024 + 'GB'"
-                label-always
-                color="primary"
-              />
-            </div>
-          </div>
-
-          <div class="row q-pb-md">
-            <div class="col-3 text-grey-7">私网IP</div>
-            <div class="col">
-              <q-slider
-                v-model="newApplication.private_ip"
-                :min="0"
-                :max="10"
-                :step="1"
-                label
-                :label-value="newApplication.private_ip + '个'"
-                label-always
-                color="primary"
-              />
-            </div>
-          </div>
-
-          <div class="row q-pb-md">
-            <div class="col-3 text-grey-7">公网IP</div>
-            <div class="col">
-              <q-slider
-                v-model="newApplication.public_ip"
-                :min="0"
-                :max="10"
-                :step="1"
-                label
-                :label-value="newApplication.public_ip + '个'"
-                label-always
-                color="primary"
-              />
-            </div>
-          </div>
-
-          <div class="row q-pb-md">
-            <div class="col-3 text-grey-7">云硬盘</div>
-            <div class="col">
-              <q-slider
-                v-model="newApplication.disk_size"
-                :min="0"
-                :max="1024"
-                :step="128"
-                label
-                :label-value="newApplication.disk_size + 'GB'"
-                label-always
-                color="primary"
-              />
-            </div>
-          </div>
-
-          <div class="row q-pb-md">
-            <div class="col-3 text-grey-7">配额用途</div>
-            <div class="col">
-              <q-input v-model="newApplication.purpose" maxlength="30" dense counter/>
-            </div>
-          </div>
-
-          <div class="row q-pb-md">
-            <div class="col-3 text-grey-7">工作单位</div>
-            <div class="col">
-              <q-input v-model="newApplication.company" maxlength="20" dense counter/>
-            </div>
-          </div>
-
-        </q-card-section>
-
-        <q-separator/>
-
-        <q-card-actions align="right">
-          <q-btn v-close-popup unelevated color="primary" label="放弃"/>
-          <q-btn v-close-popup outline color="primary" label="保存"
-                 @click="$store.dispatch('applyQuota_obsolete/patchAndUpdateUserQuotaApplicationTable', {apply_id, data: newApplication})"/>
-        </q-card-actions>
-      </q-card>
-    </q-dialog>
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, reactive, ref, watch } from 'vue'
+import { computed, defineComponent, PropType, ref } from 'vue'
 import { ApplicationQuotaInterface } from 'src/store/server/state'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
@@ -307,7 +165,7 @@ export default defineComponent({
     const { locale } = useI18n({ useScope: 'global' })
 
     // 应强制更新table,刷新quota状态 todo
-    // void $store.dispatch('vm/updateUserQuotaTable')
+    // void $store.dispatch('server/xxxx')
 
     // 列表分栏定义
     const columnsZH = props.isGroup ? [
@@ -465,47 +323,12 @@ export default defineComponent({
       rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
     })
 
-    // dialog modify
-    const isShowModify = ref(false)
-    // 当前正在修改的application id， 要从tr里传参出来
-    const apply_id = ref('0')
-
-    const currentApplication = computed(() => $store.state.server.tables.personalQuotaApplicationTable.byId[apply_id.value])
-    const showModify = (id: string) => {
-      apply_id.value = id
-      isShowModify.value = true
-    }
-    // radio
-    const newApplication = reactive({
-      service_id: '',
-      duration_days: 0,
-      vcpu: 0,
-      ram: 0,
-      private_ip: 0,
-      public_ip: 0,
-      disk_size: 0,
-      company: '',
-      contact: '',
-      purpose: ''
-    })
-    // 当currentApplication从api取到新值时，更新newApplication
-    watch(currentApplication, (currentApplication) => {
-      Object.assign(newApplication, currentApplication)
-      // 以下属性不匹配，单独处理
-      newApplication.service_id = currentApplication.service
-    })
-
     return {
       props,
       $store,
       locale,
       columns,
-      paginationTable,
-      isShowModify,
-      showModify,
-      apply_id,
-      currentApplication,
-      newApplication
+      paginationTable
     }
   }
 })

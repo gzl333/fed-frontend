@@ -23,7 +23,7 @@
             {{props.row.ipv4}}
 <!--            <q-btn-->
 <!--              class="q-ma-none" :label="props.row.ipv4" color="primary" padding="none" flat dense unelevated-->
-<!--              :to="{path: '/my/group/server/detail/' + props.row.id}">-->
+<!--              :to="{path: '/my/group_obsolete/server/detail/' + props.row.id}">-->
 <!--              <q-tooltip>-->
 <!--                {{ $t('进入云主机详情') }}-->
 <!--              </q-tooltip>-->
@@ -52,7 +52,7 @@
           </q-td>
 
 <!--          <q-td key="user_quota" :props="props">-->
-<!--            {{ !$store.state.vm.tables.providerServerTable.byId[props.row.user_quota]?.display ? '暂时为空' : $store.state.vm.tables.providerServerTable.byId[props.row.user_quota]?.display}}-->
+<!--            {{ !$store.state.vm_obsolete.tables.providerServerTable.byId[props.row.user_quota]?.display ? '暂时为空' : $store.state.vm_obsolete.tables.providerServerTable.byId[props.row.user_quota]?.display}}-->
 <!--          </q-td>-->
 
           <q-td key="center_quota" :props="props">
@@ -95,7 +95,7 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
     // 获取列表数据
-    const rows = computed(() => $store.getters['vm/getUserByCreateTime'])
+    const rows = computed(() => $store.getters['provider/getAdminServers'])
 
     // 列表分栏定义
     const columns = [
@@ -191,7 +191,7 @@ export default defineComponent({
       paginationTable.value.count = 0
       paginationTable.value.page = 1
       payload.page = 1
-      void $store.dispatch('vm/loadUserServerTable', payload).then((res) => {
+      void $store.dispatch('provider/loadAdminServerTable', payload).then((res) => {
         paginationTable.value.count = res.data.count
       }).catch(() => {
         paginationTable.value.count = 0
@@ -199,11 +199,11 @@ export default defineComponent({
     }
     const changePagination = (val: number) => {
       payload.page = val
-      void $store.dispatch('vm/loadUserServerTable', payload)
+      void $store.dispatch('provider/loadAdminServerTable', payload)
     }
     const filterOptions = computed(() => $store.getters['fed/getServices'])
     onMounted(() => {
-      void $store.dispatch('vm/loadUserServerTable', payload).then((res) => {
+      void $store.dispatch('provider/loadAdminServerTable', payload).then((res) => {
         paginationTable.value.count = res.data.count
       })
     })

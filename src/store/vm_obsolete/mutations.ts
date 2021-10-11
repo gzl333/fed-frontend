@@ -1,6 +1,6 @@
 import { MutationTree } from 'vuex'
 import {
-  VmModuleInterface,
+  VmModuleInterface
   // DataCenterInterface,
   // ServiceInterface,
   // NetworkInterface,
@@ -8,8 +8,8 @@ import {
   // FlavorInterface,
   // VpnInterface,
   // QuotaInterface,
-  ServerInterface,
-  PersonalUserQuota
+  // ServerInterface,
+  // PersonalUserQuota
 } from './state'
 
 const mutation: MutationTree<VmModuleInterface> = {
@@ -18,7 +18,7 @@ const mutation: MutationTree<VmModuleInterface> = {
   //   state.tables.userQuotaTable.allIds = []
   //   state.tables.userQuotaTable.isLoaded = false
   // },
-  // group
+  // group_obsolete
   // clearGroupQuotaTable (state) {
   //   state.tables.groupQuotaTable.byId = {}
   //   state.tables.groupQuotaTable.allIds = []
@@ -48,7 +48,7 @@ const mutation: MutationTree<VmModuleInterface> = {
   //   // userServerTable.isLoaded,每次都更新，可以优化
   //   state.tables.userQuotaTable.isLoaded = true
   // },
-  // group
+  // group_obsolete
   // storeGroupQuotaTable (state, tableObj: Record<string, QuotaInterface>) {
   //   Object.assign(state.tables.groupQuotaTable.byId, tableObj)
   //   state.tables.groupQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
@@ -115,7 +115,7 @@ const mutation: MutationTree<VmModuleInterface> = {
   // storeUserServerTableSingleStatus (state, payload: { serverId: string; status_code: string; }) {
   //   state.tables.userServerTable.byId[payload.serverId].status = payload.status_code
   // },
-  // group
+  // group_obsolete
   // storeGroupServerTableSingleStatus (state, payload: { serverId: string; status_code: string; }) {
   //   state.tables.groupServerTable.byId[payload.serverId].status = payload.status_code
   // },
@@ -124,30 +124,30 @@ const mutation: MutationTree<VmModuleInterface> = {
   //   state.tables.userServerTable.allIds = []
   //   state.tables.userServerTable.isLoaded = false
   // },
-  // group
+  // group_obsolete
   // clearGroupServerTable (state) {
   //   state.tables.groupServerTable.byId = {}
   //   state.tables.groupServerTable.allIds = []
   //   state.tables.groupServerTable.isLoaded = false
   // },
-  clearProviderServerTable (state) {
-    state.tables.providerServerTable.byId = {}
-    state.tables.providerServerTable.allIds = []
-    state.tables.providerServerTable.isLoaded = false
-  },
-  // duyukuan
-  storeProviderServerTable (state, tableObj: Record<string, ServerInterface>) {
-    Object.assign(state.tables.providerServerTable.byId, tableObj)
-    state.tables.providerServerTable.allIds.unshift(Object.keys(tableObj)[0])
-    state.tables.providerServerTable.allIds = [...new Set(state.tables.providerServerTable.allIds)]
-    state.tables.providerServerTable.isLoaded = true
-  },
-  storeProviderQuotaTable (state, tableObj: Record<string, PersonalUserQuota>) {
-    Object.assign(state.tables.providerQuotaTable.byId, tableObj)
-    state.tables.providerQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
-    state.tables.providerQuotaTable.allIds = [...new Set(state.tables.providerQuotaTable.allIds)]
-    state.tables.providerQuotaTable.isLoaded = true
-  }
+  // clearProviderServerTable (state) {
+  //   state.tables.providerServerTable.byId = {}
+  //   state.tables.providerServerTable.allIds = []
+  //   state.tables.providerServerTable.isLoaded = false
+  // },
+  // // duyukuan
+  // storeProviderServerTable (state, tableObj: Record<string, ServerInterface>) {
+  //   Object.assign(state.tables.providerServerTable.byId, tableObj)
+  //   state.tables.providerServerTable.allIds.unshift(Object.keys(tableObj)[0])
+  //   state.tables.providerServerTable.allIds = [...new Set(state.tables.providerServerTable.allIds)]
+  //   state.tables.providerServerTable.isLoaded = true
+  // },
+  // storeProviderQuotaTable (state, tableObj: Record<string, PersonalUserQuota>) {
+  //   Object.assign(state.tables.providerQuotaTable.byId, tableObj)
+  //   state.tables.providerQuotaTable.allIds.unshift(Object.keys(tableObj)[0])
+  //   state.tables.providerQuotaTable.allIds = [...new Set(state.tables.providerQuotaTable.allIds)]
+  //   state.tables.providerQuotaTable.isLoaded = true
+  // }
   // // 存入服务私有配额
   // storePrivateServiceQuotaStatTable (state, tableObj: Record<string, ServiceQuotaStatInterface>) {
   //   Object.assign(state.tables.privateServiceQuotaStatTable.byId, tableObj)
@@ -170,7 +170,7 @@ const mutation: MutationTree<VmModuleInterface> = {
   //   state.tables.userServerTable.isLoaded = true
   //   // console.log('updating userServerTable')
   // },
-  // group
+  // group_obsolete
   // storeGroupServerTable (state, tableObj: Record<string, ServerInterface>) {
   //   Object.assign(state.tables.groupServerTable.byId, tableObj)
   //   state.tables.groupServerTable.allIds.unshift(Object.keys(tableObj)[0])

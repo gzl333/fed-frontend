@@ -216,7 +216,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { QuotaInterface } from 'src/store/vm/state'
+import { QuotaInterface } from 'src/store/server/state'
 
 export default defineComponent({
   name: 'QuotaCard',

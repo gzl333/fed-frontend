@@ -80,10 +80,10 @@ export default defineComponent({
 
     const $store = useStore<StateInterface>()
     // 以下写法是否正确？
-    // const groupName = ref(computed(() => $store.state.group.tables.groupTable.byId[props.groupId].name).value)
-    const groupName = ref($store.state.group.tables.groupTable.byId[props.groupId].name)
-    const groupCompany = ref($store.state.group.tables.groupTable.byId[props.groupId].company)
-    const groupDescription = ref($store.state.group.tables.groupTable.byId[props.groupId].description)
+    // const groupName = ref(computed(() => $store.state.account.tables.groupTable.byId[props.groupId].name).value)
+    const groupName = ref($store.state.account.tables.groupTable.byId[props.groupId].name)
+    const groupCompany = ref($store.state.account.tables.groupTable.byId[props.groupId].company)
+    const groupDescription = ref($store.state.account.tables.groupTable.byId[props.groupId].description)
 
     // 点击ok的事件函数
     const onOKClick = () => {

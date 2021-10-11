@@ -1,5 +1,5 @@
 <template>
-  <div class="Vm">
+  <div class="PersonalServer">
 
     <div class="row items-center justify-between q-py-md">
 
@@ -40,7 +40,7 @@ import ServerTable from 'components/Server/ServerTable.vue'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
-  name: 'Vm',
+  name: 'PersonalServer',
   components: { ServerTable },
   props: {},
   setup () {
@@ -48,22 +48,16 @@ export default defineComponent({
     const { locale } = useI18n({ useScope: 'global' })
 
     // service_id下拉列表
-    const serviceOptions = computed(() => $store.getters['fed/getServiceOptions'])
+    const serviceOptions = computed(() => $store.getters['server/getPersonalAvailableServices'])
     const serviceSelection = ref({
       label: locale.value === 'zh' ? '全部服务节点' : 'All Service Nodes',
       value: '0'
     })
 
-    // $store.commit('vm/storeVmListFilter', '0') // 不能去掉！从其它界面重新进入时必须设置这个值
-    // watch(serviceSelection, () => {
-    //   $store.commit('vm/storeVmListFilter', serviceSelection.value.value)
-    // })
-
     // 获取云主机列表数据
     const rows = computed(() => $store.getters['server/getPersonalServersByServiceId'](serviceSelection.value.value))
 
     return {
-      $store,
       rows,
       serviceSelection,
       serviceOptions
@@ -73,6 +67,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.Vm {
+.PersonalServer {
 }
 </style>

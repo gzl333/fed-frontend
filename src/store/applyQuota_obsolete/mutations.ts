@@ -6,7 +6,7 @@ const mutation: MutationTree<ApplyQuotaModuleInterface> = {
   // storeApplyPageServiceId (state, serviceId: string) {
   //   state.pages.apply.serviceId = serviceId
   // },
-  // // group
+  // // group_obsolete
   // clearGroupApplicationTable (state) {
   //   const currentTable = state.tables.groupQuotaApplicationTable
   //   currentTable.byId = {}

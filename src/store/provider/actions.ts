@@ -23,6 +23,22 @@ const actions: ActionTree<ProviderModuleInterface, StateInterface> = {
       })
     }
   },
+  async loadAdminServerTable (context, payload: { page?: number; page_size?: number }) {
+    context.commit('clearTable', context.state.tables.adminServerTable)
+    const respGroupServer = await api.server.getServer({ query: payload })
+    const service = new schema.Entity('service')
+    const server = new schema.Entity('server', { service })
+    // if (respGroupServer.data) {
+    for (const data of respGroupServer.data.servers) {
+      const normalizedData = normalize(data, server)
+      context.commit('storeTable', {
+        table: context.state.tables.adminServerTable,
+        tableObj: normalizedData.entities.server
+      })
+    }
+    // }
+    return respGroupServer
+  },
   /* tables */
 
   /* dialogs */

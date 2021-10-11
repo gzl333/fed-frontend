@@ -56,7 +56,7 @@
 <!--                    icon="fas fa-database"-->
 <!--                    :label="$t('组对象存储')"-->
 <!--                    :ripple="false"-->
-<!--                    to="/my/group/obs"-->
+<!--                    to="/my/group_obsolete/obs"-->
 <!--                  />-->
                   <q-route-tab
                     no-caps

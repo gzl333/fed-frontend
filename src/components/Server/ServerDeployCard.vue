@@ -191,7 +191,7 @@
           </div>
           <div class="col item-radios">
             <div v-if="radioGroup !== ''">
-              {{ $store.state.group.tables.groupTable.byId[radioGroup]?.name }}
+              {{ $store.state.account.tables.groupTable.byId[radioGroup]?.name }}
             </div>
             <div v-else class="text-red">请选择项目组</div>
           </div>
@@ -235,7 +235,8 @@
             网络类型
           </div>
           <div class="col item-radios">
-            <div v-if="$store.state.server.tables.serviceNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name">
+            <div
+              v-if="$store.state.server.tables.serviceNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name">
               {{ $store.state.server.tables.serviceNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name }}
             </div>
             <div v-else class="text-red">请选择网络类型</div>
@@ -295,6 +296,7 @@ import { Notify } from 'quasar'
 
 import QuotaDetailCardIntense from 'components/Quota/QuotaDetailCardIntense.vue'
 import { useRouter } from 'vue-router'
+import api from 'src/store/api'
 
 export default defineComponent({
   name: 'ServerDeployCard',
@@ -328,7 +330,7 @@ export default defineComponent({
     // radio选项数据
     // // 全局数据
     // owner/leader权限才能建立云主机， member不能建立
-    const groups = computed(() => $store.getters['group/getGroupsByMyRole'](['owner', 'leader']))
+    const groups = computed(() => $store.getters['account/getGroupsByMyRole'](['owner', 'leader']))
     const dataCenters = computed(() => Object.values($store.state.fed.tables.dataCenterTable.byId))
     const services = computed(() => Object.values($store.state.fed.tables.serviceTable.byId))
     const flavors = computed(() => Object.values($store.state.server.tables.fedFlavorTable.byId))
@@ -412,7 +414,7 @@ export default defineComponent({
           quota_id: radioQuota.value,
           remarks: inputRemarks.value
         }
-        const respPostServer = await $store.dispatch('vm/postServer', { body: selection })
+        const respPostServer = await api.server.postServer({ body: selection })
         if (respPostServer.status === 201) {
           // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
           void await $store.dispatch('server/loadSingleServer', {
@@ -452,17 +454,6 @@ export default defineComponent({
           void $router.push({ path: props.isGroup ? '/my/group/server' : '/my/personal/server' })
         } else {
           // notify 使用axios统一报错
-          // Notify.create({
-          //   classes: 'notification-negative shadow-15',
-          //   icon: 'error',
-          //   textColor: 'negative',
-          //   message: '新建云主机失败，请重试。',
-          //   caption: `${respPostServer.response.status as string}: ${respPostServer.response.data.message as string}`, // 应告诉ts取到的值为string
-          //   position: 'bottom',
-          //   closeBtn: true,
-          //   timeout: 5000,
-          //   multiLine: false
-          // })
           // 改变按钮状态
           isDeploying.value = false
         }

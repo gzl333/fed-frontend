@@ -96,7 +96,7 @@
 
 <script lang="ts">
 import { defineComponent, PropType } from 'vue'
-import { ServerInterface } from 'src/store/vm/state'
+import { ServerInterface } from 'src/store/server/state'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 

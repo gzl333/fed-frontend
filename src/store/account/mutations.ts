@@ -3,6 +3,7 @@ import { AccountModuleInterface, DecodedToken } from './state'
 import axios from 'axios'
 import jwtDecode from 'jwt-decode'
 import { apiFed, apiLogin } from 'boot/axios'
+import { SingleMemberInterface } from 'src/store/account/state'
 
 // 注意此时state是store.state.account，而不是store.state
 const mutation: MutationTree<AccountModuleInterface> = {
@@ -81,6 +82,20 @@ const mutation: MutationTree<AccountModuleInterface> = {
   },
   storeRoleGroupTable (state, payload: { groupId: string; myRole: 'owner' | 'leader' | 'member' }) {
     state.tables.groupTable.byId[payload.groupId].myRole = payload.myRole
+  },
+  storeGroupMemberTableSingleMember (state, payload: { groupId: string; member: SingleMemberInterface }) {
+    // 增加人员，修改角色用。为了避免数组有重复，采取以下逻辑：
+    // 删掉已有的同名member
+    state.tables.groupMemberTable.byId[payload.groupId].members = state.tables.groupMemberTable.byId[payload.groupId].members.filter((member) => {
+      return member.user.username !== payload.member.user.username
+    })
+    // 增加新拿到的member
+    state.tables.groupMemberTable.byId[payload.groupId].members.unshift(payload.member)
+  },
+  deleteGroupMemberTableSingleMember (state, payload: { groupId: string; username: string }) {
+    state.tables.groupMemberTable.byId[payload.groupId].members = state.tables.groupMemberTable.byId[payload.groupId].members.filter((member) => {
+      return member.user.username !== payload.username
+    })
   }
   /* 新模块 */
 }

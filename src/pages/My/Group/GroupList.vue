@@ -79,7 +79,7 @@
 
           <q-td key="member" :props="props">
              <q-btn color="primary" flat padding="none" dense :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'member'} }">
-               {{ $store.state.group.tables.groupMemberTable.byId[props.row.id]?.members.length }}人
+               {{ $store.state.account.tables.groupMemberTable.byId[props.row.id]?.members.length }}人
              </q-btn>
           </q-td>
 
@@ -108,7 +108,7 @@
               </q-btn>
 
 <!--              <q-btn :disable="props.row.myRole!=='owner'" icon="settings" flat dense padding="none" color="primary"-->
-<!--                     :to="{path: `/my/group/edit/${props.row.id}`}">-->
+<!--                     :to="{path: `/my/group_obsolete/edit/${props.row.id}`}">-->
 <!--                <q-tooltip>设置</q-tooltip>-->
 <!--              </q-btn>-->
 
@@ -280,8 +280,8 @@ export default defineComponent({
       rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
     })
 
-    // group data
-    const groups = computed(() => $store.getters['group/getGroupsByFilter'](filterSelection.value.value))
+    // group_obsolete data
+    const groups = computed(() => $store.getters['account/getGroupsByFilter'](filterSelection.value.value))
 
     return {
       locale,

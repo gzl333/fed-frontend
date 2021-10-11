@@ -1,4 +1,4 @@
-/* group 模块保存组信息，组内成员信息 */
+/* group_obsolete 模块保存组信息，组内成员信息 */
 // 自定义类型
 // 组类型
 export interface GroupInterface {
@@ -43,17 +43,17 @@ export interface GroupModuleInterface {
   }
   tables: { // 扁平的data table
     // 用户相关的全部组table
-    groupTable: {
-      byId: Record<string, GroupInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
-    // 组配额table: groupId -> groupMember
-    groupMemberTable: {
-      byId: Record<string, GroupMemberInterface>
-      allIds: string[]
-      isLoaded: boolean
-    }
+    // groupTable: {
+    //   byId: Record<string, GroupInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
+    // // 组配额table: groupId -> groupMember
+    // groupMemberTable: {
+    //   byId: Record<string, GroupMemberInterface>
+    //   allIds: string[]
+    //   isLoaded: boolean
+    // }
   }
 }
 
@@ -62,16 +62,16 @@ function state (): GroupModuleInterface {
   return {
     pages: {},
     tables: {
-      groupTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      },
-      groupMemberTable: {
-        byId: {},
-        allIds: [],
-        isLoaded: false
-      }
+      // groupTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // },
+      // groupMemberTable: {
+      //   byId: {},
+      //   allIds: [],
+      //   isLoaded: false
+      // }
     }
   }
 }

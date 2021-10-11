@@ -1,9 +1,9 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ServerModuleInterface } from './state'
-import api from '../api'
+import api, { apiBaseFed } from '../api'
 import { normalize, schema } from 'normalizr'
-import { ServerInterface, VpnInterface } from 'src/store/vm/state'
+import { ServerInterface, VpnInterface } from 'src/store/server/state'
 import { Dialog, Notify } from 'quasar'
 import QuotaApplicationEditCard from 'components/Quota/QuotaApplicationEditCard.vue'
 import { i18n } from 'boot/i18n'
@@ -44,6 +44,17 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     const url = response.data.vnc.url
     window.open(url)
   },
+  // 下载vpn ca
+  fetchCa (context, serviceId: string) {
+    const url = apiBaseFed + '/vpn/' + serviceId + '/ca/'
+    window.open(url)
+  },
+  // 下载vpn config
+  fetchConfig (context, serviceId: string) {
+    const url = apiBaseFed + '/vpn/' + serviceId + '/config/'
+    window.open(url)
+  },
+  /* 杂项 */
 
   /* tables */
   async loadFedFlavorTable (context) {
@@ -522,7 +533,6 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   },
   /*  提交配额申请 */
   async submitApplyQuota (context, data: { vo_id?: string; service_id: string; private_ip?: number; public_ip?: number; vcpu?: number; ram?: number; disk_size?: number; duration_days: number; company?: string; contact?: string; purpose?: string }) {
-    // const respPostApplyQuota = await context.dispatch('postApplyQuota', { data })
     const respPostApplyQuota = await api.apply.postApplyQuota({ body: data })
     if (respPostApplyQuota.status === 201) {
       if (data.vo_id) {
@@ -635,15 +645,31 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         unelevated: true,
         color: 'primary'
       }
-    }).onOk((data: string) => {
+    }).onOk(async (data: string) => {
       const payload = {
         serviceId: vpn.id,
         password: data.trim()
       }
-      void context.dispatch('patchVpnPassword', payload).then((value) => {
-        // 把响应的新vpn信息补充id信息，并更新至table
-        context.commit('storeUserVpnTableSingle', Object.assign(value.data.vpn, { id: vpn.id }))
+      const respPatchVpnPassword = await api.vpn.patchVpn({
+        path: { service_id: payload.serviceId },
+        body: { password: payload.password }
       })
+      if (respPatchVpnPassword.status === 200) {
+        context.commit('storeTable', {
+          table: context.state.tables.userVpnTable,
+          tableObj: { [payload.serviceId]: Object.assign(respPatchVpnPassword.data.vpn, { id: vpn.id }) }
+        })
+        Notify.create({
+          classes: 'notification-positive shadow-15',
+          icon: 'mdi-check-circle',
+          textColor: 'light-green',
+          message: '修改VPN密码成功',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      }
     })
   },
   serverOperationDialog (context, payload: { serverId: string; action: string; isGroup?: boolean }) {
@@ -772,6 +798,54 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         })
       }
     })
+  },
+  deleteQuotaDialog (context, payload: { quotaId: string; isGroup: boolean }) {
+    // 把整个对话框对象包在promise里。删除成功、失败包装为promise结果值。
+    const promise = new Promise((resolve/*, reject */) => {
+      // 操作的确认提示
+      Dialog.create({
+        class: 'dialog-primary',
+        title: '删除配额',
+        message:
+          '删除后的配额无法恢复。 确认删除此配额？',
+        focus: 'cancel',
+        ok: {
+          label: '确认',
+          push: false,
+          outline: true,
+          color: 'primary'
+        },
+        cancel: {
+          label: '放弃',
+          push: false,
+          unelevated: true,
+          color: 'primary'
+        }
+      }).onOk(async () => {
+        const respDelete = await api.quota.deleteQuota({ path: { id: payload.quotaId } })
+        if (respDelete.status === 204) {
+          context.commit('deleteSingleItem', {
+            table: payload.isGroup ? context.state.tables.groupQuotaTable : context.state.tables.personalQuotaTable,
+            id: payload.quotaId
+          })
+          // 通知
+          Notify.create({
+            classes: 'notification-positive shadow-15',
+            icon: 'mdi-check-circle',
+            textColor: 'light-green',
+            message: '配额删除成功',
+            position: 'bottom',
+            closeBtn: true,
+            timeout: 5000,
+            multiLine: false
+          })
+          resolve(true)
+        } else {
+          resolve(false) // todo 研究 resolve/reject 被await区别！！ 信息用boolean表达是否删除。因为接收处用的await语法，用reject会被catch。
+        }
+      })
+    })
+    return promise
   }
   /* dialogs */
 }

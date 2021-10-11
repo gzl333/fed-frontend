@@ -210,7 +210,7 @@
           </div>
           <div class="col item-radios">
             <div v-if="radioGroup !== ''">
-              {{ $store.state.group.tables.groupTable.byId[radioGroup]?.name }}
+              {{ $store.state.account.tables.groupTable.byId[radioGroup]?.name }}
             </div>
             <div v-else class="text-red">请选择项目组</div>
           </div>
@@ -339,7 +339,7 @@ export default defineComponent({
     // radio选项数据
     const dataCenters = computed(() => Object.values($store.state.fed.tables.dataCenterTable.byId))
     // owner/leader权限才能申请配额
-    const groups = computed(() => $store.getters['group/getGroupsByMyRole'](['owner', 'leader']))
+    const groups = computed(() => $store.getters['account/getGroupsByMyRole'](['owner', 'leader']))
 
     /* 传参说明：
 *  1. 都不传: 全部默认选择第一项
@@ -371,7 +371,7 @@ export default defineComponent({
     chooseRadioGroup()
     // watch根据table的变化情况，再调用 (4)
     watch($store.state.fed.tables.serviceTable, chooseRadioService)
-    watch($store.state.group.tables.groupTable, chooseRadioGroup)
+    watch($store.state.account.tables.groupTable, chooseRadioGroup)
 
     // slider状态
     const sliderDuration = ref(1)

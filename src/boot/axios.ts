@@ -81,12 +81,14 @@ declare module '@vue/runtime-core' {
     $axios: AxiosInstance;
   }
 }
+
 // 原本的api是一个axios对象
 const api = axios.create(/* { timeout: 1000 , baseURL: 'https://api.example.com'} */)
-
 // 包装好接口api base地址的axios实例
 const apiFed = axios.create({ baseURL: window.location.protocol + '//vms.cstcloud.cn/api' })
 const apiLogin = axios.create({ baseURL: window.location.protocol + '//gosc-login.cstcloud.cn' })
+
+export { axios, api, apiFed, apiLogin }
 
 export default boot(({ app }) => {
   // for use inside Vue files (Options API) through this.$axios and this.$api
@@ -99,5 +101,3 @@ export default boot(({ app }) => {
   // ^ ^ ^ this will allow you to use this.$api (for Vue Options API form)
   //       so you can easily perform requests against your app's API
 })
-
-export { axios, api, apiFed, apiLogin }

@@ -57,7 +57,7 @@
 
             <div class="row items-center q-pt-lg ">
               <div class="col-1">
-                <q-btn  outline color="primary" @click="$store.dispatch('group/createGroup', {name: groupName, company: groupCompany, description: groupDesc})"  >
+                <q-btn  outline color="primary" @click="$store.dispatch('account/createGroupDialog', {name: groupName, company: groupCompany, description: groupDesc})"  >
                   {{$t('创建')}}
                 </q-btn>
               </div>

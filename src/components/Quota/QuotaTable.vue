@@ -19,7 +19,7 @@
 
           <q-td key="group" :props="props">
             <q-btn
-              class="q-ma-none" :label="$store.state.group.tables.groupTable.byId[props.row.vo_id].name" color="primary"
+              class="q-ma-none" :label="$store.state.account.tables.groupTable.byId[props.row.vo_id].name" color="primary"
               padding="xs" flat dense unelevated
               :to="{path: `/my/group/detail/${props.row.vo_id}`}">
               <q-tooltip>
@@ -184,7 +184,7 @@
               </q-btn>
 
               <q-btn icon="delete" flat dense padding="none" color="primary"
-                     @click="$store.dispatch('vm/deleteQuotaDialog', {quotaId: props.row.id,isGroup})">
+                     @click="$store.dispatch('server/deleteQuotaDialog', {quotaId: props.row.id,isGroup})">
                 <q-tooltip>删除</q-tooltip>
               </q-btn>
             </div>
@@ -206,7 +206,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue'
-import { QuotaInterface } from 'src/store/vm/state'
+import { QuotaInterface } from 'src/store/server/state'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
@@ -230,9 +230,9 @@ export default defineComponent({
 
     // todo 为何报错？ 应强制更新table刷新quota状态，该逻辑应在此，而非在调用层。任何使用quota-table时都应该更新quotaTable
     // if (props.isGroup) {
-    //   void $store.dispatch('vm/loadGroupQuotaTable')
+    //   void $store.dispatch('vm_obsolete/loadGroupQuotaTable')
     // } else {
-    //   void $store.dispatch('vm/updateUserQuotaTable')
+    //   void $store.dispatch('vm_obsolete/updateUserQuotaTable')
     // }
 
     // quota列表分栏定义

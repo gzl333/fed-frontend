@@ -51,17 +51,17 @@
             <div class="row justify-center items-center q-gutter-xs">
               <q-btn v-if="props.row.role === 'member'" icon="mdi-account-multiple-check" flat dense padding="none"
                      color="primary"
-                     @click="$store.dispatch('group/editGroupMemberRoleDialog', {groupId, member_id: props.row.id, role:'leader', role_name: '管理员'})">
+                     @click="$store.dispatch('account/editGroupMemberRoleDialog', {groupId, member_id: props.row.id, role:'leader', role_name: '管理员'})">
                 <q-tooltip>设为管理员</q-tooltip>
               </q-btn>
 
               <q-btn v-else icon="mdi-account-multiple-remove" flat dense padding="none" color="primary"
-                     @click="$store.dispatch('group/editGroupMemberRoleDialog', {groupId, member_id: props.row.id, role:'member', role_name: '成员'})">
+                     @click="$store.dispatch('account/editGroupMemberRoleDialog', {groupId, member_id: props.row.id, role:'member', role_name: '成员'})">
                 <q-tooltip>取消管理员</q-tooltip>
               </q-btn>
 
               <q-btn icon="remove_circle" flat dense padding="none" color="primary"
-                     @click="$store.dispatch('group/removeSingleGroupMemberDialog', {groupId, username: props.row.user.username})">
+                     @click="$store.dispatch('account/removeSingleGroupMemberDialog', {groupId, username: props.row.user.username})">
                 <q-tooltip>移出项目组</q-tooltip>
               </q-btn>
             </div>
@@ -101,7 +101,7 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
-    const columnsZH = $store.state.group.tables.groupTable.byId[props.groupId].myRole === 'owner' ? [
+    const columnsZH = $store.state.account.tables.groupTable.byId[props.groupId].myRole === 'owner' ? [
       {
         name: 'username',
         label: '用户名',
@@ -190,8 +190,8 @@ export default defineComponent({
       rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
     })
 
-    const members = computed(() => $store.getters['group/getGroupMembersByGroupId'](props.groupId))
-    // const members = computed(() => $store.state.group.tables.groupMemberTable.byId[props.groupId].members)
+    const members = computed(() => $store.getters['account/getGroupMembersByGroupId'](props.groupId))
+    // const members = computed(() => $store.state.account.tables.groupMemberTable.byId[props.groupId].members)
 
     return {
       $store,

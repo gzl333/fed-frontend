@@ -1,9 +1,9 @@
 // todo 核对准确
 // 标准api调用函数库,与接口一致
-import { apiFed /*, apiLogin */ } from 'boot/axios'
+import { apiFed, apiLogin } from 'boot/axios'
 
 const api = {
-  login: {},
+  login: {}, // todo
   apply: {
     getApplyOrganization (payload: {
       query?: {
@@ -323,8 +323,8 @@ const api = {
       }
       return apiFed.get('/quota/vo/' + payload.path.id, config)
     },
-    deleteQuotaId (payload: { path: { id: string } }) {
-      return apiFed.get('/quota/' + payload.path.id)
+    deleteQuota (payload: { path: { id: string } }) {
+      return apiFed.delete('/quota/' + payload.path.id)
     },
     getQuotaServers (payload: {
       query?: {
@@ -394,7 +394,7 @@ const api = {
         service_id?: string;
         user_id?: string;
         vo_id?: string;
-        'as-admin': boolean
+        'as-admin'?: boolean
       }
     }) {
       const config = {
@@ -636,11 +636,16 @@ const api = {
     }) {
       return apiFed.post('/vo/members/' + payload.path.member_id + '/role/' + payload.path.role)
     },
-    patchVo (payload: { path: { id: string }, body: { data: { name: string; company: string; description: string } } }) {
-      const config = {
-        data: payload.body
+    patchVo (payload: {
+      path: { id: string },
+      body: {
+        name: string;
+        company: string;
+        description: string
       }
-      return apiFed.patch('/vo/' + payload.path.id, config)
+    }) {
+      const data = payload.body
+      return apiFed.patch('/vo/' + payload.path.id, data)
     },
     deleteVo (payload: { path: { id: string } }) {
       return apiFed.delete('/vo/' + payload.path.id)
@@ -669,11 +674,12 @@ const api = {
     }) {
       return apiFed.get('/vpn/' + payload.path.service_id)
     },
-    patchVpn (payload: { path: { service_id: string }, body: { password: string } }) {
-      const config = {
-        data: payload.body
-      }
-      return apiFed.patch('/vpn/' + payload.path.service_id, config)
+    patchVpn (payload: {
+      path: { service_id: string },
+      body: { password: string }
+    }) {
+      const data = payload.body
+      return apiFed.patch('/vpn/' + payload.path.service_id, data)
     },
     getVpnCa (payload: { path: { service_id: string } }) {
       return apiFed.get('/vpn/' + payload.path.service_id + '/ca')
@@ -683,5 +689,8 @@ const api = {
     }
   }
 }
+
+export const apiBaseFed = apiFed.defaults.baseURL
+export const apiBaseLogin = apiLogin.defaults.baseURL
 
 export default api

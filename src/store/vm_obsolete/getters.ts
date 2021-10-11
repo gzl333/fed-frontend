@@ -2,7 +2,7 @@ import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
 import {
   // NetworkInterface,
-  ServerInterface,
+  // ServerInterface,
   VmModuleInterface
   // ImageInterface,
   // QuotaInterface
@@ -170,11 +170,11 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
   /* groupList页面用 */
   // getGroupOptions (state, getters, rootState/*, rootGetters */): { value: string; label: string; }[] {
   //   let groupOptions = []
-  //   for (const group of Object.values(rootState.group.tables.groupTable.byId)) {
+  //   for (const group_obsolete of Object.values(rootState.group_obsolete.tables.groupTable.byId)) {
   //     groupOptions.push(
   //       {
-  //         value: group.id,
-  //         label: group.name
+  //         value: group_obsolete.id,
+  //         label: group_obsolete.name
   //       }
   //     )
   //   }
@@ -189,24 +189,24 @@ const getters: GetterTree<VmModuleInterface, StateInterface> = {
   //   return groupOptions
   // },
   // 排序用户个人服务器资源 duyukuan
-  getUserByCreateTime (state): ServerInterface[] {
-    // 排序函数，根据申请时间降序排列
-    const sortFn = (a: ServerInterface, b: ServerInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
-    const rows: ServerInterface[] = []
-    for (const application of Object.values(state.tables.providerServerTable.byId)) {
-      rows.push(application)
-    }
-    return rows.sort(sortFn)
-  }
+  // getUserByCreateTime (state): ServerInterface[] {
+  //   // 排序函数，根据申请时间降序排列
+  //   const sortFn = (a: ServerInterface, b: ServerInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
+  //   const rows: ServerInterface[] = []
+  //   for (const application of Object.values(state.tables.providerServerTable.byId)) {
+  //     rows.push(application)
+  //   }
+  //   return rows.sort(sortFn)
+  // }
 
   // 返回筛选全部项
   // getGlobalService (state): { value: string; label: string; }[] {
   //   const serviceOptions = []
-  //   for (const group of Object.values(state.tables.globalServiceTable.byId)) {
+  //   for (const group_obsolete of Object.values(state.tables.globalServiceTable.byId)) {
   //     serviceOptions.push(
   //       {
-  //         value: group.id,
-  //         label: group.name
+  //         value: group_obsolete.id,
+  //         label: group_obsolete.name
   //       }
   //     )
   //   }

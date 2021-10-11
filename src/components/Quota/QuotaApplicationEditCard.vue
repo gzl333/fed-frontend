@@ -19,7 +19,7 @@
         <div v-if="isGroup" class="row q-pb-lg">
           <div class="col-2 text-grey-7">项目组</div>
           <div class="col">
-            {{ $store.state.group.tables.groupTable.byId[currentApplication.vo_id].name }}
+            {{ $store.state.account.tables.groupTable.byId[currentApplication.vo_id].name }}
           </div>
         </div>
 

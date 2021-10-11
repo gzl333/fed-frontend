@@ -22,7 +22,7 @@
 
           <q-td key="group" :props="props">
             <q-btn
-              class="q-ma-none" :label="$store.state.group.tables.groupTable.byId[props.row.vo_id].name" color="primary"
+              class="q-ma-none" :label="$store.state.account.tables.groupTable.byId[props.row.vo_id].name" color="primary"
               padding="none" flat dense unelevated
               :to="{path: `/my/group/detail/${props.row.vo_id}`}">
               <q-tooltip>
@@ -166,7 +166,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue'
-import { ServerInterface } from 'src/store/vm/state'
+import { ServerInterface } from 'src/store/server/state'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'

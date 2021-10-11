@@ -1,8 +1,14 @@
 import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ServerModuleInterface } from './state'
-import { ApplicationQuotaInterface, NetworkInterface } from 'src/store/server/state'
-import { ImageInterface, QuotaInterface, ServerInterface } from 'src/store/vm/state'
+import {
+  ApplicationQuotaInterface,
+  NetworkInterface,
+  ImageInterface,
+  QuotaInterface,
+  ServerInterface
+} from 'src/store/server/state'
+import { i18n } from 'boot/i18n'
 
 const getters: GetterTree<ServerModuleInterface, StateInterface> = {
   // 根据用户选择的filter来返回application数组
@@ -192,6 +198,43 @@ const getters: GetterTree<ServerModuleInterface, StateInterface> = {
       }
       return rows.sort(sortFn)
     }
+  },
+  // 全部quota和server对应的services
+  getPersonalAvailableServices: (state, getters, rootState/*, rootGetters */): { value: string; label: string; }[] => {
+    /*    数据结构如下
+    const serviceOptions = [
+      {
+        label: '全部节点',
+        value: '0'
+      },
+      {
+        label: '中国科学院计算机网络信息中心 - HR_204机房',
+        value: '1'
+      },
+      {
+        label: '地球大数据科学工程专项 - 怀柔机房一层',
+        value: '2'
+      }
+    ]
+*/
+    let services = [] as string[]
+    state.tables.personalQuotaTable.allIds.forEach((id) => services.push(state.tables.personalQuotaTable.byId[id].service))
+    state.tables.personalServerTable.allIds.forEach((id) => services.push(state.tables.personalServerTable.byId[id].service))
+    services = [...new Set(services)]
+
+    let serviceOptions = services.map((serviceId) => ({
+      value: serviceId,
+      label: i18n.global.locale === 'zh' ? rootState.fed.tables.dataCenterTable.byId[rootState.fed.tables.serviceTable.byId[serviceId].data_center].name + ' - ' + rootState.fed.tables.serviceTable.byId[serviceId].name : rootState.fed.tables.dataCenterTable.byId[rootState.fed.tables.serviceTable.byId[serviceId].data_center].name_en + ' - ' + rootState.fed.tables.serviceTable.byId[serviceId].name_en
+    }))
+
+    // 排序
+    serviceOptions = serviceOptions.sort((a, b) => -a.label.localeCompare(b.label, 'zh-CN'))
+    // // vue组件外取i18n中locale字段的方法
+    serviceOptions.unshift({
+      value: '0',
+      label: i18n.global.locale === 'zh' ? '全部服务节点' : 'All Service Nodes'
+    })
+    return serviceOptions
   }
 }
 

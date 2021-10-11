@@ -67,8 +67,8 @@ export default defineComponent({
     console.log($route.path)
 
     // /* news layout内页所有table加载起始点 */ todo ??? 为何在此加载
-    // void $store.dispatch('vm/updateVmTable').then(() => {
-    //   console.log('$STORE-vm:', $store.state.vm)
+    // void $store.dispatch('vm_obsolete/updateVmTable').then(() => {
+    //   console.log('$STORE-vm_obsolete:', $store.state.vm_obsolete)
     // })
     // void $store.dispatch('applyQuota_obsolete/updateQuotaApplicationTable').then(() => {
     //   console.log('$STORE-applyQuota_obsolete:', $store.state.applyQuota_obsolete)

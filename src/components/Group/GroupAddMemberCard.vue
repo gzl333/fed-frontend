@@ -15,7 +15,7 @@
         <div class="row items-center q-pb-md">
           <div class="col-3 text-grey">项目组名称</div>
           <div class="col">
-            {{ $store.state.group.tables.groupTable.byId[groupId]?.name }}
+            {{ $store.state.account.tables.groupTable.byId[groupId]?.name }}
           </div>
         </div>
 
@@ -108,7 +108,7 @@ export default defineComponent({
       } else {
         // payload是传给onOK的实参, data从这里传到action里面
         onDialogOK({
-          groupId: props.groupId,
+          // groupId: props.groupId,
           usernames: Object.values(usernames)
         })
       }

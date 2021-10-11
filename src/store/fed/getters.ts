@@ -92,47 +92,6 @@ const getters: GetterTree<FedModuleInterface, StateInterface> = {
     })
     return serviceOptions
   },
-  // todo 修改为只提供有quota的service列表,并放入server模块
-  getServiceOptions (state): { value: string; label: string; }[] {
-    /*    数据结构如下
-        const serviceOptions = [
-          {
-            label: '全部节点',
-            value: '0'
-          },
-          {
-            label: '中国科学院计算机网络信息中心 - HR_204机房',
-            value: '1'
-          },
-          {
-            label: '地球大数据科学工程专项 - 怀柔机房一层',
-            value: '2'
-          }
-        ]
-    */
-
-    let serviceOptions = []
-
-    // const serviceOptions = []
-    for (const service of Object.values(state.tables.serviceTable.byId)) {
-      serviceOptions.push(
-        {
-          value: service.id,
-          label: i18n.global.locale === 'zh' ? state.tables.dataCenterTable.byId[service.data_center].name + ' - ' + service.name : state.tables.dataCenterTable.byId[service.data_center].name_en + ' - ' + service.name_en
-          // label: `${state.globalDataCenterTable.byId[service.id].name} - ${service.name}`
-        }
-      )
-    }
-    // 排序
-    serviceOptions = serviceOptions.sort((a, b) => -a.label.localeCompare(b.label, 'zh-CN'))
-    // // vue组件外取i18n中locale字段的方法
-    serviceOptions.unshift({
-      value: '0',
-      label: i18n.global.locale === 'zh' ? '全部服务节点' : 'All Service Nodes'
-    })
-
-    return serviceOptions
-  },
   /* join federation使用 */
   getDataCenterOptions (state): { value: string; label: string; }[] {
     const dataCenterOptions = []

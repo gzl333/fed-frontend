@@ -114,9 +114,9 @@ export default defineComponent({
     // 从route对象中读取id参数
     const groupId = $route.params.id as string
     // 获取groupMember对象
-    const groupMember = computed(() => $store.state.group.tables.groupMemberTable.byId[groupId])
+    const groupMember = computed(() => $store.state.account.tables.groupMemberTable.byId[groupId])
     // 获取group对象
-    const group = computed(() => $store.state.group.tables.groupTable.byId[groupId])
+    const group = computed(() => $store.state.account.tables.groupTable.byId[groupId])
 
     return {
       $store,

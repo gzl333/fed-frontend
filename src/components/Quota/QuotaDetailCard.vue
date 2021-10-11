@@ -313,7 +313,7 @@ export default defineComponent({
     const $router = useRouter()
 
     // // 进入本页面强制更新vmtable ???
-    // void $store.dispatch('vm/updateVmTable')
+    // void $store.dispatch('server/updateVmTable')
 
     // 获取quota对象
     const quota = computed(() => props.isGroup ? $store.state.server.tables.groupQuotaTable.byId[props.quotaId] : $store.state.server.tables.personalQuotaTable.byId[props.quotaId])
@@ -321,7 +321,7 @@ export default defineComponent({
     const servers = computed(() => quota.value.servers?.map((serverId) => props.isGroup ? $store.state.server.tables.groupServerTable.byId[serverId] : $store.state.server.tables.personalServerTable.byId[serverId]))
 
     const deleteAndJump = async () => {
-      const isDeleted = await $store.dispatch('vm/deleteQuotaDialog', {
+      const isDeleted = await $store.dispatch('server/deleteQuotaDialog', {
         quotaId: props.quotaId,
         isGroup: props.isGroup
       })

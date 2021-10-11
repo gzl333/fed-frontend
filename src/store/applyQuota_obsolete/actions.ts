@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
-import { StateInterface, apiBase } from '../index'
+import { StateInterface/*, apiBase */ } from '../index'
 import { ApplyQuotaModuleInterface } from './state'
-import axios from 'axios'
+// import axios from 'axios'
 // import { normalize, schema } from 'normalizr'
 // import { Dialog, Notify } from 'quasar'
 // import QuotaApplicationEditCard from 'components/Quota/QuotaApplicationEditCard.vue'
@@ -331,7 +331,7 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   //     })
   //     // 跳转
   //     // @ts-ignore
-  //     data.vo_id ? this.$router.push('/my/group/quota/application') : this.$router.push('/my/personal/quota/application')
+  //     data.vo_id ? this.$router.push('/my/group_obsolete/quota/application') : this.$router.push('/my/personal/quota/application')
   //   } else {
   //     // 弹出通知
   //     Notify.create({
@@ -346,11 +346,11 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   //     })
   //   }
   // },
-  async postApplyQuota (context, payload: { data: { vo_id?: string; service_id: string; private_ip?: number; public_ip?: number; vcpu?: number; ram?: number; disk_size?: number; duration_days: number; company?: string; contact?: string; purpose?: string } }) {
-    const api = apiBase + '/apply/quota/'
-    const data = payload.data
-    return axios.post(api, data)
-  }
+  // async postApplyQuota (context, payload: { data: { vo_id?: string; service_id: string; private_ip?: number; public_ip?: number; vcpu?: number; ram?: number; disk_size?: number; duration_days: number; company?: string; contact?: string; purpose?: string } }) {
+  //   const api = apiBase + '/apply/quota/'
+  //   const data = payload.data
+  //   return axios.post(api, data)
+  // }
   /*  提交配额申请 */
 
   /* adminQuotaApplicationTable */
@@ -418,9 +418,9 @@ const actions: ActionTree<ApplyQuotaModuleInterface, StateInterface> = {
   //   // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
   //   context.commit('clearGroupApplicationTable')
   //   // 根据groupTable,建立groupApplicationTable
-  //   for (const groupId of context.rootState.group.tables.groupTable.allIds) {
+  //   for (const groupId of context.rootState.group_obsolete.tables.groupTable.allIds) {
   //     // member没有权限请求这个接口, owner和leader可以
-  //     if (context.rootState.group.tables.groupTable.byId[groupId].myRole !== 'member') {
+  //     if (context.rootState.group_obsolete.tables.groupTable.byId[groupId].myRole !== 'member') {
   //       // 获取响应
   //       const respGroupApplication = await context.dispatch('getApplyQuotaVO', {
   //         path: { vo_id: groupId },

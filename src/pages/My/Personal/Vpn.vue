@@ -84,7 +84,7 @@
 <!--                    </q-btn>-->
 
 <!--                    <q-btn label="修改密码" padding="none" dense flat color="primary"-->
-<!--                           @click="$store.dispatch('vm/popEditVpnPass', vpn)"/>-->
+<!--                           @click="$store.dispatch('vm_obsolete/popEditVpnPass', vpn)"/>-->
 <!--                  </div>-->
 
                   <div class="col-shrink">
@@ -118,7 +118,7 @@
                   </div>
                   <div class="col">
                     <q-btn label="下载" class=" " color="primary" padding="none" dense flat
-                           @click="$store.dispatch('vm/fetchConfig', vpn.id)"/>
+                           @click="$store.dispatch('server/fetchConfig', vpn.id)"/>
                   </div>
                 </div>
 
@@ -128,7 +128,7 @@
                   </div>
                   <div class="col">
                     <q-btn label="下载" class="" color="primary" padding="none" dense flat
-                           @click="$store.dispatch('vm/fetchCa', vpn.id)"/>
+                           @click="$store.dispatch('server/fetchCa', vpn.id)"/>
                   </div>
                 </div>
 

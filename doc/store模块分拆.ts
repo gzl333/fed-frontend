@@ -1,4 +1,3 @@
-// todo 保留现有的模块，改写部分写入新的模块。全部写完后再删除旧模块。
 
 const $store = {
   /* 账户部分 */
@@ -18,13 +17,13 @@ const $store = {
     // 联邦监控
   },
   provider: { // 资源提供者信息，管理
-    adminQuotaApplicationTable: {}, // 管理员有权限审批的quota申请
-    serviceServerTable: {} // todo 当前服务下创建的所有虚拟机
+    adminQuotaApplicationTable: {}, // 服务管理员有权限审批的quota申请
+    adminServerTable: {} // 服务管理员能看到的，当前服务下创建的所有虚拟机
   },
   /* 管理部分 */
 
   /* 业务部分 */
-  quota: { // 待添加 当前用户的配额申请，已有配额
+  quota: { // 待添加 当前用户的配额申请，已有配额。是否添加取决于quota是跨业务的，还是各自业务独立的
   },
   server: {
     // fedXxxTable 全联邦通用的的

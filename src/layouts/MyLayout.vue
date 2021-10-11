@@ -54,9 +54,9 @@ export default defineComponent({
     void $store.dispatch('fed/loadAllTables')
 
     // old modules
-    void $store.dispatch('vm/updateVmTable')
+    // void $store.dispatch('vm_obsolete/updateVmTable')
     // void $store.dispatch('applyQuota_obsolete/updateQuotaApplicationTable')
-    void $store.dispatch('group/loadGroupModuleTable')
+    // void $store.dispatch('group_obsolete/loadGroupModuleTable')
     /* my内页所有table加载起始点 */
 
     const currentUser = $store.state.account

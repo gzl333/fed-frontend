@@ -47,8 +47,6 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
-    // void $store.dispatch('vm/loadGroupQuotaTable')
-
     // application filter
     const filterSelection = ref({
       label: '全部',

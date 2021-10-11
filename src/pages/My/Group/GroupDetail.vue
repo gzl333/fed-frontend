@@ -4,12 +4,10 @@
     <div class="column items-center justify-center q-py-md">
       <div class="col q-pa-none">
 
-        <div class="row title-area">
-          <div class="col">
-            <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
-                   @click="$router.go(-1)"/>
-            项目组详情
-          </div>
+        <div class="row items-center title-area">
+          <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
+                 @click="$router.go(-1)"/>
+          <span>项目组详情</span>
         </div>
 
         <!--直接从url进入本页面时，tables尚未载入，应显示loading界面。对取属性进行缓冲，不出现undefined错误-->
@@ -108,13 +106,13 @@
                     <div class="row justify-center items-center q-gutter-sm" style="height: 70px">
 
                       <q-btn icon="edit" flat padding="none" color="primary" size="md"
-                             @click="$store.dispatch('group/editGroupDialog', group.id)">
+                             @click="$store.dispatch('account/editGroupDialog', group.id)">
                         <q-tooltip>编辑项目组信息</q-tooltip>
                       </q-btn>
 
                       <q-btn v-if="group.myRole ==='owner'" icon="group_off" flat padding="none"
                              color="primary" size="md"
-                             @click="$store.dispatch('group/deleteGroupDialog', groupId)">
+                             @click="$store.dispatch('account/deleteGroupDialog', groupId)">
                         <q-tooltip>解散项目组</q-tooltip>
                       </q-btn>
 
@@ -160,7 +158,7 @@
 
                   <q-btn v-show="tab==='member' && group.myRole !== 'member' " class="col-shrink" icon="add" size="md"
                          unelevated dense padding="xs"
-                         color="primary" @click="$store.dispatch('group/addGroupMemberDialog', groupId)">
+                         color="primary" @click="$store.dispatch('account/addGroupMemberDialog', groupId)">
                     新增人员
                   </q-btn>
 
@@ -239,9 +237,9 @@ export default defineComponent({
     // 从route对象中读取id参数
     const groupId = $route.params.id as string
     // group对象
-    const group = computed(() => $store.state.group.tables.groupTable.byId[groupId])
+    const group = computed(() => $store.state.account.tables.groupTable.byId[groupId])
     // groupMember
-    const groupMember = computed(() => $store.state.group.tables.groupMemberTable.byId[groupId])
+    const groupMember = computed(() => $store.state.account.tables.groupMemberTable.byId[groupId])
     // groupServer
     const servers = computed(() => $store.getters['server/getGroupServersByGroupId'](groupId))
     // groupQuota

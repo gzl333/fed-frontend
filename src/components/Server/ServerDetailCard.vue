@@ -3,14 +3,11 @@
     <div class="column items-center justify-center ">
       <div class="col">
 
-        <div class="row">
-
-          <div class="col title-area">
-            <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
-                   @click="goBack"/>
-            云主机详情
-          </div>
-
+        <div class="row items-center title-area">
+          <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
+                 @click="$router.back()"/>
+          <span v-if="isGroup">项目组云主机详情</span>
+          <span v-else>个人云主机详情</span>
         </div>
 
         <!--直接从url进入本页面时，tables尚未载入，应显示loading界面。对取属性进行缓冲，不出现undefined错误-->
@@ -221,7 +218,7 @@
                   <div class="col-3 text-grey">VPN配置文件</div>
                   <div class="col">
                     <q-btn label="下载" class=" " color="primary" padding="none" dense flat
-                           @click="$store.dispatch('vm/fetchConfig', server.service)"/>
+                           @click="$store.dispatch('server/fetchConfig', server.service)"/>
                   </div>
                 </div>
 
@@ -229,7 +226,7 @@
                   <div class="col-3 text-grey">VPN CA证书</div>
                   <div class="col">
                     <q-btn label="下载" class="" color="primary" padding="none" dense flat
-                           @click="$store.dispatch('vm/fetchCa', server.service)"/>
+                           @click="$store.dispatch('server/fetchCa', server.service)"/>
                   </div>
                 </div>
 
@@ -240,8 +237,8 @@
                   <div class="col-2 text-grey">所属组</div>
                   <div class="col-shrink">
                     <q-btn flat dense color="primary" padding="none"
-                           :to="{path:  `/my/group/detail/${$store.state.group.tables.groupTable.byId[server.vo_id].id}`}">
-                      {{ $store.state.group.tables.groupTable.byId[server.vo_id].name }}
+                           :to="{path:  `/my/group/detail/${$store.state.account.tables.groupTable.byId[server.vo_id].id}`}">
+                      {{ $store.state.account.tables.groupTable.byId[server.vo_id].name }}
                       <q-tooltip>
                         项目组详情
                       </q-tooltip>
@@ -344,7 +341,6 @@
 import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
-import { useRouter } from 'vue-router'
 import useCopyToClipboard from 'src/hooks/useCopyToClipboard'
 import ServerStatus from 'components/Server/ServerStatus.vue'
 
@@ -365,7 +361,6 @@ export default defineComponent({
   },
   setup (props) {
     const $store = useStore<StateInterface>()
-    const $router = useRouter()
 
     // todo 未传参id时，跳转处理
     // if (!props.serverId) {
@@ -375,11 +370,11 @@ export default defineComponent({
     // server info
     const server = computed(() => props.isGroup ? $store.state.server.tables.groupServerTable.byId[props.serverId] : $store.state.server.tables.personalServerTable.byId[props.serverId])
     // service info
-    const service = computed(() => $store.state.fed.tables.serviceTable.byId[server.value.service])
+    const service = computed(() => $store.state.fed.tables.serviceTable.byId[server.value?.service])
     // quota info
-    const quota = computed(() => props.isGroup ? $store.state.server.tables.groupQuotaTable.byId[server.value.user_quota] : $store.state.server.tables.personalQuotaTable.byId[server.value.user_quota])
+    const quota = computed(() => props.isGroup ? $store.state.server.tables.groupQuotaTable.byId[server.value.user_quota] : $store.state.server.tables.personalQuotaTable.byId[server.value?.user_quota])
     // vpn info
-    const vpn = computed(() => $store.state.server.tables.userVpnTable.byId[server.value.service])
+    const vpn = computed(() => $store.state.server.tables.userVpnTable.byId[server.value?.service])
 
     // password可见性
     const isPwd = ref(true)
@@ -389,10 +384,6 @@ export default defineComponent({
     // 复制信息到剪切板
     const clickToCopy = useCopyToClipboard()
 
-    // 返回上一页
-    const goBack = () => {
-      $router.go(-1)
-    }
     return {
       server,
       service,
@@ -400,8 +391,7 @@ export default defineComponent({
       vpn,
       isPwd,
       isPwdVpn,
-      clickToCopy,
-      goBack
+      clickToCopy
     }
   }
 })
