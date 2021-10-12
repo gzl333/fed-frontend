@@ -672,6 +672,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       }
     })
   },
+  // todo 细分各种操作
   serverOperationDialog (context, payload: { serverId: string; action: string; isGroup?: boolean }) {
     // 操作的确认提示 todo 输入删除两个字以确认
     Dialog.create({
@@ -714,9 +715,9 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       // 去掉协议
       const endpoint_url = server.endpoint_url.substr(server.endpoint_url.indexOf('//'))
       // 判断结尾有没有'/'，并加上当前用户使用的协议
-      // todo 为什么没有处理成功???
-      console.log(endpoint_url.endsWith('/'))
-      const api = window.location.protocol + endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/action/' : endpoint_url + '/api/server/' + payload.serverId + '/action/'
+      // 以下写法失败, 二元选择问号前都是条件
+      // const api = window.location.protocol + endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/action/' : endpoint_url + '/api/server/' + payload.serverId + '/action/'
+      const api = window.location.protocol + (endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/action/' : endpoint_url + '/api/server/' + payload.serverId + '/action/')
       const data = { action: payload.action }
       void await axios.post(api, data)
 
@@ -737,7 +738,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           setTimeout(resolve, 5000)
         ))
         // 更新userServerTable或groupServerTable
-        payload.isGroup ? void await context.dispatch('loadGroupServerTable') : void await context.dispatch('loadUserServerTable')
+        payload.isGroup ? void await context.dispatch('loadGroupServerTable') : void await context.dispatch('loadPersonalServerTableTable')
       } else {
         // 其它操作只更新该主机状态
         // 应延时

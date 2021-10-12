@@ -31,8 +31,8 @@
                 >
                   <q-route-tab
                     no-caps
-                    class="q-px-none q-py-md q-mr-md"
-                    name="vm"
+                    class="q-px-none q-py-md q-mr-md text-bold"
+                    name="server"
                     icon="computer"
                     :label="$t('云主机')"
                     :ripple="false"

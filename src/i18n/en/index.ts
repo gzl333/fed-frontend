@@ -60,6 +60,7 @@ export default {
   更多: 'More',
   刷新云主机状态: 'Click to refresh server status',
   云主机详情: 'Server detail',
+  '暂无可用云主机，请创建后使用': 'No server available, please deploy new servers before using.',
 
   // 云主机状态
   获取中: 'Updating',
@@ -84,11 +85,11 @@ export default {
   关机: 'Shutdown',
   强制断电: 'Poweroff',
   删除: 'Delete',
-  强制删除: 'Force delete',
+  强制删除: 'Force Delete',
 
   // Personal Add Button
-  新建云主机: 'Deploy VM',
-  申请云主机配额: 'Apply for VM Quota',
+  新建云主机: 'Deploy Server',
+  申请云主机配额: 'Apply for Server Quota',
 
   // 申请个人配额
   服务节点: 'Service Node'

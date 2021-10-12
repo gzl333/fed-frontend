@@ -134,7 +134,7 @@
               <div class="col-4">
 
                 <div class="row q-pb-md items-center">
-                  <div class="col-3 text-grey">初始用户名</div>
+                  <div class="col-3 text-grey">系统初始用户名</div>
                   <div class="col">
                     {{ server.default_user }}
                     <q-btn
@@ -148,7 +148,7 @@
                 </div>
 
                 <div class="row q-pb-md items-center">
-                  <div class="col-3 text-grey">初始密码</div>
+                  <div class="col-3 text-grey">系统初始密码</div>
                   <div class="col-shrink">
                     <!--根据内容改变长度的input. 一个字母占8像素，一个汉字占16像素.https://github.com/quasarframework/quasar/issues/1958-->
                     <q-input

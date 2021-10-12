@@ -441,6 +441,8 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
   deleteGroupDialog (context, groupId: string) {
     // 检查组内云主机是否删除干净
     const countServers = context.rootGetters['server/getGroupServersByGroupId'](groupId)
+    // todo 检查配额和配额申请是否删除干净
+
     if (countServers.length > 0) {
       Notify.create({
         classes: 'notification-negative shadow-15',

@@ -1,6 +1,6 @@
 import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
-import { ServerModuleInterface } from './state'
+import { ServerModuleInterface, VpnInterface } from './state'
 import {
   ApplicationQuotaInterface,
   NetworkInterface,
@@ -199,6 +199,14 @@ const getters: GetterTree<ServerModuleInterface, StateInterface> = {
       return rows.sort(sortFn)
     }
   },
+  // 个人有quota和server的serviceId
+  getPersonalAvailableServiceIds: (state): string[] => {
+    let services = [] as string[]
+    state.tables.personalQuotaTable.allIds.forEach((id) => services.push(state.tables.personalQuotaTable.byId[id].service))
+    state.tables.personalServerTable.allIds.forEach((id) => services.push(state.tables.personalServerTable.byId[id].service))
+    services = [...new Set(services)]
+    return services
+  },
   // 全部quota和server对应的services
   getPersonalAvailableServices: (state, getters, rootState/*, rootGetters */): { value: string; label: string; }[] => {
     /*    数据结构如下
@@ -217,14 +225,11 @@ const getters: GetterTree<ServerModuleInterface, StateInterface> = {
       }
     ]
 */
-    let services = [] as string[]
-    state.tables.personalQuotaTable.allIds.forEach((id) => services.push(state.tables.personalQuotaTable.byId[id].service))
-    state.tables.personalServerTable.allIds.forEach((id) => services.push(state.tables.personalServerTable.byId[id].service))
-    services = [...new Set(services)]
+    const serviceIds = getters.getPersonalAvailableServiceIds as string[]
 
-    let serviceOptions = services.map((serviceId) => ({
+    let serviceOptions = serviceIds.map((serviceId) => ({
       value: serviceId,
-      label: i18n.global.locale === 'zh' ? rootState.fed.tables.dataCenterTable.byId[rootState.fed.tables.serviceTable.byId[serviceId].data_center].name + ' - ' + rootState.fed.tables.serviceTable.byId[serviceId].name : rootState.fed.tables.dataCenterTable.byId[rootState.fed.tables.serviceTable.byId[serviceId].data_center].name_en + ' - ' + rootState.fed.tables.serviceTable.byId[serviceId].name_en
+      label: i18n.global.locale === 'zh' ? rootState.fed.tables.dataCenterTable.byId[rootState.fed.tables.serviceTable.byId[serviceId]?.data_center]?.name + ' - ' + rootState.fed.tables.serviceTable.byId[serviceId]?.name : rootState.fed.tables.dataCenterTable.byId[rootState.fed.tables.serviceTable.byId[serviceId]?.data_center]?.name_en + ' - ' + rootState.fed.tables.serviceTable.byId[serviceId]?.name_en
     }))
 
     // 排序
@@ -235,6 +240,12 @@ const getters: GetterTree<ServerModuleInterface, StateInterface> = {
       label: i18n.global.locale === 'zh' ? '全部服务节点' : 'All Service Nodes'
     })
     return serviceOptions
+  },
+  // 获取个人有quota/server的vpn对象
+  getPersonalAvailableVpns: (state, getters): VpnInterface[] => {
+    const serviceIds = getters.getPersonalAvailableServiceIds as string[]
+    const vpns = serviceIds.map((serviceId) => state.tables.userVpnTable.byId[serviceId])
+    return vpns
   }
 }
 

@@ -6,7 +6,7 @@
 
         <div class="row items-center title-area">
           <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
-                 @click="$router.go(-1)"/>
+                 @click="$router.back()"/>
           <span>项目组详情</span>
         </div>
 
@@ -38,6 +38,19 @@
               <div class="col-auto ">
                 <div class="column justify-start items-center" style="height: 120px">
                   <div class="col-2 text-grey">
+                    备注
+                  </div>
+                  <div class="col-10">
+                    <div class="row justify-center items-center" style="height: 70px">
+                      {{ group.description }}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-auto ">
+                <div class="column justify-start items-center" style="height: 120px">
+                  <div class="col-2 text-grey">
                     所属单位
                   </div>
                   <div class="col-10">
@@ -56,19 +69,6 @@
                   <div class="col-10">
                     <div class="row justify-center items-center" style="height: 70px">
                       {{ group.owner.username }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <div class="col-auto ">
-                <div class="column justify-start items-center" style="height: 120px">
-                  <div class="col-2 text-grey">
-                    备注
-                  </div>
-                  <div class="col-10">
-                    <div class="row justify-center items-center" style="height: 70px">
-                      {{ group.description }}
                     </div>
                   </div>
                 </div>

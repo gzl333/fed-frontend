@@ -24,7 +24,7 @@ export interface DataCenterInterface {
 
   // 来自service接口
   services: string[] // 全部services汇总
-  personalServices: string[] // 用户可用services汇总
+  // personalServices: string[] // 用户可用services汇总
 }
 
 export interface ServiceInterface {

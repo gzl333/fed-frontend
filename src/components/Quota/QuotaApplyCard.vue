@@ -43,7 +43,7 @@
 
           <div class="col">
             <q-radio
-              v-for="service in dataCenter.globalServices.map(id => $store.state.fed.tables.serviceTable.byId[id])"
+              v-for="service in dataCenter.services.map(id => $store.state.fed.tables.serviceTable.byId[id])"
               dense v-model="radioService" :val="service.id"
               :label=" locale === 'zh' ? service.name : service.name_en" :key="service.id"
               class="q-pb-sm q-mr-lg"/>
@@ -184,10 +184,8 @@
         </div>
 
         <div class="row item-row items-center">
-          <div class="col-1">配额用途</div>
-          <div class="col-6">
-            <q-input class="input-remarks" v-model="inputPurpose" maxlength="50" dense counter/>
-          </div>
+          <div class="col-1 q-pb-md">配额用途</div>
+          <q-input ref="input" class="col-6 input-remarks" v-model="inputPurpose" maxlength="50" outlined dense counter/>
         </div>
 
         <!--        <div class="row item-row items-center">-->
@@ -336,6 +334,10 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
+    // dom元素
+    const select = ref<HTMLElement>()
+    const input = ref<HTMLElement>()
+
     // radio选项数据
     const dataCenters = computed(() => Object.values($store.state.fed.tables.dataCenterTable.byId))
     // owner/leader权限才能申请配额
@@ -389,7 +391,7 @@ export default defineComponent({
 
     const applyQuota = async () => {
       // 如果没有选择ip地址，则弹出通知
-      if (!radioGroup.value) {
+      if (props.isGroup && !radioGroup.value) {
         Notify.create({
           classes: 'notification-negative shadow-15',
           icon: 'mdi-alert',
@@ -422,6 +424,7 @@ export default defineComponent({
           timeout: 5000,
           multiLine: false
         })
+        input.value?.focus()
       } else {
         isCreating.value = true
         const selection = props.isGroup ? {
@@ -458,7 +461,8 @@ export default defineComponent({
     }
 
     return {
-      $store,
+      select,
+      input,
       locale,
       groups,
       dataCenters,

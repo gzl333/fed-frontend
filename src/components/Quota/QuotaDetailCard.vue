@@ -3,12 +3,10 @@
     <div class="column items-center justify-center q-py-md">
       <div class="col q-pa-none">
 
-        <div class="row title-area">
-          <div class="col">
+        <div class="row items-center title-area">
             <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                    @click="$router.back()"/>
-            配额详情
-          </div>
+            <span> {{$t(' 配额详情')}}</span>
         </div>
 
         <!--直接从url进入本页面时，tables尚未载入，应显示loading界面。对取属性进行缓冲，不出现undefined错误-->
@@ -211,7 +209,17 @@
                     <div class="column justify-center items-center" style="height: 100px">
                       <div v-if="!quota.expiration_time">长期有效</div>
                       <div v-else class="column justify-center items-center">
-                        <div>{{ new Date(quota.expiration_time).toLocaleString() }}</div>
+
+                        <div v-if="locale==='zh'">
+                          <div>{{ new Date(quota.expiration_time).toLocaleString(locale).split(' ')[0] }}</div>
+                          <div>{{ new Date(quota.expiration_time).toLocaleString(locale).split(' ')[1] }}</div>
+                        </div>
+
+                        <div v-else>
+                          <div>{{ new Date(quota.expiration_time).toLocaleString(locale).split(',')[0] }}</div>
+                          <div>{{ new Date(quota.expiration_time).toLocaleString(locale).split(',')[1] }}</div>
+                        </div>
+
                         <div v-if="quota.expired" class="text-grey">
                           已过期
                         </div>
@@ -292,6 +300,7 @@ import ServerTable from 'components/Server/ServerTable.vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'QuotaDetailCard',
@@ -311,6 +320,7 @@ export default defineComponent({
   setup (props) {
     const $store = useStore<StateInterface>()
     const $router = useRouter()
+    const { locale } = useI18n({ useScope: 'global' })
 
     // // 进入本页面强制更新vmtable ???
     // void $store.dispatch('server/updateVmTable')
@@ -331,7 +341,7 @@ export default defineComponent({
       }
     }
     return {
-      $store,
+      locale,
       quota,
       servers,
       deleteAndJump

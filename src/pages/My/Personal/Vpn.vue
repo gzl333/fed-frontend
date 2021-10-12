@@ -2,7 +2,7 @@
   <div class="Vpn">
 
     <div class="row items-center justify-between q-py-md">
-      <div v-if="!vpns" class="col">
+      <div v-if="vpns.length===0" class="col">
         正在加载，请稍候
       </div>
 
@@ -14,10 +14,17 @@
               vertical
               active-color="primary"
             >
-              <q-tab :ripple="false"
-                     v-for="vpn in vpns" :key="vpn.id" :name="vpn.id"
+              <q-tab v-for="vpn in vpns" :key="vpn?.id" :name="vpn?.id"
+                     class="q-pl-none"
+                     style="justify-content:initial; text-align: left; font-weight: bold;"
+                     :ripple="false"
+                     no-caps
               >
-                <div class="text-left">{{ $store.state.fed.tables.serviceTable.byId[vpn.id]?.name }}</div>
+                {{
+                  locale === 'zh' ?
+                    $store.state.fed.tables.serviceTable.byId[vpn?.id]?.name :
+                    $store.state.fed.tables.serviceTable.byId[vpn?.id]?.name_en
+                }}
               </q-tab>
             </q-tabs>
           </div>
@@ -31,11 +38,14 @@
               transition-next="jump-up"
             >
 
-              <q-tab-panel v-for="vpn in vpns" :key="vpn.id" :name="vpn.id" class="bg-grey-1">
+              <q-tab-panel v-for="vpn in vpns" :key="vpn?.id" :name="vpn?.id" class="bg-grey-1">
 
                 <div class="row q-pb-sm items-center">
                   <div class="col q-pb-lg text-primary">
-                    {{$store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[vpn.id]?.data_center].name}} - {{ $store.state.fed.tables.serviceTable.byId[vpn.id]?.name }}
+                    {{
+                      $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[vpn?.id]?.data_center].name
+                    }}
+                    - {{ $store.state.fed.tables.serviceTable.byId[vpn?.id]?.name }}
                   </div>
                   <div class="col"></div>
                 </div>
@@ -45,10 +55,10 @@
                     VPN 用户名
                   </div>
                   <div class="col">
-                    {{ vpn.username }}
+                    {{ vpn?.username }}
                     <q-btn
                       class="col-shrink q-px-xs text-primary" flat icon="content_copy" size="sm"
-                      @click="clickToCopy(vpn.username)">
+                      @click="clickToCopy(vpn?.username)">
                       <q-tooltip>
                         复制
                       </q-tooltip>
@@ -61,41 +71,16 @@
                     VPN 密码
                   </div>
 
-<!--                  <div class="col row q-gutter-sm">-->
-<!--                    <q-input class="password-input"-->
-<!--                             :loading="isLoading"-->
-<!--                             v-model="vpn.password"-->
-<!--                             :type="isPwds[vpn.id] ? 'password' : 'text'"-->
-<!--                             readonly borderless dense square outlined>-->
-<!--                      <template v-slot:prepend>-->
-<!--                        <q-icon-->
-<!--                          :name="isPwds[vpn.id] ? 'visibility' : 'visibility_off'"-->
-<!--                          @click="isPwds[vpn.id] = !isPwds[vpn.id]"-->
-<!--                        />-->
-<!--                      </template>-->
-<!--                    </q-input>-->
-<!--                    &lt;!&ndash;            {{ vpn[1].password }}&ndash;&gt;-->
-<!--                    <q-btn-->
-<!--                      class="col-shrink q-px-xs text-primary" flat icon="content_copy" size="xs"-->
-<!--                      @click="clickToCopy(vpn.password)">-->
-<!--                      <q-tooltip>-->
-<!--                        复制-->
-<!--                      </q-tooltip>-->
-<!--                    </q-btn>-->
-
-<!--                    <q-btn label="修改密码" padding="none" dense flat color="primary"-->
-<!--                           @click="$store.dispatch('vm_obsolete/popEditVpnPass', vpn)"/>-->
-<!--                  </div>-->
-
                   <div class="col-shrink">
                     <!--根据内容改变长度的input. 一个字母占8像素，一个汉字占16像素.https://github.com/quasarframework/quasar/issues/1958-->
                     <q-input :input-style="{width:`${vpn.password.length * 8}px`, maxWidth: '200px', minWidth: '32px'}"
                              v-model="vpn.password" readonly borderless dense
-                             :type="isPwds[vpn.id] ? 'password' : 'text'">
+                             :type="isPwds[vpn?.id] ? 'password' : 'text'">
                       <template v-slot:append>
-                        <q-icon :name="isPwds[vpn.id] ? 'visibility' : 'visibility_off'" @click="isPwds[vpn.id] = !isPwds[vpn.id]"/>
+                        <q-icon :name="isPwds[vpn?.id] ? 'visibility' : 'visibility_off'"
+                                @click="isPwds[vpn?.id] = !isPwds[vpn?.id]"/>
                         <q-btn class="q-px-xs" flat color="primary" icon="content_copy" size="sm"
-                               @click="clickToCopy(vpn.password, true)">
+                               @click="clickToCopy(vpn?.password, true)">
                           <q-tooltip>
                             复制
                           </q-tooltip>
@@ -145,10 +130,12 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive, ref } from 'vue'
+import { computed, defineComponent, reactive, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import useCopyToClipboard from 'src/hooks/useCopyToClipboard'
+import { useI18n } from 'vue-i18n'
+import { VpnInterface } from 'src/store/server/state'
 
 export default defineComponent({
   name: 'Vpn',
@@ -156,10 +143,22 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
+    const { locale } = useI18n({ useScope: 'global' })
 
-    const vpns = computed(() => Object.values($store.state.server.tables.userVpnTable.byId))
+    // const vpns = computed(() => Object.values($store.state.server.tables.userVpnTable.byId))
+    const vpns = computed(() => $store.getters['server/getPersonalAvailableVpns'])
 
-    const tab = ref('1')
+    // tab初始状态 (1)
+    const tab = ref('')
+    // tab默认选择 (2)
+    const chooseTabDefault = () => {
+      tab.value = vpns.value[0]?.id
+    }
+    // setup时调用一次 (3) table已加载时进入页面要选一次默认值
+    chooseTabDefault()
+    // 根据table的变化情况再调用 (4) table未加载时进入页面，每变化一次都要选一次默认值
+    watch($store.state.server.tables.userVpnTable, chooseTabDefault)
+    /* table 进入页面过程中选择默认项 */
 
     // 复制信息到剪切板
     const clickToCopy = useCopyToClipboard()
@@ -167,8 +166,8 @@ export default defineComponent({
     // password可见性
     const isPwds = computed(() => {
       const isPwds = {}
-      vpns.value.forEach((vpn) => {
-        Object.assign(isPwds, { [vpn.id]: true })
+      vpns.value.forEach((vpn: VpnInterface) => {
+        Object.assign(isPwds, { [vpn?.id]: true })
       })
       return reactive(isPwds)
     })
@@ -177,7 +176,7 @@ export default defineComponent({
     const isLoading = ref(false)
 
     return {
-      $store,
+      locale,
       vpns,
       tab,
       isPwds,

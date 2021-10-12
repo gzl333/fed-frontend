@@ -21,7 +21,7 @@
                     :options="groups" map-options emit-value option-label="name" option-value="id"/>
           <div v-else>
             <div class="row items-center">
-              暂无项目组，请
+              {{ $t('暂无项目组，请') }}
               <q-btn v-if="isGroup" flat padding="none" color="primary"
                      :to="'/my/group/create'">
                 {{ $t('创建项目组') }}
@@ -33,17 +33,17 @@
 
       <div class="col section">
         <div class="text-h7 text-primary section-title">
-          服务节点
+          {{ $t('服务节点') }}
         </div>
         <div v-for="dataCenter in dataCenters" :key="dataCenter.id" class="row  item-row">
 
           <div class="col-auto item-title text-bold">
-            {{ dataCenter.name }}
+            {{ locale === 'zh' ? dataCenter.name : dataCenter.name_en }}
           </div>
 
           <div class="col item-radios">
             <div class="row items-center q-pb-sm"
-                 v-for="service in dataCenter.globalServices.map(id => $store.state.fed.tables.serviceTable.byId[id])"
+                 v-for="service in dataCenter.services.map(id => $store.state.fed.tables.serviceTable.byId[id])"
                  :key="service.id">
 
               <q-radio class="col-auto" dense v-model="radioService" :val="service.id"
@@ -58,16 +58,16 @@
 
       <div class="col section">
         <div class="text-h7 text-primary section-title">
-          云主机配额
+          {{ $t('云主机配额') }}
         </div>
 
         <div class="row item-row">
           <div class="col-1  text-bold">
-            可用配额
+            {{ $t('可用配额') }}
           </div>
           <div class="col item-radios">
             <div v-if="quotasUsable.length === 0" class="row items-center">
-              暂无可用云主机配额，请选择其它服务节点。 或
+              {{ $t('暂无可用云主机配额，请选择其它服务节点。 或') }}
               <q-btn v-if="isGroup" flat padding="none" color="primary"
                      :to="`/my/group/quota/apply?group=${radioGroup}&service=${radioService}`">
                 {{ $t('申请项目组主机配额') }}
@@ -79,8 +79,8 @@
             </div>
 
             <div v-else>
-              <q-radio v-for="quota in quotasUsable" dense v-model="radioQuota" :val="quota.id"
-                       :key="quota.id" class="radio"
+              <q-radio v-for="quota in quotasUsable"
+                       dense v-model="radioQuota" :val="quota.id" :key="quota.id" class="radio"
                        :disable="quota.expired || quota.exhausted">
                 <quota-detail-card-intense :quota="quota" :is-group="isGroup"/>
               </q-radio>
@@ -92,13 +92,13 @@
 
         <div class="row item-row">
           <div class="col-1  text-bold">
-            不可用配额
+            {{ $t('不可用配额') }}
           </div>
           <div class="col item-radios">
             <div v-if="quotasUnusable.length === 0">{{ $t('无') }}</div>
             <div v-else>
               <div class="row">
-                <q-btn outline color="primary" dense padding="xss" size="xs" @click="isFolded=!isFolded">
+                <q-btn class="q-pa-none" color="primary" flat dense padding="none" size="md" @click="isFolded=!isFolded">
                   {{ isFolded ? $t('展开') : $t('折叠') }}
                 </q-btn>
               </div>
@@ -116,11 +116,11 @@
 
       <div class="col section">
         <div class="text-h7 text-primary section-title">
-          网络类型
+          {{ $t('网络类型') }}
         </div>
         <div v-if="privateNetworks.length > 0" class="row item-row">
           <div class="col-1 text-bold">
-            私网IP
+            {{ $t('私网IP段') }}
           </div>
           <div class="col item-radios">
             <q-radio v-for="network in privateNetworks" dense v-model="radioNetwork" :val="network.id"
@@ -129,7 +129,7 @@
         </div>
         <div v-if="publicNetworks.length > 0" class="row item-row">
           <div class="col-1 text-bold">
-            公网IP
+            {{ $t('公网IP段') }}
           </div>
           <div class="col item-radios">
             <q-radio v-for="network in publicNetworks" dense v-model="radioNetwork" :val="network.id"
@@ -138,14 +138,14 @@
         </div>
         <div v-if="publicNetworks.length === 0 && privateNetworks.length === 0" class="row item-row">
           <div class="col-shrink item-title">
-            暂无可用网络类型，请选择其它服务节点
+            {{ $t('暂无可用网络类型，请选择其它服务节点') }}
           </div>
         </div>
       </div>
 
       <div class="col section">
         <div class="text-h7 text-primary section-title">
-          系统镜像
+          {{ $t('系统镜像') }}
         </div>
         <div v-if="images.length > 0" class="row item-row">
           <div class="col item-radios">
@@ -153,111 +153,113 @@
                      :label="image.name" :key="image.id" class="radio"/>
           </div>
         </div>
-        <div v-else>暂无可用镜像，请选择其它服务节点</div>
+        <div v-else>{{ $t('暂无可用镜像，请选择其它服务节点') }}</div>
       </div>
 
       <div class="col section">
         <div class="text-h7 text-primary section-title">
-          CPU/内存
+          CPU/{{ $t('内存') }}
         </div>
         <div v-if="flavors.length > 0" class="row item-row">
           <div class="col item-radios">
             <q-radio v-for="flavor in flavors" dense v-model="radioFlavor" :val="flavor.id"
-                     :label="`${flavor.vcpus}核/${flavor.ram/1024}GB`" :key="flavor.id" class="radio"/>
+                     :label="`${flavor.vcpus}${$t('核')}/${flavor.ram/1024}GB`" :key="flavor.id" class="radio"/>
           </div>
         </div>
-        <div v-else>暂无可用配置，请选择其它服务节点</div>
+        <div v-else>{{ $t('暂无可用配置，请选择其它服务节点') }}</div>
       </div>
 
       <div class="col section">
         <div class="text-h7 text-primary section-title">
-          备注
+          {{ $t('备注') }}
         </div>
         <div class="row item-row">
           <div class="col-6">
-            <q-input class="input-remarks" v-model="inputRemarks" maxlength="30" dense counter></q-input>
+            <q-input ref="input" class="input-remarks" v-model="inputRemarks" maxlength="30" dense outlined counter/>
           </div>
         </div>
       </div>
 
       <div class="col summarize-section">
         <div class="text-h7 text-primary section-title">
-          所选配置
+          {{ $t('所选配置') }}
         </div>
 
         <div v-if="isGroup" class="row item-row">
           <div class="col-shrink item-title-narrow text-grey">
-            项目组
+            {{ $t('项目组') }}
           </div>
           <div class="col item-radios">
             <div v-if="radioGroup !== ''">
               {{ $store.state.account.tables.groupTable.byId[radioGroup]?.name }}
             </div>
-            <div v-else class="text-red">请选择项目组</div>
+            <div v-else class="text-red">{{ $t('请选择项目组') }}</div>
           </div>
         </div>
 
         <div class="row item-row">
           <div class="col-shrink item-title-narrow text-grey">
-            服务节点
+            {{ $t('服务节点') }}
           </div>
           <div class="col item-radios">
             <div
               v-if="$store.state.fed.tables.dataCenterTable.byId[radioDataCenter] && $store.state.fed.tables.serviceTable.byId[radioService]">
               {{
-                `${$store.state.fed.tables.dataCenterTable.byId[radioDataCenter].name} - ${$store.state.fed.tables.serviceTable.byId[radioService].name}`
+                locale === 'zh' ?
+                  `${$store.state.fed.tables.dataCenterTable.byId[radioDataCenter].name} - ${$store.state.fed.tables.serviceTable.byId[radioService].name}` :
+                  `${$store.state.fed.tables.dataCenterTable.byId[radioDataCenter].name_en} - ${$store.state.fed.tables.serviceTable.byId[radioService].name_en}`
               }}
             </div>
-            <div v-else class="text-red">请选择服务节点</div>
+            <div v-else class="text-red">{{ $t('请选择服务节点') }}</div>
           </div>
         </div>
 
         <div class="row item-row">
           <div class="col-shrink item-title-narrow text-grey">
-            云主机配额
+            {{ $t('云主机配额') }}
           </div>
           <div v-if="isGroup" class="col item-radios">
-            <div v-if="$store.state.vm.tables.groupQuotaTable.byId[radioQuota]?.display">
-              {{ $store.state.vm.tables.groupQuotaTable.byId[radioQuota]?.display }}
+            <div v-if="$store.state.server.tables.groupQuotaTable.byId[radioQuota]?.display">
+              {{ $store.state.server.tables.groupQuotaTable.byId[radioQuota]?.display }}
             </div>
-            <div v-else class="text-red">请选择云主机配额</div>
+            <div v-else class="text-red">{{ $t('请选择云主机配额') }}</div>
           </div>
           <div v-else class="col item-radios">
-            <div v-if="$store.state.vm.tables.userQuotaTable.byId[radioQuota]?.display">
-              {{ $store.state.vm.tables.userQuotaTable.byId[radioQuota]?.display }}
+            <div v-if="$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.display">
+              {{ $store.state.server.tables.personalQuotaTable.byId[radioQuota]?.display }}
             </div>
-            <div v-else class="text-red">请选择云主机配额</div>
+            <div v-else class="text-red">{{ $t('请选择云主机配额') }}</div>
           </div>
         </div>
 
         <div class="row item-row">
           <div class="col-shrink item-title-narrow text-grey">
-            网络类型
+            {{ $t('网络类型') }}
           </div>
           <div class="col item-radios">
             <div
               v-if="$store.state.server.tables.serviceNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name">
               {{ $store.state.server.tables.serviceNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name }}
             </div>
-            <div v-else class="text-red">请选择网络类型</div>
+            <div v-else class="text-red">{{ $t('请选择网络类型') }}</div>
           </div>
         </div>
 
         <div class="row item-row">
           <div class="col-shrink item-title-narrow text-grey">
-            系统镜像
+            {{ $t('系统镜像') }}
           </div>
           <div class="col item-radios">
-            <div v-if="$store.state.vm.tables.globalImageTable.byLocalId[`${radioService}-${radioImage}`]?.name">
-              {{ $store.state.vm.tables.globalImageTable.byLocalId[`${radioService}-${radioImage}`]?.name }}
+            <div v-if="$store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name">
+              {{ $store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name }}
             </div>
-            <div v-else class="text-red">请选择系统镜像</div>
+            <div v-else class="text-red">{{ $t('请选择系统镜像') }}</div>
           </div>
         </div>
 
         <div class="row item-row">
           <div class="col-shrink item-title-narrow text-grey">
-            CPU/内存
+            CPU/{{ $t('内存') }}
           </div>
           <div class="col item-radios">
             <div v-if="$store.state.server.tables.fedFlavorTable.byId[radioFlavor]">
@@ -265,23 +267,25 @@
                 `${$store.state.server.tables.fedFlavorTable.byId[radioFlavor].vcpus}核/${$store.state.server.tables.fedFlavorTable.byId[radioFlavor].ram / 1024}GB`
               }}
             </div>
-            <div v-else class="text-red">请选择配置</div>
+            <div v-else class="text-red">{{ $t('请选择配置') }}</div>
           </div>
         </div>
 
         <div class="row item-row">
           <div class="col-shrink item-title-narrow text-grey">
-            备注
+            {{ $t('备注') }}
           </div>
           <div v-if="inputRemarks" class="col item-radios">
             {{ inputRemarks }}
           </div>
-          <div v-else class="text-red">请填写备注</div>
+          <div v-else class="text-red">{{ $t('请填写备注') }}</div>
         </div>
 
       </div>
 
-      <q-btn color="primary q-mb-xl" @click="deployServer" label="新建云主机" unelevated :loading="isDeploying"/>
+      <q-btn color="primary q-mb-xl" @click="deployServer" unelevated :loading="isDeploying">
+        {{ $t('新建云主机') }}
+      </q-btn>
 
     </div>
   </div>
@@ -294,7 +298,7 @@ import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
 import { Notify } from 'quasar'
 
-import QuotaDetailCardIntense from 'components/Quota/QuotaDetailCardIntense.vue'
+import QuotaDetailCardIntense from 'components/Quota/QuotaDetailCardDense.vue'
 import { useRouter } from 'vue-router'
 import api from 'src/store/api'
 
@@ -327,6 +331,9 @@ export default defineComponent({
     // 不可用配额是否折叠
     const isFolded = ref(true)
 
+    // dom元素
+    const input = ref<HTMLElement>()
+
     // radio选项数据
     // // 全局数据
     // owner/leader权限才能建立云主机， member不能建立
@@ -354,13 +361,13 @@ export default defineComponent({
 
     /* table 进入页面过程中选择默认项 */
     // radio默认选择 (2)
-    const chooseRadioEntering = () => {
+    const chooseRadioDefaults = () => {
       if (props.quotaId) {
         // quota使用指定id
         radioQuota.value = props.quotaId
         // group和service用quota的归属信息算出来
         radioGroup.value = $store.state.server.tables.groupQuotaTable.byId[props.quotaId]?.vo_id as string
-        radioService.value = $store.state.server.tables.groupQuotaTable.byId[props.quotaId]?.service
+        radioService.value = props.isGroup ? $store.state.server.tables.groupQuotaTable.byId[props.quotaId]?.service : $store.state.server.tables.personalQuotaTable.byId[props.quotaId]?.service
       } else {
         radioGroup.value = props.groupId || groups.value[0]?.id || ''
         radioService.value = props.serviceId || services.value[0]?.id || ''
@@ -372,9 +379,9 @@ export default defineComponent({
       radioFlavor.value = flavors.value[0]?.id
     }
     // setup时调用一次 (3) table已加载时进入页面要选一次默认值
-    chooseRadioEntering()
+    chooseRadioDefaults()
     // 根据table的变化情况再调用 (4) table未加载时进入页面，每变化一次都要选一次默认值
-    watch([$store.state.server.tables, $store.state.account.tables.groupTable, $store.state.account.tables.groupMemberTable], chooseRadioEntering)
+    watch([$store.state.server.tables, $store.state.account.tables.groupTable, $store.state.account.tables.groupMemberTable], chooseRadioDefaults)
     /* table 进入页面过程中选择默认项 */
 
     /* 在table都加载后，4个radio，随着group/service变化选择默认项 */
@@ -393,7 +400,7 @@ export default defineComponent({
     const isDeploying = ref(false)
     const deployServer = async () => {
       // 如果radio没有选择全，则弹出通知
-      if (!radioService.value || !radioNetwork.value || !radioImage.value || !radioFlavor.value || !radioQuota.value || !inputRemarks.value) {
+      if (!radioService.value || !radioNetwork.value || !radioImage.value || !radioFlavor.value || !radioQuota.value) {
         Notify.create({
           classes: 'notification-negative shadow-15',
           icon: 'error',
@@ -404,6 +411,18 @@ export default defineComponent({
           timeout: 5000,
           multiLine: false
         })
+      } else if (!inputRemarks.value) {
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'error',
+          textColor: 'negative',
+          message: '请填写备注',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+        input.value?.focus()
       } else {
         isDeploying.value = true
         const selection = {
@@ -462,7 +481,7 @@ export default defineComponent({
     /* 新建云主机 */
 
     return {
-      $store,
+      input,
       locale,
       groups,
       dataCenters,

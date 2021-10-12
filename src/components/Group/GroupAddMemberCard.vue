@@ -72,7 +72,7 @@ export default defineComponent({
     // component will emit through useDialogPluginComponent()
     ...useDialogPluginComponent.emits
   ],
-  setup (props) {
+  setup (/* props */) {
     // REQUIRED; must be called inside of setup()
     const {
       dialogRef,

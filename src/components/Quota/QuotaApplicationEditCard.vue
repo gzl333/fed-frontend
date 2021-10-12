@@ -1,13 +1,13 @@
 <template>
   <!-- notice dialogRef here -->
-  <q-dialog ref="dialogRef" @hide="onDialogHide" >
+  <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin dialog-primary">
       <!--
         ...content
         ... use q-card-section for it?
       -->
-      <q-card-section class="row items-center q-pa-sm q-pb-sm">
-        <div class="text-h6">{{ $t('修改配额申请') }}</div>
+      <q-card-section class="row items-center justify-center q-pb-md">
+        <div class="text-primary">{{ $t('修改配额申请') }}</div>
         <q-space/>
         <q-btn icon="close" flat dense size="sm" v-close-popup/>
       </q-card-section>
@@ -24,7 +24,12 @@
         </div>
 
         <div class="row q-pb-lg">
-          <div class="col-2 text-grey-7">服务节点</div>
+          <div class="col-2 text-grey-7">
+            服务节点
+            <q-icon name="help_outline" color="grey" size="xs">
+              <q-tooltip>{{ $t('如需修改服务节点，请提交新的申请') }}</q-tooltip>
+            </q-icon>
+          </div>
           <div class="col">
             {{
               $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[currentApplication.service].data_center].name
@@ -132,21 +137,21 @@
         <div class="row items-center q-pb-md">
           <div class="col-2 text-grey-7 q-pb-md">配额用途</div>
           <div class="col">
-            <q-input v-model="newApplication.purpose" maxlength="30" outlined dense counter/>
+            <q-input ref="input" v-model="newApplication.purpose" maxlength="30" outlined dense counter/>
           </div>
         </div>
 
       </q-card-section>
 
-<!--      <q-separator/>-->
+      <!--      <q-separator/>-->
 
       <!-- buttons example -->
-      <q-card-actions align="right">
+      <q-card-actions align="between">
         <q-btn color="primary" unelevated @click="onCancelClick">
           {{ $t('放弃') }}
         </q-btn>
         <q-btn color="primary" outline @click="onOKClick">
-          {{ $t('保存') }}
+          {{ $t('确认') }}
         </q-btn>
       </q-card-actions>
 
@@ -155,7 +160,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, reactive } from 'vue'
+import { computed, defineComponent, reactive, ref } from 'vue'
 import { Notify, useDialogPluginComponent } from 'quasar'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
@@ -190,6 +195,9 @@ export default defineComponent({
 
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
+
+    // input
+    const input = ref<HTMLElement>()
 
     // radio 设计模式：创建一个reactive响应式对象，初始值来自另一个computed响应式对象
     const currentApplication = computed(() => props.isGroup ? $store.state.server.tables.groupQuotaApplicationTable.byId[props.applyId] : $store.state.server.tables.personalQuotaApplicationTable.byId[props.applyId])
@@ -231,6 +239,8 @@ export default defineComponent({
           timeout: 5000,
           multiLine: false
         })
+        // focus
+        input.value?.focus()
       } else {
         // payload是传给onOK的实参, data从这里传到action里面
         onDialogOK({
@@ -252,7 +262,7 @@ export default defineComponent({
       onCancelClick: onDialogCancel,
       // 以上为dialog模板必须
 
-      $store,
+      input,
       locale,
       newApplication,
       currentApplication

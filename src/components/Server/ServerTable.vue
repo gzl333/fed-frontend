@@ -9,7 +9,7 @@
       :rows="servers"
       :columns="columns"
       row-key="name"
-      no-data-label="暂无可用云主机，请创建后使用"
+      :no-data-label="$t('暂无可用云主机，请创建后使用')"
       hide-pagination
       :pagination="paginationTable"
     >
@@ -39,14 +39,15 @@
           <q-td key="ip" :props="props">
 
             <q-btn
-              class="q-ma-none" :label="props.row.ipv4" color="primary" padding="none" flat dense unelevated
+              class="q-ma-none" :label="props.row.ipv4" color="primary" padding="none" flat dense unelevated no-caps
               :to="{path: isGroup ? `/my/group/server/detail/${props.row.id}` : `/my/personal/server/detail/${props.row.id}`}">
               <q-tooltip>
                 {{ $t('进入云主机详情') }}
               </q-tooltip>
               <!--创建时间距离当下小于1小时则打上new标记-->
               <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
-                       color="light-green" floating transparent rounded align="middle">new
+                       color="light-green" floating transparent rounded align="middle">
+                new
               </q-badge>
             </q-btn>
 
@@ -82,8 +83,8 @@
             {{ props.row.image }}
           </q-td>
           <q-td key="configuration" :props="props">
-            <div> {{ props.row.vcpus }} {{ locale === 'zh' ? '核' : props.row.vcpus > 1 ? 'cores' : 'core' }}</div>
-            <div>{{ props.row.ram / 1024 }}GB</div>
+            <span> {{ props.row.vcpus }} {{ locale === 'zh' ? '核' : props.row.vcpus > 1 ? 'cores' : 'core' }}</span>/<span>{{ props.row.ram / 1024 }}GB</span>
+
           </q-td>
           <q-td key="expiration" :props="props">
             <div v-if="!props.row.expiration_time">
@@ -117,7 +118,7 @@
                 {{ props.row.remarks }}
               </div>
 
-              <q-btn v-if="hoverRow === props.row.name"
+              <q-btn v-if="hoverRow === props.row.name && (!isGroup || (isGroup && myRole !== 'member')) "
                      class="col-shrink q-px-none q-ma-none" flat dense icon="edit" size="xs" color="primary"
                      @click="$store.dispatch('server/editServerNoteDialog',{serverId:props.row.id, isGroup})">
                 <q-tooltip>
@@ -195,6 +196,7 @@ export default defineComponent({
   setup (props) {
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
+
     // 云主机列表分栏定义, 判断使用组配置还是个人配置
     const columnsZH = props.isGroup
       ? [{
@@ -570,6 +572,9 @@ export default defineComponent({
     // i18n影响该配置对象取值
     const columns = computed(() => locale.value === 'zh' ? columnsZH : columnsEN)
 
+    // 当前用户在group内的角色
+    const myRole = computed(() => $store.state.account.tables.groupTable.byId[props.servers[0]?.vo_id || '']?.myRole)
+
     // q-pagination 所需配置对象
     const paginationTable = ref({
       // sortBy: 'desc',
@@ -591,9 +596,9 @@ export default defineComponent({
     }
 
     return {
-      $store,
       locale,
       columns,
+      myRole,
       paginationTable,
       clickToCopy,
       hoverRow,

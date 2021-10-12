@@ -42,11 +42,34 @@
         <q-tr :props="props">
 
           <q-td key="status" :props="props">
-            <div v-if="props.row.status === 'wait'">待审批</div>
-            <div v-if="props.row.status === 'pending'" class="text-primary">审批中</div>
-            <div v-if="props.row.status === 'pass'" class="text-light-green">已通过</div>
-            <div v-if="props.row.status === 'reject'" class="text-red">已拒绝</div>
-            <div v-if="props.row.status === 'cancel'" class="text-grey">已取消</div>
+            <q-badge v-if="props.row.status === 'wait'" color="black" outline>
+              {{ $t('待审批') }}
+            </q-badge>
+            <q-badge v-if="props.row.status === 'pending'" color="primary" outline>
+              {{ $t('审批中') }}
+            </q-badge>
+            <q-badge v-if="props.row.status === 'pass'" color="light-green" outline>
+              {{ $t('已通过') }}
+            </q-badge>
+            <div v-if="props.row.status === 'reject'">
+              <q-badge color="red" outline>
+                {{ $t('已拒绝') }}
+              </q-badge>
+              <div>
+                <q-icon name="help_outline" color="red" size="xs">
+                  <q-tooltip>{{ $t('拒绝原因: ') }}{{ props.row.result_desc }}</q-tooltip>
+                </q-icon>
+              </div>
+            </div>
+            <q-badge v-if="props.row.status === 'cancel'" color="grey" outline>
+              {{ $t('已取消') }}
+            </q-badge>
+            <!--创建时间距离当下小于1小时则打上new标记-->
+
+            <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
+                     style="top:10px" color="light-green" floating transparent rounded align="middle">
+              new
+            </q-badge>
           </q-td>
 
           <q-td key="creation_time" :props="props">
