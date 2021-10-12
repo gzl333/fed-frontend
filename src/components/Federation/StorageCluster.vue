@@ -1,8 +1,8 @@
 <template>
   <div class="StorageCluster">
-    <div v-if="JSON.stringify(cephData) !== '{}'">
+    <div v-if="JSON.stringify(storageData) !== '{}'">
       <div class="row justify-between q-mt-sm">
-        <div class="text-subid1 text-weight-bold">{{ cephData.name }}</div>
+        <div class="text-subid1 text-weight-bold">{{ storageData.name }}</div>
       </div>
       <div class="row q-mt-xs">
         <div class="col-6 row q-mt-md">
@@ -10,12 +10,12 @@
             <q-card flat bordered class="q-pb-md no-border-radius">
               <div class="row">
                 <div class="col-11 text-center">集群状态</div>
-                <q-icon class="col-1" name="loop" size="xs"
-                        @click="refresh({ service_id: cephData.service_id, query: 'health_status' })"/>
+                <q-icon class="col-1" name="loop" size="xs" v-show="isShowHealth"
+                        @click="refresh({ service_id: storageData.service_id, query: 'health_status' })"/>
               </div>
-              <div :class="cephData.health_status === '0' ? 'text-positive text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : cephData.health_status === '1' ?
+              <div :class="storageData.health_status === '0' ? 'text-positive text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : storageData.health_status === '1' ?
                     'text-warning text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : 'text-negative text-center text-h4 text-weight-bold q-mt-xl q-pb-xl'">
-                {{ cephData.health_status === '0' ? 'Healthy' : cephData.health_status === '1' ? 'Warning' : 'Fatal' }}
+                {{ storageData.health_status === '0' ? 'Healthy' : storageData.health_status === '1' ? 'Warning' : 'Fatal' }}
               </div>
             </q-card>
           </div>
@@ -23,11 +23,11 @@
             <q-card flat bordered class="q-pb-md no-border-radius">
               <div class="row">
                 <div class="col-11 text-center">集群容量</div>
-                <q-icon name="loop" class="col-1" size="xs"
-                        @click="refresh({ service_id: cephData.service_id, query: 'cluster_total_bytes' })"/>
+                <q-icon name="loop" class="col-1" size="xs" v-show="isShowClusterTotal"
+                        @click="refresh({ service_id: storageData.service_id, query: 'cluster_total_bytes' })"/>
               </div>
               <div class="text-center text-h4 text-weight-medium q-mt-xl q-pb-xl">{{
-                  (cephData.cluster_total_bytes / Math.pow(1024, 5)).toFixed(2) + 'PiB'
+                  (storageData.cluster_total_bytes / Math.pow(1024, 5)).toFixed(2) + 'PiB'
                 }}
               </div>
             </q-card>
@@ -36,11 +36,11 @@
             <q-card flat bordered class="q-pb-md no-border-radius">
               <div class="row">
                 <div class="col-11 text-center">当前容量</div>
-                <q-icon name="loop" class="col-1" size="xs"
-                        @click="refresh({ service_id: cephData.service_id, query: 'cluster_total_used_bytes' })"/>
+                <q-icon name="loop" class="col-1" size="xs" v-show="isShowClusterUsed"
+                        @click="refresh({ service_id: storageData.service_id, query: 'cluster_total_used_bytes' })"/>
               </div>
               <div class="text-center text-h4 text-weight-medium q-mt-xl q-pb-xl">{{
-                  (cephData.cluster_total_used_bytes / Math.pow(1024, 4)).toFixed(2) + 'TiB'
+                  (storageData.cluster_total_used_bytes / Math.pow(1024, 4)).toFixed(2) + 'TiB'
                 }}
               </div>
             </q-card>
@@ -49,17 +49,15 @@
         <div class="col-5 right">
           <div class="row">
             <div class="col-11 text-center">OSD状态</div>
-            <q-icon name="loop" class="col-1" size="xs"/>
+            <q-icon name="loop" class="col-1" size="xs" v-show="isShowOSD"
+                    @click="refresh({ service_id: storageData.service_id, query: 'osd_in,osd_out,osd_up,osd_down' })"/>
           </div>
           <div class="row q-ml-md">
             <div class="col-4 q-mt-md">
               <q-card flat bordered class="no-border-radius q-pb-md">
-                <div class="row">
-                  <div class="col-11 text-center">OSD总数</div>
-                  <q-icon name="loop" class="col-1" size="xs"/>
-                </div>
+                <div class="text-center">OSD总数</div>
                 <div class="text-center text-h4 text-weight-medium q-mt-lg q-pb-lg q-pa-lg">{{
-                    parseInt(cephData.osd_in) + parseInt(cephData.osd_up) + parseInt(cephData.osd_out) + parseInt(cephData.osd_down)
+                    parseInt(storageData.osd_in) + parseInt(storageData.osd_up) + parseInt(storageData.osd_out) + parseInt(storageData.osd_down)
                   }}
                 </div>
               </q-card>
@@ -70,7 +68,7 @@
                 <q-card flat bordered class="no-border-radius">
                   <div class="text-center">OSD IN</div>
                   <div class="text-center text-h5 text-weight-bold text-positive q-mt-md q-pb-sm">
-                    {{ cephData.osd_in }}
+                    {{ storageData.osd_in }}
                   </div>
                 </q-card>
               </div>
@@ -78,7 +76,7 @@
                 <q-card flat bordered class="no-border-radius">
                   <div class="text-center">OSD UP</div>
                   <div class="text-center text-h5 text-weight-bold text-positive q-mt-md q-pb-sm">
-                    {{ cephData.osd_up }}
+                    {{ storageData.osd_up }}
                   </div>
                 </q-card>
               </div>
@@ -86,7 +84,7 @@
                 <q-card flat bordered class="no-border-radius">
                   <div class="text-center">OSD OUT</div>
                   <div class="text-center text-h5 text-weight-bold q-mt-md q-pb-sm">
-                    {{ cephData.osd_out }}
+                    {{ storageData.osd_out }}
                   </div>
                 </q-card>
               </div>
@@ -94,7 +92,7 @@
                 <q-card flat bordered class="no-border-radius">
                   <div class="text-center">OSD DOWN</div>
                   <div class="text-center text-h5 text-weight-bold q-mt-md q-pb-sm">
-                    {{ cephData.osd_down }}
+                    {{ storageData.osd_down }}
                   </div>
                 </q-card>
               </div>
@@ -119,13 +117,13 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { useStore } from 'vuex'
-import { apiBase, StateInterface } from 'src/store'
+import { apiBase } from 'src/store'
 import axios from 'axios'
 
-interface cephInterface {
+interface storageInterface {
   [key: string]: any
 }
+
 export default defineComponent({
   name: 'StorageCluster',
   components: {},
@@ -136,31 +134,101 @@ export default defineComponent({
     }
   },
   setup (props) {
-    const $store = useStore<StateInterface>()
-    const cephData: cephInterface = ref({})
-    const refreshTime = ref(5)
-    const refresh = (payload: { service_id: string, query: string }) => {
+    const storageData: storageInterface = ref({})
+    const isShowHealth = ref(true)
+    const isShowClusterTotal = ref(true)
+    const isShowClusterUsed = ref(true)
+    const isShowOSD = ref(true)
+    const getCephQuery = async (payload: { service_id: string }) => {
+      const api = apiBase + '/monitor/ceph/query'
+      const cephQuery: string[] = ['health_status', 'cluster_total_bytes', 'cluster_total_used_bytes', 'osd_in', 'osd_out', 'osd_up', 'osd_down']
+      const config = {
+        params: {
+          service_id: payload.service_id,
+          query: ''
+        }
+      }
+      interface cephInterface {
+        [key: string]: string
+      }
+      const cephObject: cephInterface = {}
+      for (const item of cephQuery) {
+        config.params.query = item
+        await axios.get(api, config).then((res) => {
+          if (!cephObject.name) {
+            cephObject.name = res.data[0].monitor.name
+          }
+          if (!cephObject.service_id) {
+            cephObject.service_id = res.data[0].monitor.service_id
+          }
+          cephObject[item] = res.data[0].value[1]
+        }).catch((error) => {
+          console.log(error)
+        })
+      }
+      return cephObject
+    }
+    void getCephQuery({ service_id: props.id }).then((resp) => {
+      storageData.value = resp
+    })
+    const refresh = async (payload: { service_id: string, query: string }) => {
       const api = apiBase + '/monitor/ceph/query'
       const config = {
         params: payload
       }
-      const newData = payload.query
-      void axios.get(api, config).then((res) => {
-        cephData.value[newData] = res.data[0].value[1]
-      })
-    }
-    const deliveryTime = (time: number) => {
-      refreshTime.value = time
+      let newData = payload.query
+      if (payload.query === 'health_status') {
+        isShowHealth.value = false
+        void axios.get(api, config).then((res) => {
+          storageData.value[newData] = res.data[0].value[1]
+          isShowHealth.value = true
+        })
+      } else if (payload.query === 'cluster_total_bytes') {
+        isShowClusterTotal.value = false
+        void axios.get(api, config).then((res) => {
+          storageData.value[newData] = res.data[0].value[1]
+          isShowClusterTotal.value = true
+        })
+      } else if (payload.query === 'cluster_total_used_bytes') {
+        isShowClusterUsed.value = false
+        void axios.get(api, config).then((res) => {
+          storageData.value[newData] = res.data[0].value[1]
+          isShowClusterUsed.value = true
+        })
+      } else {
+        const config1 = {
+          params: payload
+        }
+        isShowOSD.value = false
+        const arr = payload.query.split(',')
+        for (const item of arr) {
+          config1.params.query = item
+          newData = item
+          await axios.get(api, config1).then((res) => {
+            storageData.value[newData] = res.data[0].value[1]
+            isShowOSD.value = true
+          })
+        }
+      }
     }
     const intervalRefresh = () => {
-      // void $store.dispatch('obs/loadCeph', props.id)
+      isShowHealth.value = false
+      isShowClusterTotal.value = false
+      isShowClusterUsed.value = false
+      isShowOSD.value = false
+      void getCephQuery({ service_id: props.id }).then(() => {
+        isShowHealth.value = true
+        isShowClusterTotal.value = true
+        isShowClusterUsed.value = true
+        isShowOSD.value = true
+      })
     }
-    void $store.dispatch('obs/loadCeph', props.id).then((resp) => {
-      cephData.value = resp
-    })
     return {
-      cephData,
-      deliveryTime,
+      storageData,
+      isShowHealth,
+      isShowClusterTotal,
+      isShowClusterUsed,
+      isShowOSD,
       intervalRefresh,
       refresh
     }
@@ -170,9 +238,9 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
- .StorageCluster {
-   .right {
-     border: 1px solid #E0E0E0;
-   }
- }
+.StorageCluster {
+  .right {
+    border: 1px solid #E0E0E0;
+  }
+}
 </style>

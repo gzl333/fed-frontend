@@ -1,11 +1,9 @@
 <template>
   <div class="FederationMonitorServer">
     <div class="row justify-end">
-      <q-select outlined v-model="filterSelection" :options="filterOptions" label="刷新时间" class="col-3" @update:model-value="handleClick"/>
+      <q-select outlined v-model="filterSelection" :options="filterOptions" label="刷新时间" class="col-3"/>
     </div>
-    <div v-for="(item, index) in services" :key="index">
-      <host-cluster :id="item" ref="childRef"></host-cluster>
-  </div>
+    <host-cluster v-for="(serviceId, index) in services" :key="serviceId" :id="serviceId" :ref="el=>{divNodes[index] = el}"></host-cluster>
   </div>
 </template>
 
@@ -14,6 +12,7 @@ import { computed, defineComponent, onUnmounted, ref, watch } from 'vue'
 import HostCluster from 'components/Federation/HostCluster.vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
+
 export default defineComponent({
   name: 'FederationMonitorServer',
   components: {
@@ -27,12 +26,7 @@ export default defineComponent({
       label: '每5s刷新',
       value: 5
     })
-    let time = filterSelection.value.value
-    const childRef: any = ref(null)
-    const handleClick = () => {
-      childRef.value.deliveryTime(filterSelection.value.value)
-      time = filterSelection.value.value
-    }
+    const divNodes = ref<typeof HostCluster[]>([])
     const filterOptions = [
       {
         label: '每5s刷新',
@@ -60,13 +54,17 @@ export default defineComponent({
       }
     ]
     let timer = setInterval(() => {
-      childRef.value.intervalRefresh()
-    }, time * 1000)
+      divNodes.value.forEach((node) => {
+        node.intervalRefresh()
+      })
+    }, filterSelection.value.value * 1000)
     watch(filterSelection, (oldValue, newValue) => {
       clearInterval(timer)
       timer = setInterval(() => {
-        childRef.value.intervalRefresh()
-      }, time * 1000)
+        divNodes.value.forEach((node) => {
+          node.intervalRefresh()
+        })
+      }, filterSelection.value.value * 1000)
     })
     onUnmounted(() => {
       clearInterval(timer)
@@ -76,8 +74,7 @@ export default defineComponent({
       filterOptions,
       filterSelection,
       timer,
-      childRef,
-      handleClick
+      divNodes
     }
   }
 })

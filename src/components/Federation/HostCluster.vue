@@ -1,28 +1,29 @@
 <template>
   <div class="StorageCluster">
-    <div v-if="JSON.stringify(serverData) !== '{}'">
-      <div class="text-subid2 text-weight-bold">{{ serverData.name }}</div>
+    <div v-if="JSON.stringify(hostData) !== '{}'">
+      <div class="text-subid2 text-weight-bold">{{ hostData.name }}</div>
       <div class="row q-mt-sm">
         <div class="col-2">
           <q-card flat bordered class="no-border-radius">
             <div class="row">
               <div class="col-11 text-center">主机数</div>
-              <q-icon name="loop" class="col-1" size="xs" @click="refresh({ service_id: serverData.service_id, query: 'host_count' })"/>
+              <q-icon name="loop" class="col-1" size="xs" v-show="isShowHost"
+                      @click="refresh({ service_id: hostData.service_id, query: 'host_count' })"/>
             </div>
-            <div class="text-center text-h4 text-weight-regular q-mt-sm q-pa-sm">{{ serverData.host_count }}</div>
+            <div class="text-center text-h4 text-weight-regular q-mt-sm q-pa-sm">{{ hostData.host_count }}</div>
           </q-card>
           <div class="row justify-between q-mt-sm">
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">在线</div>
               <div class="text-center text-h4 text-weight-regular text-positive q-mt-sm q-pa-sm">{{
-                  serverData.host_up_count
+                  hostData.host_up_count
                 }}
               </div>
             </q-card>
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">掉线</div>
               <div class="text-center text-h4 text-weight-regular text-negative q-mt-sm q-pa-sm">
-                {{ parseInt(serverData.host_count) - parseInt(serverData.host_up_count) }}
+                {{ parseInt(hostData.host_count) - parseInt(hostData.host_up_count) }}
               </div>
             </q-card>
           </div>
@@ -31,12 +32,13 @@
           <q-card flat bordered class="no-border-radius">
             <div class="row">
               <div class="col-11 text-center">集群状态</div>
-              <q-icon name="loop" class="col-1" size="xs" @click="refresh({ service_id: serverData.service_id, query: 'health_status' })"/>
+              <q-icon name="loop" class="col-1" size="xs" v-show="isShowHealthy"
+                      @click="refresh({ service_id: hostData.service_id, query: 'health_status' })"/>
             </div>
-            <div :class="serverData.health_status === '0' ? 'text-positive text-center text-h4 text-weight-bold q-mt-lg q-pa-xl' :
-            serverData.health_status === '1' ? 'text-warning text-center text-h4 text-weight-bold q-mt-lg q-pa-xl' :
+            <div :class="hostData.health_status === '0' ? 'text-positive text-center text-h4 text-weight-bold q-mt-lg q-pa-xl' :
+            hostData.health_status === '1' ? 'text-warning text-center text-h4 text-weight-bold q-mt-lg q-pa-xl' :
             'text-negative text-center text-h4 text-weight-bold q-mt-lg q-pa-xl'">
-              {{ serverData.health_status === '0' ? 'Healthy' : serverData.health_status === '1' ? 'Warning' : 'Fatal' }}
+              {{ hostData.health_status === '0' ? 'Healthy' : hostData.health_status === '1' ? 'Warning' : 'Fatal' }}
             </div>
           </q-card>
         </div>
@@ -44,18 +46,19 @@
           <q-card flat bordered class="no-border-radius">
             <div class="row">
               <div class="col-11 text-center">平均CPU使用率</div>
-              <q-icon name="loop" class="col-1" size="xs" @click="refresh({ service_id: serverData.service_id, query: 'cpu_usage' })"/>
+              <q-icon name="loop" class="col-1" size="xs" v-show="isShowCPUUsage"
+                      @click="refresh({ service_id: hostData.service_id, query: 'cpu_usage' })"/>
             </div>
-            <div class="text-center text-h4 text-weight-regular q-mt-sm q-pa-sm">{{ parseInt(serverData.cpu_usage).toFixed(2) + '%' }}</div>
+            <div class="text-center text-h4 text-weight-regular q-mt-sm q-pa-sm">{{ parseInt(hostData.cpu_usage).toFixed(2) + '%' }}</div>
           </q-card>
           <div class="row justify-between q-mt-sm">
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">最大</div>
-              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(serverData.max_cpu_usage).toFixed(2) + '%' }}</div>
+              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(hostData.max_cpu_usage).toFixed(2) + '%' }}</div>
             </q-card>
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">最小</div>
-              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(serverData.min_cpu_usage).toFixed(2) + '%' }}</div>
+              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(hostData.min_cpu_usage).toFixed(2) + '%' }}</div>
             </q-card>
           </div>
         </div>
@@ -63,18 +66,19 @@
           <q-card flat bordered class="no-border-radius">
             <div class="row">
               <div class="col-11 text-center">平均内存使用率</div>
-              <q-icon name="loop" class="col-1" size="xs" @click="refresh({ service_id: serverData.service_id, query: 'mem_usage' })"/>
+              <q-icon name="loop" class="col-1" size="xs" v-show="isShowMemUsage"
+                      @click="refresh({ service_id: hostData.service_id, query: 'mem_usage' })"/>
             </div>
-            <div class="text-center text-h4 text-weight-regular q-mt-sm q-pa-sm">{{ parseInt(serverData.mem_usage).toFixed(2) + '%' }}</div>
+            <div class="text-center text-h4 text-weight-regular q-mt-sm q-pa-sm">{{ parseInt(hostData.mem_usage).toFixed(2) + '%' }}</div>
           </q-card>
           <div class="row justify-between q-mt-sm">
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">最大</div>
-              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(serverData.max_mem_usage).toFixed(2) + '%' }}</div>
+              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(hostData.max_mem_usage).toFixed(2) + '%' }}</div>
             </q-card>
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">最小</div>
-              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(serverData.min_mem_usage).toFixed(2) + '%' }}</div>
+              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(hostData.min_mem_usage).toFixed(2) + '%' }}</div>
             </q-card>
           </div>
         </div>
@@ -82,18 +86,19 @@
           <q-card flat bordered class="no-border-radius">
             <div class="row">
               <div class="col-11 text-center">平均磁盘使用率</div>
-              <q-icon name="loop" class="col-1" size="xs" @click="refresh({ service_id: serverData.service_id, query: 'disk_usage' })"/>
+              <q-icon name="loop" class="col-1" size="xs" v-show="isShowDiskUsage"
+                      @click="refresh({ service_id: hostData.service_id, query: 'disk_usage' })"/>
             </div>
-            <div class="text-center text-h4 text-weight-regular q-mt-sm q-pa-sm">{{ parseInt(serverData.disk_usage).toFixed(2) + '%' }}</div>
+            <div class="text-center text-h4 text-weight-regular q-mt-sm q-pa-sm">{{ parseInt(hostData.disk_usage).toFixed(2) + '%' }}</div>
           </q-card>
           <div class="row justify-between q-mt-sm">
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">最大</div>
-              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(serverData.max_disk_usage).toFixed(2) + '%' }}</div>
+              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(hostData.max_disk_usage).toFixed(2) + '%' }}</div>
             </q-card>
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">最小</div>
-              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(serverData.min_disk_usage).toFixed(2) + '%' }}</div>
+              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(hostData.min_disk_usage).toFixed(2) + '%' }}</div>
             </q-card>
           </div>
         </div>
@@ -113,11 +118,10 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { useStore } from 'vuex'
-import { apiBase, StateInterface } from 'src/store'
+import { apiBase } from 'src/store'
 import axios from 'axios'
 
-interface serverInterface {
+interface hostInterface {
   [key: string]: any
 }
 
@@ -131,32 +135,91 @@ export default defineComponent({
     }
   },
   setup (props) {
-    const $store = useStore<StateInterface>()
-    const serverData: serverInterface = ref({})
-    const refreshTime = ref(5)
+    const hostData: hostInterface = ref({})
+    const isShowHost = ref(true)
+    const isShowHealthy = ref(true)
+    const isShowCPUUsage = ref(true)
+    const isShowMemUsage = ref(true)
+    const isShowDiskUsage = ref(true)
+    const getServerQuery = async (payload: { service_id: string }) => {
+      const api = apiBase + '/monitor/server/query'
+      const serverQuery: string[] = ['host_count', 'host_up_count', 'health_status', 'cpu_usage', 'max_cpu_usage', 'min_cpu_usage', 'mem_usage', 'max_mem_usage', 'min_mem_usage', 'disk_usage', 'max_disk_usage', 'min_disk_usage']
+      const config = {
+        params: {
+          service_id: payload.service_id,
+          query: ''
+        }
+      }
+      interface serverInterface {
+        [key: string]: string
+      }
+      const serverObject: serverInterface = {}
+      for (const item of serverQuery) {
+        config.params.query = item
+        await axios.get(api, config).then((res) => {
+          if (!serverObject.name) {
+            serverObject.name = res.data[0].monitor.name
+          }
+          if (!serverObject.service_id) {
+            serverObject.service_id = res.data[0].monitor.service_id
+          }
+          serverObject[item] = res.data[0].value[1]
+        }).catch((error) => {
+          console.log(error)
+        })
+      }
+      return serverObject
+    }
+    void getServerQuery({ service_id: props.id }).then((resp) => {
+      hostData.value = resp
+    })
     const refresh = (payload: { service_id: string, query: string }) => {
+      if (payload.query === 'host_count') {
+        isShowHost.value = false
+      } else if (payload.query === 'health_status') {
+        isShowHealthy.value = false
+      } else if (payload.query === 'cpu_usage') {
+        isShowCPUUsage.value = false
+      } else if (payload.query === 'mem_usage') {
+        isShowMemUsage.value = false
+      } else {
+        isShowDiskUsage.value = false
+      }
       const api = apiBase + '/monitor/server/query'
       const config = {
         params: payload
       }
       const newData = payload.query
       void axios.get(api, config).then((res) => {
-        serverData.value[newData] = res.data[0].value[1]
+        hostData.value[newData] = res.data[0].value[1]
+        isShowHost.value = true
+        isShowHealthy.value = true
+        isShowCPUUsage.value = true
+        isShowMemUsage.value = true
+        isShowDiskUsage.value = true
       })
     }
-    const deliveryTime = (time: number) => {
-      refreshTime.value = time
-    }
     const intervalRefresh = () => {
-      // console.log(55555)
-      // void $store.dispatch('obs/loadServer', props.id)
+      isShowHost.value = false
+      isShowHealthy.value = false
+      isShowCPUUsage.value = false
+      isShowMemUsage.value = false
+      isShowDiskUsage.value = false
+      void getServerQuery({ service_id: props.id }).then(() => {
+        isShowHost.value = true
+        isShowHealthy.value = true
+        isShowCPUUsage.value = true
+        isShowMemUsage.value = true
+        isShowDiskUsage.value = true
+      })
     }
-    void $store.dispatch('obs/loadServer', props.id).then((resp) => {
-      serverData.value = resp
-    })
     return {
-      serverData,
-      deliveryTime,
+      hostData,
+      isShowHost,
+      isShowHealthy,
+      isShowCPUUsage,
+      isShowMemUsage,
+      isShowDiskUsage,
       intervalRefresh,
       refresh
     }
