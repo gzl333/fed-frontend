@@ -173,19 +173,19 @@ export default defineComponent({
       let newData = payload.query
       if (payload.query === 'health_status') {
         isShowHealth.value = false
-        void axios.get(api, config).then((res) => {
+        await axios.get(api, config).then((res) => {
           storageData.value[newData] = res.data[0].value[1]
           isShowHealth.value = true
         })
       } else if (payload.query === 'cluster_total_bytes') {
         isShowClusterTotal.value = false
-        void axios.get(api, config).then((res) => {
+        await axios.get(api, config).then((res) => {
           storageData.value[newData] = res.data[0].value[1]
           isShowClusterTotal.value = true
         })
       } else if (payload.query === 'cluster_total_used_bytes') {
         isShowClusterUsed.value = false
-        void axios.get(api, config).then((res) => {
+        await axios.get(api, config).then((res) => {
           storageData.value[newData] = res.data[0].value[1]
           isShowClusterUsed.value = true
         })
@@ -207,7 +207,8 @@ export default defineComponent({
       isShowClusterTotal.value = false
       isShowClusterUsed.value = false
       isShowOSD.value = false
-      void getStorageQuery({ service_id: props.id }).then(() => {
+      void getStorageQuery({ service_id: props.id }).then((res) => {
+        storageData.value = res
         isShowHealth.value = true
         isShowClusterTotal.value = true
         isShowClusterUsed.value = true

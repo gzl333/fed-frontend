@@ -1,6 +1,6 @@
 <template>
   <div class="FederationMonitorServer">
-    <div class="row justify-end">
+    <div class="row justify-end q-mt-xs">
       <q-icon class="col-1" name="refresh" size="md" @click="refresh"/>
       <q-select outlined v-model="filterSelection" :options="filterOptions" label="刷新时间" class="col-3"/>
     </div>
