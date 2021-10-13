@@ -1,6 +1,7 @@
 <template>
   <div class="FederationMonitorStorage">
-    <div class="row justify-end">
+    <div class="row justify-end q-mt-xs">
+      <q-icon class="col-1" name="refresh" size="md" @click="refresh"/>
       <q-select outlined v-model="filterSelection" :options="filterOptions" label="刷新时间" class="col-3"/>
     </div>
       <storage-cluster v-for="(serviceId, index) in services" :key="serviceId" :id="serviceId" :ref="el=>{divNodes[index] = el}"></storage-cluster>
@@ -58,7 +59,7 @@ export default defineComponent({
         node.intervalRefresh()
       })
     }, filterSelection.value.value * 1000)
-    watch(filterSelection, (oldValue, newValue) => {
+    watch(filterSelection, () => {
       clearInterval(timer)
       timer = setInterval(() => {
         divNodes.value.forEach((node) => {
@@ -66,6 +67,11 @@ export default defineComponent({
         })
       }, filterSelection.value.value * 1000)
     })
+    const refresh = () => {
+      divNodes.value.forEach((node) => {
+        node.intervalRefresh()
+      })
+    }
     onUnmounted(() => {
       clearInterval(timer)
     })
@@ -74,7 +80,8 @@ export default defineComponent({
       filterSelection,
       timer,
       services,
-      divNodes
+      divNodes,
+      refresh
     }
   }
 })

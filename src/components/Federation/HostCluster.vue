@@ -1,7 +1,7 @@
 <template>
   <div class="StorageCluster">
     <div v-if="JSON.stringify(hostData) !== '{}'">
-      <div class="text-subid2 text-weight-bold">{{ hostData.name }}</div>
+      <div class="text-subtitle1 text-weight-bold">{{ hostData.name }}</div>
       <div class="row q-mt-sm">
         <div class="col-2">
           <q-card flat bordered class="no-border-radius">
@@ -12,7 +12,7 @@
             </div>
             <div class="text-center text-h4 text-weight-regular q-mt-sm q-pa-sm">{{ hostData.host_count }}</div>
           </q-card>
-          <div class="row justify-between q-mt-sm">
+          <div class="row q-mt-sm">
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">在线</div>
               <div class="text-center text-h4 text-weight-regular text-positive q-mt-sm q-pa-sm">{{
@@ -51,7 +51,7 @@
             </div>
             <div class="text-center text-h4 text-weight-regular q-mt-sm q-pa-sm">{{ parseInt(hostData.cpu_usage).toFixed(2) + '%' }}</div>
           </q-card>
-          <div class="row justify-between q-mt-sm">
+          <div class="row q-mt-sm">
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">最大</div>
               <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(hostData.max_cpu_usage).toFixed(2) + '%' }}</div>
@@ -71,7 +71,7 @@
             </div>
             <div class="text-center text-h4 text-weight-regular q-mt-sm q-pa-sm">{{ parseInt(hostData.mem_usage).toFixed(2) + '%' }}</div>
           </q-card>
-          <div class="row justify-between q-mt-sm">
+          <div class="row q-mt-sm">
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">最大</div>
               <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(hostData.max_mem_usage).toFixed(2) + '%' }}</div>
@@ -91,7 +91,7 @@
             </div>
             <div class="text-center text-h4 text-weight-regular q-mt-sm q-pa-sm">{{ parseInt(hostData.disk_usage).toFixed(2) + '%' }}</div>
           </q-card>
-          <div class="row justify-between q-mt-sm">
+          <div class="row q-mt-sm">
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">最大</div>
               <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseInt(hostData.max_disk_usage).toFixed(2) + '%' }}</div>
@@ -121,10 +121,6 @@ import { defineComponent, ref } from 'vue'
 import { apiBase } from 'src/store'
 import axios from 'axios'
 
-interface hostInterface {
-  [key: string]: any
-}
-
 export default defineComponent({
   name: 'HostCluster',
   components: {},
@@ -135,42 +131,42 @@ export default defineComponent({
     }
   },
   setup (props) {
-    const hostData: hostInterface = ref({})
+    const hostData: any = ref({})
     const isShowHost = ref(true)
     const isShowHealthy = ref(true)
     const isShowCPUUsage = ref(true)
     const isShowMemUsage = ref(true)
     const isShowDiskUsage = ref(true)
-    const getServerQuery = async (payload: { service_id: string }) => {
+    const getHostQuery = async (payload: { service_id: string }) => {
       const api = apiBase + '/monitor/server/query'
-      const serverQuery: string[] = ['host_count', 'host_up_count', 'health_status', 'cpu_usage', 'max_cpu_usage', 'min_cpu_usage', 'mem_usage', 'max_mem_usage', 'min_mem_usage', 'disk_usage', 'max_disk_usage', 'min_disk_usage']
+      const hostQuery: string[] = ['host_count', 'host_up_count', 'health_status', 'cpu_usage', 'max_cpu_usage', 'min_cpu_usage', 'mem_usage', 'max_mem_usage', 'min_mem_usage', 'disk_usage', 'max_disk_usage', 'min_disk_usage']
       const config = {
         params: {
           service_id: payload.service_id,
           query: ''
         }
       }
-      interface serverInterface {
+      interface HostInterface {
         [key: string]: string
       }
-      const serverObject: serverInterface = {}
-      for (const item of serverQuery) {
+      const hostObject: HostInterface = {}
+      for (const item of hostQuery) {
         config.params.query = item
         await axios.get(api, config).then((res) => {
-          if (!serverObject.name) {
-            serverObject.name = res.data[0].monitor.name
+          if (!hostObject.name) {
+            hostObject.name = res.data[0].monitor.name
           }
-          if (!serverObject.service_id) {
-            serverObject.service_id = res.data[0].monitor.service_id
+          if (!hostObject.service_id) {
+            hostObject.service_id = res.data[0].monitor.service_id
           }
-          serverObject[item] = res.data[0].value[1]
+          hostObject[item] = res.data[0].value[1]
         }).catch((error) => {
           console.log(error)
         })
       }
-      return serverObject
+      return hostObject
     }
-    void getServerQuery({ service_id: props.id }).then((resp) => {
+    void getHostQuery({ service_id: props.id }).then((resp) => {
       hostData.value = resp
     })
     const refresh = (payload: { service_id: string, query: string }) => {
@@ -205,7 +201,7 @@ export default defineComponent({
       isShowCPUUsage.value = false
       isShowMemUsage.value = false
       isShowDiskUsage.value = false
-      void getServerQuery({ service_id: props.id }).then(() => {
+      void getHostQuery({ service_id: props.id }).then(() => {
         isShowHost.value = true
         isShowHealthy.value = true
         isShowCPUUsage.value = true

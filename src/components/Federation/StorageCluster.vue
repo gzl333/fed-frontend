@@ -1,13 +1,11 @@
 <template>
   <div class="StorageCluster">
     <div v-if="JSON.stringify(storageData) !== '{}'">
-      <div class="row justify-between q-mt-sm">
-        <div class="text-subid1 text-weight-bold">{{ storageData.name }}</div>
-      </div>
-      <div class="row q-mt-xs">
+      <div class="text-subtitle1 text-weight-bold">{{ storageData.name }}</div>
+      <div class="row">
         <div class="col-6 row q-mt-md">
-          <div class="col-3">
-            <q-card flat bordered class="q-pb-md no-border-radius">
+          <div style="width: 190px">
+            <q-card flat bordered class="my-card q-pb-md no-border-radius">
               <div class="row">
                 <div class="col-11 text-center">集群状态</div>
                 <q-icon class="col-1" name="loop" size="xs" v-show="isShowHealth"
@@ -19,27 +17,27 @@
               </div>
             </q-card>
           </div>
-          <div class="col-3 q-ml-xl">
+          <div class="q-ml-md" style="width: 190px">
             <q-card flat bordered class="q-pb-md no-border-radius">
               <div class="row">
                 <div class="col-11 text-center">集群容量</div>
                 <q-icon name="loop" class="col-1" size="xs" v-show="isShowClusterTotal"
                         @click="refresh({ service_id: storageData.service_id, query: 'cluster_total_bytes' })"/>
               </div>
-              <div class="text-center text-h4 text-weight-medium q-mt-xl q-pb-xl">{{
+              <div class="text-center text-h4 text-weight-regular q-mt-xl q-pb-xl">{{
                   (storageData.cluster_total_bytes / Math.pow(1024, 5)).toFixed(2) + 'PiB'
                 }}
               </div>
             </q-card>
           </div>
-          <div class="col-3 q-ml-xl">
+          <div class="q-ml-md" style="width: 190px">
             <q-card flat bordered class="q-pb-md no-border-radius">
               <div class="row">
                 <div class="col-11 text-center">当前容量</div>
                 <q-icon name="loop" class="col-1" size="xs" v-show="isShowClusterUsed"
                         @click="refresh({ service_id: storageData.service_id, query: 'cluster_total_used_bytes' })"/>
               </div>
-              <div class="text-center text-h4 text-weight-medium q-mt-xl q-pb-xl">{{
+              <div class="text-center text-h4 text-weight-regular q-mt-xl q-pb-xl">{{
                   (storageData.cluster_total_used_bytes / Math.pow(1024, 4)).toFixed(2) + 'TiB'
                 }}
               </div>
@@ -56,7 +54,7 @@
             <div class="col-4 q-mt-md">
               <q-card flat bordered class="no-border-radius q-pb-md">
                 <div class="text-center">OSD总数</div>
-                <div class="text-center text-h4 text-weight-medium q-mt-lg q-pb-lg q-pa-lg">{{
+                <div class="text-center text-h4 text-weight-regular q-mt-lg q-pa-lg">{{
                     parseInt(storageData.osd_in) + parseInt(storageData.osd_up) + parseInt(storageData.osd_out) + parseInt(storageData.osd_down)
                   }}
                 </div>
@@ -120,10 +118,6 @@ import { defineComponent, ref } from 'vue'
 import { apiBase } from 'src/store'
 import axios from 'axios'
 
-interface storageInterface {
-  [key: string]: any
-}
-
 export default defineComponent({
   name: 'StorageCluster',
   components: {},
@@ -134,41 +128,41 @@ export default defineComponent({
     }
   },
   setup (props) {
-    const storageData: storageInterface = ref({})
+    const storageData: any = ref({})
     const isShowHealth = ref(true)
     const isShowClusterTotal = ref(true)
     const isShowClusterUsed = ref(true)
     const isShowOSD = ref(true)
-    const getCephQuery = async (payload: { service_id: string }) => {
+    const getStorageQuery = async (payload: { service_id: string }) => {
       const api = apiBase + '/monitor/ceph/query'
-      const cephQuery: string[] = ['health_status', 'cluster_total_bytes', 'cluster_total_used_bytes', 'osd_in', 'osd_out', 'osd_up', 'osd_down']
+      const storageQuery: string[] = ['health_status', 'cluster_total_bytes', 'cluster_total_used_bytes', 'osd_in', 'osd_out', 'osd_up', 'osd_down']
       const config = {
         params: {
           service_id: payload.service_id,
           query: ''
         }
       }
-      interface cephInterface {
+      interface storageInterface {
         [key: string]: string
       }
-      const cephObject: cephInterface = {}
-      for (const item of cephQuery) {
+      const storageObject: storageInterface = {}
+      for (const item of storageQuery) {
         config.params.query = item
         await axios.get(api, config).then((res) => {
-          if (!cephObject.name) {
-            cephObject.name = res.data[0].monitor.name
+          if (!storageObject.name) {
+            storageObject.name = res.data[0].monitor.name
           }
-          if (!cephObject.service_id) {
-            cephObject.service_id = res.data[0].monitor.service_id
+          if (!storageObject.service_id) {
+            storageObject.service_id = res.data[0].monitor.service_id
           }
-          cephObject[item] = res.data[0].value[1]
+          storageObject[item] = res.data[0].value[1]
         }).catch((error) => {
           console.log(error)
         })
       }
-      return cephObject
+      return storageObject
     }
-    void getCephQuery({ service_id: props.id }).then((resp) => {
+    void getStorageQuery({ service_id: props.id }).then((resp) => {
       storageData.value = resp
     })
     const refresh = async (payload: { service_id: string, query: string }) => {
@@ -196,15 +190,12 @@ export default defineComponent({
           isShowClusterUsed.value = true
         })
       } else {
-        const config1 = {
-          params: payload
-        }
         isShowOSD.value = false
         const arr = payload.query.split(',')
         for (const item of arr) {
-          config1.params.query = item
+          config.params.query = item
           newData = item
-          await axios.get(api, config1).then((res) => {
+          await axios.get(api, config).then((res) => {
             storageData.value[newData] = res.data[0].value[1]
             isShowOSD.value = true
           })
@@ -216,7 +207,7 @@ export default defineComponent({
       isShowClusterTotal.value = false
       isShowClusterUsed.value = false
       isShowOSD.value = false
-      void getCephQuery({ service_id: props.id }).then(() => {
+      void getStorageQuery({ service_id: props.id }).then(() => {
         isShowHealth.value = true
         isShowClusterTotal.value = true
         isShowClusterUsed.value = true
