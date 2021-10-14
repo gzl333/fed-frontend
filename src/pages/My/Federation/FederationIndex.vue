@@ -37,6 +37,7 @@
                     to="/my/federation/resource"
                   />
                   <q-route-tab
+                    disable
                     class="q-px-none q-py-md q-mx-md"
                     name="monitor"
                     icon="insights"

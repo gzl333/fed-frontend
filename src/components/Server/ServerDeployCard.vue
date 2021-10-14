@@ -41,7 +41,7 @@
             {{ locale === 'zh' ? dataCenter.name : dataCenter.name_en }}
           </div>
 
-          <div class="col item-radios">
+          <div class="col">
             <div class="row items-center q-pb-sm"
                  v-for="service in dataCenter.services.map(id => $store.state.fed.tables.serviceTable.byId[id])"
                  :key="service.id">
@@ -65,7 +65,7 @@
           <div class="col-1  text-bold">
             {{ $t('可用配额') }}
           </div>
-          <div class="col item-radios">
+          <div class="col">
             <div v-if="quotasUsable.length === 0" class="row items-center">
               {{ $t('暂无可用云主机配额，请选择其它服务节点。 或') }}
               <q-btn v-if="isGroup" flat padding="none" color="primary"
@@ -94,7 +94,7 @@
           <div class="col-1  text-bold">
             {{ $t('不可用配额') }}
           </div>
-          <div class="col item-radios">
+          <div class="col">
             <div v-if="quotasUnusable.length === 0">{{ $t('无') }}</div>
             <div v-else>
               <div class="row">
@@ -115,27 +115,31 @@
       </div>
 
       <div class="col section">
+
         <div class="text-h7 text-primary section-title">
           {{ $t('网络类型') }}
         </div>
+
         <div v-if="privateNetworks.length > 0" class="row item-row">
           <div class="col-1 text-bold">
             {{ $t('私网IP段') }}
           </div>
-          <div class="col item-radios">
+          <div class="col">
             <q-radio v-for="network in privateNetworks" dense v-model="radioNetwork" :val="network.id"
                      :label="network.name" :key="network.id" class="radio"/>
           </div>
         </div>
+
         <div v-if="publicNetworks.length > 0" class="row item-row">
           <div class="col-1 text-bold">
             {{ $t('公网IP段') }}
           </div>
-          <div class="col item-radios">
+          <div class="col">
             <q-radio v-for="network in publicNetworks" dense v-model="radioNetwork" :val="network.id"
                      :label="network.name" :key="network.id" class="radio"/>
           </div>
         </div>
+
         <div v-if="publicNetworks.length === 0 && privateNetworks.length === 0" class="row item-row">
           <div class="col-shrink item-title">
             {{ $t('暂无可用网络类型，请选择其它服务节点') }}
@@ -148,7 +152,7 @@
           {{ $t('系统镜像') }}
         </div>
         <div v-if="images.length > 0" class="row item-row">
-          <div class="col item-radios">
+          <div class="col">
             <q-radio v-for="image in images" dense v-model="radioImage" :val="image.id"
                      :label="image.name" :key="image.id" class="radio"/>
           </div>
@@ -161,7 +165,7 @@
           CPU/{{ $t('内存') }}
         </div>
         <div v-if="flavors.length > 0" class="row item-row">
-          <div class="col item-radios">
+          <div class="col">
             <q-radio v-for="flavor in flavors" dense v-model="radioFlavor" :val="flavor.id"
                      :label="`${flavor.vcpus}${$t('核')}/${flavor.ram/1024}GB`" :key="flavor.id" class="radio"/>
           </div>
@@ -189,7 +193,7 @@
           <div class="col-shrink item-title-narrow text-grey">
             {{ $t('项目组') }}
           </div>
-          <div class="col item-radios">
+          <div class="col">
             <div v-if="radioGroup !== ''">
               {{ $store.state.account.tables.groupTable.byId[radioGroup]?.name }}
             </div>
@@ -201,7 +205,7 @@
           <div class="col-shrink item-title-narrow text-grey">
             {{ $t('服务节点') }}
           </div>
-          <div class="col item-radios">
+          <div class="col">
             <div
               v-if="$store.state.fed.tables.dataCenterTable.byId[radioDataCenter] && $store.state.fed.tables.serviceTable.byId[radioService]">
               {{
@@ -218,13 +222,13 @@
           <div class="col-shrink item-title-narrow text-grey">
             {{ $t('云主机配额') }}
           </div>
-          <div v-if="isGroup" class="col item-radios">
+          <div v-if="isGroup" class="col">
             <div v-if="$store.state.server.tables.groupQuotaTable.byId[radioQuota]?.display">
               {{ $store.state.server.tables.groupQuotaTable.byId[radioQuota]?.display }}
             </div>
             <div v-else class="text-red">{{ $t('请选择云主机配额') }}</div>
           </div>
-          <div v-else class="col item-radios">
+          <div v-else class="col">
             <div v-if="$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.display">
               {{ $store.state.server.tables.personalQuotaTable.byId[radioQuota]?.display }}
             </div>
@@ -236,7 +240,7 @@
           <div class="col-shrink item-title-narrow text-grey">
             {{ $t('网络类型') }}
           </div>
-          <div class="col item-radios">
+          <div class="col">
             <div
               v-if="$store.state.server.tables.serviceNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name">
               {{ $store.state.server.tables.serviceNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name }}
@@ -249,7 +253,7 @@
           <div class="col-shrink item-title-narrow text-grey">
             {{ $t('系统镜像') }}
           </div>
-          <div class="col item-radios">
+          <div class="col">
             <div v-if="$store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name">
               {{ $store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name }}
             </div>
@@ -261,7 +265,7 @@
           <div class="col-shrink item-title-narrow text-grey">
             CPU/{{ $t('内存') }}
           </div>
-          <div class="col item-radios">
+          <div class="col ">
             <div v-if="$store.state.server.tables.fedFlavorTable.byId[radioFlavor]">
               {{
                 `${$store.state.server.tables.fedFlavorTable.byId[radioFlavor].vcpus}核/${$store.state.server.tables.fedFlavorTable.byId[radioFlavor].ram / 1024}GB`
@@ -275,7 +279,7 @@
           <div class="col-shrink item-title-narrow text-grey">
             {{ $t('备注') }}
           </div>
-          <div v-if="inputRemarks" class="col item-radios">
+          <div v-if="inputRemarks" class="col">
             {{ inputRemarks }}
           </div>
           <div v-else class="text-red">{{ $t('请填写备注') }}</div>
@@ -558,7 +562,7 @@ export default defineComponent({
 }
 
 .radio {
-  margin-bottom: 20px;
+  margin-bottom: 5px;
   padding: 0 10px;
 }
 </style>

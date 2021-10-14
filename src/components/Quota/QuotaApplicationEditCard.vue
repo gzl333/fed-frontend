@@ -17,7 +17,12 @@
       <q-card-section class="q-pt-lg">
 
         <div v-if="isGroup" class="row q-pb-lg">
-          <div class="col-2 text-grey-7">项目组</div>
+          <div class="col-2 text-grey-7">
+            项目组
+            <q-icon name="help_outline" color="grey" size="xs">
+              <q-tooltip>{{ $t('如需修改项目组，请提交新的申请') }}</q-tooltip>
+            </q-icon>
+          </div>
           <div class="col">
             {{ $store.state.account.tables.groupTable.byId[currentApplication.vo_id].name }}
           </div>

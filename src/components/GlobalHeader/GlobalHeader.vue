@@ -129,7 +129,7 @@ export default defineComponent({
     }
 
     const toLogout = () => {
-      void $store.dispatch('account/logoutCstUser')
+      void $store.dispatch('account/cstLogout')
     }
 
     return {

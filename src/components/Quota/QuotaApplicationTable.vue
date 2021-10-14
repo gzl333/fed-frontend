@@ -44,8 +44,7 @@
             <!--创建时间距离当下小于1小时则打上new标记-->
 
             <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
-                     style="top:10px" color="light-green" floating transparent rounded align="middle">
-              new
+                     style="top:10px" label="new" color="light-green" floating transparent rounded align="middle">
             </q-badge>
 
           </q-td>
@@ -140,7 +139,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue'
-import { ApplicationQuotaInterface } from 'src/store/server/state'
+import { QuotaApplicationInterface } from 'src/store/server/state'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
@@ -150,7 +149,7 @@ export default defineComponent({
   components: {},
   props: {
     applications: {
-      type: Array as PropType<ApplicationQuotaInterface[]>,
+      type: Array as PropType<QuotaApplicationInterface[]>,
       required: true
     },
     isGroup: {

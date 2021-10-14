@@ -112,7 +112,7 @@ export interface ServerInterface {
 }
 
 // 配额申请接口
-export interface ApplicationQuotaInterface {
+export interface QuotaApplicationInterface {
   private_ip: number
   public_ip: number
   vcpu: number
@@ -159,8 +159,8 @@ export interface QuotaActivity {
 }
 
 export interface ServerModuleInterface {
-  pages: {
-    // pages
+  data: {
+    // data
   }
   tables: {
     // 所有人一样的云主机配置选项
@@ -195,7 +195,7 @@ export interface ServerModuleInterface {
     }
     // 个人云主机配额申请
     personalQuotaApplicationTable: {
-      byId: Record<string, ApplicationQuotaInterface>
+      byId: Record<string, QuotaApplicationInterface>
       allIds: string[]
       isLoaded: boolean
     }
@@ -213,7 +213,7 @@ export interface ServerModuleInterface {
     }
     // 项目组云主机配额申请
     groupQuotaApplicationTable: {
-      byId: Record<string, ApplicationQuotaInterface>
+      byId: Record<string, QuotaApplicationInterface>
       allIds: string[]
       isLoaded: boolean
     }
@@ -234,7 +234,7 @@ export interface ServerModuleInterface {
 
 function state (): ServerModuleInterface {
   return {
-    pages: {},
+    data: {},
     tables: {
       fedFlavorTable: {
         byId: {},

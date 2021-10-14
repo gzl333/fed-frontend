@@ -2,7 +2,7 @@ import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ServerModuleInterface, VpnInterface } from './state'
 import {
-  ApplicationQuotaInterface,
+  QuotaApplicationInterface,
   NetworkInterface,
   ImageInterface,
   QuotaInterface,
@@ -12,14 +12,14 @@ import { i18n } from 'boot/i18n'
 
 const getters: GetterTree<ServerModuleInterface, StateInterface> = {
   // 根据用户选择的filter来返回application数组
-  getPersonalApplicationsByFilter: (state) => (filter: string): ApplicationQuotaInterface[] => {
+  getPersonalApplicationsByFilter: (state) => (filter: string): QuotaApplicationInterface[] => {
     // 排序函数，根据申请时间降序排列
-    const sortFn = (a: ApplicationQuotaInterface, b: ApplicationQuotaInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
+    const sortFn = (a: QuotaApplicationInterface, b: QuotaApplicationInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
 
     if (filter === '0') {
       return Object.values(state.tables.personalQuotaApplicationTable.byId).sort(sortFn)
     } else {
-      const rows: ApplicationQuotaInterface[] = []
+      const rows: QuotaApplicationInterface[] = []
       for (const application of Object.values(state.tables.personalQuotaApplicationTable.byId)) {
         if (application.status === filter) {
           rows.push(application)
@@ -29,14 +29,14 @@ const getters: GetterTree<ServerModuleInterface, StateInterface> = {
     }
   },
   // 根据用户选择的filter来返回application数组
-  getGroupApplicationsByFilter: (state) => (filter: string): ApplicationQuotaInterface[] => {
+  getGroupApplicationsByFilter: (state) => (filter: string): QuotaApplicationInterface[] => {
     // 排序函数，根据申请时间降序排列
-    const sortFn = (a: ApplicationQuotaInterface, b: ApplicationQuotaInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
+    const sortFn = (a: QuotaApplicationInterface, b: QuotaApplicationInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
 
     if (filter === '0') {
       return Object.values(state.tables.groupQuotaApplicationTable.byId).sort(sortFn)
     } else {
-      const rows: ApplicationQuotaInterface[] = []
+      const rows: QuotaApplicationInterface[] = []
       for (const application of Object.values(state.tables.groupQuotaApplicationTable.byId)) {
         if (application.status === filter) {
           rows.push(application)
@@ -141,6 +141,20 @@ const getters: GetterTree<ServerModuleInterface, StateInterface> = {
   },
   /* quotaList使用 */
 
+  getGroupQuotaApplicationsByGroupId: (state) => (groupId: string): QuotaApplicationInterface[] => {
+    const sortFn = (a: QuotaApplicationInterface, b: QuotaApplicationInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
+    if (groupId === '0') {
+      return Object.values(state.tables.groupQuotaApplicationTable.byId).sort(sortFn)
+    } else {
+      const applications: QuotaApplicationInterface[] = []
+      for (const server of Object.values(state.tables.groupQuotaApplicationTable.byId)) {
+        if (groupId === server.vo_id) {
+          applications.push(server)
+        }
+      }
+      return applications.sort(sortFn)
+    }
+  },
   getGroupServersByGroupId: (state) => (groupId: string): ServerInterface[] => {
     const sortFn = (a: ServerInterface, b: ServerInterface) => new Date(b.creation_time).getTime() - new Date(a.creation_time).getTime()
     if (groupId === '0') {

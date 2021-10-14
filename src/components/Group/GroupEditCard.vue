@@ -13,23 +13,23 @@
 
       <q-card-section>
         <div class="row items-center q-pb-md">
-          <div class="col-2 text-grey">项目组名称</div>
+          <div class="col-2 text-grey q-pb-md">项目组名称</div>
           <div class="col">
-            <q-input outlined dense v-model="groupName"/>
+            <q-input outlined dense v-model="groupName" maxlength="15" counter/>
           </div>
         </div>
 
         <div class="row items-center q-pb-md">
-          <div class="col-2 text-grey">所属单位</div>
+          <div class="col-2 text-grey q-pb-md">所属单位</div>
           <div class="col">
-            <q-input outlined dense v-model="groupCompany"/>
+            <q-input outlined dense v-model="groupCompany" maxlength="15" counter/>
           </div>
         </div>
 
         <div class="row items-center q-pb-md">
-          <div class="col-2 text-grey">备注</div>
+          <div class="col-2 text-grey q-pb-md">备注</div>
           <div class="col">
-            <q-input outlined dense v-model="groupDescription"/>
+            <q-input outlined dense v-model="groupDescription" maxlength="15" counter/>
           </div>
         </div>
       </q-card-section>

@@ -6,11 +6,11 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-<!--            <q-input disable dense outlined v-model="text" stack-label :label="$t('搜索')">-->
-<!--              <template v-slot:append>-->
-<!--                <q-icon name="search"/>-->
-<!--              </template>-->
-<!--            </q-input>-->
+            <q-input disable dense outlined v-model="text" stack-label :label="$t('搜索')">
+              <template v-slot:append>
+                <q-icon name="search"/>
+              </template>
+            </q-input>
           </div>
         </div>
       </div>

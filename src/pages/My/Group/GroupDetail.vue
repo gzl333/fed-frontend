@@ -141,19 +141,26 @@
                            :ripple="false"
                            name="member"
                            icon="group"
-                           :label="$t('本组人员')"/>
+                           :label="$t('人员')"/>
                     <q-tab class="q-px-none q-py-none q-mr-md"
                            no-caps
                            :ripple="false"
                            name="server"
                            icon="computer"
-                           :label="$t('本组云主机')"/>
+                           :label="$t('云主机')"/>
                     <q-tab class="q-px-none q-py-none q-mr-md"
                            no-caps
                            :ripple="false"
                            name="quota"
                            icon="fas fa-file-alt"
-                           :label="$t('本组云主机配额')"/>
+                           :label="$t('云主机配额')"/>
+                    <q-tab v-if="group.myRole !== 'member'"
+                           class="q-px-none q-py-none q-mr-md"
+                           no-caps
+                           :ripple="false"
+                           name="application"
+                           icon="rule"
+                           :label="$t('配额申请记录')"/>
                   </q-tabs>
 
                   <q-btn v-show="tab==='member' && group.myRole !== 'member' " class="col-shrink" icon="add" size="md"
@@ -193,6 +200,10 @@
                   <q-tab-panel class="q-pa-none overflow-hidden" name="quota">
                     <quota-table :quotas="quotas" is-group/>
                   </q-tab-panel>
+
+                  <q-tab-panel v-if="group.myRole !== 'member'" class="q-pa-none overflow-hidden" name="application">
+                    <quota-application-table :applications="applications" is-group/>
+                  </q-tab-panel>
                 </q-tab-panels>
               </div>
 
@@ -217,13 +228,15 @@ import { useI18n } from 'vue-i18n'
 import GroupMemberTable from 'components/Group/GroupMemberTable.vue'
 import ServerTable from 'components/Server/ServerTable.vue'
 import QuotaTable from 'components/Quota/QuotaTable.vue'
+import QuotaApplicationTable from 'components/Quota/QuotaApplicationTable.vue'
 
 export default defineComponent({
   name: 'GroupDetail',
   components: {
     GroupMemberTable,
     ServerTable,
-    QuotaTable
+    QuotaTable,
+    QuotaApplicationTable
   },
   props: {},
   setup () {
@@ -244,6 +257,8 @@ export default defineComponent({
     const servers = computed(() => $store.getters['server/getGroupServersByGroupId'](groupId))
     // groupQuota
     const quotas = computed(() => $store.getters['server/getGroupQuotasByGroupIdByStatus'](groupId, 'all'))
+    // group quota applications
+    const applications = computed(() => $store.getters['server/getGroupQuotaApplicationsByGroupId'](groupId))
 
     const tab = ref(show ?? 'member')
 
@@ -254,6 +269,7 @@ export default defineComponent({
       group,
       servers,
       quotas,
+      applications,
       tab
     }
   }

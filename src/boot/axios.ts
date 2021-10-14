@@ -84,7 +84,7 @@ declare module '@vue/runtime-core' {
 
 // 原本的api是一个axios对象
 const api = axios.create(/* { timeout: 1000 , baseURL: 'https://api.example.com'} */)
-// 包装好接口api base地址的axios实例
+// APIBASE的唯一配置。 包装好接口api base地址的axios实例
 const apiFed = axios.create({ baseURL: window.location.protocol + '//vms.cstcloud.cn/api' })
 const apiLogin = axios.create({ baseURL: window.location.protocol + '//gosc-login.cstcloud.cn' })
 

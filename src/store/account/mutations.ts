@@ -9,41 +9,45 @@ import { SingleMemberInterface } from 'src/store/account/state'
 const mutation: MutationTree<AccountModuleInterface> = {
   // toggle footer
   openFooter (state) {
-    state.isFooterOpen = true
+    state.data.isFooterOpen = true
   },
   closeFooter (state) {
-    state.isFooterOpen = false
+    state.data.isFooterOpen = false
   },
   // myLayout rightDrawer
   storeIsRightDrawerOpen (state) {
-    state.isRightDrawerOpen = !state.isRightDrawerOpen
+    state.data.isRightDrawerOpen = !state.data.isRightDrawerOpen
   },
-  storeUser (/* this: rightType, */state, payload: { access: string; refresh: string; }) {
-    state.isLogin = true
-    state.access = payload.access
-    state.refresh = payload.refresh
+  storeUser (/* this: rightType, */state, payload: { access: string; refresh: string; loginType: 'cst' | 'aai' }) {
+    state.data.isLogin = true
+    state.data.loginType = payload.loginType
+    state.data.access = payload.access
+    state.data.refresh = payload.refresh
     const decoded = jwtDecode<DecodedToken>(payload.access)
-    state.decoded = decoded
+    state.data.decoded = decoded
 
     // localStorage
-    localStorage.setItem('access', state.access)
-    localStorage.setItem('refresh', state.refresh)
+    localStorage.setItem('access', state.data.access)
+    localStorage.setItem('refresh', state.data.refresh)
+    localStorage.setItem('loginType', state.data.loginType)
 
     // axios header
-    axios.defaults.headers.common.Authorization = `Bearer ${state.access}`
-    apiFed.defaults.headers.common.Authorization = `Bearer ${state.access}` // apiFed对象已经生成，只把token写在axios对象上不行，也要补充给apiFed对象
-    apiLogin.defaults.headers.common.Authorization = `Bearer ${state.access}` // todo 是否有必要待定
+    axios.defaults.headers.common.Authorization = `Bearer ${state.data.access}`
+    apiFed.defaults.headers.common.Authorization = `Bearer ${state.data.access}` // apiFed对象已经生成，只把token写在axios对象上不行，也要补充给apiFed对象
+    apiLogin.defaults.headers.common.Authorization = `Bearer ${state.data.access}` // todo 是否有必要待定
   },
   deleteUser (state: AccountModuleInterface) {
     // vuex
-    state.isLogin = false
-    delete state.access
-    delete state.refresh
-    delete state.decoded
+    state.data.isLogin = false
+    delete state.data.loginType
+    delete state.data.access
+    delete state.data.refresh
+    delete state.data.decoded
 
     // localStorage
     localStorage.removeItem('access')
     localStorage.removeItem('refresh')
+    localStorage.removeItem('loginType')
 
     // axios header
     delete axios.defaults.headers.common.Authorization

@@ -17,11 +17,11 @@
           <div class="col">
 
             <div class="row items-center q-pb-md">
-              <div class="col-1 text-grey">
+              <div class="col-1 text-grey q-pb-md" >
                 项目组名称
               </div>
               <div class="col-3">
-                <q-input outlined dense v-model="groupName"  >
+                <q-input outlined dense v-model="groupName" maxlength="15" counter >
                   <template v-if="groupName !== ''" v-slot:append>
                     <q-icon name="close" @click="groupName = ''" class="cursor-pointer" />
                   </template>
@@ -30,11 +30,11 @@
             </div>
 
             <div class="row items-center q-pb-md">
-              <div class="col-1 text-grey">
+              <div class="col-1 text-grey q-pb-md">
                 项目组描述
               </div>
               <div class="col-3">
-                <q-input outlined dense v-model="groupDesc"  >
+                <q-input outlined dense v-model="groupDesc" maxlength="15" counter >
                   <template v-if="groupDesc !== ''" v-slot:append>
                     <q-icon name="close" @click="groupDesc = ''" class="cursor-pointer" />
                   </template>
@@ -43,11 +43,11 @@
             </div>
 
             <div class="row items-center q-pb-md">
-              <div class="col-1 text-grey">
+              <div class="col-1 text-grey q-pb-md">
                 所属单位
               </div>
               <div class="col-3">
-                <q-input outlined dense v-model="groupCompany"  >
+                <q-input outlined dense v-model="groupCompany" maxlength="15" counter  >
                   <template v-if="groupCompany !== ''" v-slot:append>
                     <q-icon name="close" @click="groupCompany = ''" class="cursor-pointer" />
                   </template>
@@ -102,7 +102,7 @@ export default defineComponent({
 
     const groupName = ref('')
     const groupDesc = ref('')
-    const groupCompany = ref(computed(() => $store.state.account.decoded?.orgName).value)
+    const groupCompany = ref(computed(() => $store.state.account.data.decoded?.orgName).value)
 
     return {
       $store,

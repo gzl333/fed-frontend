@@ -437,8 +437,8 @@ export default defineComponent({
           disk_size: sliderDisk.value,
           duration_days: sliderDuration.value,
           purpose: inputPurpose.value,
-          company: $store.state.account.decoded?.orgName,
-          contact: $store.state.account.decoded?.cstnetId
+          company: $store.state.account.data.decoded?.orgName,
+          contact: $store.state.account.data.decoded?.cstnetId
         } : {
           service_id: radioService.value,
           private_ip: sliderPrivate.value,
@@ -448,8 +448,8 @@ export default defineComponent({
           disk_size: sliderDisk.value,
           duration_days: sliderDuration.value,
           purpose: inputPurpose.value,
-          company: $store.state.account.decoded?.orgName,
-          contact: $store.state.account.decoded?.cstnetId
+          company: $store.state.account.data.decoded?.orgName,
+          contact: $store.state.account.data.decoded?.cstnetId
         }
         // 提交quota申请
         await $store.dispatch('server/submitApplyQuota', selection)

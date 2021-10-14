@@ -15,7 +15,7 @@
         <div v-else class="col-auto q-gutter-sm">
           <q-btn class="gt-xs" outline :ripple="false" color="white" label="注 册" type="a"
                  href="https://passport.escience.cn/regist.jsp" target="_blank"/>
-          <q-btn unelevated :ripple="false" color="primary" label="登 录" @click="cstLogin"/>
+          <q-btn unelevated :ripple="false" color="primary" label="登 录" @click="$store.dispatch('account/cstAskUrl')"/>
         </div>
       </div>
     </q-header>
@@ -51,7 +51,7 @@ import HeaderDropdown from 'components/GlobalHeader/HeaderDropdown.vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
-import useCstLogin from 'src/hooks/useCstLogin'
+// import useCstLogin from 'src/hooks/useCstLogin'
 
 export default defineComponent({
   name: 'NewsLayout',
@@ -75,7 +75,7 @@ export default defineComponent({
     // })
     /* news layout内页所有table加载起始点 */
 
-    const currentUser = computed(() => $store.state.account)
+    const currentUser = computed(() => $store.state.account.data)
 
     // scroll info
     const scrollTop = ref(0)
@@ -89,8 +89,8 @@ export default defineComponent({
       }
     })
 
-    // cstlogin
-    const cstLogin = useCstLogin()
+    // // cstlogin
+    // const cstLogin = useCstLogin()
 
     return {
       $route,
@@ -98,8 +98,8 @@ export default defineComponent({
       onScroll,
       scrollRatio,
       dynamicBackground,
-      currentUser,
-      cstLogin
+      currentUser
+      // cstLogin
     }
   }
 })

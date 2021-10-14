@@ -6,7 +6,7 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-            <q-input disable dense outlined v-model="text" stack-label label="搜索">
+            <q-input disable dense outlined v-model="text" stack-label :label="$t('搜索')">
               <template v-slot:append>
                 <!--                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>-->
                 <q-icon name="search"/>
@@ -19,7 +19,7 @@
       <div class="col-2">
         <div class="row justify-end">
           <div class="col">
-            <q-select outlined dense stack-label label="筛选" v-model="filterSelection"
+            <q-select outlined dense stack-label :label="$t('筛选')" v-model="filterSelection"
                       :options="filterOptions" map-options/>
           </div>
         </div>
@@ -57,6 +57,35 @@
             </q-btn>
           </q-td>
 
+          <q-td key="role" :props="props">
+            <GroupRoleChip class="non-selectable" :role="props.row.myRole"/>
+          </q-td>
+
+          <q-td key="member" :props="props">
+            <q-btn color="primary" flat padding="none" dense
+                   :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'member'} }">
+              {{ $store.state.account.tables.groupMemberTable.byId[props.row.id]?.members.length }}人
+            </q-btn>
+          </q-td>
+
+          <q-td key="server" :props="props">
+            <q-btn color="primary" flat padding="none" dense
+                   :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'server'} }">
+              {{ $store.getters['server/getGroupServersByGroupId'](props.row.id).length }}台
+            </q-btn>
+          </q-td>
+
+          <q-td key="quota" :props="props">
+            <q-btn color="primary" flat padding="none" dense
+                   :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'quota'} }">
+              {{ $store.getters['server/getGroupQuotasByGroupIdByStatus'](props.row.id, 'valid').length }}个
+            </q-btn>
+          </q-td>
+
+          <q-td key="desc" :props="props">
+            {{ props.row.description }}
+          </q-td>
+
           <q-td key="company" :props="props">
             {{ props.row.company }}
           </q-td>
@@ -73,32 +102,6 @@
             </div>
           </q-td>
 
-          <q-td key="role" :props="props">
-            <GroupRoleChip class="non-selectable" :role="props.row.myRole"/>
-          </q-td>
-
-          <q-td key="member" :props="props">
-             <q-btn color="primary" flat padding="none" dense :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'member'} }">
-               {{ $store.state.account.tables.groupMemberTable.byId[props.row.id]?.members.length }}人
-             </q-btn>
-          </q-td>
-
-          <q-td key="server" :props="props">
-            <q-btn color="primary" flat padding="none" dense :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'server'} }">
-              {{ $store.getters['server/getGroupServersByGroupId'](props.row.id).length }}台
-            </q-btn>
-          </q-td>
-
-          <q-td key="quota" :props="props">
-            <q-btn color="primary" flat padding="none" dense :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'quota'} }">
-              {{ $store.getters['server/getGroupQuotasByGroupIdByStatus'](props.row.id,'valid').length }}个
-            </q-btn>
-          </q-td>
-
-          <q-td key="desc" :props="props">
-            {{ props.row.description }}
-          </q-td>
-
           <q-td key="operation" :props="props">
 
             <div class="row justify-center items-center q-gutter-xs">
@@ -107,10 +110,10 @@
                 <q-tooltip>详情</q-tooltip>
               </q-btn>
 
-<!--              <q-btn :disable="props.row.myRole!=='owner'" icon="settings" flat dense padding="none" color="primary"-->
-<!--                     :to="{path: `/my/group_obsolete/edit/${props.row.id}`}">-->
-<!--                <q-tooltip>设置</q-tooltip>-->
-<!--              </q-btn>-->
+              <!--              <q-btn :disable="props.row.myRole!=='owner'" icon="settings" flat dense padding="none" color="primary"-->
+              <!--                     :to="{path: `/my/group_obsolete/edit/${props.row.id}`}">-->
+              <!--                <q-tooltip>设置</q-tooltip>-->
+              <!--              </q-btn>-->
 
             </div>
 
@@ -203,22 +206,6 @@ export default defineComponent({
         headerStyle: 'padding: 0 5px'
       },
       {
-        name: 'company',
-        label: '所属单位',
-        field: 'company',
-        align: 'center',
-        style: 'padding: 15px 0px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'creation_time',
-        label: '创建时间',
-        field: 'creation_time',
-        align: 'center',
-        style: 'padding: 15px 0px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
         name: 'role',
         label: '我的角色',
         field: 'role',
@@ -254,6 +241,22 @@ export default defineComponent({
         name: 'desc',
         label: '备注',
         field: 'desc',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
+      },
+      {
+        name: 'company',
+        label: '所属单位',
+        field: 'company',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
+      },
+      {
+        name: 'creation_time',
+        label: '创建时间',
+        field: 'creation_time',
         align: 'center',
         style: 'padding: 15px 0px',
         headerStyle: 'padding: 0 5px'

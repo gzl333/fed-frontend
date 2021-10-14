@@ -1,50 +1,83 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
-import {
-  AccountModuleInterface,
-  DecodedToken
-} from './state'
+import { AccountModuleInterface } from './state'
 import { Dialog, Notify } from 'quasar'
 import axios from 'axios'
-import jwtDecode from 'jwt-decode'
 import { apiFed, apiLogin } from 'boot/axios'
 import { normalize, schema } from 'normalizr'
 import api from '../api'
 import GroupEditCard from 'components/Group/GroupEditCard.vue'
 import GroupAddMemberCard from 'components/Group/GroupAddMemberCard.vue'
 
-// 科技云通行证登录的api地址，当前为测试环境，上线后需要修改
-const cstApiBase = window.location.protocol + '//gosc-login.cstcloud.cn'
-
 // 注意此时context.state是store.state.account，而不是store.state
 const actions: ActionTree<AccountModuleInterface, StateInterface> = {
-  retainCstToken (context) {
-    // console.log('in retain')
-    if (context.state.access && context.state.refresh) {
-      const tokenRefresh = context.state.refresh
-      const tokenAccess = context.state.access
-      const decoded = jwtDecode<DecodedToken>(tokenAccess)
-      // console.log(decoded)
-      if (decoded.exp) {
-        // const timeOut = decoded.exp * 1000 - Date.now() - 3595000 // 测试用，快速refresh
-        const timeOut = decoded.exp * 1000 - Date.now() - 5000 // 到期时间前5秒钟更新token,到期时间小于5秒时立即尝试更新token
+  /* data */
+  async cstAskUrl () {
+    // 本函数只负责获取科技云通行证登录页面地址，并跳转。 code及token处理、/login路由跳转逻辑处理，均放在router.beforeEach中
+    // 获取cst登录url
+    const respPostLoginUrl = await api.login.cst.postAskUrl({ query: { clientUrl: window.location.origin + '/login' } })
+    // 跳转至获取token的url
+    window.location.href = respPostLoginUrl.data.data
+  },
+  async cstLogin (context, code: string) {
+    // 获取token
+    const respPostDealCode = await api.login.cst.postDealCode({ query: { code } })
+    // 保存token并改变用户登录状态,保存用户信息
+    context.commit('storeUser', {
+      access: respPostDealCode.data.data.accessToken,
+      refresh: respPostDealCode.data.data.refreshToken,
+      loginType: 'cst'
+    })
+  },
+  cstLogout (context) {
+    context.commit('deleteUser')
+    window.location.href = apiLogin.defaults.baseURL + '/open/api/UMTOauthLogin/loginOut?loginOutUrl=' + window.location.origin
+  },
+  // 页面刷新时从浏览器localStorage里读取token
+  async reloadToken (context) {
+    if (localStorage.getItem('access') && localStorage.getItem('refresh') && localStorage.getItem('loginType')) {
+      const localToken = {
+        access: localStorage.getItem('access'),
+        refresh: localStorage.getItem('refresh'),
+        loginType: localStorage.getItem('loginType')
+      }
+      const respPostCheckToken = localToken.loginType === 'cst' ? await api.login.cst.postCheckToken({ query: { jwtToken: localToken.access! } }) : await api.login.aai.postCheckToken({ query: { jwtToken: localToken.access! } })
+      if (respPostCheckToken.data.code === 200 && respPostCheckToken.data.data === true) {
+        context.commit('storeUser', localToken)
+      } else {
+        void await context.dispatch('cstLogout')
+      }
+    }
+  },
+  retainToken (context) {
+    if (context.state.data.access && context.state.data.refresh && context.state.data.loginType) { // $store中的token状态
+      const refreshToken = context.state.data.refresh
+      const decodedToken = context.state.data.decoded!
+      if (decodedToken.exp) {
+        // const timeOut = decodedToken.exp * 1000 - Date.now() - 3595000 // 测试用，快速refresh
+        const timeOut = decodedToken.exp * 1000 - Date.now() - 5000 // 到期时间前5秒钟更新token,到期时间小于5秒时立即尝试更新token
         console.log('retain timeout', timeOut)
         setTimeout(() => {
           // https://stackoverflow.com/questions/63488141/promise-returned-in-function-argument-where-a-void-return-was-expected/63488201
           void (async () => {
             try {
-              if (context.state.access && context.state.refresh) { // 定时器注册后，仅在用户保持登录时更新token，登出则定时器不执行，不再更新
-                // 获取更新到的access token
-                const response = await context.dispatch('fetchCstNewToken', tokenRefresh)
-                if (response.data.code === 200) {
+              if (context.state.data.access && context.state.data.refresh && context.state.data.loginType) { // 定时器注册后，仅在用户保持登录时更新token，登出则定时器不执行，不再更新
+                // 先删除请求头中已有的token
+                delete axios.defaults.headers.common.Authorization // token绑定到axios对象上
+                delete apiFed.defaults.headers.common.Authorization // apiFed对象已经生成，只把token写在axios对象上不行，也要补充给apiFed对象
+                delete apiLogin.defaults.headers.common.Authorization // 是否有必要待定?
+                // 获取更新到的access token todo 更新aai部分
+                const respPostRefreshToken = await api.login.cst.postRefreshToken({ query: { refreshToken } })
+                if (respPostRefreshToken.data.code === 200) {
                   context.commit('storeUser', {
-                    access: response.data.data.accessToken,
-                    refresh: response.data.data.refreshToken
+                    access: respPostRefreshToken.data.data.accessToken,
+                    refresh: respPostRefreshToken.data.data.refreshToken,
+                    loginType: context.state.data.loginType
                   })
                   // console.log(context.state.token)
-                  await context.dispatch('retainCstToken')
+                  await context.dispatch('retainToken')
                 } else {
-                  void await context.dispatch('logoutCstUser')
+                  void await context.dispatch('cstLogout')
                   Notify.create({
                     classes: 'notification-negative shadow-15',
                     icon: 'mdi-alert',
@@ -58,76 +91,14 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
                 }
               }
             } catch (error) {
-              void await context.dispatch('logoutCstUser')
+              void await context.dispatch('cstLogout')
             }
           })()
         }, timeOut)
       }
     }
   },
-  async fetchCstNewToken (context, refreshToken: string) {
-    const api = cstApiBase + '/open/api/UMTOauthLogin/refreshToken'
-    // 更新token时应删除请求头中的gosc token
-    delete axios.defaults.headers.common.Authorization
-    delete apiFed.defaults.headers.common.Authorization // apiFed对象已经生成，只把token写在axios对象上不行，也要补充给apiFed对象
-    delete apiLogin.defaults.headers.common.Authorization // todo 是否有必要待定
-    const config = {
-      params: { refreshToken: refreshToken }
-    }
-    const response = await axios.post(api, null, config)
-    return response
-  },
-  async reloadCstToken (context) {
-    if (localStorage.getItem('access') && localStorage.getItem('refresh')) {
-      const localToken = {
-        access: localStorage.getItem('access'),
-        refresh: localStorage.getItem('refresh')
-      }
-      const respVerifyCstToken = await context.dispatch('verifyCstToken', localToken)
-      if (respVerifyCstToken.data.code === 200) {
-        context.commit('storeUser', localToken)
-      } else {
-        void await context.dispatch('logoutCstUser')
-      }
-    }
-  },
-  async verifyCstToken (context, payload: { access: string; refresh: string }) {
-    const api = cstApiBase + '/open/api/UMTOauthLogin/checkToken'
-    const config = { params: { jwtToken: payload.access } }
-    const response = await axios.post(api, null, config)
-    // console.log(response)
-    return response
-  },
-  logoutCstUser (context) {
-    context.commit('deleteUser')
-    window.location.href = cstApiBase + '/open/api/UMTOauthLogin/loginOut?loginOutUrl=' + window.location.origin
-  },
-  async loginCstUser (context, code: string) {
-    // 获取token
-    const respFetchCstToken = await context.dispatch('fetchCstToken', code)
-    // 保存token并改变用户登录状态,保存用户信息
-    context.commit('storeUser', {
-      access: respFetchCstToken.data.data.accessToken,
-      refresh: respFetchCstToken.data.data.refreshToken
-    })
-  },
-  async fetchCstToken (context, code: string) {
-    // 利用科技云通行证返回的code，换取token
-    const api = cstApiBase + '/open/api/UMTOauthLogin/dealCode'
-    const config = { params: { code } }
-    const response = await axios.post(api, null, config)
-    return response
-  },
-  async fetchCstLoginUrl (/* context */) {
-    const api = cstApiBase + '/open/api/UMTOauthLogin/askUrl'
-    // redirect是从通行证携带code返回的地址，应该是等待截取code并获取token的具体地址
-    const redirect = window.location.origin + '/login'
-    const config = { params: { clientUrl: redirect } }
-    const response = await axios.post(api, null, config)
-    return response
-  },
-
-  /* 新模块 */
+  /* data */
 
   /* table */
   // 强制加载group相关table
@@ -152,7 +123,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
     const group = new schema.Entity('group')
     for (const data of respGroup.data.results) {
       // 添加role字段
-      const currentId = context.state.decoded?.cstnetId
+      const currentId = context.state.data.decoded?.cstnetId
       const myRole = currentId === data.owner.username ? 'owner' : 'member'
       Object.assign(data, { myRole })
       // normalize
@@ -169,6 +140,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
     context.commit('clearTable', context.state.tables.groupMemberTable)
     for (const groupId of context.state.tables.groupTable.allIds) {
       const respGroupMember = await api.vo.getVoListMembers({ path: { id: groupId } })
+      // 是否把组长添加进member列表？
       // 把groupId字段补充进去
       Object.assign(respGroupMember.data, { id: groupId })
       // normalize
@@ -181,7 +153,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
       })
 
       // 给groupTable补充role字段
-      const currentId = context.state.decoded?.cstnetId
+      const currentId = context.state.data.decoded?.cstnetId
       for (const member of respGroupMember.data.members) {
         if (member.user.username === currentId && member.role === 'leader') {
           const myRole = 'leader'
@@ -439,16 +411,39 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
 
   /* 删除group */
   deleteGroupDialog (context, groupId: string) {
-    // 检查组内云主机是否删除干净
-    const countServers = context.rootGetters['server/getGroupServersByGroupId'](groupId)
-    // todo 检查配额和配额申请是否删除干净
+    // 检查组内:云主机、配额、配额申请记录 是否删除干净
+    const isServerPurged = Boolean(context.rootGetters['server/getGroupServersByGroupId'](groupId).length === 0)
+    const isQuotaPurged = Boolean(context.rootGetters['server/getGroupQuotasByGroupIdByStatus'](groupId, 'all').length === 0)
+    const isQuotaApplicationPurged = Boolean(context.rootGetters['server/getGroupQuotaApplicationsByGroupId'](groupId).length === 0)
 
-    if (countServers.length > 0) {
+    if (!isServerPurged) {
       Notify.create({
         classes: 'notification-negative shadow-15',
         icon: 'mdi-check-circle',
         textColor: 'red',
         message: '请将组内的云主机全部删除后，再解散该项目组',
+        position: 'bottom',
+        closeBtn: true,
+        timeout: 5000,
+        multiLine: false
+      })
+    } else if (!isQuotaPurged) {
+      Notify.create({
+        classes: 'notification-negative shadow-15',
+        icon: 'mdi-check-circle',
+        textColor: 'red',
+        message: '请将组内的云主机配额全部删除后，再解散该项目组',
+        position: 'bottom',
+        closeBtn: true,
+        timeout: 5000,
+        multiLine: false
+      })
+    } else if (!isQuotaApplicationPurged) {
+      Notify.create({
+        classes: 'notification-negative shadow-15',
+        icon: 'mdi-check-circle',
+        textColor: 'red',
+        message: '请将组内的云主机配额申请记录全部删除后，再解散该项目组',
         position: 'bottom',
         closeBtn: true,
         timeout: 5000,
@@ -499,9 +494,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
     }
   }
   /* 删除group */
-
   /* dialog */
-  /* 新模块 */
 }
 
 export default actions

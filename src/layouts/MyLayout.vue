@@ -48,23 +48,18 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
+
     /* my内页所有table加载起始点 */
     console.log('$store:', $store.state)
-    // new modules
     void $store.dispatch('fed/loadAllTables')
-
-    // old modules
-    // void $store.dispatch('vm_obsolete/updateVmTable')
-    // void $store.dispatch('applyQuota_obsolete/updateQuotaApplicationTable')
-    // void $store.dispatch('group_obsolete/loadGroupModuleTable')
     /* my内页所有table加载起始点 */
 
     const currentUser = $store.state.account
-    const isRightDrawerOpen = computed(() => $store.state.account.isRightDrawerOpen)
-    const isFooterOpen = computed(() => $store.state.account.isFooterOpen)
+    const isRightDrawerOpen = computed(() => $store.state.account.data.isRightDrawerOpen)
+    const isFooterOpen = computed(() => $store.state.account.data.isFooterOpen)
 
     const toLogout = () => {
-      void $store.dispatch('account/logoutCstUser')
+      void $store.dispatch('account/cstLogout')
     }
     return {
       isRightDrawerOpen,

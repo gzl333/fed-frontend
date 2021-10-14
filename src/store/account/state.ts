@@ -49,17 +49,17 @@ export interface GroupMemberInterface {
 
 // Account总体类型
 export interface AccountModuleInterface {
-  // account
-  isLogin: boolean
-  access?: string
-  refresh?: string
-  decoded?: DecodedToken
-
-  // layout
-  isRightDrawerOpen: boolean
-  isFooterOpen: boolean
-
-  /* 新模块 */
+  data: { // 单独的数据
+    // account
+    isLogin: boolean
+    loginType?: 'cst' | 'aai'
+    access?: string
+    refresh?: string
+    decoded?: DecodedToken
+    // layout
+    isRightDrawerOpen: boolean
+    isFooterOpen: boolean
+  }
   tables: {
     // 用户相关的全部组table
     groupTable: {
@@ -79,9 +79,11 @@ export interface AccountModuleInterface {
 
 function state (): AccountModuleInterface {
   return {
-    isLogin: false,
-    isRightDrawerOpen: false,
-    isFooterOpen: false,
+    data: {
+      isLogin: false,
+      isRightDrawerOpen: false,
+      isFooterOpen: false
+    },
     tables: {
       groupTable: {
         byId: {},

@@ -1,10 +1,13 @@
-import { ApplicationQuotaInterface, ServerInterface } from 'src/store/server/state'
+import { QuotaApplicationInterface, ServerInterface } from 'src/store/server/state'
 
 export interface ProviderModuleInterface {
+  data: {
+    // data
+  }
   tables: {
     // 管理员有权限审批的quota申请
     adminQuotaApplicationTable: {
-      byId: Record<string, ApplicationQuotaInterface>
+      byId: Record<string, QuotaApplicationInterface>
       allIds: string[]
       isLoaded: boolean
     }
@@ -19,6 +22,7 @@ export interface ProviderModuleInterface {
 
 function state (): ProviderModuleInterface {
   return {
+    data: {},
     tables: {
       adminQuotaApplicationTable: {
         byId: {},

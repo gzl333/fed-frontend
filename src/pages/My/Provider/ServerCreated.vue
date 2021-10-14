@@ -1,10 +1,27 @@
 <template>
   <div class="Manage">
-    <div class="row justify-end q-mb-md">
-      <div class="col-2">
-        <q-select map-options emit-value outlined dense stack-label label="筛选" :options="filterOptions" v-model="filterSelection" @update:model-value="change"/>
+
+    <div class="row items-center justify-between q-py-md">
+
+      <div class="col-3">
+        <div class="row justify-start">
+          <div class="col">
+            <q-input disable dense outlined v-model="text" stack-label :label="$t('搜索')">
+              <template v-slot:append>
+                <q-icon name="search"/>
+              </template>
+            </q-input>
+          </div>
+        </div>
       </div>
+
+      <div class="col-3">
+        <q-select map-options emit-value outlined dense stack-label label="筛选" :options="filterOptions"
+                  v-model="filterSelection" @update:model-value="change"/>
+      </div>
+
     </div>
+
     <q-table
       flat
       card-class=""
@@ -20,14 +37,14 @@
       <template v-slot:body="props">
         <q-tr :props="props">
           <q-td key="ipv4" :props="props">
-            {{props.row.ipv4}}
-<!--            <q-btn-->
-<!--              class="q-ma-none" :label="props.row.ipv4" color="primary" padding="none" flat dense unelevated-->
-<!--              :to="{path: '/my/group_obsolete/server/detail/' + props.row.id}">-->
-<!--              <q-tooltip>-->
-<!--                {{ $t('进入云主机详情') }}-->
-<!--              </q-tooltip>-->
-<!--            </q-btn>-->
+            {{ props.row.ipv4 }}
+            <!--            <q-btn-->
+            <!--              class="q-ma-none" :label="props.row.ipv4" color="primary" padding="none" flat dense unelevated-->
+            <!--              :to="{path: '/my/group_obsolete/server/detail/' + props.row.id}">-->
+            <!--              <q-tooltip>-->
+            <!--                {{ $t('进入云主机详情') }}-->
+            <!--              </q-tooltip>-->
+            <!--            </q-btn>-->
           </q-td>
           <q-td key="service" :props="props">
             <div>{{ $store.state.fed.tables.serviceTable.byId[props.row.service]?.name }}</div>
@@ -37,6 +54,9 @@
           </q-td>
           <q-td key="remark" :props="props">
             {{ props.row.remarks }}
+          </q-td>
+          <q-td key="image" :props="props">
+            {{ props.row.image }}
           </q-td>
           <q-td key="configuration" :props="props">
             {{ `${props.row.vcpus}核/${props.row.ram / 1024}GB` }}
@@ -50,35 +70,24 @@
           <q-td key="expiration_time" :props="props">
             {{ new Date(props.row.expiration_time).toLocaleString() }}
           </q-td>
-
-<!--          <q-td key="user_quota" :props="props">-->
-<!--            {{ !$store.state.vm_obsolete.tables.providerServerTable.byId[props.row.user_quota]?.display ? '暂时为空' : $store.state.vm_obsolete.tables.providerServerTable.byId[props.row.user_quota]?.display}}-->
-<!--          </q-td>-->
-
           <q-td key="center_quota" :props="props">
             {{ props.row.center_quota === 1 ? '私有配额' : '共享配额' }}
           </q-td>
-
         </q-tr>
       </template>
     </q-table>
-    <div class="q-pa-md row justify-end">
-      <div class="text-subtitle1 text-weight-bold q-mr-lg">
-            <span>
-            15条/页 共{{paginationTable.count}}条数据
-          </span>
-      </div>
-      <div>
-        <q-pagination
-          v-model="paginationTable.page"
-          :max="Math.ceil(paginationTable.count/15)"
-          :max-pages="5"
-          ellipsess
-          direction-links
-          @update:model-value="changePagination"
-        >
-        </q-pagination>
-      </div>
+    <q-separator/>
+    <div class="row items-center justify-between q-pa-md">
+      <span class="text-grey">15条/页 共{{ paginationTable.count }}台云主机</span>
+      <q-pagination
+        v-model="paginationTable.page"
+        :max="Math.ceil(paginationTable.count/15)"
+        :max-pages="7"
+        ellipsess
+        flat
+        direction-links
+        @update:model-value="changePagination"
+      />
     </div>
   </div>
 </template>
@@ -104,28 +113,41 @@ export default defineComponent({
         label: 'IP地址',
         field: 'ipv4',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
       },
       {
         name: 'service',
         label: '服务节点',
         field: 'service',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
       },
       {
         name: 'user',
         label: '用户',
         field: 'user',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
       },
       {
         name: 'remark',
         label: '备注',
         field: 'remark',
         align: 'center',
-        style: 'padding: 15px 5px'
+        classes: 'ellipsis',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
+      },
+      {
+        name: 'image',
+        label: '系统镜像',
+        field: 'image',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
       },
       {
         name: 'configuration',
@@ -140,35 +162,32 @@ export default defineComponent({
         label: '网络类型',
         field: 'public_ip',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
       },
       {
         name: 'creation_time',
-        label: '申请时间',
+        label: '创建时间',
         field: 'creation_time',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
       },
       {
         name: 'expiration_time',
         label: '到期时间',
         field: 'expiration_time',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
       },
-      // {
-      //   name: 'user_quota',
-      //   label: '配额情况',
-      //   field: 'user_quota',
-      //   align: 'center',
-      //   style: 'padding: 15px 5px'
-      // },
       {
         name: 'center_quota',
         label: '配额类型',
         field: 'center_quota',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 5px'
       }
     ]
     const filterSelection = ref({

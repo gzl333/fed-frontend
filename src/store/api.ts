@@ -1,9 +1,70 @@
-// todo 核对准确
-// 标准api调用函数库,与接口一致
+/* 标准api调用函数库,严格与后端接口一致。
+* 不包括更高层的封装。 */
+
 import { apiFed, apiLogin } from 'boot/axios'
 
 const api = {
-  login: {}, // todo
+  login: {
+    // 科技云通行证登录接口
+    cst: {
+      postAskUrl (payload: {
+        query: {
+          clientUrl: string;
+          type?: string;
+        }
+      }) {
+        const config = {
+          params: payload.query
+        }
+        return apiLogin.post('/open/api/UMTOauthLogin/askUrl', null, config)
+      },
+      postDealCode (payload: {
+        query: {
+          code: string;
+          error?: string;
+          error_description?: string;
+        }
+      }) {
+        const config = {
+          params: payload.query
+        }
+        return apiLogin.post('/open/api/UMTOauthLogin/dealCode', null, config)
+      },
+      postCheckToken (payload: {
+        query: {
+          jwtToken: string
+        }
+      }) {
+        const config = {
+          params: payload.query
+        }
+        return apiLogin.post('/open/api/UMTOauthLogin/checkToken', null, config)
+      },
+      postRefreshToken (payload: {
+        query: {
+          refreshToken: string
+        }
+      }) {
+        const config = {
+          params: payload.query
+        }
+        return apiLogin.post('/open/api/UMTOauthLogin/refreshToken', null, config)
+      }
+    },
+    // aai登录接口
+    aai: {
+      postCheckToken (payload: {
+        query: {
+          jwtToken: string
+        }
+      }) {
+        const config = {
+          params: payload.query
+        }
+        return apiLogin.post('/open/api/AAILogin/checkToken', null, config)
+      }
+    }
+  },
   apply: {
     getApplyOrganization (payload: {
       query?: {

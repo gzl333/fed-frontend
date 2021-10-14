@@ -57,9 +57,9 @@ export interface AllocationInterface {
 }
 
 export interface FedModuleInterface {
-  pages: {
-    // 页面所需数据
-  },
+  data: {
+    // data
+  }
   tables: {
     // 联邦层级datacenter
     dataCenterTable: {
@@ -90,7 +90,7 @@ export interface FedModuleInterface {
 
 function state (): FedModuleInterface {
   return {
-    pages: {},
+    data: {},
     tables: {
       dataCenterTable: {
         byId: {},

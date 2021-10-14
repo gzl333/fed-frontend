@@ -27,7 +27,7 @@
           <q-btn class="gt-xs" outline :ripple="false" color="white" label="注 册" type="a"
                  href="https://passport.escience.cn/regist.jsp"
                  target="_blank"/>
-          <q-btn unelevated :ripple="false" color="primary" label="登 录" @click="cstLogin"/>
+          <q-btn unelevated :ripple="false" color="primary" label="登 录" @click="$store.dispatch('account/cstAskUrl')"/>
 
         </div>
       </div>
@@ -78,7 +78,7 @@ import { scroll } from 'quasar'
 // import { useStore } from 'vuex'
 // import { StateInterface } from 'src/store'
 
-import useCstLogin from 'src/hooks/useCstLogin'
+// import useCstLogin from 'src/hooks/useCstLogin'
 
 const {
   getScrollTarget,
@@ -116,8 +116,8 @@ export default defineComponent({
         background: `rgb(0,0,0, ${scrollRatio.value})`
       }
     })
-    // 科技云通行证用户登录
-    const cstLogin = useCstLogin()
+    // // 科技云通行证用户登录
+    // const cstLogin = useCstLogin()
 
     return {
       // isShowLogin: ref('false'),
@@ -125,8 +125,8 @@ export default defineComponent({
       onScroll,
       scrollRatio,
       dynamicBackground,
-      scrollToElement,
-      cstLogin
+      scrollToElement
+      // cstLogin
     }
   }
 })

@@ -1,15 +1,16 @@
 <template>
   <div class="HeaderDropdown">
 
-    <q-btn-dropdown :ripple="false" flat class="q-py-sm q-px-none" :label="$store.state.account.decoded?.cstnetId" no-caps>
+    <q-btn-dropdown :ripple="false" flat class="q-py-sm q-px-none" :label="$store.state.account.data.decoded?.cstnetId" no-caps>
 
       <div class="row justify-center no-wrap q-pa-md dropdown-content non-selectable">
         <div class="column items-center">
           <q-avatar size="72px" class="q-mt-lg">
             <img src="img/default-avatar.png">
           </q-avatar>
-          <div class="text-subtitle2 q-ma-none q-mt-md text-white">{{ $store.state.account.decoded?.trueName }}</div>
-          <div class="text-subtitle2 q-ma-none q-mb-md text-white">{{ $store.state.account.decoded?.orgName }}</div>
+          <div class="text-subtitle1 q-ma-none q-mt-md text-white">{{ $store.state.account.data.decoded?.trueName }}</div>
+          <div class="text-subtitle1 q-ma-none q-mb-xs text-white">{{ $store.state.account.data.decoded?.orgName }}</div>
+          <div class="text-caption q-ma-none q-mb-xs text-white">通过{{ $store.state.account.data.loginType==='aai' ? 'AAI' : '科技云通行证' }}登录</div>
         </div>
       </div>
 
@@ -44,7 +45,7 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
 
     const toLogout = () => {
-      void $store.dispatch('account/logoutCstUser')
+      void $store.dispatch('account/cstLogout')
     }
 
     return {
