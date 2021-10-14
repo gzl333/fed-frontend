@@ -5,7 +5,7 @@
         <div class="row items-center title-area">
           <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                  @click="$router.back()"/>
-          <span>{{ $t('创建个人云主机') }}</span>
+          <span>{{ $t('新建个人云主机') }}</span>
         </div>
 
       </div>

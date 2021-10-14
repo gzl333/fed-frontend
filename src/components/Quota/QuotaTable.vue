@@ -19,7 +19,8 @@
 
           <q-td key="group" :props="props">
             <q-btn
-              class="q-ma-none" :label="$store.state.account.tables.groupTable.byId[props.row.vo_id].name" color="primary"
+              class="q-ma-none" :label="$store.state.account.tables.groupTable.byId[props.row.vo_id].name"
+              color="primary"
               padding="xs" flat dense unelevated
               :to="{path: `/my/group/detail/${props.row.vo_id}`}">
               <q-tooltip>
@@ -161,17 +162,27 @@
             </div>
           </q-td>
 
+          <q-td key="server" :props="props">
+            <q-btn color="primary" flat padding="none" dense
+                   :to="{path:`/my/group/quota/detail/${props.row.id}`}">
+              {{ props.row.servers.length }}台
+            </q-btn>
+          </q-td>
+
           <q-td key="status" :props="props">
             <div v-if="!props.row.expired && !props.row.exhausted" class="text-light-green">
-                <q-icon name="check_circle_outline" size="sm"/>可用
+              <q-icon name="check_circle_outline" size="sm"/>
+              可用
             </div>
             <div v-else class="text-red">
-              <q-icon name="highlight_off" size="sm"/>不可用
+              <q-icon name="highlight_off" size="sm"/>
+              不可用
             </div>
           </q-td>
 
           <q-td key="operation" :props="props">
-            <div class="row justify-center items-center q-gutter-xs">
+            <div class="column justify-center items-center q-gutter-xs">
+
               <q-btn icon="add_circle" flat dense padding="none" color="primary"
                      :disable="props.row.expired || props.row.exhausted"
                      :to="{path: isGroup ? `/my/group/server/deploy` : `/my/personal/server/deploy`, query:{quota:props.row.id}}">
@@ -187,8 +198,8 @@
                      @click="$store.dispatch('server/deleteQuotaDialog', {quotaId: props.row.id,isGroup})">
                 <q-tooltip>删除</q-tooltip>
               </q-btn>
-            </div>
 
+            </div>
           </q-td>
         </q-tr>
       </template>
@@ -222,13 +233,17 @@ export default defineComponent({
     isGroup: {
       type: Boolean,
       required: false
+    },
+    isHideGroup: {
+      type: Boolean,
+      required: false
     }
   },
   setup (props) {
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
-    // todo 为何报错？ 应强制更新table刷新quota状态，该逻辑应在此，而非在调用层。任何使用quota-table时都应该更新quotaTable
+    // todo 为何报错？ 应强制更新table刷新quota状态，该逻辑是否应在此，而非在调用层。任何使用quota-table时都应该更新quotaTable
     // if (props.isGroup) {
     //   void $store.dispatch('vm_obsolete/loadGroupQuotaTable')
     // } else {
@@ -236,177 +251,194 @@ export default defineComponent({
     // }
 
     // quota列表分栏定义
-    const columnsZH = props.isGroup ? [
-      {
-        name: 'group',
-        label: '所属组',
-        field: 'group',
-        align: 'center',
-        style: 'padding: 15px 0px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'service',
-        label: '所属服务节点',
-        field: 'service',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'duration_days',
-        label: '云主机时长',
-        field: 'duration_days',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'cpu',
-        label: 'CPU',
-        field: 'cpu',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'ram',
-        label: '内存',
-        field: 'ram',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'private_ip',
-        label: '私网IP',
-        field: 'private_ip',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'public_ip',
-        label: '公网IP',
-        field: 'public_ip',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'disk',
-        label: '云硬盘',
-        field: 'disk',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'expiration_time',
-        label: '配额过期时间',
-        field: 'expiration_time',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'status',
-        label: '配额状态',
-        field: 'status',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'operation',
-        label: '操作',
-        field: 'operation',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      }
-    ] : [
-      {
-        name: 'service',
-        label: '服务节点',
-        field: 'service',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'duration_days',
-        label: '云主机时长',
-        field: 'duration_days',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'cpu',
-        label: 'CPU',
-        field: 'cpu',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'ram',
-        label: '内存',
-        field: 'ram',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'private_ip',
-        label: '私网IP',
-        field: 'private_ip',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'public_ip',
-        label: '公网IP',
-        field: 'public_ip',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'disk',
-        label: '云硬盘',
-        field: 'disk',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'expiration_time',
-        label: '配额过期时间',
-        field: 'expiration_time',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'status',
-        label: '配额状态',
-        field: 'status',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'operation',
-        label: '操作',
-        field: 'operation',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      }
-    ]
+    const columnsZH = props.isGroup && !props.isHideGroup // 是group且不hide时使用这个配置
+      ? [
+          {
+            name: 'group',
+            label: '所属组',
+            field: 'group',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'service',
+            label: '所属服务节点',
+            field: 'service',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'duration_days',
+            label: '云主机时长',
+            field: 'duration_days',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'cpu',
+            label: 'CPU',
+            field: 'cpu',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'ram',
+            label: '内存',
+            field: 'ram',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'private_ip',
+            label: '私网IP',
+            field: 'private_ip',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'public_ip',
+            label: '公网IP',
+            field: 'public_ip',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'disk',
+            label: '云硬盘',
+            field: 'disk',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'expiration_time',
+            label: '配额过期时间',
+            field: 'expiration_time',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'server',
+            label: '已建云主机',
+            field: 'server',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'status',
+            label: '配额状态',
+            field: 'status',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'operation',
+            label: '操作',
+            field: 'operation',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          }
+        ] : [
+          {
+            name: 'service',
+            label: '服务节点',
+            field: 'service',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'duration_days',
+            label: '云主机时长',
+            field: 'duration_days',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'cpu',
+            label: 'CPU',
+            field: 'cpu',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'ram',
+            label: '内存',
+            field: 'ram',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'private_ip',
+            label: '私网IP',
+            field: 'private_ip',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'public_ip',
+            label: '公网IP',
+            field: 'public_ip',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'disk',
+            label: '云硬盘',
+            field: 'disk',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'expiration_time',
+            label: '配额过期时间',
+            field: 'expiration_time',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'server',
+            label: '已建云主机',
+            field: 'server',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'status',
+            label: '配额状态',
+            field: 'status',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'operation',
+            label: '操作',
+            field: 'operation',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          }
+        ]
     const columnsEN = columnsZH // todo 翻译
 
     // i18n影响该配置对象取值

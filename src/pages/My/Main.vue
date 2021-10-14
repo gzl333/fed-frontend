@@ -190,7 +190,7 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const currentUser = $store.state.account.data.decoded?.trueName
+    const currentUser = $store.state.account.data.decoded?.name
 
     const tab1 = ref('fed')
     const tab2 = ref('')

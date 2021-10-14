@@ -216,8 +216,8 @@ const getters: GetterTree<ServerModuleInterface, StateInterface> = {
   // 个人有quota和server的serviceId
   getPersonalAvailableServiceIds: (state): string[] => {
     let services = [] as string[]
-    state.tables.personalQuotaTable.allIds.forEach((id) => services.push(state.tables.personalQuotaTable.byId[id].service))
-    state.tables.personalServerTable.allIds.forEach((id) => services.push(state.tables.personalServerTable.byId[id].service))
+    state.tables.personalQuotaTable.allIds.forEach((id) => services.unshift(state.tables.personalQuotaTable.byId[id].service))
+    state.tables.personalServerTable.allIds.forEach((id) => services.unshift(state.tables.personalServerTable.byId[id].service))
     services = [...new Set(services)]
     return services
   },

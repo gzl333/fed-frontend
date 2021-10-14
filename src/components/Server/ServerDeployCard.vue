@@ -14,7 +14,7 @@
           {{ $t('项目组') }}
         </div>
         <div class="row items-center q-gutter-md q-pb-lg">
-          <div class="col-auto ">
+          <div class="col-auto text-bold ">
             {{ $t('使用该云主机的项目组') }}
           </div>
           <q-select v-if="groups.length !== 0" class="col-4" outlined v-model="radioGroup" dense
@@ -67,10 +67,10 @@
           </div>
           <div class="col">
             <div v-if="quotasUsable.length === 0" class="row items-center">
-              {{ $t('暂无可用云主机配额，请选择其它服务节点。 或') }}
+              {{ $t('该服务节点无可用云主机配额，请选择其它服务节点。 或') }}
               <q-btn v-if="isGroup" flat padding="none" color="primary"
                      :to="`/my/group/quota/apply?group=${radioGroup}&service=${radioService}`">
-                {{ $t('申请项目组主机配额') }}
+                {{ $t('申请项目组云主机配额') }}
               </q-btn>
               <q-btn v-else flat padding="none" color="primary"
                      :to="`/my/personal/quota/apply?service=${radioService}`">
@@ -98,7 +98,8 @@
             <div v-if="quotasUnusable.length === 0">{{ $t('无') }}</div>
             <div v-else>
               <div class="row">
-                <q-btn class="q-pa-none" color="primary" flat dense padding="none" size="md" @click="isFolded=!isFolded">
+                <q-btn class="q-pa-none" color="primary" flat dense padding="none" size="md"
+                       @click="isFolded=!isFolded">
                   {{ isFolded ? $t('展开') : $t('折叠') }}
                 </q-btn>
               </div>
@@ -120,31 +121,42 @@
           {{ $t('网络类型') }}
         </div>
 
-        <div v-if="privateNetworks.length > 0" class="row item-row">
+        <div
+          v-if="privateNetworks.length > 0 && (isGroup ? ($store.state.server.tables.groupQuotaTable.byId[radioQuota]?.private_ip_total - $store.state.server.tables.groupQuotaTable.byId[radioQuota]?.private_ip_used)>0 : ($store.state.server.tables.personalQuotaTable.byId[radioQuota]?.private_ip_total-$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.private_ip_used)>0)"
+          class="row item-row">
           <div class="col-1 text-bold">
             {{ $t('私网IP段') }}
           </div>
           <div class="col">
-            <q-radio v-for="network in privateNetworks" dense v-model="radioNetwork" :val="network.id"
-                     :label="network.name" :key="network.id" class="radio"/>
+            <q-radio v-for="network in privateNetworks" dense v-model="radioNetwork"
+                     :val="network.id" :label="network.name" :key="network.id" class="radio"/>
           </div>
         </div>
 
-        <div v-if="publicNetworks.length > 0" class="row item-row">
+        <div
+          v-if="publicNetworks.length > 0 && (isGroup ? ($store.state.server.tables.groupQuotaTable.byId[radioQuota]?.public_ip_total-$store.state.server.tables.groupQuotaTable.byId[radioQuota]?.public_ip_used)>0 : ($store.state.server.tables.personalQuotaTable.byId[radioQuota]?.public_ip_total-$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.public_ip_used)>0)"
+          class="row item-row">
           <div class="col-1 text-bold">
             {{ $t('公网IP段') }}
           </div>
           <div class="col">
-            <q-radio v-for="network in publicNetworks" dense v-model="radioNetwork" :val="network.id"
-                     :label="network.name" :key="network.id" class="radio"/>
+            <q-radio v-for="network in publicNetworks" dense v-model="radioNetwork"
+                     :val="network.id" :label="network.name" :key="network.id" class="radio"/>
           </div>
         </div>
 
         <div v-if="publicNetworks.length === 0 && privateNetworks.length === 0" class="row item-row">
           <div class="col-shrink item-title">
-            {{ $t('暂无可用网络类型，请选择其它服务节点') }}
+            {{ $t('该服务节点无可用网络类型，请选择其它服务节点') }}
           </div>
         </div>
+
+        <div v-if="radioQuota===''" class="row item-row">
+          <div class="col-shrink item-title">
+            {{ $t('暂无可用网络类型，请选择可用配额') }}
+          </div>
+        </div>
+
       </div>
 
       <div class="col section">
@@ -304,7 +316,7 @@ import { Notify } from 'quasar'
 
 import QuotaDetailCardIntense from 'components/Quota/QuotaDetailCardDense.vue'
 import { useRouter } from 'vue-router'
-import api from 'src/store/api'
+import api from 'boot/api'
 
 export default defineComponent({
   name: 'ServerDeployCard',
@@ -364,6 +376,19 @@ export default defineComponent({
     const inputRemarks = ref('')
 
     /* table 进入页面过程中选择默认项 */
+
+    // 选择network选项的逻辑
+    // network选项取决于两部分： 1.配额里公网私网的数量。 2.该服务的network配置，这是最基础条件。
+    const chooseNetwork = () => {
+      const currentQuota = computed(() => props.isGroup ? $store.state.server.tables.groupQuotaTable.byId[radioQuota.value] : $store.state.server.tables.personalQuotaTable.byId[radioQuota.value])
+      // 1.配额有私网
+      if (currentQuota.value?.private_ip_total - currentQuota.value?.private_ip_used > 0) {
+        radioNetwork.value = privateNetworks.value[0]?.id || publicNetworks.value[0]?.id || ''
+      } else { // 2. 配额只有公网
+        radioNetwork.value = publicNetworks.value[0]?.id || ''
+      }
+    }
+
     // radio默认选择 (2)
     const chooseRadioDefaults = () => {
       if (props.quotaId) {
@@ -377,10 +402,11 @@ export default defineComponent({
         radioService.value = props.serviceId || services.value[0]?.id || ''
         radioQuota.value = quotasValid.value[0]?.id || ''
       }
-      // network image flavor 总是默认选第一项
-      radioNetwork.value = privateNetworks.value.length > 0 ? privateNetworks.value[0]?.id : publicNetworks.value[0]?.id
-      radioImage.value = images.value[0]?.id
-      radioFlavor.value = flavors.value[0]?.id
+      // 选择network
+      chooseNetwork()
+      // image flavor 总是默认选第一项
+      radioImage.value = images.value[0]?.id || ''
+      radioFlavor.value = flavors.value[0]?.id || ''
     }
     // setup时调用一次 (3) table已加载时进入页面要选一次默认值
     chooseRadioDefaults()
@@ -388,17 +414,20 @@ export default defineComponent({
     watch([$store.state.server.tables, $store.state.account.tables.groupTable, $store.state.account.tables.groupMemberTable], chooseRadioDefaults)
     /* table 进入页面过程中选择默认项 */
 
-    /* 在table都加载后，4个radio，随着group/service变化选择默认项 */
+    /* (5) 在table都加载后，3个radio，随着group/service变化选择默认项 */
     watch([radioGroup, radioService], () => {
-      // 在group/service变化后, network image flavor 总是默认选第一项
-      radioQuota.value = quotasValid.value[0]?.id
-      radioNetwork.value = privateNetworks.value.length > 0 ? privateNetworks.value[0]?.id : publicNetworks.value[0]?.id
-      radioImage.value = images.value[0]?.id
-      radioFlavor.value = flavors.value[0]?.id
+      // 在group/service变化后, quota image flavor 总是默认选第一项
+      radioQuota.value = quotasValid.value[0]?.id || ''
+      radioImage.value = images.value[0]?.id || ''
+      radioFlavor.value = flavors.value[0]?.id || ''
       // 切换group/service时，不可用quota也恢复折叠
       isFolded.value = true
     })
-    /* 在table都加载后，4个radio，随着group/service变化选择默认项 */
+    /* 在table都加载后，3个radio，随着group/service变化选择默认项 */
+
+    /* (6) 在table都加载后，network radio，随着quota变化选择默认项 */
+    watch(radioQuota, chooseNetwork)
+    /* 在table都加载后，network radio，随着quota变化选择默认项 */
 
     /* 新建云主机 */
     const isDeploying = ref(false)
@@ -437,13 +466,17 @@ export default defineComponent({
           quota_id: radioQuota.value,
           remarks: inputRemarks.value
         }
+
         const respPostServer = await api.server.postServer({ body: selection })
+
         if (respPostServer.status === 201) {
-          // 更新userServerTable,根据返回的serverId获取该server的全部信息，存入table
+          // 更新personal/group ServerTable,根据返回的serverId获取该server的全部信息，存入table
           void await $store.dispatch('server/loadSingleServer', {
             serverId: respPostServer.data.id,
             isGroup: props.isGroup
           })
+          // 更新personal/group quotaTable, 因为quota已经消耗了一部分。连带里面servers字段也更新了。
+          props.isGroup ? void $store.dispatch('server/loadGroupQuotaTable') : void $store.dispatch('server/loadPersonalQuotaTable')
           // notify
           Notify.create({
             classes: 'notification-positive shadow-15',
@@ -455,8 +488,6 @@ export default defineComponent({
             timeout: 15000,
             multiLine: false
           })
-          // 改变按钮状态
-          isDeploying.value = false
           // 跳转
           void $router.push({ path: props.isGroup ? '/my/group/server' : '/my/personal/server' })
         } else if (respPostServer.status === 202) {
@@ -471,15 +502,11 @@ export default defineComponent({
             timeout: 15000,
             multiLine: false
           })
-          // 改变按钮状态
-          isDeploying.value = false
           // 跳转
           void $router.push({ path: props.isGroup ? '/my/group/server' : '/my/personal/server' })
-        } else {
-          // notify 使用axios统一报错
-          // 改变按钮状态
-          isDeploying.value = false
         }
+        // 改变按钮状态，不管响应结果如何，得到响应之后就恢复按钮状态
+        isDeploying.value = false
       }
     }
     /* 新建云主机 */

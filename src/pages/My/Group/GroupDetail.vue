@@ -175,7 +175,8 @@
                     新建云主机
                   </q-btn>
 
-                  <q-btn v-show="tab==='quota' && group.myRole !== 'member'" class="col-shrink" icon="add" size="md"
+                  <q-btn v-show="(tab==='quota'|| tab==='application')&& group.myRole !== 'member'" class="col-shrink"
+                         icon="add" size="md"
                          unelevated dense padding="xs"
                          color="primary" :to="{path: '/my/group/quota/apply', query: {group: groupId} }">
                     申请新配额
@@ -187,23 +188,24 @@
 
               </div>
               <div class="col-auto content-area">
-
                 <q-tab-panels v-model="tab" animated>
+
                   <q-tab-panel class="q-pa-none overflow-hidden" name="member">
                     <group-member-table :group-id="group.id"/>
                   </q-tab-panel>
 
                   <q-tab-panel class="q-pa-none overflow-hidden" name="server">
-                    <server-table is-group :servers="servers"/>
+                    <server-table :servers="servers" is-group is-hide-group/>
                   </q-tab-panel>
 
                   <q-tab-panel class="q-pa-none overflow-hidden" name="quota">
-                    <quota-table :quotas="quotas" is-group/>
+                    <quota-table :quotas="quotas" is-group is-hide-group/>
                   </q-tab-panel>
 
                   <q-tab-panel v-if="group.myRole !== 'member'" class="q-pa-none overflow-hidden" name="application">
-                    <quota-application-table :applications="applications" is-group/>
+                    <quota-application-table :applications="applications" is-group is-hide-group/>
                   </q-tab-panel>
+
                 </q-tab-panels>
               </div>
 

@@ -2,7 +2,7 @@ import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ProviderModuleInterface } from './state'
 import { normalize, schema } from 'normalizr'
-import api from '../api'
+import api from 'boot/api'
 import { Dialog, Notify } from 'quasar'
 import ProviderAuditQuotaApplicationCard from 'components/Provider/ProviderAuditQuotaApplicationCard.vue'
 

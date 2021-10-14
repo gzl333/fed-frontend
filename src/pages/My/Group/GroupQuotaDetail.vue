@@ -1,6 +1,6 @@
 <template>
   <div class="GroupQuotaDetail">
-    <quota-detail-card :quota-id="quotaId" :is-group="true"/>
+    <quota-detail-card :quota-id="quotaId" is-group/>
   </div>
 </template>
 

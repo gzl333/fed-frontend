@@ -155,6 +155,10 @@ export default defineComponent({
     isGroup: {
       type: Boolean,
       required: false
+    },
+    isHideGroup: {
+      type: Boolean,
+      required: false
     }
   },
   setup (props) {
@@ -165,148 +169,149 @@ export default defineComponent({
     // void $store.dispatch('server/xxxx')
 
     // 列表分栏定义
-    const columnsZH = props.isGroup ? [
+    const columnsZH = props.isGroup && !props.isHideGroup // 是group且不hide时使用这个配置
+      ? [
 
-      {
-        name: 'status',
-        label: '申请状态',
-        field: 'status',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'group',
-        label: '所属组',
-        field: 'group',
-        align: 'center',
-        style: 'padding: 15px 0px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'creation_time',
-        label: '申请时间',
-        field: 'creation_time',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'service',
-        label: '服务节点',
-        field: 'service',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'duration_days',
-        label: '云主机时长',
-        field: 'duration_days',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'configuration',
-        label: 'CPU/内存/私网IP/公网IP/云硬盘',
-        field: 'configuration',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'purpose',
-        label: '用途',
-        field: 'purpose',
-        align: 'center',
-        classes: 'ellipsis',
-        style: 'max-width: 200px;padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'applicant',
-        label: '申请人',
-        field: 'applicant',
-        align: 'center',
-        classes: 'ellipsis',
-        style: 'max-width: 200px;padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'operation',
-        label: '操作',
-        field: 'operation',
-        align: 'center',
-        headerStyle: 'padding: 0 5px'
-      }
-    ] : [
-      {
-        name: 'status',
-        label: '申请状态',
-        field: 'status',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'creation_time',
-        label: '申请时间',
-        field: 'creation_time',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'service',
-        label: '服务节点',
-        field: 'service',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'duration_days',
-        label: '云主机时长',
-        field: 'duration_days',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'configuration',
-        label: 'CPU/内存/私网IP/公网IP/云硬盘',
-        field: 'configuration',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'purpose',
-        label: '用途',
-        field: 'purpose',
-        align: 'center',
-        classes: 'ellipsis',
-        style: 'max-width: 200px;padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'applicant',
-        label: '申请人',
-        field: 'applicant',
-        align: 'center',
-        classes: 'ellipsis',
-        style: 'max-width: 200px;padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'operation',
-        label: '操作',
-        field: 'operation',
-        align: 'center',
-        headerStyle: 'padding: 0 5px'
-      }
-    ]
+          {
+            name: 'status',
+            label: '申请状态',
+            field: 'status',
+            align: 'center',
+            style: 'padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'group',
+            label: '所属组',
+            field: 'group',
+            align: 'center',
+            style: 'padding: 15px 0px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'creation_time',
+            label: '申请时间',
+            field: 'creation_time',
+            align: 'center',
+            style: 'padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'service',
+            label: '服务节点',
+            field: 'service',
+            align: 'center',
+            style: 'padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'duration_days',
+            label: '云主机时长',
+            field: 'duration_days',
+            align: 'center',
+            style: 'padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'configuration',
+            label: 'CPU/内存/私网IP/公网IP/云硬盘',
+            field: 'configuration',
+            align: 'center',
+            style: 'padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'purpose',
+            label: '用途',
+            field: 'purpose',
+            align: 'center',
+            classes: 'ellipsis',
+            style: 'max-width: 200px;padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'applicant',
+            label: '申请人',
+            field: 'applicant',
+            align: 'center',
+            classes: 'ellipsis',
+            style: 'max-width: 200px;padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'operation',
+            label: '操作',
+            field: 'operation',
+            align: 'center',
+            headerStyle: 'padding: 0 5px'
+          }
+        ] : [
+          {
+            name: 'status',
+            label: '申请状态',
+            field: 'status',
+            align: 'center',
+            style: 'padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'creation_time',
+            label: '申请时间',
+            field: 'creation_time',
+            align: 'center',
+            style: 'padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'service',
+            label: '服务节点',
+            field: 'service',
+            align: 'center',
+            style: 'padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'duration_days',
+            label: '云主机时长',
+            field: 'duration_days',
+            align: 'center',
+            style: 'padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'configuration',
+            label: 'CPU/内存/私网IP/公网IP/云硬盘',
+            field: 'configuration',
+            align: 'center',
+            style: 'padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'purpose',
+            label: '用途',
+            field: 'purpose',
+            align: 'center',
+            classes: 'ellipsis',
+            style: 'max-width: 200px;padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'applicant',
+            label: '申请人',
+            field: 'applicant',
+            align: 'center',
+            classes: 'ellipsis',
+            style: 'max-width: 200px;padding: 15px 5px',
+            headerStyle: 'padding: 0 5px'
+          },
+          {
+            name: 'operation',
+            label: '操作',
+            field: 'operation',
+            align: 'center',
+            headerStyle: 'padding: 0 5px'
+          }
+        ]
     const columnsEN = columnsZH // todo 翻译
 
     // i18n影响该配置对象取值

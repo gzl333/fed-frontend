@@ -6,6 +6,8 @@ export default {
   },
   // 文字翻译
 
+  // axios
+  请求冲突: 'Request Conflicts',
   // 按钮
   忽略: 'Dismiss',
   创建: 'Create',

@@ -185,7 +185,8 @@
 
         <div class="row item-row items-center">
           <div class="col-1 q-pb-md">配额用途</div>
-          <q-input ref="input" class="col-6 input-remarks" v-model="inputPurpose" maxlength="50" outlined dense counter/>
+          <q-input ref="input" class="col-6 input-remarks" v-model="inputPurpose" maxlength="50" outlined dense
+                   counter/>
         </div>
 
         <!--        <div class="row item-row items-center">-->
@@ -438,7 +439,7 @@ export default defineComponent({
           duration_days: sliderDuration.value,
           purpose: inputPurpose.value,
           company: $store.state.account.data.decoded?.orgName,
-          contact: $store.state.account.data.decoded?.cstnetId
+          contact: $store.state.account.data.decoded?.email
         } : {
           service_id: radioService.value,
           private_ip: sliderPrivate.value,
@@ -449,14 +450,13 @@ export default defineComponent({
           duration_days: sliderDuration.value,
           purpose: inputPurpose.value,
           company: $store.state.account.data.decoded?.orgName,
-          contact: $store.state.account.data.decoded?.cstnetId
+          contact: $store.state.account.data.decoded?.email
         }
         // 提交quota申请
         await $store.dispatch('server/submitApplyQuota', selection)
 
-        // 改变按钮状态
+        // 改变按钮状态，不管响应结果如何，得到响应之后就恢复按钮状态
         isCreating.value = false
-        // void $router.push('/my/personal/quota/application')
       }
     }
 

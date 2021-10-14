@@ -44,7 +44,7 @@
                     class="q-px-none q-py-md q-mx-sm"
                     name="server"
                     icon="computer"
-                    :label="$t('组云主机')"
+                    :label="$t('云主机')"
                     :ripple="false"
                     to="/my/group/server"
                   />
@@ -63,7 +63,7 @@
                     class="q-px-none q-py-md q-mx-md"
                     name="quota"
                     icon="fas fa-file-alt"
-                    :label="$t('组云主机配额')"
+                    :label="$t('云主机配额')"
                     :ripple="false"
                     to="/my/group/quota"
                   />

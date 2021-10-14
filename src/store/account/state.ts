@@ -1,14 +1,10 @@
-export interface DecodedToken { // todo 待根据最新jwt token更新
-  cstnetId: string // cst email
-  cstnetIdStatus: string
+export interface DecodedToken {
+  id: string
+  name: string
+  email: string
+  orgName: string
   exp: number
   iat: number
-  iss: string
-  orgName: string
-  securityEmail: null // ?
-  trueName: string
-  type: string
-  umtId: string
 }
 
 export interface GroupInterface {

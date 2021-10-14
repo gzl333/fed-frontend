@@ -118,7 +118,7 @@
                 {{ props.row.remarks }}
               </div>
 
-              <q-btn v-if="hoverRow === props.row.name && (!isGroup || (isGroup && myRole !== 'member')) "
+              <q-btn v-if="hoverRow === props.row.name && (!isGroup || (isGroup && $store.state.account.tables.groupTable.byId[props.row?.vo_id]?.myRole !== 'member')) "
                      class="col-shrink q-px-none q-ma-none" flat dense icon="edit" size="xs" color="primary"
                      @click="$store.dispatch('server/editServerNoteDialog',{serverId:props.row.id, isGroup})">
                 <q-tooltip>
@@ -191,6 +191,10 @@ export default defineComponent({
     isGroup: {
       type: Boolean,
       required: false
+    },
+    isHideGroup: {
+      type: Boolean,
+      required: false
     }
   },
   setup (props) {
@@ -198,7 +202,7 @@ export default defineComponent({
     const { locale } = useI18n({ useScope: 'global' })
 
     // 云主机列表分栏定义, 判断使用组配置还是个人配置
-    const columnsZH = props.isGroup
+    const columnsZH = props.isGroup && !props.isHideGroup // 是group且不hide时使用这个配置
       ? [{
           name: 'group',
           label: '所属组',
@@ -383,7 +387,7 @@ export default defineComponent({
             headerStyle: 'padding: 0 5px'
           }
         ]
-    const columnsEN = props.isGroup
+    const columnsEN = props.isGroup && !props.isHideGroup // 是group且不hide时使用这个配置
       ? [
           {
             name: 'group',

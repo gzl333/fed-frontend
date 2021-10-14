@@ -4,9 +4,9 @@
       <div class="col q-pa-none">
 
         <div class="row items-center title-area">
-            <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
-                   @click="$router.back()"/>
-            <span> {{$t(' 配额详情')}}</span>
+          <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
+                 @click="$router.back()"/>
+          <span> {{ $t(' 配额详情') }}</span>
         </div>
 
         <!--直接从url进入本页面时，tables尚未载入，应显示loading界面。对取属性进行缓冲，不出现undefined错误-->
@@ -18,6 +18,29 @@
           <div v-else class="col">
             <!--            配额详情开始-->
             <div class="row items-center justify-evenly quota-area ">
+
+              <div class="col-auto ">
+                <div class="column justify-start items-center" style="height: 120px">
+                  <div class="col-2 text-grey">
+                    所属项目组
+                  </div>
+                  <div class="col-10">
+                    <div class="column justify-center items-center" style="height: 100px">
+
+                      <q-btn
+                        class="q-ma-none" :label=" $store.state.account.tables.groupTable.byId[quota.vo_id]?.name"
+                        color="primary"
+                        padding="none" flat dense unelevated
+                        :to="{path: `/my/group/detail/${quota.vo_id}`}">
+                        <q-tooltip>
+                          {{ $t('项目组详情') }}
+                        </q-tooltip>
+                      </q-btn>
+
+                    </div>
+                  </div>
+                </div>
+              </div>
 
               <div class="col-auto ">
                 <div class="column justify-start items-center" style="height: 120px">
@@ -232,15 +255,30 @@
               <div class="col-auto ">
                 <div class="column justify-start items-center" style="height: 120px">
                   <div class="col-2 text-grey">
+                    已建云主机
+                  </div>
+                  <div class="col-10">
+                    <div class="column justify-center items-center" style="height: 100px">
+                      {{ quota.servers.length }}台
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-auto ">
+                <div class="column justify-start items-center" style="height: 120px">
+                  <div class="col-2 text-grey">
                     配额状态
                   </div>
                   <div class="col-10">
                     <div class="column justify-center items-center" style="height: 100px">
                       <div v-if="!quota.expired && !quota.exhausted" class="text-light-green">
-                        <q-icon name="check_circle_outline" size="sm"/>可用
+                        <q-icon name="check_circle_outline" size="sm"/>
+                        可用
                       </div>
                       <div v-else class="text-red">
-                        <q-icon name="highlight_off" size="sm"/>不可用
+                        <q-icon name="highlight_off" size="sm"/>
+                        不可用
                       </div>
                     </div>
                   </div>
@@ -281,7 +319,8 @@
                   关联云主机列表
                 </div>
 
-                <server-table :servers="servers" :is-group="isGroup"/>
+                <server-table :servers="servers" is-group is-hide-group/>
+
               </div>
             </div>
             <!--            云主机列表结束-->
@@ -353,6 +392,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .QuotaDetailCard {
 }
+
 .title-area {
   width: $general-width-no-padding;
   text-align: left;

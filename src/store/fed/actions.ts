@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { FedModuleInterface } from './state'
-import api from '../api'
+import api from 'boot/api'
 import { normalize, schema } from 'normalizr'
 
 const actions: ActionTree<FedModuleInterface, StateInterface> = {

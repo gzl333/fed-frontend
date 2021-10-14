@@ -1,14 +1,15 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ServerModuleInterface } from './state'
-import api, { apiBaseFed } from '../api'
+import api, { apiBaseFed } from 'boot/api'
 import { normalize, schema } from 'normalizr'
 import { ServerInterface, VpnInterface } from 'src/store/server/state'
 import { Dialog, Notify } from 'quasar'
 import QuotaApplicationEditCard from 'components/Quota/QuotaApplicationEditCard.vue'
 import { i18n } from 'boot/i18n'
-import axios from 'axios'
+import { axios } from 'boot/axios'
 
+// 云主机状态码参考。具体显示位置写在SererStatus组件里
 /* const statusCodeMap = new Map<number, string>(
   [
     [0, '无法获取状态'],
@@ -25,6 +26,7 @@ import axios from 'axios'
     [12, '创建失败']
   ]
 ) */
+
 const actionMap = new Map<string, string>(
   [
     ['start', '开机'],
@@ -564,7 +566,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         timeout: 5000,
         multiLine: false
       })
-      // 跳转
+      // jump 成功才跳转
       // @ts-ignore
       data.vo_id ? this.$router.push('/my/group/quota/application') : this.$router.push('/my/personal/quota/application')
     }

@@ -5,7 +5,7 @@ import { Dialog, Notify } from 'quasar'
 import axios from 'axios'
 import { apiFed, apiLogin } from 'boot/axios'
 import { normalize, schema } from 'normalizr'
-import api from '../api'
+import api from 'boot/api'
 import GroupEditCard from 'components/Group/GroupEditCard.vue'
 import GroupAddMemberCard from 'components/Group/GroupAddMemberCard.vue'
 
@@ -123,7 +123,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
     const group = new schema.Entity('group')
     for (const data of respGroup.data.results) {
       // 添加role字段
-      const currentId = context.state.data.decoded?.cstnetId
+      const currentId = context.state.data.decoded?.email
       const myRole = currentId === data.owner.username ? 'owner' : 'member'
       Object.assign(data, { myRole })
       // normalize
@@ -153,7 +153,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
       })
 
       // 给groupTable补充role字段
-      const currentId = context.state.data.decoded?.cstnetId
+      const currentId = context.state.data.decoded?.email
       for (const member of respGroupMember.data.members) {
         if (member.user.username === currentId && member.role === 'leader') {
           const myRole = 'leader'
