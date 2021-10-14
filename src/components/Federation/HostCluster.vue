@@ -46,7 +46,7 @@
               <q-icon name="loop" class="col-1" size="xs" v-show="item.isOrNotShow" @click="refresh({ service_id: hostData.service_id, type: item.name})"/>
             </div>
             <div class="text-center text-h4 text-weight-regular q-mt-md">{{ parseFloat(item.usage).toFixed(2) + '%' }}</div>
-            <cpu-line-chart :ref="el=>{divNodes[index] = el}" :chartData="item"></cpu-line-chart>
+            <line-chart :ref="el=>{divNodes[index] = el}" :chartData="item"></line-chart>
           </q-card>
           <div class="row q-mt-xs">
             <q-card flat bordered class="no-border-radius col-6">
@@ -77,11 +77,11 @@
 import { defineComponent, ref, onMounted } from 'vue'
 import { apiBase } from 'src/store'
 import axios from 'axios'
-import CpuLineChart from 'components/Chart/CpuLineChart.vue'
+import LineChart from 'components/Chart/LineChart.vue'
 export default defineComponent({
   name: 'HostCluster',
   components: {
-    CpuLineChart
+    LineChart
   },
   props: {
     id: {
@@ -92,7 +92,7 @@ export default defineComponent({
   setup (props) {
     const hostData: any = ref({})
     const dataArr: any = ref([])
-    const divNodes = ref<typeof CpuLineChart[]>([])
+    const divNodes = ref<typeof LineChart[]>([])
     const isShowHost = ref(true)
     const isShowHealthy = ref(true)
     const getHostQuery = async (payload: { service_id: string }) => {
