@@ -16,13 +16,21 @@ echarts.use([GridComponent, LineChart, CanvasRenderer, UniversalTransition])
 export default defineComponent({
   name: 'LineChart',
   components: {},
-  props: {},
-  setup () {
+  props: {
+    chartData: {
+      type: Object,
+      required: true
+    }
+  },
+  setup (props) {
     const container = ref<HTMLElement>()
-    const chartData = ref([])
+    const lineData: any = ref([])
+    lineData.value.push(0)
+    lineData.value.push(props.chartData.usage)
+    lineData.value.push(props.chartData.min)
+    lineData.value.push(props.chartData.max)
     const getChartData = (data: []) => {
-      console.log(data)
-      chartData.value = data
+      lineData.value = data
     }
     onMounted(() => {
       const chart = echarts.init(container.value!)
@@ -47,7 +55,7 @@ export default defineComponent({
         },
         series: [
           {
-            data: chartData.value,
+            data: lineData.value,
             type: 'line',
             symbol: 'none'
           }
@@ -60,7 +68,7 @@ export default defineComponent({
     })
     return {
       container,
-      chartData,
+      lineData,
       getChartData
     }
   }

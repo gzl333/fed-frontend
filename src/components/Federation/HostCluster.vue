@@ -8,16 +8,14 @@
             <div class="row q-pb-lg">
               <div class="col-11 text-center">主机数</div>
               <q-icon name="loop" class="col-1" size="xs" v-show="isShowHost"
-                      @click="refresh({ service_id: hostData.service_id, query: 'host_count,host_up_count' })"/>
+                      @click="refresh({ service_id: hostData.service_id, type: 'host' })"/>
             </div>
             <div class="text-center text-h4 text-weight-regular q-mt-sm q-pa-sm">{{ hostData.host_count }}</div>
           </q-card>
           <div class="row q-mt-xs">
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">在线</div>
-              <div class="text-center text-h4 text-weight-regular text-positive q-mt-sm q-pa-sm">{{
-                  hostData.host_up_count
-                }}
+              <div class="text-center text-h4 text-weight-regular text-positive q-mt-sm q-pa-sm">{{hostData.host_up_count }}
               </div>
             </q-card>
             <q-card flat bordered class="no-border-radius col-6">
@@ -32,8 +30,7 @@
           <q-card flat bordered class="no-border-radius q-pb-lg">
             <div class="row">
               <div class="col-11 text-center">集群状态</div>
-              <q-icon name="loop" class="col-1" size="xs" v-show="isShowHealthy"
-                      @click="refresh({ service_id: hostData.service_id, query: 'health_status' })"/>
+              <q-icon name="loop" class="col-1" size="xs" v-show="isShowHealthy" @click="refresh({ service_id: hostData.service_id, type: 'healthy' })"/>
             </div>
             <div :class="hostData.health_status === '0' ? 'text-positive text-center text-h4 text-weight-bold q-mt-lg q-pa-xl' :
             hostData.health_status === '1' ? 'text-warning text-center text-h4 text-weight-bold q-mt-lg q-pa-xl q-pb-md' :
@@ -42,66 +39,23 @@
             </div>
           </q-card>
         </div>
-        <div class="col-2 q-ml-md">
+        <div class="col-2 q-ml-md" v-for="(item, index) in dataArr" :key="index">
           <q-card flat bordered class="no-border-radius">
             <div class="row">
-              <div class="col-11 text-center">平均CPU使用率</div>
-              <q-icon name="loop" class="col-1" size="xs" v-show="isShowCPUUsage"
-                      @click="refresh({ service_id: hostData.service_id, query: 'cpu_usage,min_cpu_usage,max_cpu_usage' })"/>
+              <div class="col-11 text-center">平均{{item.name}}使用率</div>
+              <q-icon name="loop" class="col-1" size="xs" v-show="item.isOrNotShow" @click="refresh({ service_id: hostData.service_id, type: item.name})"/>
             </div>
-            <div class="text-center text-h4 text-weight-regular q-mt-md">{{ parseFloat(hostData.cpu_usage).toFixed(2) + '%' }}</div>
-            <cpu-line-chart ref="childCPU"></cpu-line-chart>
+            <div class="text-center text-h4 text-weight-regular q-mt-md">{{ parseFloat(item.usage).toFixed(2) + '%' }}</div>
+            <cpu-line-chart :ref="el=>{divNodes[index] = el}" :chartData="item"></cpu-line-chart>
           </q-card>
           <div class="row q-mt-xs">
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">最大</div>
-              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseFloat(hostData.max_cpu_usage).toFixed(2) + '%' }}</div>
+              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseFloat(item.max).toFixed(2) + '%' }}</div>
             </q-card>
             <q-card flat bordered class="no-border-radius col-6">
               <div class="col-11 text-center">最小</div>
-              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseFloat(hostData.min_cpu_usage).toFixed(2) + '%' }}</div>
-            </q-card>
-          </div>
-        </div>
-        <div class="col-2 q-ml-md">
-          <q-card flat bordered class="no-border-radius">
-            <div class="row">
-              <div class="col-11 text-center">平均内存使用率</div>
-              <q-icon name="loop" class="col-1" size="xs" v-show="isShowMemUsage"
-                      @click="refresh({ service_id: hostData.service_id, query: 'mem_usage,min_mem_usage,max_mem_usage' })"/>
-            </div>
-            <div class="text-center text-h4 text-weight-regular q-mt-md">{{ parseFloat(hostData.mem_usage).toFixed(2) + '%' }}</div>
-            <mem-line-chart ref="childMem"></mem-line-chart>
-          </q-card>
-          <div class="row q-mt-xs">
-            <q-card flat bordered class="no-border-radius col-6">
-              <div class="col-11 text-center">最大</div>
-              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseFloat(hostData.max_mem_usage).toFixed(2) + '%' }}</div>
-            </q-card>
-            <q-card flat bordered class="no-border-radius col-6">
-              <div class="col-11 text-center">最小</div>
-              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseFloat(hostData.min_mem_usage).toFixed(2) + '%' }}</div>
-            </q-card>
-          </div>
-        </div>
-        <div class="col-2 q-ml-md">
-          <q-card flat bordered class="no-border-radius">
-            <div class="row">
-              <div class="col-11 text-center">平均磁盘使用率</div>
-              <q-icon name="loop" class="col-1" size="xs" v-show="isShowDiskUsage"
-                      @click="refresh({ service_id: hostData.service_id, query: 'disk_usage,min_disk_usage,max_disk_usage' })"/>
-            </div>
-            <div class="text-center text-h4 text-weight-regular q-mt-md">{{ parseFloat(hostData.disk_usage).toFixed(2) + '%' }}</div>
-            <disk-line-chart ref="childDisk"></disk-line-chart>
-          </q-card>
-          <div class="row q-mt-xs">
-            <q-card flat bordered class="no-border-radius col-6">
-              <div class="col-11 text-center">最大</div>
-              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseFloat(hostData.max_disk_usage).toFixed(2) + '%' }}</div>
-            </q-card>
-            <q-card flat bordered class="no-border-radius col-6">
-              <div class="col-11 text-center">最小</div>
-              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseFloat(hostData.min_disk_usage).toFixed(2) + '%' }}</div>
+              <div class="text-center text-h5 q-mt-md q-pa-sm">{{ parseFloat(item.min).toFixed(2) + '%' }}</div>
             </q-card>
           </div>
         </div>
@@ -120,18 +74,14 @@
 </template>
 
 <script lang="ts">
-import { defineComponent, ref, onMounted, nextTick } from 'vue'
+import { defineComponent, ref, onMounted } from 'vue'
 import { apiBase } from 'src/store'
 import axios from 'axios'
 import CpuLineChart from 'components/Chart/CpuLineChart.vue'
-import MemLineChart from 'components/Chart/MemLineChart.vue'
-import DiskLineChart from 'components/Chart/DiskLineChart.vue'
 export default defineComponent({
   name: 'HostCluster',
   components: {
-    CpuLineChart,
-    MemLineChart,
-    DiskLineChart
+    CpuLineChart
   },
   props: {
     id: {
@@ -141,14 +91,10 @@ export default defineComponent({
   },
   setup (props) {
     const hostData: any = ref({})
-    const childCPU: any = ref(null)
-    const childMem: any = ref(null)
-    const childDisk: any = ref(null)
+    const dataArr: any = ref([])
+    const divNodes = ref<typeof CpuLineChart[]>([])
     const isShowHost = ref(true)
     const isShowHealthy = ref(true)
-    const isShowCPUUsage = ref(true)
-    const isShowMemUsage = ref(true)
-    const isShowDiskUsage = ref(true)
     const getHostQuery = async (payload: { service_id: string }) => {
       const api = apiBase + '/monitor/server/query'
       const hostQuery: string[] = ['host_count', 'host_up_count', 'health_status', 'cpu_usage', 'max_cpu_usage', 'min_cpu_usage', 'mem_usage', 'max_mem_usage', 'min_mem_usage', 'disk_usage', 'max_disk_usage', 'min_disk_usage']
@@ -158,10 +104,7 @@ export default defineComponent({
           query: ''
         }
       }
-      interface HostInterface {
-        [key: string]: string
-      }
-      const hostObject: HostInterface = {}
+      const hostObject: Record<string, string> = {}
       for (const item of hostQuery) {
         config.params.query = item
         await axios.get(api, config).then((res) => {
@@ -176,95 +119,139 @@ export default defineComponent({
           console.log(error)
         })
       }
-      return hostObject
+      const hostArr = []
+      const cpuObj: Record<string, string | boolean> = {}
+      cpuObj.name = 'CPU'
+      cpuObj.isOrNotShow = true
+      cpuObj.usage = hostObject.cpu_usage
+      cpuObj.min = hostObject.min_cpu_usage
+      cpuObj.max = hostObject.max_cpu_usage
+      const memObj: Record<string, string | boolean> = {}
+      memObj.name = '内存'
+      memObj.isOrNotShow = true
+      memObj.usage = hostObject.mem_usage
+      memObj.min = hostObject.min_mem_usage
+      memObj.max = hostObject.max_mem_usage
+      const diskObj: Record<string, string | boolean> = {}
+      diskObj.name = '磁盘'
+      diskObj.isOrNotShow = true
+      diskObj.usage = hostObject.disk_usage
+      diskObj.min = hostObject.min_disk_usage
+      diskObj.max = hostObject.max_disk_usage
+      hostArr.push(cpuObj)
+      hostArr.push(memObj)
+      hostArr.push(diskObj)
+      return {
+        hostObject,
+        hostArr
+      }
     }
-    const refresh = async (payload: { service_id: string, query: string }) => {
+    const refresh = async (payload: { service_id: string, type: string }) => {
       const api = apiBase + '/monitor/server/query'
       const config = {
-        params: payload
+        params: {
+          service_id: payload.service_id,
+          query: ''
+        }
       }
-      let newData = payload.query
-      if (payload.query.indexOf('host_count') !== -1) {
+      if (payload.type === 'host') {
         isShowHost.value = false
-        const hostArr = payload.query.split(',')
-        for (const item of hostArr) {
+        const hostQueryArr = ['host_count', 'host_up_count']
+        for (const item of hostQueryArr) {
           config.params.query = item
-          newData = item
+          const newData = item
           await axios.get(api, config).then((res) => {
             hostData.value[newData] = res.data[0].value[1]
             isShowHost.value = true
           })
         }
-      } else if (payload.query.indexOf('cpu_usage') !== -1) {
-        isShowCPUUsage.value = false
-        const cpuArr = payload.query.split(',')
+      } else if (payload.type === 'healthy') {
+        isShowHealthy.value = false
+        config.params.query = 'health_status'
+        void await axios.get(api, config).then((res) => {
+          hostData.value.health_status = res.data[0].value[1]
+          isShowHealthy.value = true
+        })
+      } else if (payload.type === 'CPU') {
+        dataArr.value[0].isOrNotShow = false
+        const cpuArr = ['cpu_usage', 'min_cpu_usage', 'max_cpu_usage']
         const cpuChart: number[] = []
         for (const item of cpuArr) {
           config.params.query = item
-          newData = item
           await axios.get(api, config).then((res) => {
-            hostData.value[newData] = res.data[0].value[1]
-            isShowCPUUsage.value = true
+            if (config.params.query === 'cpu_usage') {
+              dataArr.value[0].usage = res.data[0].value[1]
+            } else if (config.params.query === 'min_cpu_usage') {
+              dataArr.value[0].min = res.data[0].value[1]
+            } else {
+              dataArr.value[0].max = res.data[0].value[1]
+            }
           })
         }
         cpuChart.push(0)
-        cpuChart.push(hostData.value.cpu_usage)
-        cpuChart.push(hostData.value.min_cpu_usage)
-        cpuChart.push(hostData.value.max_cpu_usage)
-        childCPU.value.getChartData(cpuChart)
-      } else if (payload.query.indexOf('mem_usage') !== -1) {
-        isShowMemUsage.value = false
-        const memArr = payload.query.split(',')
+        cpuChart.push(dataArr.value[0].usage)
+        cpuChart.push(dataArr.value[0].min)
+        cpuChart.push(dataArr.value[0].max)
+        divNodes.value[0].getChartData(cpuChart)
+        dataArr.value[0].isOrNotShow = true
+      } else if (payload.type === '内存') {
+        dataArr.value[1].isOrNotShow = false
+        const memArr = ['mem_usage', 'min_mem_usage', 'max_mem_usage']
         const memChart: number[] = []
         for (const item of memArr) {
           config.params.query = item
-          newData = item
           await axios.get(api, config).then((res) => {
-            hostData.value[newData] = res.data[0].value[1]
-            isShowMemUsage.value = true
+            if (config.params.query === 'mem_usage') {
+              dataArr.value[1].usage = res.data[0].value[1]
+            } else if (config.params.query === 'min_mem_usage') {
+              dataArr.value[1].min = res.data[0].value[1]
+            } else {
+              dataArr.value[1].max = res.data[0].value[1]
+            }
           })
         }
         memChart.push(0)
-        memChart.push(hostData.value.mem_usage)
-        memChart.push(hostData.value.min_mem_usage)
-        memChart.push(hostData.value.max_mem_usage)
-        childMem.value.getChartData(memChart)
-      } else if (payload.query.indexOf('disk_usage') !== -1) {
-        isShowDiskUsage.value = false
-        const diskArr = payload.query.split(',')
+        memChart.push(dataArr.value[1].usage)
+        memChart.push(dataArr.value[1].min)
+        memChart.push(dataArr.value[1].max)
+        divNodes.value[1].getChartData(memChart)
+        dataArr.value[1].isOrNotShow = true
+      } else {
+        dataArr.value[2].isOrNotShow = false
+        const diskArr = ['disk_usage', 'min_disk_usage', 'max_disk_usage']
         const diskChart: number[] = []
         for (const item of diskArr) {
           config.params.query = item
-          newData = item
           await axios.get(api, config).then((res) => {
-            hostData.value[newData] = res.data[0].value[1]
-            isShowDiskUsage.value = true
+            if (config.params.query === 'disk_usage') {
+              dataArr.value[2].usage = res.data[0].value[1]
+            } else if (config.params.query === 'min_disk_usage') {
+              dataArr.value[2].min = res.data[0].value[1]
+            } else {
+              dataArr.value[2].max = res.data[0].value[1]
+            }
           })
         }
         diskChart.push(0)
-        diskChart.push(hostData.value.disk_usage)
-        diskChart.push(hostData.value.min_disk_usage)
-        diskChart.push(hostData.value.max_disk_usage)
-        childDisk.value.getChartData(diskChart)
-      } else {
-        isShowHealthy.value = false
-        void await axios.get(api, config).then((res) => {
-          hostData.value[newData] = res.data[0].value[1]
-          isShowHealthy.value = true
-        })
+        diskChart.push(dataArr.value[2].usage)
+        diskChart.push(dataArr.value[2].min)
+        diskChart.push(dataArr.value[2].max)
+        divNodes.value[2].getChartData(diskChart)
+        dataArr.value[2].isOrNotShow = true
       }
     }
     const intervalRefresh = () => {
       isShowHost.value = false
       isShowHealthy.value = false
-      isShowCPUUsage.value = false
-      isShowMemUsage.value = false
-      isShowDiskUsage.value = false
-      const cpuChart: number[] = []
-      const memChart: number[] = []
-      const diskChart: number[] = []
+      dataArr.value[0].isOrNotShow = false
+      dataArr.value[1].isOrNotShow = false
+      dataArr.value[2].isOrNotShow = false
       void getHostQuery({ service_id: props.id }).then((res) => {
-        hostData.value = res
+        hostData.value = res.hostObject
+        dataArr.value = res.hostArr
+        const cpuChart: number[] = []
+        const memChart: number[] = []
+        const diskChart: number[] = []
         cpuChart.push(0)
         cpuChart.push(hostData.value.cpu_usage)
         cpuChart.push(hostData.value.min_cpu_usage)
@@ -277,57 +264,32 @@ export default defineComponent({
         diskChart.push(hostData.value.disk_usage)
         diskChart.push(hostData.value.min_disk_usage)
         diskChart.push(hostData.value.max_disk_usage)
-        childCPU.value.getChartData(cpuChart)
-        childMem.value.getChartData(memChart)
-        childDisk.value.getChartData(diskChart)
+        divNodes.value[0].getChartData(cpuChart)
+        divNodes.value[1].getChartData(memChart)
+        divNodes.value[2].getChartData(diskChart)
         isShowHost.value = true
         isShowHealthy.value = true
-        isShowCPUUsage.value = true
-        isShowMemUsage.value = true
-        isShowDiskUsage.value = true
+        dataArr.value[0].isOrNotShow = true
+        dataArr.value[1].isOrNotShow = true
+        dataArr.value[2].isOrNotShow = true
       })
     }
     onMounted(() => {
       void getHostQuery({ service_id: props.id }).then((resp) => {
-        const cpuChart: number[] = []
-        const menChart: number[] = []
-        const diskChart: number[] = []
-        hostData.value = resp
-        cpuChart.push(0)
-        cpuChart.push(hostData.value.cpu_usage)
-        cpuChart.push(hostData.value.min_cpu_usage)
-        cpuChart.push(hostData.value.max_cpu_usage)
-        menChart.push(0)
-        menChart.push(hostData.value.mem_usage)
-        menChart.push(hostData.value.min_mem_usage)
-        menChart.push(hostData.value.max_mem_usage)
-        diskChart.push(0)
-        diskChart.push(hostData.value.disk_usage)
-        diskChart.push(hostData.value.min_disk_usage)
-        diskChart.push(hostData.value.max_disk_usage)
-        void nextTick(() => {
-          console.log(childCPU.value)
-          childCPU.value.getChartData(cpuChart)
-          childMem.value.getChartData(menChart)
-          childDisk.value.getChartData(diskChart)
-        })
+        hostData.value = resp.hostObject
+        dataArr.value = resp.hostArr
       })
     })
     return {
       hostData,
+      dataArr,
       isShowHost,
       isShowHealthy,
-      isShowCPUUsage,
-      isShowMemUsage,
-      isShowDiskUsage,
-      childCPU,
-      childMem,
-      childDisk,
+      divNodes,
       intervalRefresh,
       refresh
     }
   }
-
 })
 </script>
 

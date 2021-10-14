@@ -21,7 +21,6 @@ export default defineComponent({
     const container = ref<HTMLElement>()
     const chartData = ref([])
     const getChartData = (data: []) => {
-      console.log(data)
       chartData.value = data
     }
     onMounted(() => {
