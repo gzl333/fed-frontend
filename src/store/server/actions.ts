@@ -760,11 +760,11 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     Dialog.create({
       class: 'dialog-primary',
       title: `编辑${payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId].ipv4 : context.state.tables.personalServerTable.byId[payload.serverId].ipv4}的备注信息`,
-      // message: '长度限制为30个字',
+      // message: '长度限制为40个字',
       prompt: {
         model: `${payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId].remarks : context.state.tables.personalServerTable.byId[payload.serverId].remarks}`,
         counter: true,
-        maxlength: 30,
+        maxlength: 40,
         type: 'text' // optional
       },
       color: 'primary',

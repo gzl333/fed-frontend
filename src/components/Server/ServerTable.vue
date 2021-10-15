@@ -22,7 +22,8 @@
 
           <q-td key="group" :props="props">
             <q-btn
-              class="q-ma-none" :label="$store.state.account.tables.groupTable.byId[props.row.vo_id].name" color="primary"
+              class="q-ma-none" :label="$store.state.account.tables.groupTable.byId[props.row.vo_id].name"
+              color="primary"
               padding="none" flat dense unelevated
               :to="{path: `/my/group/detail/${props.row.vo_id}`}">
               <q-tooltip>
@@ -83,7 +84,9 @@
             {{ props.row.image }}
           </q-td>
           <q-td key="configuration" :props="props">
-            <span> {{ props.row.vcpus }} {{ locale === 'zh' ? '核' : props.row.vcpus > 1 ? 'cores' : 'core' }}</span>/<span>{{ props.row.ram / 1024 }}GB</span>
+            <span> {{ props.row.vcpus }} {{
+                locale === 'zh' ? '核' : props.row.vcpus > 1 ? 'cores' : 'core'
+              }}</span>/<span>{{ props.row.ram / 1024 }}GB</span>
 
           </q-td>
           <q-td key="expiration" :props="props">
@@ -116,11 +119,15 @@
             <div class="row">
               <div class="col q-ma-none q-pa-none">
                 {{ props.row.remarks }}
+                <q-tooltip>
+                  {{$t('备注：')}} {{ props.row.remarks }}
+                </q-tooltip>
               </div>
 
-              <q-btn v-if="hoverRow === props.row.name && (!isGroup || (isGroup && $store.state.account.tables.groupTable.byId[props.row?.vo_id]?.myRole !== 'member')) "
-                     class="col-shrink q-px-none q-ma-none" flat dense icon="edit" size="xs" color="primary"
-                     @click="$store.dispatch('server/editServerNoteDialog',{serverId:props.row.id, isGroup})">
+              <q-btn
+                v-if="hoverRow === props.row.name && (!isGroup || (isGroup && $store.state.account.tables.groupTable.byId[props.row?.vo_id]?.myRole !== 'member')) "
+                class="col-shrink q-px-none q-ma-none" flat dense icon="edit" size="xs" color="primary"
+                @click="$store.dispatch('server/editServerNoteDialog',{serverId:props.row.id, isGroup})">
                 <q-tooltip>
                   {{ $t('编辑备注') }}
                 </q-tooltip>
