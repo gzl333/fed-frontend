@@ -1,16 +1,25 @@
 <template>
   <div class="HeaderDropdown">
 
-    <q-btn-dropdown :ripple="false" flat class="q-py-sm q-px-none" :label="$store.state.account.data.decoded?.cstnetId" no-caps>
+    <q-btn-dropdown :ripple="false" flat class="q-py-sm q-px-none"
+                    :label="$store.state.account.items.decoded?.email" no-caps>
 
       <div class="row justify-center no-wrap q-pa-md dropdown-content non-selectable">
         <div class="column items-center">
-          <q-avatar size="72px" class="q-mt-lg">
-            <img src="img/default-avatar.png">
-          </q-avatar>
-          <div class="text-subtitle1 q-ma-none q-mt-md text-white">{{ $store.state.account.data.decoded?.trueName }}</div>
-          <div class="text-subtitle1 q-ma-none q-mb-xs text-white">{{ $store.state.account.data.decoded?.orgName }}</div>
-          <div class="text-caption q-ma-none q-mb-xs text-white">通过{{ $store.state.account.data.loginType==='aai' ? 'AAI' : '科技云通行证' }}登录</div>
+          <!--          <q-avatar class="q-mt-lg" size="72px">-->
+          <!--            <img src="img/default-avatar.png">-->
+          <!--          </q-avatar>-->
+          <q-icon class="q-pt-lg" name="mdi-account" color="white" size="90px"/>
+          <div v-if="$store.state.account.items.fedRole === 'federal-admin'" class="q-pb-lg text-white">
+            联邦管理员
+          </div>
+
+          <div class="text-subtitle1  text-white">{{ $store.state.account.items.decoded?.name }}</div>
+          <div class="text-subtitle1 text-white">{{ $store.state.account.items.decoded?.orgName }}</div>
+
+          <div class="q-py-md text-white">
+            正在使用{{ $store.state.account.items.loginType === 'aai' ? '科技云AAI' : '科技云通行证' }}登录
+          </div>
         </div>
       </div>
 

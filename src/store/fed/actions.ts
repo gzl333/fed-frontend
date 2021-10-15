@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { FedModuleInterface } from './state'
-import api from 'boot/api'
+import { $api } from 'boot/api'
 import { normalize, schema } from 'normalizr'
 
 const actions: ActionTree<FedModuleInterface, StateInterface> = {
@@ -77,7 +77,7 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
   async loadDataCenterTable (context) {
     // 清空table
     context.commit('clearTable', context.state.tables.dataCenterTable)
-    const respDataCenter = await api.registry.getRegistry()
+    const respDataCenter = await $api.registry.getRegistry()
     const dataCenter = new schema.Entity('dataCenter', {})
     respDataCenter.data.registries.forEach((data: Record<string, never>) => {
       const normalizedData = normalize(data, dataCenter)
@@ -94,7 +94,7 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
   async loadServiceTable (context) {
     // 清空table
     context.commit('clearTable', context.state.tables.serviceTable)
-    const respService = await api.service.getService()
+    const respService = await $api.service.getService()
     // 将响应normalize，存入state里的serviceTable
     const data_center = new schema.Entity('data_center')
     const service = new schema.Entity('service', { data_center })
@@ -115,7 +115,7 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
   /* serviceAllocationTable */
   async loadServiceAllocationTable (context) {
     context.commit('clearTable', context.state.tables.serviceAllocationTable)
-    const respPQuota = await api.vms.getVmsServicePQuota()
+    const respPQuota = await $api.vms.getVmsServicePQuota()
     const service = new schema.Entity('service')
     const allocation = new schema.Entity('allocation', { service })
     for (const data of respPQuota.data.results) {
@@ -130,7 +130,7 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
   /* fedAllocationTable */
   async loadFedAllocationTable (context) {
     context.commit('clearTable', context.state.tables.fedAllocationTable)
-    const respSQuota = await api.vms.getVmsServiceSQuota()
+    const respSQuota = await $api.vms.getVmsServiceSQuota()
     const service = new schema.Entity('service')
     const allocation = new schema.Entity('allocation', { service })
     for (const data of respSQuota.data.results) {

@@ -1,7 +1,7 @@
 import { QuotaApplicationInterface, ServerInterface } from 'src/store/server/state'
 
 export interface ProviderModuleInterface {
-  data: {
+  items: {
     // data
   }
   tables: {
@@ -22,7 +22,7 @@ export interface ProviderModuleInterface {
 
 function state (): ProviderModuleInterface {
   return {
-    data: {},
+    items: {},
     tables: {
       adminQuotaApplicationTable: {
         byId: {},

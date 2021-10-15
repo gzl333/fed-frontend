@@ -32,8 +32,9 @@ module.exports = configure(function (/* ctx */) {
     // --> boot files are part of "main.js"
     // https://quasar.dev/quasar-cli/boot-files
     boot: [
-      'i18n',
-      'axios',
+      'i18n', // 必须放第一位，后面的axios也使用它
+      'axios', // api依赖axios
+      'api',
       'reloadToken'
     ],
 
@@ -84,7 +85,10 @@ module.exports = configure(function (/* ctx */) {
         //
       },
 
-      extendWebpack (cfg, { isServer, isClient }) {
+      extendWebpack (cfg, {
+        isServer,
+        isClient
+      }) {
         // alias
         cfg.resolve.alias = {
           ...cfg.resolve.alias, // This adds the existing alias

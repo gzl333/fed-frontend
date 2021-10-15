@@ -75,7 +75,7 @@ export default defineComponent({
     // })
     /* news layout内页所有table加载起始点 */
 
-    const currentUser = computed(() => $store.state.account.data)
+    const currentUser = computed(() => $store.state.account.items)
 
     // scroll info
     const scrollTop = ref(0)

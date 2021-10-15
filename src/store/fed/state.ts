@@ -57,7 +57,7 @@ export interface AllocationInterface {
 }
 
 export interface FedModuleInterface {
-  data: {
+  items: {
     // data
   }
   tables: {
@@ -90,7 +90,7 @@ export interface FedModuleInterface {
 
 function state (): FedModuleInterface {
   return {
-    data: {},
+    items: {},
     tables: {
       dataCenterTable: {
         byId: {},

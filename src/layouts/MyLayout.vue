@@ -55,8 +55,8 @@ export default defineComponent({
     /* my内页所有table加载起始点 */
 
     const currentUser = $store.state.account
-    const isRightDrawerOpen = computed(() => $store.state.account.data.isRightDrawerOpen)
-    const isFooterOpen = computed(() => $store.state.account.data.isFooterOpen)
+    const isRightDrawerOpen = computed(() => $store.state.account.items.isRightDrawerOpen)
+    const isFooterOpen = computed(() => $store.state.account.items.isFooterOpen)
 
     const toLogout = () => {
       void $store.dispatch('account/cstLogout')

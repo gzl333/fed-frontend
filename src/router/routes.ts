@@ -143,7 +143,7 @@ const routes: RouteRecordRaw[] = [
             ]
           },
           {
-            path: 'quota_detail/:id', // quotaId 动态路由匹配
+            path: 'quota/detail/:id', // quotaId 动态路由匹配
             meta: {
               requireLogin: true
             },
@@ -358,7 +358,8 @@ const routes: RouteRecordRaw[] = [
           {
             path: 'monitor',
             meta: {
-              requireLogin: true
+              requireLogin: true,
+              requireFedAdmin: true // 云联邦管理员才能访问
             },
             redirect: '/my/federation/monitor/storage',
             component: () => import('pages/My/Federation/FederationMonitorIndex.vue'),

@@ -102,7 +102,7 @@ export default defineComponent({
 
     const groupName = ref('')
     const groupDesc = ref('')
-    const groupCompany = ref(computed(() => $store.state.account.data.decoded?.orgName).value)
+    const groupCompany = ref(computed(() => $store.state.account.items.decoded?.orgName).value)
 
     return {
       $store,

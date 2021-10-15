@@ -7,6 +7,7 @@ import {
 } from 'vue-router'
 import { StateInterface } from '../store'
 import routes from './routes'
+import { Notify } from 'quasar'
 
 /*
  * If not building with SSR mode, you can
@@ -43,29 +44,48 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
   })
 
   Router.beforeEach(async (to, from, next) => {
+    const isLogin = store.state.account.items.isLogin // 当前登录状态
     // 此处截获科技云通行证返回的 /login?code=xxxx 部分
     // 未登录则获取code，换取token，进行登录
-    if (to.fullPath.includes('/login?code=') && !store.state.account.data.isLogin) {
+    if (to.fullPath.includes('/login?code=') && !isLogin) { // fullPath包括 path、 query 和 hash
       // 在科技云通行证处登录成功后，跳转至/login?code=xxxx。 此处截取code
       const code = to.fullPath.slice(12)
       // 利用code，在updatePassportToken中获取token并保存token，改变用户登录状态
       void await store.dispatch('account/cstLogin', code)
       // 开启定时更新token
       await store.dispatch('account/retainToken')
-      // console.log(store.state.account)
       // 跳转至内页
       next({ path: '/my' })
-    } else if (to.fullPath.startsWith('/login') && store.state.account.data.isLogin) {
+    } else if (to.fullPath.startsWith('/login') && isLogin) {
       // 已经登录，访问/login，重定向到/my
       next({ path: '/my' })
-    } else if (to.meta.requireLogin && !store.state.account.data.isLogin) {
+    } else if (to.meta.requireLogin && !isLogin) {
       // 要求登录的页面，如果没有登录，则返回home页面
       next({ path: '/' })
-    } else if (to.fullPath === '/' && store.state.account.data.isLogin) {
+    } else if (to.fullPath === '/' && isLogin) {
       // home页面，如果已经登录了，则跳转到/my
       next({ path: '/my' })
+    } else {
+      // 之前都是登录状态有关的强制跳转。
+      // 进入else后登录状态已经正常，进行页面访问权限的限制跳转
+      if (to.meta.requireFedAdmin && store.state.account.items.fedRole !== 'federal-admin') { // 云联邦管理员才能访问
+        // 跳转回上一个页面
+        next(from.fullPath)
+        // 弹出通知
+        Notify.create({
+          classes: 'notification-primary shadow-15',
+          icon: 'mdi-alert-circle',
+          textColor: 'primary',
+          message: '访问目标页面需要联邦管理员权限',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      }
     }
 
+    // 修改页面标题，与跳转无关，每个页面都做，所以不在上面的逻辑里。
     if (to.meta.title) {
       document.title = to.meta.title as string
     }

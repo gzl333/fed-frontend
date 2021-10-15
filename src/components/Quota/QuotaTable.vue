@@ -164,7 +164,7 @@
 
           <q-td key="server" :props="props">
             <q-btn color="primary" flat padding="none" dense
-                   :to="{path:`/my/group/quota/detail/${props.row.id}`}">
+                   :to="{path: isGroup ? `/my/group/quota/detail/${props.row.id}` : `/my/personal/quota/detail/${props.row.id}`}">
               {{ props.row.servers.length }}台
             </q-btn>
           </q-td>
@@ -190,7 +190,7 @@
               </q-btn>
 
               <q-btn icon="info" flat dense padding="none" color="primary"
-                     :to="{path: isGroup ? `/my/group/quota/detail/${props.row.id}` : `/my/personal/quota_detail/${props.row.id}`}">
+                     :to="{path: isGroup ? `/my/group/quota/detail/${props.row.id}` : `/my/personal/quota/detail/${props.row.id}`}">
                 <q-tooltip>详情</q-tooltip>
               </q-btn>
 

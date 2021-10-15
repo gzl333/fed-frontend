@@ -9,40 +9,45 @@ import { SingleMemberInterface } from 'src/store/account/state'
 const mutation: MutationTree<AccountModuleInterface> = {
   // toggle footer
   openFooter (state) {
-    state.data.isFooterOpen = true
+    state.items.isFooterOpen = true
   },
   closeFooter (state) {
-    state.data.isFooterOpen = false
+    state.items.isFooterOpen = false
   },
   // myLayout rightDrawer
   storeIsRightDrawerOpen (state) {
-    state.data.isRightDrawerOpen = !state.data.isRightDrawerOpen
+    state.items.isRightDrawerOpen = !state.items.isRightDrawerOpen
+  },
+  // 保存用户角色
+  storeUserRole (state, payload: { fedRole: 'ordinary' | 'federal-admin', vmsAdmin: string[] }) {
+    state.items.fedRole = payload.fedRole
+    state.items.vmsAdmin = payload.vmsAdmin
   },
   storeUser (/* this: rightType, */state, payload: { access: string; refresh: string; loginType: 'cst' | 'aai' }) {
-    state.data.isLogin = true
-    state.data.loginType = payload.loginType
-    state.data.access = payload.access
-    state.data.refresh = payload.refresh
+    state.items.isLogin = true
+    state.items.loginType = payload.loginType
+    state.items.access = payload.access
+    state.items.refresh = payload.refresh
     const decoded = jwtDecode<DecodedToken>(payload.access)
-    state.data.decoded = decoded
+    state.items.decoded = decoded
 
     // localStorage
-    localStorage.setItem('access', state.data.access)
-    localStorage.setItem('refresh', state.data.refresh)
-    localStorage.setItem('loginType', state.data.loginType)
+    localStorage.setItem('access', state.items.access)
+    localStorage.setItem('refresh', state.items.refresh)
+    localStorage.setItem('loginType', state.items.loginType)
 
     // axios header
-    axios.defaults.headers.common.Authorization = `Bearer ${state.data.access}`
-    apiFed.defaults.headers.common.Authorization = `Bearer ${state.data.access}` // apiFed对象已经生成，只把token写在axios对象上不行，也要补充给apiFed对象
-    apiLogin.defaults.headers.common.Authorization = `Bearer ${state.data.access}` // todo 是否有必要待定
+    axios.defaults.headers.common.Authorization = `Bearer ${state.items.access}`
+    apiFed.defaults.headers.common.Authorization = `Bearer ${state.items.access}` // apiFed对象已经生成，只把token写在axios对象上不行，也要补充给apiFed对象
+    apiLogin.defaults.headers.common.Authorization = `Bearer ${state.items.access}` // todo 是否有必要待定
   },
   deleteUser (state: AccountModuleInterface) {
     // vuex
-    state.data.isLogin = false
-    delete state.data.loginType
-    delete state.data.access
-    delete state.data.refresh
-    delete state.data.decoded
+    state.items.isLogin = false
+    delete state.items.loginType
+    delete state.items.access
+    delete state.items.refresh
+    delete state.items.decoded
 
     // localStorage
     localStorage.removeItem('access')
@@ -58,8 +63,6 @@ const mutation: MutationTree<AccountModuleInterface> = {
     // eslint-disable-next-line @typescript-eslint/no-unsafe-call
     this.$router.push('/') // 登出后的路由目标均为首页，其跳转写在这里
   },
-
-  /* 新模块 */
   // 向本模块table中保存对象的通用方法
   storeTable<T> (state: AccountModuleInterface, payload: {
     table: {
@@ -101,7 +104,6 @@ const mutation: MutationTree<AccountModuleInterface> = {
       return member.user.username !== payload.username
     })
   }
-  /* 新模块 */
 }
 
 export default mutation

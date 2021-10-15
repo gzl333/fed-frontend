@@ -104,7 +104,7 @@ export interface ServerInterface {
     id: string
     username: string
   }
-  lock: string
+  lock: 'free' | 'lock-delete' | 'lock-operation'
 
   // 来自status接口 根据status_code映射为文字状态
   vnc?: string
@@ -159,7 +159,7 @@ export interface QuotaActivity {
 }
 
 export interface ServerModuleInterface {
-  data: {
+  items: {
     // data
   }
   tables: {
@@ -234,7 +234,7 @@ export interface ServerModuleInterface {
 
 function state (): ServerModuleInterface {
   return {
-    data: {},
+    items: {},
     tables: {
       fedFlavorTable: {
         byId: {},

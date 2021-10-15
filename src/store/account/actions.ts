@@ -5,29 +5,31 @@ import { Dialog, Notify } from 'quasar'
 import axios from 'axios'
 import { apiFed, apiLogin } from 'boot/axios'
 import { normalize, schema } from 'normalizr'
-import api from 'boot/api'
+import { $api } from 'boot/api'
 import GroupEditCard from 'components/Group/GroupEditCard.vue'
 import GroupAddMemberCard from 'components/Group/GroupAddMemberCard.vue'
 
 // 注意此时context.state是store.state.account，而不是store.state
 const actions: ActionTree<AccountModuleInterface, StateInterface> = {
-  /* data */
+  /* items */
   async cstAskUrl () {
     // 本函数只负责获取科技云通行证登录页面地址，并跳转。 code及token处理、/login路由跳转逻辑处理，均放在router.beforeEach中
     // 获取cst登录url
-    const respPostLoginUrl = await api.login.cst.postAskUrl({ query: { clientUrl: window.location.origin + '/login' } })
+    const respPostLoginUrl = await $api.login.cst.postAskUrl({ query: { clientUrl: window.location.origin + '/login' } })
     // 跳转至获取token的url
     window.location.href = respPostLoginUrl.data.data
   },
   async cstLogin (context, code: string) {
     // 获取token
-    const respPostDealCode = await api.login.cst.postDealCode({ query: { code } })
+    const respPostDealCode = await $api.login.cst.postDealCode({ query: { code } })
     // 保存token并改变用户登录状态,保存用户信息
     context.commit('storeUser', {
       access: respPostDealCode.data.data.accessToken,
       refresh: respPostDealCode.data.data.refreshToken,
       loginType: 'cst'
     })
+    // 获取云联邦内的身份信息
+    await context.dispatch('loadFedRole')
   },
   cstLogout (context) {
     context.commit('deleteUser')
@@ -41,18 +43,20 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
         refresh: localStorage.getItem('refresh'),
         loginType: localStorage.getItem('loginType')
       }
-      const respPostCheckToken = localToken.loginType === 'cst' ? await api.login.cst.postCheckToken({ query: { jwtToken: localToken.access! } }) : await api.login.aai.postCheckToken({ query: { jwtToken: localToken.access! } })
+      const respPostCheckToken = localToken.loginType === 'cst' ? await $api.login.cst.postCheckToken({ query: { jwtToken: localToken.access! } }) : await $api.login.aai.postCheckToken({ query: { jwtToken: localToken.access! } })
       if (respPostCheckToken.data.code === 200 && respPostCheckToken.data.data === true) {
         context.commit('storeUser', localToken)
+        // 获取云联邦内的身份信息
+        await context.dispatch('loadFedRole')
       } else {
         void await context.dispatch('cstLogout')
       }
     }
   },
   retainToken (context) {
-    if (context.state.data.access && context.state.data.refresh && context.state.data.loginType) { // $store中的token状态
-      const refreshToken = context.state.data.refresh
-      const decodedToken = context.state.data.decoded!
+    if (context.state.items.access && context.state.items.refresh && context.state.items.loginType) { // $store中的token状态
+      const refreshToken = context.state.items.refresh
+      const decodedToken = context.state.items.decoded!
       if (decodedToken.exp) {
         // const timeOut = decodedToken.exp * 1000 - Date.now() - 3595000 // 测试用，快速refresh
         const timeOut = decodedToken.exp * 1000 - Date.now() - 5000 // 到期时间前5秒钟更新token,到期时间小于5秒时立即尝试更新token
@@ -61,18 +65,18 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
           // https://stackoverflow.com/questions/63488141/promise-returned-in-function-argument-where-a-void-return-was-expected/63488201
           void (async () => {
             try {
-              if (context.state.data.access && context.state.data.refresh && context.state.data.loginType) { // 定时器注册后，仅在用户保持登录时更新token，登出则定时器不执行，不再更新
+              if (context.state.items.access && context.state.items.refresh && context.state.items.loginType) { // 定时器注册后，仅在用户保持登录时更新token，登出则定时器不执行，不再更新
                 // 先删除请求头中已有的token
                 delete axios.defaults.headers.common.Authorization // token绑定到axios对象上
                 delete apiFed.defaults.headers.common.Authorization // apiFed对象已经生成，只把token写在axios对象上不行，也要补充给apiFed对象
                 delete apiLogin.defaults.headers.common.Authorization // 是否有必要待定?
                 // 获取更新到的access token todo 更新aai部分
-                const respPostRefreshToken = await api.login.cst.postRefreshToken({ query: { refreshToken } })
+                const respPostRefreshToken = await $api.login.cst.postRefreshToken({ query: { refreshToken } })
                 if (respPostRefreshToken.data.code === 200) {
                   context.commit('storeUser', {
                     access: respPostRefreshToken.data.data.accessToken,
                     refresh: respPostRefreshToken.data.data.refreshToken,
-                    loginType: context.state.data.loginType
+                    loginType: context.state.items.loginType
                   })
                   // console.log(context.state.token)
                   await context.dispatch('retainToken')
@@ -98,7 +102,17 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
       }
     }
   },
-  /* data */
+  // 有两处使用：登录和刷新页面
+  async loadFedRole (context) {
+    const respGetUserPermissionPolicy = await $api.user.getUserPermissionPolicy()
+    if (respGetUserPermissionPolicy.status === 200) {
+      context.commit('storeUserRole', {
+        fedRole: respGetUserPermissionPolicy.data.role,
+        vmsAdmin: respGetUserPermissionPolicy.data.vms.service_ids
+      })
+    }
+  },
+  /* items */
 
   /* table */
   // 强制加载group相关table
@@ -118,12 +132,12 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
     // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
     context.commit('clearTable', context.state.tables.groupTable)
     // 发送请求
-    const respGroup = await api.vo.getVo()
+    const respGroup = await $api.vo.getVo()
     // normalize
     const group = new schema.Entity('group')
     for (const data of respGroup.data.results) {
       // 添加role字段
-      const currentId = context.state.data.decoded?.email
+      const currentId = context.state.items.decoded?.email
       const myRole = currentId === data.owner.username ? 'owner' : 'member'
       Object.assign(data, { myRole })
       // normalize
@@ -139,7 +153,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
     // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
     context.commit('clearTable', context.state.tables.groupMemberTable)
     for (const groupId of context.state.tables.groupTable.allIds) {
-      const respGroupMember = await api.vo.getVoListMembers({ path: { id: groupId } })
+      const respGroupMember = await $api.vo.getVoListMembers({ path: { id: groupId } })
       // 是否把组长添加进member列表？
       // 把groupId字段补充进去
       Object.assign(respGroupMember.data, { id: groupId })
@@ -153,7 +167,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
       })
 
       // 给groupTable补充role字段
-      const currentId = context.state.data.decoded?.email
+      const currentId = context.state.items.decoded?.email
       for (const member of respGroupMember.data.members) {
         if (member.user.username === currentId && member.role === 'leader') {
           const myRole = 'leader'
@@ -181,7 +195,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
     }).onOk(async (val: { name: string; company: string; description: string }) => {
       // val是onDialogOK调用时传入的实参
       // 发送patch请求
-      const respPatchGroup = await api.vo.patchVo({
+      const respPatchGroup = await $api.vo.patchVo({
         path: { id: groupId },
         body: val
       })
@@ -235,7 +249,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
       }
     }).onOk(async (val: { /* groupId: string; */usernames: string[] }) => { // val是onDialogOK调用时传入的实参
       // 发送patch请求
-      const respPostAddMembers = await api.vo.postVoAddMembers({
+      const respPostAddMembers = await $api.vo.postVoAddMembers({
         path: { id: groupId },
         body: val
       })
@@ -298,7 +312,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
         color: 'primary'
       }
     }).onOk(async () => {
-      const respPostRemoveMembers = await api.vo.postVoRemoveMembers({
+      const respPostRemoveMembers = await $api.vo.postVoRemoveMembers({
         path: { id: payload.groupId },
         body: { usernames: [payload.username] }
       })
@@ -343,7 +357,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
         color: 'primary'
       }
     }).onOk(async () => {
-      const respPostMemberRole = await api.vo.postVoMembersRole({
+      const respPostMemberRole = await $api.vo.postVoMembersRole({
         path: {
           member_id: payload.member_id,
           role: payload.role
@@ -386,7 +400,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
         multiLine: false
       })
     } else {
-      const respPostVO = await api.vo.postVo({ body: payload })
+      const respPostVO = await $api.vo.postVo({ body: payload })
       if (respPostVO.status === 200) {
         // 重要：更新table，因为group是个根依赖，新增一个组，要牵涉数据非常多，不如直接全部重读组相关数
         void await context.dispatch('forceLoadGroupModuleTable')
@@ -471,7 +485,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
         }
       }).onOk(async () => {
         // 发送请求
-        const respDeleteVO = await api.vo.deleteVo({ path: { id: groupId } })
+        const respDeleteVO = await $api.vo.deleteVo({ path: { id: groupId } })
         if (respDeleteVO.status === 204) {
           // 更新table，因为group是个根依赖，删除一个组，要牵涉数据非常多，不如直接全部重读组相关数据
           void await context.dispatch('forceLoadGroupModuleTable')

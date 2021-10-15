@@ -316,7 +316,7 @@ import { Notify } from 'quasar'
 
 import QuotaDetailCardIntense from 'components/Quota/QuotaDetailCardDense.vue'
 import { useRouter } from 'vue-router'
-import api from 'boot/api'
+import { $api } from 'boot/api'
 
 export default defineComponent({
   name: 'ServerDeployCard',
@@ -467,7 +467,7 @@ export default defineComponent({
           remarks: inputRemarks.value
         }
 
-        const respPostServer = await api.server.postServer({ body: selection })
+        const respPostServer = await $api.server.postServer({ body: selection })
 
         if (respPostServer.status === 201) {
           // 更新personal/group ServerTable,根据返回的serverId获取该server的全部信息，存入table

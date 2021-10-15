@@ -3,8 +3,10 @@ export interface DecodedToken {
   name: string
   email: string
   orgName: string
+
   exp: number
   iat: number
+  iss: string
 }
 
 export interface GroupInterface {
@@ -45,13 +47,21 @@ export interface GroupMemberInterface {
 
 // Account总体类型
 export interface AccountModuleInterface {
-  data: { // 单独的数据
-    // account
-    isLogin: boolean
+  items: { // 单独的数据
+    isLogin: boolean // 登录状态
+
+    // 账户token信息
     loginType?: 'cst' | 'aai'
     access?: string
     refresh?: string
     decoded?: DecodedToken
+
+    // 账户在云联邦内的身份
+    fedRole: 'ordinary' | 'federal-admin' // 联邦层级：普通用户还是管理员
+    vmsAdmin: string[] // 有vms管理员权限的接入服务id
+    // adminObs: string[]
+    // adminHpc: string[]
+
     // layout
     isRightDrawerOpen: boolean
     isFooterOpen: boolean
@@ -75,8 +85,10 @@ export interface AccountModuleInterface {
 
 function state (): AccountModuleInterface {
   return {
-    data: {
+    items: {
       isLogin: false,
+      fedRole: 'ordinary', // 登进来默认都是普通用户
+      vmsAdmin: [],
       isRightDrawerOpen: false,
       isFooterOpen: false
     },

@@ -1,7 +1,7 @@
 import { ActionTree } from 'vuex'
 import { StateInterface } from '../index'
 import { ServerModuleInterface } from './state'
-import api, { apiBaseFed } from 'boot/api'
+import { $api, apiBaseFed } from 'boot/api'
 import { normalize, schema } from 'normalizr'
 import { ServerInterface, VpnInterface } from 'src/store/server/state'
 import { Dialog, Notify } from 'quasar'
@@ -42,7 +42,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   /* 杂项 */
   // 打开vnc
   async gotoVNC (context, id: string) {
-    const response = await api.server.getServerVnc({ path: { id } })
+    const response = await $api.server.getServerVnc({ path: { id } })
     const url = response.data.vnc.url
     window.open(url)
   },
@@ -61,7 +61,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   /* tables */
   async loadFedFlavorTable (context) {
     context.commit('clearTable', context.state.tables.fedFlavorTable)
-    const respFlavor = await api.flavor.getFlavor()
+    const respFlavor = await $api.flavor.getFlavor()
     for (const flavor of respFlavor.data.flavors) {
       context.commit('storeTable', {
         table: context.state.tables.fedFlavorTable,
@@ -71,7 +71,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   },
   async loadServiceNetworkTable (context) {
     for (const serviceId of context.rootState.fed.tables.serviceTable.allIds) {
-      const respNetwork = await api.network.getNetwork({ query: { service_id: serviceId } })
+      const respNetwork = await $api.network.getNetwork({ query: { service_id: serviceId } })
       for (const network of respNetwork.data) {
         // 将service 和 localId补充进network对象
         Object.assign(network, {
@@ -88,7 +88,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   },
   async loadServiceImageTable (context) {
     for (const serviceId of context.rootState.fed.tables.serviceTable.allIds) {
-      const respImage = await api.image.getImage({ query: { service_id: serviceId } })
+      const respImage = await $api.image.getImage({ query: { service_id: serviceId } })
       for (const image of respImage.data) {
         // 将service 和 localId补充进image对象
         Object.assign(image, {
@@ -106,7 +106,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   async loadUserVpnTable (context) {
     context.commit('clearTable', context.state.tables.userVpnTable)
     for (const serviceId of context.rootState.fed.tables.serviceTable.allIds) {
-      const respVpn = await api.vpn.getVpn({ path: { service_id: serviceId } })
+      const respVpn = await $api.vpn.getVpn({ path: { service_id: serviceId } })
       Object.assign(respVpn.data.vpn, { id: serviceId })
       context.commit('storeTable', {
         table: context.state.tables.userVpnTable,
@@ -118,14 +118,14 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
     context.commit('clearTable', context.state.tables.personalQuotaTable)
     // 将响应normalize
-    const respQuota = await api.quota.getQuota({ query: { deleted: false } })
+    const respQuota = await $api.quota.getQuota({ query: { deleted: false } })
     const service = new schema.Entity('service')
     const quota = new schema.Entity('quota', { service })
     // quota数组
     for (const data of respQuota.data.results) {
       /* 增加补充字段 */
       // 获取quota下对应的server列表
-      const respQuotaServers = await api.quota.getQuotaServers({ path: { id: data.id } })
+      const respQuotaServers = await $api.quota.getQuotaServers({ path: { id: data.id } })
       const servers: string[] = []
       respQuotaServers.data.results.forEach((server: ServerInterface) => {
         servers.push(server.id)
@@ -153,7 +153,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
     context.commit('clearTable', context.state.tables.personalServerTable)
     // 发送请求
-    const respServer = await api.server.getServer()
+    const respServer = await $api.server.getServer()
     // 将响应normalize，存入state里的userServerTable
     const service = new schema.Entity('service')
     const user_quota = new schema.Entity('user_quota')
@@ -183,7 +183,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     // 根据groupTable,建立groupServerTable
     for (const groupId of context.rootState.account.tables.groupTable.allIds) {
       // 发送请求
-      const respGroupServer = await api.server.getServerVo({ path: { vo_id: groupId } })
+      const respGroupServer = await $api.server.getServerVo({ path: { vo_id: groupId } })
       // 将响应normalize
       const service = new schema.Entity('service')
       const user_quota = new schema.Entity('user_quota')
@@ -224,7 +224,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       serverId: payload.serverId,
       status_code: '' // 有状态的状态码为integer
     })
-    const respStatus = await api.server.getServerStatus({ path: { id: payload.serverId } })
+    const respStatus = await $api.server.getServerStatus({ path: { id: payload.serverId } })
     context.commit('storeSingleServerStatus', {
       table,
       serverId: payload.serverId,
@@ -233,7 +233,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   },
   // 更新单个server的信息
   async loadSingleServer (context, payload: { serverId: string; isGroup: boolean }) {
-    const respSingleServer = await api.server.getServerId({ path: { id: payload.serverId } })
+    const respSingleServer = await $api.server.getServerId({ path: { id: payload.serverId } })
     // 将响应normalize，存入state里的userServerTable
     const service = new schema.Entity('service')
     const user_quota = new schema.Entity('user_quota')
@@ -269,7 +269,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     // 根据groupTable,建立groupQuotaTable
     for (const groupId of context.rootState.account.tables.groupTable.allIds) {
       // 获取响应
-      const respGroupQuota = await api.quota.getQuotaVo({ path: { vo_id: groupId } })
+      const respGroupQuota = await $api.quota.getQuotaVo({ path: { vo_id: groupId } })
       // 将响应normalize
       const service = new schema.Entity('service')
       const quota = new schema.Entity('quota', { service })
@@ -279,7 +279,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         // 补充vo_id字段
         Object.assign(data, { vo_id: groupId })
         // 获取quota下对应的server列表
-        const respQuotaServers = await api.quota.getQuotaServers({ path: { id: data.id } })
+        const respQuotaServers = await $api.quota.getQuotaServers({ path: { id: data.id } })
         const servers: string[] = []
         respQuotaServers.data.results.forEach((server: ServerInterface) => {
           servers.push(server.id)
@@ -311,7 +311,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
     context.commit('clearTable', context.state.tables.personalQuotaApplicationTable)
     // 再获取数据并更新table
-    const respApply = await api.apply.getApplyQuota({ query: { deleted: false } }) // 不包含已删除的申请
+    const respApply = await $api.apply.getApplyQuota({ query: { deleted: false } }) // 不包含已删除的申请
     const service = new schema.Entity('service')
     const application = new schema.Entity('application', { service })
     for (const data of respApply.data.results) {
@@ -330,7 +330,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       // member没有权限请求这个接口, owner和leader可以
       if (context.rootState.account.tables.groupTable.byId[groupId].myRole !== 'member') {
         // 获取响应
-        const respGroupApplication = await api.apply.getApplyQuotaVo({
+        const respGroupApplication = await $api.apply.getApplyQuotaVo({
           path: { vo_id: groupId },
           query: { deleted: false }
         })
@@ -361,7 +361,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
 
     // 获取数据并更新table
     // 当前table内容为筛选出active,排除未开始和已结束的，以后可根据需求全部获取，显示时进行筛选
-    const respActivity = await api.quota_activity.getQuotaActivity({
+    const respActivity = await $api.quota_activity.getQuotaActivity({
       query: {
         status: 'active',
         'exclude-not-start': true,
@@ -408,7 +408,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         purpose: string
       }
     }) => {
-      const respPatchApplyQuota = await api.apply.patchApplyQuota({
+      const respPatchApplyQuota = await $api.apply.patchApplyQuota({
         path: { apply_id: payload.apply_id },
         body: val.data
       })
@@ -462,7 +462,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         color: 'primary'
       }
     }).onOk(async () => {
-      const respDelete = await api.apply.deleteApplyQuota({ path: { apply_id: payload.apply_id } })
+      const respDelete = await $api.apply.deleteApplyQuota({ path: { apply_id: payload.apply_id } })
       if (respDelete.status === 204) {
         context.commit('deleteSingleItem', {
           table: payload.isGroup ? context.state.tables.groupQuotaApplicationTable : context.state.tables.personalQuotaApplicationTable,
@@ -504,7 +504,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         color: 'primary'
       }
     }).onOk(async () => {
-      const respPostApplyQuotaCancel = await api.apply.postApplyQuotaCancel({ path: { apply_id: payload.apply_id } })
+      const respPostApplyQuotaCancel = await $api.apply.postApplyQuotaCancel({ path: { apply_id: payload.apply_id } })
       if (respPostApplyQuotaCancel.status === 200) {
         if (payload.isGroup) {
           // 补充vo_id字段
@@ -535,7 +535,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   },
   /*  提交配额申请 */
   async submitApplyQuota (context, data: { vo_id?: string; service_id: string; private_ip?: number; public_ip?: number; vcpu?: number; ram?: number; disk_size?: number; duration_days: number; company?: string; contact?: string; purpose?: string }) {
-    const respPostApplyQuota = await api.apply.postApplyQuota({ body: data })
+    const respPostApplyQuota = await $api.apply.postApplyQuota({ body: data })
     if (respPostApplyQuota.status === 201) {
       if (data.vo_id) {
         // 如果是组配额，则需要补充vo_id字段,响应里是vo对象，再加一个vo_id字段
@@ -573,7 +573,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   },
   // 领取活动赠送配额
   async claimActivityQuotaDialog (context, activityId: string) {
-    const respQuota = await api.quota_activity.getQuotaActivityGet({ path: { id: activityId } })
+    const respQuota = await $api.quota_activity.getQuotaActivityGet({ path: { id: activityId } })
     // const resp = {
     //   data: {
     //     quota_id: '15ec9dd6-e543-11eb-bd38-c8009fe2eb03'
@@ -652,7 +652,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         serviceId: vpn.id,
         password: data.trim()
       }
-      const respPatchVpnPassword = await api.vpn.patchVpn({
+      const respPatchVpnPassword = await $api.vpn.patchVpn({
         path: { service_id: payload.serviceId },
         body: { password: payload.password }
       })
@@ -770,7 +770,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       color: 'primary',
       cancel: true
     }).onOk(async (data: string) => {
-      const respPatchRemark = await api.server.patchServerRemark({
+      const respPatchRemark = await $api.server.patchServerRemark({
         path: { id: payload.serverId },
         query: { remark: data.trim() }
       })
@@ -825,7 +825,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           color: 'primary'
         }
       }).onOk(async () => {
-        const respDelete = await api.quota.deleteQuota({ path: { id: payload.quotaId } })
+        const respDelete = await $api.quota.deleteQuota({ path: { id: payload.quotaId } })
         if (respDelete.status === 204) {
           context.commit('deleteSingleItem', {
             table: payload.isGroup ? context.state.tables.groupQuotaTable : context.state.tables.personalQuotaTable,

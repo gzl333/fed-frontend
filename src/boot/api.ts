@@ -1,10 +1,14 @@
 /* 标准api调用函数库,严格与后端接口一致。
 * 不包括更高层的封装。
-* 把apiFed和apiLogin合并为api对象 */
-
+* 把apiFed和apiLogin合并为api对象
+*/
+import { boot } from 'quasar/wrappers'
 import { apiFed, apiLogin } from 'boot/axios'
 
-const api = {
+export const apiBaseFed = apiFed.defaults.baseURL
+export const apiBaseLogin = apiLogin.defaults.baseURL
+
+export const $api = {
   login: {
     // 科技云通行证登录接口
     cst: {
@@ -630,8 +634,8 @@ const api = {
     },
     getUserPermissionPolicy (payload?: {
       query?: {
-        page: number;
-        page_size: number;
+        page?: number;
+        page_size?: number;
       }
     }) {
       const config = {
@@ -752,7 +756,7 @@ const api = {
   }
 }
 
-export const apiBaseFed = apiFed.defaults.baseURL
-export const apiBaseLogin = apiLogin.defaults.baseURL
-
-export default api
+// $api在前面导出使用。此处只是挂载成全局属性。
+export default boot(({ app }) => {
+  app.config.globalProperties.$api = $api
+})

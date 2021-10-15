@@ -65,8 +65,12 @@
               {{ $t('已取消') }}
             </q-badge>
             <!--创建时间距离当下小于1小时则打上new标记-->
+<!--            <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "-->
+<!--                     style="top:10px" color="light-green" floating transparent rounded align="middle">-->
+<!--              new-->
+<!--            </q-badge>-->
 
-            <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
+            <q-badge v-if="props.row.status === 'wait'"
                      style="top:10px" color="light-green" floating transparent rounded align="middle">
               new
             </q-badge>

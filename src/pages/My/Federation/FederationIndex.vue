@@ -36,8 +36,9 @@
                     :ripple="false"
                     to="/my/federation/resource"
                   />
+                  <!--云联邦管理员可见-->
                   <q-route-tab
-                    disable
+                    v-if="$store.state.account.items.fedRole === 'federal-admin'"
                     class="q-px-none q-py-md q-mx-md"
                     name="monitor"
                     icon="insights"
@@ -48,9 +49,9 @@
                 </q-tabs>
               </div>
 
-<!--              <div class="col-1">-->
-<!--                <global-add-button/>-->
-<!--              </div>-->
+              <!--              <div class="col-1">-->
+              <!--                <global-add-button/>-->
+              <!--              </div>-->
 
             </div>
           </div>
