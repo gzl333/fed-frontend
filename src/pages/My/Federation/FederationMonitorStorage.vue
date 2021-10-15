@@ -1,10 +1,10 @@
 <template>
   <div class="FederationMonitorStorage">
     <div class="row justify-end q-mt-xs">
-      <q-icon class="col-1" name="refresh" size="md" @click="refresh"/>
+      <q-icon class="col-1" name="refresh" size="md" v-show="isShow" @click="refresh"/>
       <q-select outlined v-model="filterSelection" :options="filterOptions" label="刷新时间" class="col-3"/>
     </div>
-      <storage-cluster v-for="(serviceId, index) in services" :key="serviceId" :id="serviceId" :ref="el=>{divNodes[index] = el}"></storage-cluster>
+      <storage-cluster v-for="(serviceId, index) in services" :key="serviceId" :id="serviceId" :ref="el=>{divNodes[index] = el}" @is-emit="childEmit"></storage-cluster>
   </div>
 </template>
 
@@ -22,6 +22,7 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
+    const isShow = ref(true)
     const services = computed(() => $store.getters['vm/getAllServices'])
     const filterSelection = ref({
       label: '每5s刷新',
@@ -56,6 +57,7 @@ export default defineComponent({
     ]
     let timer = setInterval(() => {
       divNodes.value.forEach((node) => {
+        isShow.value = false
         node.intervalRefresh()
       })
     }, filterSelection.value.value * 1000)
@@ -63,14 +65,19 @@ export default defineComponent({
       clearInterval(timer)
       timer = setInterval(() => {
         divNodes.value.forEach((node) => {
+          isShow.value = false
           node.intervalRefresh()
         })
       }, filterSelection.value.value * 1000)
     })
     const refresh = () => {
       divNodes.value.forEach((node) => {
+        isShow.value = false
         node.intervalRefresh()
       })
+    }
+    const childEmit = (val: boolean) => {
+      isShow.value = val
     }
     onUnmounted(() => {
       clearInterval(timer)
@@ -81,7 +88,9 @@ export default defineComponent({
       timer,
       services,
       divNodes,
-      refresh
+      isShow,
+      refresh,
+      childEmit
     }
   }
 })

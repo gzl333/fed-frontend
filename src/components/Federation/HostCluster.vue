@@ -89,7 +89,7 @@ export default defineComponent({
       required: true
     }
   },
-  setup (props) {
+  setup (props, { emit }) {
     const hostData: any = ref({})
     const dataArr: any = ref([])
     const divNodes = ref<typeof LineChart[]>([])
@@ -272,12 +272,13 @@ export default defineComponent({
         dataArr.value[0].isOrNotShow = true
         dataArr.value[1].isOrNotShow = true
         dataArr.value[2].isOrNotShow = true
+        emit('is-emit', true)
       })
     }
     onMounted(() => {
-      void getHostQuery({ service_id: props.id }).then((resp) => {
-        hostData.value = resp.hostObject
-        dataArr.value = resp.hostArr
+      void getHostQuery({ service_id: props.id }).then((res) => {
+        hostData.value = res.hostObject
+        dataArr.value = res.hostArr
       })
     })
     return {

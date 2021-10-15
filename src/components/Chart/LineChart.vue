@@ -68,7 +68,6 @@ export default defineComponent({
     })
     return {
       container,
-      lineData,
       getChartData
     }
   }

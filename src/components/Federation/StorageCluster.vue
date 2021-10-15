@@ -127,7 +127,7 @@ export default defineComponent({
       required: true
     }
   },
-  setup (props) {
+  setup (props, { emit }) {
     const storageData: any = ref({})
     const isShowHealth = ref(true)
     const isShowClusterTotal = ref(true)
@@ -142,10 +142,7 @@ export default defineComponent({
           query: ''
         }
       }
-      interface storageInterface {
-        [key: string]: string
-      }
-      const storageObject: storageInterface = {}
+      const storageObject: Record<string, string> = {}
       for (const item of storageQuery) {
         config.params.query = item
         await axios.get(api, config).then((res) => {
@@ -162,8 +159,8 @@ export default defineComponent({
       }
       return storageObject
     }
-    void getStorageQuery({ service_id: props.id }).then((resp) => {
-      storageData.value = resp
+    void getStorageQuery({ service_id: props.id }).then((res) => {
+      storageData.value = res
     })
     const refresh = async (payload: { service_id: string, query: string }) => {
       const api = apiBase + '/monitor/ceph/query'
@@ -213,6 +210,7 @@ export default defineComponent({
         isShowClusterTotal.value = true
         isShowClusterUsed.value = true
         isShowOSD.value = true
+        emit('is-emit', true)
       })
     }
     return {
