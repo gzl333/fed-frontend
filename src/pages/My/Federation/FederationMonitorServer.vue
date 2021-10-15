@@ -22,7 +22,7 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const services = computed(() => $store.getters['vm/getAllServices'])
+    const services = computed(() => $store.state.fed.tables.serviceTable.allIds)
     const isShow = ref(true)
     const filterSelection = ref({
       label: '每5s刷新',

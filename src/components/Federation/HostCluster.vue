@@ -75,9 +75,9 @@
 
 <script lang="ts">
 import { defineComponent, ref, onMounted } from 'vue'
-import { apiBase } from 'src/store'
-import axios from 'axios'
+import { $api } from 'boot/api'
 import LineChart from 'components/Chart/LineChart.vue'
+
 export default defineComponent({
   name: 'HostCluster',
   components: {
@@ -96,18 +96,18 @@ export default defineComponent({
     const isShowHost = ref(true)
     const isShowHealthy = ref(true)
     const getHostQuery = async (payload: { service_id: string }) => {
-      const api = apiBase + '/monitor/server/query'
+      // const api = apiBase + '/monitor/server/query'
       const hostQuery: string[] = ['host_count', 'host_up_count', 'health_status', 'cpu_usage', 'max_cpu_usage', 'min_cpu_usage', 'mem_usage', 'max_mem_usage', 'min_mem_usage', 'disk_usage', 'max_disk_usage', 'min_disk_usage']
       const config = {
-        params: {
+        query: {
           service_id: payload.service_id,
           query: ''
         }
       }
       const hostObject: Record<string, string> = {}
       for (const item of hostQuery) {
-        config.params.query = item
-        await axios.get(api, config).then((res) => {
+        config.query.query = item
+        await $api.monitor.getMonitorServerQuery(config).then((res) => {
           if (!hostObject.name) {
             hostObject.name = res.data[0].monitor.name
           }
@@ -147,9 +147,9 @@ export default defineComponent({
       }
     }
     const refresh = async (payload: { service_id: string, type: string }) => {
-      const api = apiBase + '/monitor/server/query'
+      // const api = apiBase + '/monitor/server/query'
       const config = {
-        params: {
+        query: {
           service_id: payload.service_id,
           query: ''
         }
@@ -158,17 +158,17 @@ export default defineComponent({
         isShowHost.value = false
         const hostQueryArr = ['host_count', 'host_up_count']
         for (const item of hostQueryArr) {
-          config.params.query = item
+          config.query.query = item
           const newData = item
-          await axios.get(api, config).then((res) => {
+          await $api.monitor.getMonitorServerQuery(config).then((res) => {
             hostData.value[newData] = res.data[0].value[1]
             isShowHost.value = true
           })
         }
       } else if (payload.type === 'healthy') {
         isShowHealthy.value = false
-        config.params.query = 'health_status'
-        void await axios.get(api, config).then((res) => {
+        config.query.query = 'health_status'
+        void await $api.monitor.getMonitorServerQuery(config).then((res) => {
           hostData.value.health_status = res.data[0].value[1]
           isShowHealthy.value = true
         })
@@ -177,11 +177,11 @@ export default defineComponent({
         const cpuArr = ['cpu_usage', 'min_cpu_usage', 'max_cpu_usage']
         const cpuChart: number[] = []
         for (const item of cpuArr) {
-          config.params.query = item
-          await axios.get(api, config).then((res) => {
-            if (config.params.query === 'cpu_usage') {
+          config.query.query = item
+          await $api.monitor.getMonitorServerQuery(config).then((res) => {
+            if (config.query.query === 'cpu_usage') {
               dataArr.value[0].usage = res.data[0].value[1]
-            } else if (config.params.query === 'min_cpu_usage') {
+            } else if (config.query.query === 'min_cpu_usage') {
               dataArr.value[0].min = res.data[0].value[1]
             } else {
               dataArr.value[0].max = res.data[0].value[1]
@@ -199,11 +199,11 @@ export default defineComponent({
         const memArr = ['mem_usage', 'min_mem_usage', 'max_mem_usage']
         const memChart: number[] = []
         for (const item of memArr) {
-          config.params.query = item
-          await axios.get(api, config).then((res) => {
-            if (config.params.query === 'mem_usage') {
+          config.query.query = item
+          await $api.monitor.getMonitorServerQuery(config).then((res) => {
+            if (config.query.query === 'mem_usage') {
               dataArr.value[1].usage = res.data[0].value[1]
-            } else if (config.params.query === 'min_mem_usage') {
+            } else if (config.query.query === 'min_mem_usage') {
               dataArr.value[1].min = res.data[0].value[1]
             } else {
               dataArr.value[1].max = res.data[0].value[1]
@@ -221,11 +221,11 @@ export default defineComponent({
         const diskArr = ['disk_usage', 'min_disk_usage', 'max_disk_usage']
         const diskChart: number[] = []
         for (const item of diskArr) {
-          config.params.query = item
-          await axios.get(api, config).then((res) => {
-            if (config.params.query === 'disk_usage') {
+          config.query.query = item
+          await $api.monitor.getMonitorServerQuery(config).then((res) => {
+            if (config.query.query === 'disk_usage') {
               dataArr.value[2].usage = res.data[0].value[1]
-            } else if (config.params.query === 'min_disk_usage') {
+            } else if (config.query.query === 'min_disk_usage') {
               dataArr.value[2].min = res.data[0].value[1]
             } else {
               dataArr.value[2].max = res.data[0].value[1]

@@ -13,7 +13,9 @@
               </div>
               <div :class="storageData.health_status === '0' ? 'text-positive text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : storageData.health_status === '1' ?
                     'text-warning text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : 'text-negative text-center text-h4 text-weight-bold q-mt-xl q-pb-xl'">
-                {{ storageData.health_status === '0' ? 'Healthy' : storageData.health_status === '1' ? 'Warning' : 'Fatal' }}
+                {{
+                  storageData.health_status === '0' ? 'Healthy' : storageData.health_status === '1' ? 'Warning' : 'Fatal'
+                }}
               </div>
             </q-card>
           </div>
@@ -51,17 +53,16 @@
                     @click="refresh({ service_id: storageData.service_id, query: 'osd_in,osd_out,osd_up,osd_down' })"/>
           </div>
           <div class="row q-ml-md">
-            <div class="col-4 q-mt-md">
-              <q-card flat bordered class="no-border-radius q-pb-md">
-                <div class="text-center">OSD总数</div>
-                <div class="text-center text-h4 text-weight-regular q-mt-lg q-pa-lg">{{
-                    parseInt(storageData.osd_in) + parseInt(storageData.osd_up) + parseInt(storageData.osd_out) + parseInt(storageData.osd_down)
-                  }}
-                </div>
-              </q-card>
-            </div>
-            <q-separator vertical inset class="q-ml-md"/>
-            <div class="row col-7 q-ml-md q-mt-sm">
+<!--            <div class="col-4 q-mt-md">-->
+<!--              <q-card flat bordered class="no-border-radius q-pb-md">-->
+<!--                <div class="text-center">OSD总数</div>-->
+<!--                <div class="text-center text-h4 text-weight-regular q-mt-lg q-pa-lg">-->
+<!--                    {{ storageData.osd_in }}-->
+<!--                </div>-->
+<!--              </q-card>-->
+<!--            </div>-->
+<!--            <q-separator vertical inset class="q-ml-md"/>-->
+            <div class="row col-12 q-ml-md q-mt-sm">
               <div class="col-5">
                 <q-card flat bordered class="no-border-radius">
                   <div class="text-center">OSD IN</div>
@@ -115,8 +116,7 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import { apiBase } from 'src/store'
-import axios from 'axios'
+import { $api } from 'boot/api'
 
 export default defineComponent({
   name: 'StorageCluster',
@@ -134,18 +134,18 @@ export default defineComponent({
     const isShowClusterUsed = ref(true)
     const isShowOSD = ref(true)
     const getStorageQuery = async (payload: { service_id: string }) => {
-      const api = apiBase + '/monitor/ceph/query'
+      // const api = apiBase + '/monitor/ceph/query'
       const storageQuery: string[] = ['health_status', 'cluster_total_bytes', 'cluster_total_used_bytes', 'osd_in', 'osd_out', 'osd_up', 'osd_down']
       const config = {
-        params: {
+        query: {
           service_id: payload.service_id,
           query: ''
         }
       }
       const storageObject: Record<string, string> = {}
       for (const item of storageQuery) {
-        config.params.query = item
-        await axios.get(api, config).then((res) => {
+        config.query.query = item
+        await $api.monitor.getMonitorCephQuery(config).then((res) => {
           if (!storageObject.name) {
             storageObject.name = res.data[0].monitor.name
           }
@@ -163,26 +163,26 @@ export default defineComponent({
       storageData.value = res
     })
     const refresh = async (payload: { service_id: string, query: string }) => {
-      const api = apiBase + '/monitor/ceph/query'
+      // const api = apiBase + '/monitor/ceph/query'
       const config = {
-        params: payload
+        query: payload
       }
       let newData = payload.query
       if (payload.query === 'health_status') {
         isShowHealth.value = false
-        await axios.get(api, config).then((res) => {
+        await $api.monitor.getMonitorCephQuery(config).then((res) => {
           storageData.value[newData] = res.data[0].value[1]
           isShowHealth.value = true
         })
       } else if (payload.query === 'cluster_total_bytes') {
         isShowClusterTotal.value = false
-        await axios.get(api, config).then((res) => {
+        await $api.monitor.getMonitorCephQuery(config).then((res) => {
           storageData.value[newData] = res.data[0].value[1]
           isShowClusterTotal.value = true
         })
       } else if (payload.query === 'cluster_total_used_bytes') {
         isShowClusterUsed.value = false
-        await axios.get(api, config).then((res) => {
+        await $api.monitor.getMonitorCephQuery(config).then((res) => {
           storageData.value[newData] = res.data[0].value[1]
           isShowClusterUsed.value = true
         })
@@ -190,9 +190,9 @@ export default defineComponent({
         isShowOSD.value = false
         const arr = payload.query.split(',')
         for (const item of arr) {
-          config.params.query = item
+          config.query.query = item
           newData = item
-          await axios.get(api, config).then((res) => {
+          await $api.monitor.getMonitorCephQuery(config).then((res) => {
             storageData.value[newData] = res.data[0].value[1]
             isShowOSD.value = true
           })
@@ -230,7 +230,7 @@ export default defineComponent({
 <style lang="scss" scoped>
 .StorageCluster {
   .right {
-    border: 1px solid #E0E0E0;
+    border: 1px solid $grey-4;
   }
 }
 </style>

@@ -324,7 +324,15 @@ export const $api = {
       }
       return apiFed.get('/monitor/ceph/query', config)
     },
-    getMonitorCephQueryRange (payload: { query: { service_id: string; query: string; start: number; end?: number; step?: number } }) {
+    getMonitorCephQueryRange (payload: {
+      query: {
+        service_id: string;
+        query: string;
+        start: number;
+        end?: number;
+        step?: number
+      }
+    }) {
       const config = {
         params: payload.query
       }
