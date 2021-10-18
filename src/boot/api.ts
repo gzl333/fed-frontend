@@ -3,7 +3,7 @@
 * 把apiFed和apiLogin合并为api对象
 */
 import { boot } from 'quasar/wrappers'
-import { apiFed, apiLogin } from 'boot/axios'
+import { /* axios, */ apiFed, apiLogin } from 'boot/axios'
 
 export const apiBaseFed = apiFed.defaults.baseURL
 export const apiBaseLogin = apiLogin.defaults.baseURL

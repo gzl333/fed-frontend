@@ -72,7 +72,8 @@ axios.interceptors.request.use(config => {
 }, (error: AxiosError) => {
   console.log('axios-REQ-Rejected')
   errorNotifier(error)
-  return error
+  // return error
+  throw error // throw error就无法把错误传递给发送请求处
 })
 axios.interceptors.response.use(config => {
   // console.log('RESP-Fulfilled')
@@ -81,7 +82,8 @@ axios.interceptors.response.use(config => {
   console.log('axios-RESP-Rejected')
   errorNotifier(error)
   // 响应里的error信息在error.response.data里面，被包成了axios error对象
-  return error // throw error就无法把错误传递给发送请求处
+  // return error
+  throw error // throw error就无法把错误传递给发送请求处
 })
 /* apiLogin的拦截器 */
 
@@ -92,7 +94,8 @@ apiFed.interceptors.request.use(config => {
 }, (error: AxiosError) => {
   console.log('apiFed-REQ-Rejected')
   errorNotifier(error)
-  return error
+  // return error
+  throw error // throw error就无法把错误传递给发送请求处
 })
 apiFed.interceptors.response.use(config => {
   // console.log('RESP-Fulfilled')
@@ -101,7 +104,8 @@ apiFed.interceptors.response.use(config => {
   console.log('apiFed-RESP-Rejected')
   errorNotifier(error)
   // 响应里的error信息在error.response.data里面，被包成了axios error对象
-  return error // throw error就无法把错误传递给发送请求处
+  // return error
+  throw error // throw error就无法把错误传递给发送请求处
 })
 /* apiFed的拦截器 */
 
@@ -112,7 +116,8 @@ apiLogin.interceptors.request.use(config => {
 }, (error: AxiosError) => {
   console.log('apiLogin-REQ-Rejected')
   errorNotifier(error)
-  return error
+  // return error
+  throw error // throw error就无法把错误传递给发送请求处
 })
 apiLogin.interceptors.response.use(config => {
   // console.log('RESP-Fulfilled')
@@ -121,7 +126,8 @@ apiLogin.interceptors.response.use(config => {
   console.log('apiLogin-RESP-Rejected')
   errorNotifier(error)
   // 响应里的error信息在error.response.data里面，被包成了axios error对象
-  return error // throw error就无法把错误传递给发送请求处
+  // return error
+  throw error // throw error就无法把错误传递给发送请求处
 })
 /* apiLogin的拦截器 */
 

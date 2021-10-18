@@ -2,10 +2,7 @@
   <!-- notice dialogRef here -->
   <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin dialog-primary">
-      <!--
-        ...content
-        ... use q-card-section for it?
-      -->
+
       <q-card-section class="row items-center justify-center q-pb-md">
         <div class="text-primary">{{ $t('修改配额申请') }}</div>
         <q-space/>
@@ -180,7 +177,7 @@ export default defineComponent({
       required: true
     },
     isGroup: {
-      type: String,
+      type: Boolean,
       required: false
     }
   },

@@ -280,7 +280,6 @@ export default defineComponent({
     const currentApplication = computed(() => $store.state.provider.tables.adminQuotaApplicationTable.byId[currentId.value])
 
     return {
-      $store,
       locale,
       paginationTable,
       columns,

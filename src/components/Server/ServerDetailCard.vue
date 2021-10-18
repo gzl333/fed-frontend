@@ -15,15 +15,12 @@
 
           <div v-if="!server || !service || !vpn" class="col">
             正在加载，请稍候
-            <pre>{{ server }}</pre>
-            <pre> {{ service }}</pre>
-            <pre>{{ vpn }}</pre>
           </div>
 
           <div v-else class="col content-area">
             <div class="row justify-center items-start q-pt-md">
               <div class="col-4">
-                <div class="row items-center">
+                <div class="row items-center q-pt-xs">
                   <q-btn
                     class="col-shrink text-h4 text-bold" flat padding="none" color="primary"
                     @click="clickToCopy(server.ipv4)">{{ server.ipv4 }}
@@ -58,24 +55,45 @@
               </div>
 
               <div class="col q-gutter-lg">
-                <q-btn v-if="server.status==1"
-                       :disable="!server.status"
-                       unelevated flat padding="none" size="lg" color="primary" icon="computer"
-                       @click="$store.dispatch('server/gotoVNC',server.id)">
-                  <q-tooltip>
+
+                <q-toggle
+                  v-model="toggle"
+                  checked-icon="lock"
+                  unchecked-icon="lock_open"
+                  color="light-green"
+                  size="lg"
+                  @click=" $store.dispatch('server/toggleOperationLock', {isGroup:isGroup, serverId: serverId })"
+                >
+                  <q-tooltip v-if="server.lock === 'lock-operation'">
+                    {{ $t('已锁定云主机操作') }}
+                  </q-tooltip>
+                  <q-tooltip v-else>
+                    {{ $t('未锁定云主机操作') }}
+                  </q-tooltip>
+                </q-toggle>
+
+                <q-btn :disable="!server.status"
+                       unelevated flat padding="none" size="lg" :color="server.status==1?'primary':'grey-5'"
+                       icon="computer"
+                       @click="server.status==1?$store.dispatch('server/gotoVNC',server.id):''">
+                  <q-tooltip v-if="server.status==1">
                     远程控制
                   </q-tooltip>
-                </q-btn>
-                <q-btn v-else
-                       :disable="!server.status"
-                       unelevated color="grey-5" flat padding="none" size="lg" icon="computer">
-                  <q-tooltip>
+                  <q-tooltip v-else>
                     请开机以使用远程控制
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn v-if="server.status !== 1"
-                       color="nord4" icon="play_arrow" text-color="primary"
+                <!--loading button-->
+                <q-btn v-if="!server.status" :loading="!server.status" color="primary" flat>
+                  <q-tooltip>
+                    {{ $t('获取中') }}
+                  </q-tooltip>
+                </q-btn>
+
+                <q-btn v-if="server.status && server.status !== 1"
+                       :disable="server.lock === 'lock-operation'"
+                       icon="play_arrow" text-color="primary"
                        unelevated flat padding="none" size="lg"
                        @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'start', isGroup})">
                   <q-tooltip>
@@ -83,8 +101,9 @@
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn v-if="server.status !== 5"
-                       color="nord4" icon="power_settings_new" text-color="primary"
+                <q-btn v-if="server.status && server.status !== 5"
+                       :disable="server.lock === 'lock-operation'"
+                       icon="power_settings_new" text-color="primary"
                        unelevated flat padding="none" size="lg"
                        @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'shutdown', isGroup})">
                   <q-tooltip>
@@ -92,8 +111,9 @@
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn v-if="server.status !== 5"
-                       color="nord4" icon="restart_alt" text-color="primary"
+                <q-btn v-if="server.status && server.status !== 5"
+                       :disable="server.lock === 'lock-operation'"
+                       icon="restart_alt" text-color="primary"
                        unelevated flat padding="none" size="lg"
                        @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'reboot', isGroup})">
                   <q-tooltip>
@@ -101,8 +121,9 @@
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn v-if="server.status !== 5"
-                       color="nord4" icon="power_off" text-color="primary"
+                <q-btn v-if="server.status && server.status !== 5"
+                       :disable="server.lock === 'lock-operation'"
+                       icon="power_off" text-color="primary"
                        unelevated flat padding="none" size="lg"
                        @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'poweroff', isGroup})">
                   <q-tooltip>
@@ -110,8 +131,9 @@
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn v-if="server.status !== 1"
-                       color="nord4" icon="delete" text-color="red"
+                <q-btn v-if="server.status && server.status !== 1"
+                       :disable="server.lock === 'lock-operation'"
+                      icon="delete" text-color="red"
                        unelevated flat padding="none" size="lg"
                        @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'delete', isGroup})">
                   <q-tooltip>
@@ -119,10 +141,11 @@
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn v-if="server.status"
-                       color="nord4" icon="delete_forever" text-color="red"
+                <q-btn v-if="server.status && server.status"
+                       :disable="server.lock === 'lock-operation'"
+                       icon="delete_forever" text-color="red"
                        unelevated flat padding="none" size="lg"
-                       @click="$store.dispatch('server/serverOperationDialog',{ id: server.id, action: 'delete_force', isGroup})">
+                       @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'delete_force', isGroup})">
                   <q-tooltip>
                     强制删除
                   </q-tooltip>
@@ -267,8 +290,8 @@
 
                 <div class="row q-pb-md items-center">
                   <div class="col-2 text-grey">可用期</div>
-                  <div class="col"> {{ new Date(server.creation_time).toLocaleString() }} -
-                    {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString() : '永久有效' }}
+                  <div class="col"> {{ new Date(server.creation_time).toLocaleString(locale) }} -
+                    {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString(locale) : '永久有效' }}
                   </div>
                 </div>
 
@@ -343,6 +366,7 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import useCopyToClipboard from 'src/hooks/useCopyToClipboard'
 import ServerStatus from 'components/Server/ServerStatus.vue'
+import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'ServerDetailCard',
@@ -361,6 +385,7 @@ export default defineComponent({
   },
   setup (props) {
     const $store = useStore<StateInterface>()
+    const { locale } = useI18n({ useScope: 'global' })
 
     // todo 未传参id时，跳转处理
     // if (!props.serverId) {
@@ -376,6 +401,9 @@ export default defineComponent({
     // vpn info
     const vpn = computed(() => $store.state.server.tables.userVpnTable.byId[server.value?.service])
 
+    // lock toggle
+    const toggle = ref(computed(() => server.value.lock === 'lock-operation'))
+
     // password可见性
     const isPwd = ref(true)
     // VPN password可见性
@@ -385,10 +413,12 @@ export default defineComponent({
     const clickToCopy = useCopyToClipboard()
 
     return {
+      locale,
       server,
       service,
       quota,
       vpn,
+      toggle,
       isPwd,
       isPwdVpn,
       clickToCopy

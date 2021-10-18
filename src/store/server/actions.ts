@@ -8,6 +8,7 @@ import { Dialog, Notify } from 'quasar'
 import QuotaApplicationEditCard from 'components/Quota/QuotaApplicationEditCard.vue'
 import { i18n } from 'boot/i18n'
 import { axios } from 'boot/axios'
+import ServerDeleteDialog from 'components/Server/ServerDeleteDialog.vue'
 
 // 云主机状态码参考。具体显示位置写在SererStatus组件里
 /* const statusCodeMap = new Map<number, string>(
@@ -386,6 +387,56 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   /* tables */
 
   /* dialogs */
+  // 修改server.lock的operation状态( lock-delete <-> lock-operation )
+  async toggleOperationLock (context, payload: { serverId: string; isGroup: boolean }) {
+    const lock = payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId]?.lock : context.state.tables.personalServerTable.byId[payload.serverId]?.lock
+    const newLock = lock === 'lock-operation' ? 'lock-delete' : 'lock-operation'
+    const respPostServerLock = await $api.server.postServerLock({
+      query: { lock: newLock },
+      path: { id: payload.serverId }
+    })
+    if (respPostServerLock.status === 200) {
+      context.commit('storeField', {
+        table: payload.isGroup ? context.state.tables.groupServerTable : context.state.tables.personalServerTable,
+        id: payload.serverId,
+        field: 'lock',
+        value: respPostServerLock.data.lock
+      })
+    }
+  },
+  // 修改server.lock的delete状态 ( free <-> lock-delete )
+  async toggleDeleteLock (context, payload: { serverId: string; isGroup: boolean }) {
+    const lock = payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId]?.lock : context.state.tables.personalServerTable.byId[payload.serverId]?.lock
+    const newLock = lock === 'free' ? 'lock-delete' : 'free'
+    const respPostServerLock = await $api.server.postServerLock({
+      query: { lock: newLock },
+      path: { id: payload.serverId }
+    })
+    if (respPostServerLock.status === 200) {
+      context.commit('storeField', {
+        table: payload.isGroup ? context.state.tables.groupServerTable : context.state.tables.personalServerTable,
+        id: payload.serverId,
+        field: 'lock',
+        value: respPostServerLock.data.lock
+      })
+    }
+  },
+  // 修改server.lock的delete状态为lock-delete ( -> lock-delete )
+  async toggleDeleteLockToLock (context, payload: { serverId: string; isGroup: boolean }) {
+    const newLock = 'lock-delete'
+    const respPostServerLock = await $api.server.postServerLock({
+      query: { lock: newLock },
+      path: { id: payload.serverId }
+    })
+    if (respPostServerLock.status === 200) {
+      context.commit('storeField', {
+        table: payload.isGroup ? context.state.tables.groupServerTable : context.state.tables.personalServerTable,
+        id: payload.serverId,
+        field: 'lock',
+        value: respPostServerLock.data.lock
+      })
+    }
+  },
   // 修改quota申请
   editQuotaApplicationDialog (context, payload: { apply_id: string; isGroup?: boolean }) {
     Dialog.create({
@@ -674,86 +725,130 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       }
     })
   },
-  // todo 细分各种操作
+  // todo 细分各种操作;重命名为triggerXxxDialog
   serverOperationDialog (context, payload: { serverId: string; action: string; isGroup?: boolean }) {
-    // 操作的确认提示 todo 输入删除两个字以确认
-    Dialog.create({
-      class: 'dialog-primary',
-      title: `${i18n.global.tc(actionMap.get(payload.action) as string) || ''}`,
-      focus: 'cancel',
-      message:
-        `${payload.action === 'delete' || payload.action === 'delete_force' ? '被删除的云主机将无法自行恢复，如需恢复请联系云联邦管理员。' : ''}确认执行？`,
-      ok: {
-        label: i18n.global.tc('确认'),
-        push: false,
-        // flat: true,
-        outline: true,
-        color: 'primary'
-      },
-      cancel: {
-        label: i18n.global.tc('放弃'),
-        push: false,
-        flat: false,
-        unelevated: true,
-        color: 'primary'
-      }
-    }).onOk(async () => {
-      // 将主机状态清空，界面将显示loading
-      if (payload.isGroup) {
-        context.commit('storeSingleServerStatus', {
-          table: context.state.tables.groupServerTable,
-          serverId: payload.serverId,
-          status_code: ''
-        })
-      } else {
-        context.commit('storeSingleServerStatus', {
-          table: context.state.tables.personalServerTable,
-          serverId: payload.serverId,
-          status_code: ''
-        })
-      }
-      // 发送请求
-      const server = payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId] : context.state.tables.personalServerTable.byId[payload.serverId]
-      // 去掉协议
-      const endpoint_url = server.endpoint_url.substr(server.endpoint_url.indexOf('//'))
-      // 判断结尾有没有'/'，并加上当前用户使用的协议
-      // 以下写法失败, 二元选择问号前都是条件
-      // const api = window.location.protocol + endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/action/' : endpoint_url + '/api/server/' + payload.serverId + '/action/'
-      const api = window.location.protocol + (endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/action/' : endpoint_url + '/api/server/' + payload.serverId + '/action/')
-      const data = { action: payload.action }
-      void await axios.post(api, data)
+    // 所有操作都要用的信息
+    const server = payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId] : context.state.tables.personalServerTable.byId[payload.serverId]
+    // 去掉协议
+    const endpoint_url = server.endpoint_url.substr(server.endpoint_url.indexOf('//'))
+    // 判断结尾有没有'/'，并加上当前用户使用的协议
+    // 以下写法失败, 二元选择问号前都是条件
+    // const api = window.location.protocol + endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/action/' : endpoint_url + '/api/server/' + payload.serverId + '/action/'
+    const api = window.location.protocol + (endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/action/' : endpoint_url + '/api/server/' + payload.serverId + '/action/')
+    const data = { action: payload.action }
 
-      // 如果删除主机，重新获取userServerTable或groupServerTable
-      if (payload.action === 'delete' || payload.action === 'delete_force') {
-        Notify.create({
-          classes: 'notification-primary shadow-15',
-          textColor: 'primary',
-          spinner: true,
-          message: `正在删除云主机${server.ipv4 || ''} ，请稍候`,
-          position: 'bottom',
-          closeBtn: true,
-          timeout: 3000,
-          multiLine: false
-        })
-        // 应延时
-        void await new Promise(resolve => (
-          setTimeout(resolve, 5000)
-        ))
-        // 更新userServerTable或groupServerTable
-        payload.isGroup ? void await context.dispatch('loadGroupServerTable') : void await context.dispatch('loadPersonalServerTableTable')
-      } else {
-        // 其它操作只更新该主机状态
-        // 应延时
-        void await new Promise(resolve => (
-          setTimeout(resolve, 5000)
-        ))
-        // 更新单个server status
-        void context.dispatch('loadSingleServerStatus', {
-          isGroup: payload.isGroup,
-          serverId: payload.serverId
-        })
-      }
-    })
+    // 各种操作分类
+    if (payload.action === 'delete' || payload.action === 'delete_force') {
+      Dialog.create({
+        component: ServerDeleteDialog,
+        componentProps: {
+          action: payload.action,
+          serverId: payload.serverId,
+          isGroup: payload.isGroup
+        }
+      }).onOk(async () => {
+        // 将主机状态清空，界面将显示loading
+        if (payload.isGroup) {
+          context.commit('storeSingleServerStatus', {
+            table: context.state.tables.groupServerTable,
+            serverId: payload.serverId,
+            status_code: ''
+          })
+        } else {
+          context.commit('storeSingleServerStatus', {
+            table: context.state.tables.personalServerTable,
+            serverId: payload.serverId,
+            status_code: ''
+          })
+        }
+        try {
+          // 发送请求
+          await axios.post(api, data)
+          // 如果删除主机，重新获取userServerTable或groupServerTable
+          Notify.create({
+            classes: 'notification-primary shadow-15',
+            textColor: 'primary',
+            spinner: true,
+            message: `正在删除云主机${server.ipv4 || ''} ，请稍候`,
+            position: 'bottom',
+            closeBtn: true,
+            timeout: 5000,
+            multiLine: false
+          })
+          // // 应延时
+          // void await new Promise(resolve => (
+          //   setTimeout(resolve, 1000)
+          // ))
+          // 更新userServerTable或groupServerTable
+          payload.isGroup ? void await context.dispatch('loadGroupServerTable') : void await context.dispatch('loadPersonalServerTable')
+          // jump 成功才跳转
+          // @ts-ignore
+          payload.isGroup ? this.$router.push('/my/group/server') : this.$router.push('/my/personal/server')
+        } catch {
+          // 若请求失败则应更新单个server status
+          void context.dispatch('loadSingleServerStatus', {
+            isGroup: payload.isGroup,
+            serverId: payload.serverId
+          })
+        }
+      })
+    } else {
+      Dialog.create({
+        class: 'dialog-primary',
+        title: `${i18n.global.tc(actionMap.get(payload.action) as string) || ''}`,
+        focus: 'cancel',
+        message:
+          '确认执行？',
+        ok: {
+          label: i18n.global.tc('确认'),
+          push: false,
+          // flat: true,
+          outline: true,
+          color: 'primary'
+        },
+        cancel: {
+          label: i18n.global.tc('取消'),
+          push: false,
+          flat: false,
+          unelevated: true,
+          color: 'primary'
+        }
+      }).onOk(async () => {
+        // 将主机状态清空，界面将显示loading
+        if (payload.isGroup) {
+          context.commit('storeSingleServerStatus', {
+            table: context.state.tables.groupServerTable,
+            serverId: payload.serverId,
+            status_code: ''
+          })
+        } else {
+          context.commit('storeSingleServerStatus', {
+            table: context.state.tables.personalServerTable,
+            serverId: payload.serverId,
+            status_code: ''
+          })
+        }
+
+        try {
+          await axios.post(api, data)
+          // 应延时
+          void await new Promise(resolve => (
+            setTimeout(resolve, 5000)
+          ))
+          // 更新单个server status
+          void context.dispatch('loadSingleServerStatus', {
+            isGroup: payload.isGroup,
+            serverId: payload.serverId
+          })
+        } catch {
+          // 若请求失败则应更新单个server status
+          void context.dispatch('loadSingleServerStatus', {
+            isGroup: payload.isGroup,
+            serverId: payload.serverId
+          })
+        }
+      })
+    }
   },
   // 编辑云主机备注
   editServerNoteDialog (context, payload: { serverId: string; isGroup?: boolean }) {
