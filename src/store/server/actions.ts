@@ -766,10 +766,10 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           await axios.post(api, data)
           // 如果删除主机，重新获取userServerTable或groupServerTable
           Notify.create({
-            classes: 'notification-primary shadow-15',
-            textColor: 'primary',
-            spinner: true,
-            message: `正在删除云主机${server.ipv4 || ''} ，请稍候`,
+            classes: 'notification-positive shadow-15',
+            textColor: 'positive',
+            // spinner: true,
+            message: `成功删除云主机${server.ipv4 || ''}`,
             position: 'bottom',
             closeBtn: true,
             timeout: 5000,
@@ -840,6 +840,8 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
             isGroup: payload.isGroup,
             serverId: payload.serverId
           })
+
+          // todo 通知匹配新老状态，发送通知
         } catch {
           // 若请求失败则应更新单个server status
           void context.dispatch('loadSingleServerStatus', {
