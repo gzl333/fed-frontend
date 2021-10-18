@@ -54,6 +54,19 @@ const mutation: MutationTree<ServerModuleInterface> = {
       payload.table.isLoaded = false
     }
   },
+  // 保存单个item的单个field
+  storeField (state: ServerModuleInterface, payload: {
+    table: {
+      byId: Record<string, ServerInterface> // 此处固定为ServerInterface
+      allIds: string[]
+      isLoaded: boolean
+    }
+    id: string
+    field: keyof ServerInterface
+    value: never // 可以更加细化，利用field: SeverInterface[field]
+  }) {
+    payload.table.byId[payload.id][payload.field] = payload.value
+  },
   // 保存单个server的status
   storeSingleServerStatus (state: ServerModuleInterface, payload: {
     table: {

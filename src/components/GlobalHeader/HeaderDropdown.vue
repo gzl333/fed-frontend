@@ -18,7 +18,7 @@
           <div class="text-subtitle1 text-white">{{ $store.state.account.items.decoded?.orgName }}</div>
 
           <div class="q-py-md text-white">
-            正在使用{{ $store.state.account.items.loginType === 'aai' ? '科技云AAI' : '科技云通行证' }}登录
+            正在使用{{ $store.state.account.items.loginType === 'aai' ? '科技云AAI联盟' : '科技云通行证' }}登录
           </div>
         </div>
       </div>
