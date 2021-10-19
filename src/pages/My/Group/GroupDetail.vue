@@ -97,6 +97,19 @@
                 </div>
               </div>
 
+              <div class="col-auto ">
+                <div class="column justify-start items-center" style="height: 120px">
+                  <div class="col-2 text-grey">
+                    我的角色
+                  </div>
+                  <div class="col-10">
+                    <div class="row justify-center items-center" style="height: 70px">
+                      <group-role-chip :role="group.myRole"/>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               <div v-if="group.myRole !== 'member'" class="col-auto ">
                 <div class="column justify-start items-center" style="height: 120px">
                   <div class="col-2 text-grey">
@@ -139,12 +152,6 @@
                     <q-tab class="q-px-none q-py-none q-mr-md"
                            no-caps
                            :ripple="false"
-                           name="member"
-                           icon="group"
-                           :label="$t('人员')"/>
-                    <q-tab class="q-px-none q-py-none q-mr-md"
-                           no-caps
-                           :ripple="false"
                            name="server"
                            icon="computer"
                            :label="$t('云主机')"/>
@@ -161,6 +168,12 @@
                            name="application"
                            icon="rule"
                            :label="$t('配额申请记录')"/>
+                    <q-tab class="q-px-none q-py-none q-mr-md"
+                           no-caps
+                           :ripple="false"
+                           name="member"
+                           icon="group"
+                           :label="$t('人员')"/>
                   </q-tabs>
 
                   <q-btn v-show="tab==='member' && group.myRole !== 'member' " class="col-shrink" icon="add" size="md"
@@ -190,10 +203,6 @@
               <div class="col-auto content-area">
                 <q-tab-panels v-model="tab" animated>
 
-                  <q-tab-panel class="q-pa-none overflow-hidden" name="member">
-                    <group-member-table :group-id="group.id"/>
-                  </q-tab-panel>
-
                   <q-tab-panel class="q-pa-none overflow-hidden" name="server">
                     <server-table :servers="servers" is-group is-hide-group/>
                   </q-tab-panel>
@@ -204,6 +213,10 @@
 
                   <q-tab-panel v-if="group.myRole !== 'member'" class="q-pa-none overflow-hidden" name="application">
                     <quota-application-table :applications="applications" is-group is-hide-group/>
+                  </q-tab-panel>
+
+                  <q-tab-panel class="q-pa-none overflow-hidden" name="member">
+                    <group-member-table :group-id="group.id"/>
                   </q-tab-panel>
 
                 </q-tab-panels>
@@ -228,6 +241,7 @@ import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 import GroupMemberTable from 'components/Group/GroupMemberTable.vue'
+import GroupRoleChip from 'components/Group/GroupRoleChip.vue'
 import ServerTable from 'components/Server/ServerTable.vue'
 import QuotaTable from 'components/Quota/QuotaTable.vue'
 import QuotaApplicationTable from 'components/Quota/QuotaApplicationTable.vue'
@@ -236,6 +250,7 @@ export default defineComponent({
   name: 'GroupDetail',
   components: {
     GroupMemberTable,
+    GroupRoleChip,
     ServerTable,
     QuotaTable,
     QuotaApplicationTable
@@ -262,7 +277,7 @@ export default defineComponent({
     // group quota applications
     const applications = computed(() => $store.getters['server/getGroupQuotaApplicationsByGroupId'](groupId))
 
-    const tab = ref(show ?? 'member')
+    const tab = ref(show ?? 'server')
 
     return {
       locale,

@@ -15,7 +15,7 @@
             <q-btn v-if="isGroup" label="项目组配额详情" flat dense padding="none" color="primary"
                    :to="{path: `/my/group/quota/detail/${quota.id}`}"/>
             <q-btn v-else label="个人配额详情" flat dense padding="none" color="primary"
-                   :to="{path: `/my/personal/quota_detail/${quota.id}`}"/>
+                   :to="{path: `/my/personal/quota/detail/${quota.id}`}"/>
           </div>
 
         </div>
