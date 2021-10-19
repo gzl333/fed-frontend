@@ -49,6 +49,15 @@ const routes: RouteRecordRaw[] = [
           title: '新闻动态-中国科技云联邦',
           requireLogin: false
         }
+      },
+      {
+        // 网络中心内测公告
+        path: 'center-beta',
+        component: () => import('pages/News/CenterBeta.vue'),
+        meta: {
+          title: '新闻动态-中国科技云联邦',
+          requireLogin: false
+        }
       }
     ]
   },
@@ -156,6 +165,13 @@ const routes: RouteRecordRaw[] = [
             },
             component: () => import('pages/My/Personal/QuotaApply.vue'),
             props: true // 接收url中的参数
+          },
+          { // 2021-10-19所内测试专用页面
+            path: 'quota/apply_beta',
+            meta: {
+              requireLogin: true
+            },
+            component: () => import('pages/My/Personal/QuotaApplyBeta.vue')
           },
           {
             path: 'vpn',

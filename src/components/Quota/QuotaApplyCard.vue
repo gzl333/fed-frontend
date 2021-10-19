@@ -185,7 +185,7 @@
 
         <div class="row item-row items-center">
           <div class="col-1 q-pb-md">配额用途</div>
-          <q-input ref="input" class="col-6 input-remarks" v-model="inputPurpose" maxlength="50" outlined dense
+          <q-input ref="input" class="col-6 input-remarks" v-model="inputPurpose" maxlength="25" outlined dense
                    counter/>
         </div>
 
@@ -336,7 +336,6 @@ export default defineComponent({
     const { locale } = useI18n({ useScope: 'global' })
 
     // dom元素
-    const select = ref<HTMLElement>()
     const input = ref<HTMLElement>()
 
     // radio选项数据
@@ -461,7 +460,6 @@ export default defineComponent({
     }
 
     return {
-      select,
       input,
       locale,
       groups,

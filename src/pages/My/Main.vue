@@ -18,7 +18,7 @@
                 <q-btn flat padding="none" color="primary" label="忽略" @click="isBannerOn=false"/>
               </template>
               <div>
-                <q-btn class="text-h6" flat padding="none" color="primary" :to="{path: '/news/closed-beta'}">
+                <q-btn class="text-h6" flat padding="none" color="primary" :to="{path: '/news/center-beta'}">
                   中国科技云联邦内测公告
                 </q-btn>
               </div>
@@ -86,11 +86,21 @@
 
                     <div>
                       <q-list dense bordered padding class="rounded-borders q-mt-sm">
-                        <q-item clickable to="/news/closed-beta">
+
+                        <q-item clickable to="/news/center-beta">
                           <q-item-section>
                             <div class="row justify-between">
-                              <div class="col-auto">中国科技云联邦将开启科技云部内测</div>
-                              <div class="col-auto">2021-7-26</div>
+                              <div class="col-auto">中国科技云联邦进行网络中心内测</div>
+                              <div class="col-auto">2021-10-26</div>
+                            </div>
+                          </q-item-section>
+                        </q-item>
+
+                        <q-item clickable>
+                          <q-item-section>
+                            <div class="row justify-between">
+                              <div class="col-auto">中国科技云联邦进行科技云部内测</div>
+                              <div class="col-auto">2021-07-26</div>
                             </div>
                           </q-item-section>
                         </q-item>
@@ -99,7 +109,7 @@
                           <q-item-section>
                             <div class="row justify-between">
                               <div class="col-auto">中国科技云联邦alpha版本上线</div>
-                              <div class="col-auto">2021-7-1</div>
+                              <div class="col-auto">2021-07-01</div>
                             </div>
                           </q-item-section>
                         </q-item>
@@ -108,7 +118,7 @@
                           <q-item-section>
                             <div class="row justify-between">
                               <div class="col-auto">中国科技云联邦demo版本上线</div>
-                              <div class="col-auto">2021-4-1</div>
+                              <div class="col-auto">2021-04-01</div>
                             </div>
                           </q-item-section>
                         </q-item>
@@ -117,7 +127,7 @@
                           <q-item-section>
                             <div class="row justify-between">
                               <div class="col-auto">中国科技云联邦研发启动</div>
-                              <div class="col-auto">2021-1-1</div>
+                              <div class="col-auto">2021-01-01</div>
                             </div>
                           </q-item-section>
                         </q-item>
@@ -131,7 +141,7 @@
               <div class="col">
                 <div class="row q-mt-md justify-between items-center">
                   <div class="col-auto text-h6">
-                    {{ $t('云主机') }}
+                    {{ $t('个人云主机') }}
                   </div>
                   <div class="col-auto ">
                     <q-btn class="q-mr-md" flat padding="none" color="primary" icon="add"
@@ -149,15 +159,15 @@
               <div class="col">
                 <div class="row q-mt-md justify-between items-center">
                   <div class="col-auto text-h6 ">
-                    {{ $t('对象存储') }}-dev
+                    {{ $t('项目组') }}
                   </div>
                   <div class="col-auto ">
-                    <q-btn disable class="q-mr-md" flat padding="none" color="primary" icon="add">新建</q-btn>
-                    <q-btn disable flat padding="none" color="primary" icon="more_horiz">更多</q-btn>
+<!--                    <q-btn disable class="q-mr-md" flat padding="none" color="primary" icon="add">新建</q-btn>-->
+                    <q-btn flat padding="none" color="primary" icon="more_horiz" :to="{path:'/my/group'}">更多</q-btn>
                   </div>
                 </div>
                 <q-separator color="grey-5"/>
-                <BucketTable :buckets="[]"/>
+                <GroupTable :groups="groups"/>
               </div>
             </div>
 
@@ -179,13 +189,15 @@ import { StateInterface } from 'src/store'
 import GlobalHeader from 'components/GlobalHeader/GlobalHeader.vue'
 import ServerTable from 'components/Server/ServerTable.vue'
 import BucketTable from 'components/BucketTable/BucketTable.vue'
+import GroupTable from 'components/Group/GroupTable.vue'
 
 export default defineComponent({
   name: 'Main',
   components: {
     GlobalHeader,
     ServerTable,
-    BucketTable
+    BucketTable,
+    GroupTable
   },
   props: {},
   setup () {
@@ -197,6 +209,9 @@ export default defineComponent({
 
     // 获取云主机列表数据
     const servers = computed(() => $store.getters['server/getPersonalServers'].slice(0, 3))
+
+    // group data
+    const groups = computed(() => $store.getters['account/getGroupsByFilter']('all').slice(0, 3))
 
     // 获取对象存储桶数据列表，目前是测试数据
     // const buckets = [
@@ -240,6 +255,7 @@ export default defineComponent({
       tab1,
       tab2,
       servers,
+      groups,
       // buckets,
       isBannerOn
     }
@@ -254,6 +270,7 @@ export default defineComponent({
 .banner-border {
   border-left: 5px solid $primary;
 }
+
 // todo debug
 .tab1 {
   background-image: url('/img/city_map.png');
