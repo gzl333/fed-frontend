@@ -30,6 +30,7 @@ export default defineComponent({
     lineData.value.push(props.chartData.min)
     lineData.value.push(props.chartData.max)
     const getChartData = (data: []) => {
+      console.log('我是data', data)
       lineData.value = data
     }
     onMounted(() => {
