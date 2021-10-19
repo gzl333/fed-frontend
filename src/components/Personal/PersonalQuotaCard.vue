@@ -14,7 +14,7 @@
 
           <div class="col text-right q-px-sm ">
             <q-btn label="配额详情" flat dense padding="none" color="primary"
-                   :to="{path: `/my/personal/quota_detail/${props.quota.id}`}"/>
+                   :to="{path: `/my/personal/quota/detail/${props.quota.id}`}"/>
           </div>
 
         </div>

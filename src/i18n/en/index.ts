@@ -63,6 +63,7 @@ export default {
   刷新云主机状态: 'Click to refresh server status',
   云主机详情: 'Server detail',
   '暂无可用云主机，请创建后使用': 'No server available, please deploy new servers before using.',
+  重建云主机: 'Reinstall',
 
   // 云主机状态
   获取中: 'Updating',

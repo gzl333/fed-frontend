@@ -44,7 +44,8 @@
                       <q-tooltip>备注</q-tooltip>
                     </span>
 
-                    <q-btn class="col-shrink q-px-xs" flat dense icon="edit" size="sm" color="primary"
+                    <q-btn v-if="!isGroup || isGroup && myRole!=='member'"
+                           class="col-shrink q-px-xs" flat dense icon="edit" size="sm" color="primary"
                            @click="$store.dispatch('server/editServerNoteDialog',{serverId:server.id, isGroup})">
                       <q-tooltip>
                         编辑备注
@@ -131,25 +132,41 @@
                   </q-tooltip>
                 </q-btn>
 
-                <q-btn v-if="server.status && server.status !== 1"
-                       :disable="server.lock === 'lock-operation'"
-                      icon="delete" text-color="red"
-                       unelevated flat padding="none" size="lg"
-                       @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'delete', isGroup})">
-                  <q-tooltip>
-                    删除
-                  </q-tooltip>
-                </q-btn>
+                <!--personal显示 || group不是member时显示-->
 
-                <q-btn v-if="server.status && server.status"
-                       :disable="server.lock === 'lock-operation'"
-                       icon="delete_forever" text-color="red"
-                       unelevated flat padding="none" size="lg"
-                       @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'delete_force', isGroup})">
-                  <q-tooltip>
-                    强制删除
-                  </q-tooltip>
-                </q-btn>
+                <span v-if="!isGroup || isGroup && myRole!=='member'" class="q-gutter-lg">
+
+                  <q-btn v-if="server.status"
+                         :disable="server.lock === 'lock-operation'"
+                         icon="build" text-color="primary"
+                         unelevated flat padding="none" size="lg"
+                         @click="$store.dispatch('server/triggerServerRebuildDialog',{ serverId: server.id,  isGroup})">
+                    <q-tooltip>
+                      重建云主机
+                    </q-tooltip>
+                  </q-btn>
+
+                  <q-btn v-if="server.status && server.status !== 1"
+                         :disable="server.lock === 'lock-operation'"
+                         icon="delete" text-color="red"
+                         unelevated flat padding="none" size="lg"
+                         @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'delete', isGroup})">
+                    <q-tooltip>
+                      删除
+                    </q-tooltip>
+                  </q-btn>
+
+                  <q-btn v-if="server.status && server.status"
+                         :disable="server.lock === 'lock-operation'"
+                         icon="delete_forever" text-color="red"
+                         unelevated flat padding="none" size="lg"
+                         @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'delete_force', isGroup})">
+                    <q-tooltip>
+                      强制删除
+                    </q-tooltip>
+                  </q-btn>
+
+                </span>
               </div>
             </div>
 
@@ -173,15 +190,18 @@
                 <div class="row q-pb-md items-center">
                   <div class="col-3 text-grey">系统初始密码</div>
                   <div class="col-shrink">
+                    <div v-if="server?.default_password === null || server?.default_password===''">
+                      {{ $t('后台无记录') }}
+                    </div>
                     <!--根据内容改变长度的input. 一个字母占8像素，一个汉字占16像素.https://github.com/quasarframework/quasar/issues/1958-->
-                    <q-input
-                      :input-style="{width:`${server.default_password.length * 8}px`, maxWidth: '200px', minWidth: '32px'}"
-                      v-model="server.default_password" readonly borderless dense
-                      :type="isPwd ? 'password' : 'text'">
+                    <q-input v-else
+                             :input-style="{width:`${server?.default_password.length * 8}px`, maxWidth: '200px', minWidth: '32px'}"
+                             v-model="server.default_password" readonly borderless dense
+                             :type="isPwd ? 'password' : 'text'">
                       <template v-slot:append>
                         <q-icon :name="isPwd ? 'visibility' : 'visibility_off'" @click="isPwd = !isPwd"/>
                         <q-btn class="q-px-xs" flat color="primary" icon="content_copy" size="sm"
-                               @click="clickToCopy(server.default_password, true)">
+                               @click="clickToCopy(server?.default_password, true)">
                           <q-tooltip>
                             复制
                           </q-tooltip>
@@ -269,13 +289,27 @@
                   </div>
                 </div>
 
+                <div v-if="isGroup" class="row q-pb-md items-center">
+                  <div class="col-2 text-grey">我的角色</div>
+                  <div class="col-shrink">
+                    <group-role-chip :role="myRole"/>
+                  </div>
+                </div>
+
+                <div class="row q-pb-md items-center">
+                  <div class="col-2 text-grey">创建人</div>
+                  <div class="col-shrink">
+                    {{ server.user.username }}
+                  </div>
+                </div>
+
                 <div class="row q-pb-md items-center">
                   <div class="col-2 text-grey">所用配额</div>
                   <div class="col-shrink">
 
                     <div v-if="quota">
                       <q-btn label="配额详情" flat dense color="primary" padding="none"
-                             :to="{path: isGroup ? `/my/group/quota/detail/${quota?.id}` : `/my/personal/quota_detail/${quota?.id}`}">
+                             :to="{path: isGroup ? `/my/group/quota/detail/${quota?.id}` : `/my/personal/quota/detail/${quota?.id}`}">
                         <q-tooltip>
                           配额详情
                         </q-tooltip>
@@ -292,6 +326,11 @@
                   <div class="col-2 text-grey">可用期</div>
                   <div class="col"> {{ new Date(server.creation_time).toLocaleString(locale) }} -
                     {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString(locale) : '永久有效' }}
+                    <q-icon
+                      v-if="server.expiration_time !== null && (new Date(server.expiration_time).getTime() - new Date().getTime()) < 0"
+                      name="help_outline" color="red" size="xs">
+                      <q-tooltip>{{ $t('云主机已到期。如需继续使用该云主机，请立即与云联邦管理员联系。否则可能会被定期清除。') }}</q-tooltip>
+                    </q-icon>
                   </div>
                 </div>
 
@@ -319,7 +358,7 @@
                 </div>
 
                 <div class="row q-pb-md items-center">
-                  <div class="col-2 text-grey">系统镜像</div>
+                  <div class="col-2 text-grey">操作系统</div>
                   <div class="col"> {{ server.image }}</div>
                 </div>
 
@@ -366,12 +405,14 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import useCopyToClipboard from 'src/hooks/useCopyToClipboard'
 import ServerStatus from 'components/Server/ServerStatus.vue'
+import GroupRoleChip from 'components/Group/GroupRoleChip.vue'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'ServerDetailCard',
   components: {
-    ServerStatus
+    ServerStatus,
+    GroupRoleChip
   },
   props: {
     serverId: {
@@ -404,6 +445,9 @@ export default defineComponent({
     // lock toggle
     const toggle = ref(computed(() => server.value.lock === 'lock-operation'))
 
+    // 当前用户在group内的角色
+    const myRole = computed(() => $store.state.account.tables.groupTable.byId[server.value?.vo_id || '']?.myRole)
+
     // password可见性
     const isPwd = ref(true)
     // VPN password可见性
@@ -419,6 +463,7 @@ export default defineComponent({
       quota,
       vpn,
       toggle,
+      myRole,
       isPwd,
       isPwdVpn,
       clickToCopy

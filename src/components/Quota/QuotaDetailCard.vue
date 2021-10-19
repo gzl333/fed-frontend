@@ -19,7 +19,7 @@
             <!--            配额详情开始-->
             <div class="row items-center justify-evenly quota-area ">
 
-              <div class="col-auto ">
+              <div v-if="isGroup" class="col-auto ">
                 <div class="column justify-start items-center" style="height: 120px">
                   <div class="col-2 text-grey">
                     所属项目组

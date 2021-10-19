@@ -533,6 +533,13 @@ export const $api = {
       }
       return apiFed.post('/server/' + payload.path.id + '/lock', {}, config)
     },
+    postServerRebuild (payload: {
+      path: {id: string}
+      body: {image_id: string}
+    }) {
+      const data = payload.body
+      return apiFed.post('/server/' + payload.path.id + '/rebuild', data)
+    },
     patchServerRemark (payload: {
       path: { id: string },
       query: { remark: string }

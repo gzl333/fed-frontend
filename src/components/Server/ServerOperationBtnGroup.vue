@@ -105,37 +105,59 @@
             </div>
           </q-item>
 
-          <q-separator/>
+          <!--personal显示 || group不是member时显示-->
+          <div v-if="!isGroup || isGroup && myRole!=='member'">
 
-          <q-item v-if="server.status!==1" clickable v-close-popup class="bg-white text-red"
-                  :disable="server.lock === 'lock-operation'"
-                  @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'delete',isGroup})">
-            <div class="row">
-              <q-item-section class="col-auto">
-                <q-icon name="delete" size="sm"/>
-              </q-item-section>
-              <q-item-section class="col-auto">
-                <q-item-section>
-                  <q-item-label>{{ $t('删除') }}</q-item-label>
-                </q-item-section>
-              </q-item-section>
-            </div>
-          </q-item>
+            <q-separator/>
 
-          <q-item clickable v-close-popup class="bg-white text-red"
-                  :disable="server.lock === 'lock-operation'"
-                  @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'delete_force',isGroup})">
-            <div class="row">
-              <q-item-section class="col-auto">
-                <q-icon name="delete_forever" size="sm"/>
-              </q-item-section>
-              <q-item-section class="col-auto">
-                <q-item-section>
-                  <q-item-label>{{ $t('强制删除') }}</q-item-label>
+            <q-item clickable v-close-popup class="bg-white text-primary"
+                    :disable="server.lock === 'lock-operation'"
+                    @click="$store.dispatch('server/triggerServerRebuildDialog',{serverId: server.id,isGroup})">
+              <div class="row">
+                <q-item-section class="col-auto">
+                  <q-icon name="build" size="sm"/>
                 </q-item-section>
-              </q-item-section>
-            </div>
-          </q-item>
+                <q-item-section class="col-auto">
+                  <q-item-section>
+                    <q-item-label>{{ $t('重建云主机') }}</q-item-label>
+                  </q-item-section>
+                </q-item-section>
+              </div>
+            </q-item>
+
+            <q-separator/>
+
+            <q-item v-if="server.status!==1" clickable v-close-popup class="bg-white text-red"
+                    :disable="server.lock === 'lock-operation'"
+                    @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'delete',isGroup})">
+              <div class="row">
+                <q-item-section class="col-auto">
+                  <q-icon name="delete" size="sm"/>
+                </q-item-section>
+                <q-item-section class="col-auto">
+                  <q-item-section>
+                    <q-item-label>{{ $t('删除') }}</q-item-label>
+                  </q-item-section>
+                </q-item-section>
+              </div>
+            </q-item>
+
+            <q-item clickable v-close-popup class="bg-white text-red"
+                    :disable="server.lock === 'lock-operation'"
+                    @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'delete_force',isGroup})">
+              <div class="row">
+                <q-item-section class="col-auto">
+                  <q-icon name="delete_forever" size="sm"/>
+                </q-item-section>
+                <q-item-section class="col-auto">
+                  <q-item-section>
+                    <q-item-label>{{ $t('强制删除') }}</q-item-label>
+                  </q-item-section>
+                </q-item-section>
+              </div>
+            </q-item>
+
+          </div>
 
         </q-list>
       </q-btn-dropdown>
@@ -147,6 +169,9 @@
 <script lang="ts">
 import { computed, defineComponent, ref, PropType } from 'vue'
 import { ServerInterface } from 'src/store/server/state'
+import { useStore } from 'vuex'
+import { StateInterface } from 'src/store'
+import { useI18n } from 'vue-i18n'
 // import { useStore } from 'vuex'
 // import { StateInterface } from 'src/store'
 
@@ -164,9 +189,16 @@ export default defineComponent({
     }
   },
   setup (props) {
+    const $store = useStore<StateInterface>()
+    const { locale } = useI18n({ useScope: 'global' })
+
     const toggle = ref(computed(() => props.server.lock === 'lock-operation'))
+    // 当前用户在group内的角色
+    const myRole = computed(() => $store.state.account.tables.groupTable.byId[props.server?.vo_id || '']?.myRole)
     return {
-      toggle
+      locale,
+      toggle,
+      myRole
     }
   }
 })

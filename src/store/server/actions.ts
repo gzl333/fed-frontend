@@ -9,6 +9,7 @@ import QuotaApplicationEditCard from 'components/Quota/QuotaApplicationEditCard.
 import { i18n } from 'boot/i18n'
 import { axios } from 'boot/axios'
 import ServerDeleteDialog from 'components/Server/ServerDeleteDialog.vue'
+import ServerRebuildDialog from 'components/Server/ServerRebuildDialog.vue'
 
 // 云主机状态码参考。具体显示位置写在SererStatus组件里
 /* const statusCodeMap = new Map<number, string>(
@@ -199,13 +200,13 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           tableObj: normalizedData.entities.server
         })
       }
-      // 建立groupServerTable之后，分别更新每个server status, 并发更新，无需await
-      for (const serverId of context.state.tables.groupServerTable.allIds) {
-        void context.dispatch('loadSingleServerStatus', {
-          isGroup: true,
-          serverId
-        })
-      }
+    }
+    // 建立groupServerTable之后，分别更新每个server status, 并发更新，无需await
+    for (const serverId of context.state.tables.groupServerTable.allIds) {
+      void context.dispatch('loadSingleServerStatus', {
+        isGroup: true,
+        serverId
+      })
     }
   },
   // 获取并保存单个server的status
@@ -480,7 +481,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         // 通知
         Notify.create({
           classes: 'notification-positive shadow-15',
-          icon: 'mdi-check-circle',
+          icon: 'check-circle',
           textColor: 'light-green',
           message: '修改配额申请成功',
           position: 'bottom',
@@ -522,7 +523,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         // 弹出通知
         Notify.create({
           classes: 'notification-positive shadow-15',
-          icon: 'mdi-check-circle',
+          icon: 'check-circle',
           textColor: 'light-green',
           message: '配额申请已经删除',
           position: 'bottom',
@@ -573,7 +574,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         // 通知
         Notify.create({
           classes: 'notification-positive shadow-15',
-          icon: 'mdi-check-circle',
+          icon: 'check-circle',
           textColor: 'light-green',
           message: '取消配额申请成功',
           position: 'bottom',
@@ -609,7 +610,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       // notify
       Notify.create({
         classes: 'notification-positive shadow-15',
-        icon: 'mdi-check-circle',
+        icon: 'check-circle',
         textColor: 'light-green',
         message: '提交配额申请成功',
         position: 'bottom',
@@ -714,7 +715,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         })
         Notify.create({
           classes: 'notification-positive shadow-15',
-          icon: 'mdi-check-circle',
+          icon: 'check-circle',
           textColor: 'light-green',
           message: '修改VPN密码成功',
           position: 'bottom',
@@ -725,6 +726,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       }
     })
   },
+  // 操作云主机实例时，向endpoint_url发请求； 进行其他云联邦操作时向每个前端部署对应的后端（例如vms）发请求
   // todo 细分各种操作;重命名为triggerXxxDialog
   serverOperationDialog (context, payload: { serverId: string; action: string; isGroup?: boolean }) {
     // 所有操作都要用的信息
@@ -733,9 +735,48 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     const endpoint_url = server.endpoint_url.substr(server.endpoint_url.indexOf('//'))
     // 判断结尾有没有'/'，并加上当前用户使用的协议
     // 以下写法失败, 二元选择问号前都是条件
-    // const api = window.location.protocol + endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/action/' : endpoint_url + '/api/server/' + payload.serverId + '/action/'
-    const api = window.location.protocol + (endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/action/' : endpoint_url + '/api/server/' + payload.serverId + '/action/')
+    // const api = window.location.protocol + endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/action' : endpoint_url + '/api/server/' + payload.serverId + '/action'
+    const api = window.location.protocol + (endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/action' : endpoint_url + '/api/server/' + payload.serverId + '/action')
     const data = { action: payload.action }
+
+    // 执行操作的函数。delete/force_delete不用。start直接用。其他经dialog确认后用。
+    const executeOperation = async () => {
+      // 将主机状态清空，界面将显示loading
+      if (payload.isGroup) {
+        context.commit('storeSingleServerStatus', {
+          table: context.state.tables.groupServerTable,
+          serverId: payload.serverId,
+          status_code: ''
+        })
+      } else {
+        context.commit('storeSingleServerStatus', {
+          table: context.state.tables.personalServerTable,
+          serverId: payload.serverId,
+          status_code: ''
+        })
+      }
+
+      try {
+        await axios.post(api, data)
+        // 应延时
+        void await new Promise(resolve => (
+          setTimeout(resolve, 5000)
+        ))
+        // 更新单个server status
+        void context.dispatch('loadSingleServerStatus', {
+          isGroup: payload.isGroup,
+          serverId: payload.serverId
+        })
+        // todo 比对新老状态，发送通知
+        // const newStatus = payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId]?.status : context.state.tables.personalServerTable.byId[payload.serverId]?.status
+      } catch {
+        // 若请求失败则应更新单个server status
+        void context.dispatch('loadSingleServerStatus', {
+          isGroup: payload.isGroup,
+          serverId: payload.serverId
+        })
+      }
+    }
 
     // 各种操作分类
     if (payload.action === 'delete' || payload.action === 'delete_force') {
@@ -769,7 +810,8 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
             classes: 'notification-positive shadow-15',
             textColor: 'positive',
             // spinner: true,
-            message: `成功删除云主机${server.ipv4 || ''}`,
+            icon: 'check_circle',
+            message: `删除云主机成功${server.ipv4 || ''}`,
             position: 'bottom',
             closeBtn: true,
             timeout: 5000,
@@ -792,6 +834,8 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           })
         }
       })
+    } else if (payload.action === 'start') {
+      void executeOperation()
     } else {
       Dialog.create({
         class: 'dialog-primary',
@@ -813,43 +857,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           unelevated: true,
           color: 'primary'
         }
-      }).onOk(async () => {
-        // 将主机状态清空，界面将显示loading
-        if (payload.isGroup) {
-          context.commit('storeSingleServerStatus', {
-            table: context.state.tables.groupServerTable,
-            serverId: payload.serverId,
-            status_code: ''
-          })
-        } else {
-          context.commit('storeSingleServerStatus', {
-            table: context.state.tables.personalServerTable,
-            serverId: payload.serverId,
-            status_code: ''
-          })
-        }
-
-        try {
-          await axios.post(api, data)
-          // 应延时
-          void await new Promise(resolve => (
-            setTimeout(resolve, 5000)
-          ))
-          // 更新单个server status
-          void context.dispatch('loadSingleServerStatus', {
-            isGroup: payload.isGroup,
-            serverId: payload.serverId
-          })
-
-          // todo 通知匹配新老状态，发送通知
-        } catch {
-          // 若请求失败则应更新单个server status
-          void context.dispatch('loadSingleServerStatus', {
-            isGroup: payload.isGroup,
-            serverId: payload.serverId
-          })
-        }
-      })
+      }).onOk(executeOperation)
     }
   },
   // 编辑云主机备注
@@ -888,7 +896,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         // 弹出通知
         Notify.create({
           classes: 'notification-positive shadow-15',
-          icon: 'mdi-check-circle',
+          icon: 'check-circle',
           textColor: 'light-green',
           message: '成功修改云主机备注为：' + respPatchRemark.data.remarks,
           position: 'bottom',
@@ -931,7 +939,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           // 通知
           Notify.create({
             classes: 'notification-positive shadow-15',
-            icon: 'mdi-check-circle',
+            icon: 'check-circle',
             textColor: 'light-green',
             message: '配额删除成功',
             position: 'bottom',
@@ -946,6 +954,65 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       })
     })
     return promise
+  },
+  triggerServerRebuildDialog (context, payload: { serverId: string, isGroup: boolean }) {
+    Dialog.create({
+      component: ServerRebuildDialog,
+      componentProps: {
+        serverId: payload.serverId,
+        isGroup: payload.isGroup
+      }
+    }).onOk(async (image_id: string) => {
+      const server = payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId] : context.state.tables.personalServerTable.byId[payload.serverId]
+      // 去掉协议
+      const endpoint_url = server.endpoint_url.substr(server.endpoint_url.indexOf('//'))
+      const api = window.location.protocol + (endpoint_url.endsWith('/') ? endpoint_url + 'api/server/' + payload.serverId + '/rebuild' : endpoint_url + '/api/server/' + payload.serverId + '/rebuild')
+      const data = { image_id }
+      // notify
+      Notify.create({
+        classes: 'notification-positive shadow-15',
+        textColor: 'positive',
+        spinner: true,
+        message: `正在重建云主机${server.ipv4 || ''}...`,
+        position: 'bottom',
+        closeBtn: true,
+        timeout: 5000,
+        multiLine: false
+      })
+      // 发送请求
+      const respPostServerRebuild = await axios.post(api, data)
+      // console.log(payload.serverId, api, data)
+      if (respPostServerRebuild.status === 202) {
+        // 应延时
+        void await new Promise(resolve => (
+          setTimeout(resolve, 5000)
+        ))
+        // 更新该server
+        void await context.dispatch('loadSingleServer', {
+          serverId: payload.serverId,
+          isGroup: payload.isGroup
+        })
+        // notify
+        const newServer = payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId] : context.state.tables.personalServerTable.byId[payload.serverId]
+        if (newServer.image_id === image_id) {
+          Notify.create({
+            classes: 'notification-positive shadow-15',
+            textColor: 'positive',
+            icon: 'check_circle',
+            message: `重建成功云主机${server.ipv4 || ''}`,
+            position: 'bottom',
+            closeBtn: true,
+            timeout: 5000,
+            multiLine: false
+          })
+        } else {
+          // 可能重建失败，也可能是延时超过上面的5000
+        }
+        // jump 成功才跳转
+        // @ts-ignore
+        // payload.isGroup ? this.$router.push(`/my/group/server/detail/${payload.serverId}`) : this.$router.push(`/my/personal/server/detail/${payload.serverId}`)
+      }
+    })
   }
   /* dialogs */
 }
