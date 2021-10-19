@@ -188,7 +188,7 @@ import { StateInterface } from 'src/store'
 
 import GlobalHeader from 'components/GlobalHeader/GlobalHeader.vue'
 import ServerTable from 'components/Server/ServerTable.vue'
-import BucketTable from 'components/BucketTable/BucketTable.vue'
+// import BucketTable from 'components/BucketTable/BucketTable.vue'
 import GroupTable from 'components/Group/GroupTable.vue'
 
 export default defineComponent({
@@ -196,7 +196,7 @@ export default defineComponent({
   components: {
     GlobalHeader,
     ServerTable,
-    BucketTable,
+    // BucketTable,
     GroupTable
   },
   props: {},
