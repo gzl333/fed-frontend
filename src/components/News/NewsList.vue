@@ -10,27 +10,29 @@
       <div class="col-auto card-area">
 
         <q-card class="q-my-xl shadow-24 q-hoverable cursor-pointer" square v-ripple
+                @click="$router.push({path: '/news/center-beta'})">
+          <span class="q-focus-helper">test</span>
+          <img src="https://cdn.quasar.dev/img/mountains.jpg">
+          <q-card-section>
+            <div class="text-h5" >网络中心内测公告</div>
+            <div class="text-subtitle2">by 科技云部</div>
+          </q-card-section>
+          <q-card-section class="q-pt-none">
+            2021-10-26
+          </q-card-section>
+        </q-card>
+
+        <q-card class="q-my-xl shadow-24 q-hoverable cursor-pointer" square v-ripple
                 @click="$router.push({path: '/news/closed-beta'})">
           <!--https://stackoverflow.com/questions/64890882/how-to-create-a-clickable-q-card-with-hover-effect-->
           <span class="q-focus-helper">test</span>
           <img src="https://cdn.quasar.dev/img/mountains.jpg">
           <q-card-section>
-            <div class="text-h5" >内侧公告</div>
-            <div class="text-subtitle2">by John Doe</div>
+            <div class="text-h5" >科技云部内测公告</div>
+            <div class="text-subtitle2">by 科技云部</div>
           </q-card-section>
           <q-card-section class="q-pt-none">
-            {{ lorem }}
-          </q-card-section>
-        </q-card>
-
-        <q-card class="q-my-xl shadow-24" square>
-          <img src="https://cdn.quasar.dev/img/mountains.jpg">
-          <q-card-section>
-            <div class="text-h6">Our Changing Planet</div>
-            <div class="text-subtitle2">by John Doe</div>
-          </q-card-section>
-          <q-card-section class="q-pt-none">
-            {{ lorem }}
+            2021-7-31
           </q-card-section>
         </q-card>
 

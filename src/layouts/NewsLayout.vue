@@ -44,7 +44,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref } from 'vue'
-import { useRoute, useRouter } from 'vue-router'
+// import { useRoute, useRouter } from 'vue-router'
 
 import NewsList from 'components/News/NewsList.vue'
 import HeaderDropdown from 'components/GlobalHeader/HeaderDropdown.vue'
@@ -61,11 +61,7 @@ export default defineComponent({
   },
   props: {},
   setup () {
-    const $route = useRoute()
-    const $router = useRouter()
     const $store = useStore<StateInterface>()
-    console.log($route.path)
-
     // /* news layout内页所有table加载起始点 */ todo ??? 为何在此加载
     // void $store.dispatch('vm_obsolete/updateVmTable').then(() => {
     //   console.log('$STORE-vm_obsolete:', $store.state.vm_obsolete)
@@ -93,8 +89,6 @@ export default defineComponent({
     // const cstLogin = useCstLogin()
 
     return {
-      $route,
-      $router,
       onScroll,
       scrollRatio,
       dynamicBackground,

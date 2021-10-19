@@ -481,7 +481,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         // 通知
         Notify.create({
           classes: 'notification-positive shadow-15',
-          icon: 'check-circle',
+          icon: 'check_circle',
           textColor: 'light-green',
           message: '修改配额申请成功',
           position: 'bottom',
@@ -523,7 +523,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         // 弹出通知
         Notify.create({
           classes: 'notification-positive shadow-15',
-          icon: 'check-circle',
+          icon: 'check_circle',
           textColor: 'light-green',
           message: '配额申请已经删除',
           position: 'bottom',
@@ -574,7 +574,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         // 通知
         Notify.create({
           classes: 'notification-positive shadow-15',
-          icon: 'check-circle',
+          icon: 'check_circle',
           textColor: 'light-green',
           message: '取消配额申请成功',
           position: 'bottom',
@@ -610,7 +610,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       // notify
       Notify.create({
         classes: 'notification-positive shadow-15',
-        icon: 'check-circle',
+        icon: 'check_circle',
         textColor: 'light-green',
         message: '提交配额申请成功',
         position: 'bottom',
@@ -715,7 +715,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         })
         Notify.create({
           classes: 'notification-positive shadow-15',
-          icon: 'check-circle',
+          icon: 'check_circle',
           textColor: 'light-green',
           message: '修改VPN密码成功',
           position: 'bottom',
@@ -896,7 +896,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         // 弹出通知
         Notify.create({
           classes: 'notification-positive shadow-15',
-          icon: 'check-circle',
+          icon: 'check_circle',
           textColor: 'light-green',
           message: '成功修改云主机备注为：' + respPatchRemark.data.remarks,
           position: 'bottom',
@@ -939,7 +939,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           // 通知
           Notify.create({
             classes: 'notification-positive shadow-15',
-            icon: 'check-circle',
+            icon: 'check_circle',
             textColor: 'light-green',
             message: '配额删除成功',
             position: 'bottom',

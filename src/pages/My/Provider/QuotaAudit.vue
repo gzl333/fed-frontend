@@ -65,10 +65,10 @@
               {{ $t('已取消') }}
             </q-badge>
             <!--创建时间距离当下小于1小时则打上new标记-->
-<!--            <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "-->
-<!--                     style="top:10px" color="light-green" floating transparent rounded align="middle">-->
-<!--              new-->
-<!--            </q-badge>-->
+            <!--            <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "-->
+            <!--                     style="top:10px" color="light-green" floating transparent rounded align="middle">-->
+            <!--              new-->
+            <!--            </q-badge>-->
 
             <q-badge v-if="props.row.status === 'wait'"
                      style="top:10px" color="light-green" floating transparent rounded align="middle">
@@ -89,10 +89,10 @@
           </q-td>
 
           <q-td key="service" :props="props">
-<!--            <div>{{-->
-<!--                $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name-->
-<!--              }}-->
-<!--            </div>-->
+            <!--            <div>{{-->
+            <!--                $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name-->
+            <!--              }}-->
+            <!--            </div>-->
             <div>{{ $store.state.fed.tables.serviceTable.byId[props.row.service]?.name }}</div>
           </q-td>
 
@@ -111,6 +111,9 @@
           </q-td>
           <q-td key="purpose" :props="props">
             {{ props.row.purpose }}
+            <q-tooltip>
+              {{ props.row.purpose }}
+            </q-tooltip>
           </q-td>
           <q-td key="applicant" :props="props">
             <div>{{ props.row.contact }}</div>
@@ -204,42 +207,42 @@ export default defineComponent({
         label: '申请状态',
         field: 'status',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px'
       },
       {
         name: 'creation_time',
         label: '申请时间',
         field: 'creation_time',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px'
       },
       {
         name: 'service',
         label: '服务节点',
         field: 'service',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px'
       },
       {
         name: 'duration_days',
         label: '云主机时长',
         field: 'duration_days',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px'
       },
       {
         name: 'configuration',
         label: 'CPU/内存/私网IP/公网IP/云硬盘',
         field: 'configuration',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px'
       },
       {
         name: 'vo',
         label: '配额类型',
         field: 'vo',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px'
       },
       {
         name: 'purpose',
@@ -247,7 +250,7 @@ export default defineComponent({
         field: 'purpose',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 150px;padding: 15px 5px'
+        style: 'max-width: 250px;padding: 15px 5px'
       },
       {
         name: 'applicant',
@@ -255,14 +258,14 @@ export default defineComponent({
         field: 'applicant',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 200px;padding: 15px 5px'
+        style: 'max-width: 200px;padding: 15px 0px'
       },
       {
         name: 'operation',
         label: '操作',
         field: 'operation',
         align: 'center',
-        style: 'padding: 15px 5px'
+        style: 'padding: 15px 0px'
       }
     ]
 
