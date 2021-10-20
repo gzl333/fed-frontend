@@ -10,19 +10,20 @@
         <q-card class="q-my-xl shadow-24">
           <!--        <img src="https://cdn.quasar.dev/img/mountains.jpg">-->
           <q-card-section>
-            <div class="text-h6 q-pb-md">中国科技云联邦将开启网络中心内部使用测试。用户可申请测试配额，并使用配额创建云主机实例。</div>
-            <div class="text-h6">本次内测云主机统一规格为:</div>
+            <div class="text-h6">中国科技云联邦将开启网络中心内部使用测试。用户可申请测试配额，并使用配额创建云主机。</div>
+            <div class="text-h6 q-pb-md">内测时间：2021.10.26 - 2021.10.29</div>
+            <div class="text-h6">本次内测配额统一规格为:</div>
             <div class="text-h6">CPU： 8核</div>
             <div class="text-h6">内存： 16GB</div>
             <div class="text-h6">公网IP： 1个</div>
             <div class="text-h6">操作系统可选： Windows10/WindowsServer2019/Centos8 Stream/Centos7/Ubuntu2004</div>
-            <div class="text-h6">云主机可用时长：100天。</div>
+            <div class="text-h6">云主机可用时长：100天</div>
           </q-card-section>
 
           <q-card-section>
             <div class="text-h6">内测活动联系人: 科技云部 余宁</div>
-            <div class="text-h6">Email: yuning@cnic.cn</div>
-            <div class="text-h6">电话： xxxxxxxx</div>
+            <div class="text-h6">Email: yuning@cstnet.cn</div>
+            <!--            <div class="text-h6">电话: 58812831</div>-->
           </q-card-section>
 
           <q-card-section class="q-pt-md">
@@ -36,7 +37,7 @@
               申请内测配额
             </q-btn>
 
-            <div class="text-h6">2. 配额批准后，使用配额
+            <div class="text-h6">2. 等待配额批准后，使用配额
               <q-btn flat color="primary" size="md" padding="none"
                      @click="gotoDeploy">
                 <div class="text-h6">创建云主机</div>

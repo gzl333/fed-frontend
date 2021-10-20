@@ -155,7 +155,7 @@
 
       <!-- buttons example -->
       <q-card-actions align="between">
-        <q-btn class="q-ma-sm" color="primary" unelevated :disable="toggle" :label="$t('确认')" @click="onOKClick"/>
+        <q-btn class="q-ma-sm" color="primary" unelevated :disable="toggle || !check1 || !check2" :label="$t('确认')" @click="onOKClick"/>
         <q-btn class="q-ma-sm" color="primary" unelevated :label="$t('取消')" @click="onCancelClick"/>
       </q-card-actions>
     </q-card>

@@ -620,7 +620,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       })
       // jump 成功才跳转
       // @ts-ignore
-      this.$router.back()
+      data.vo_id ? this.$router.push('/my/group/quota/application') : this.$router.push('/my/personal/quota/application')
     }
   },
   // 领取活动赠送配额
