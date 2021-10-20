@@ -98,8 +98,14 @@
             </div>
 
             <div class="row item-row items-center">
+              <div class="col-1 q-pb-md">部门</div>
+              <q-input ref="input1" class="col-6 input-remarks" v-model="inputDepartment" maxlength="25" outlined dense
+                       counter/>
+            </div>
+
+            <div class="row item-row items-center">
               <div class="col-1 q-pb-md">配额用途</div>
-              <q-input ref="input" class="col-6 input-remarks" v-model="inputPurpose" maxlength="25" outlined dense
+              <q-input ref="input2" class="col-6 input-remarks" v-model="inputPurpose" maxlength="25" outlined dense
                        counter/>
             </div>
 
@@ -108,18 +114,6 @@
           <div class="summarize-section">
             <div class="text-h7 text-primary section-title">
               所选参数
-            </div>
-
-            <div v-if="isGroup" class="row item-row">
-              <div class="col-shrink item-title-narrow text-grey">
-                项目组
-              </div>
-              <div class="col item-radios">
-                <div v-if="radioGroup !== ''">
-                  {{ $store.state.account.tables.groupTable.byId[radioGroup]?.name }}
-                </div>
-                <div v-else class="text-red">请选择项目组</div>
-              </div>
             </div>
 
             <div class="row item-row">
@@ -180,11 +174,21 @@
 
             <div class="row item-row">
               <div class="col-shrink item-title-narrow text-grey">
+                部门
+              </div>
+              <div class="col item-radios">
+                <div v-if="inputDepartment !== ''"> {{ inputDepartment }}</div>
+                <div v-else class="text-red">请填写部门</div>
+              </div>
+            </div>
+
+            <div class="row item-row">
+              <div class="col-shrink item-title-narrow text-grey">
                 配额用途
               </div>
               <div class="col item-radios">
                 <div v-if="inputPurpose !== ''"> {{ inputPurpose }}</div>
-                <div v-else class="text-red">请填写备注</div>
+                <div v-else class="text-red">请填写配额用途</div>
               </div>
             </div>
 
@@ -215,7 +219,8 @@ export default defineComponent({
     const { locale } = useI18n({ useScope: 'global' })
 
     // dom元素
-    const input = ref<HTMLElement>()
+    const input1 = ref<HTMLElement>()
+    const input2 = ref<HTMLElement>()
 
     // radio选项数据
     const dataCenters = computed(() => Object.values($store.state.fed.tables.dataCenterTable.byId))
@@ -223,12 +228,25 @@ export default defineComponent({
     const radioService = '1'
 
     // input状态
+    const inputDepartment = ref('')
     const inputPurpose = ref('')
     // 按钮状态
     const isCreating = ref(false)
 
     const applyQuota = async () => {
-      if (!inputPurpose.value) {
+      if (!inputDepartment.value) {
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: '请填写部门',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+        input1.value?.focus()
+      } else if (!inputPurpose.value) {
         Notify.create({
           classes: 'notification-negative shadow-15',
           icon: 'mdi-alert',
@@ -239,7 +257,7 @@ export default defineComponent({
           timeout: 5000,
           multiLine: false
         })
-        input.value?.focus()
+        input2.value?.focus()
       } else {
         isCreating.value = true
         const selection = {
@@ -250,7 +268,7 @@ export default defineComponent({
           ram: 16384,
           disk_size: 0,
           duration_days: 100,
-          purpose: '中心内测：' + inputPurpose.value,
+          purpose: '中心内测-' + inputDepartment.value + '-' + inputPurpose.value,
           company: $store.state.account.items.decoded?.orgName,
           contact: $store.state.account.items.decoded?.email
         }
@@ -263,10 +281,12 @@ export default defineComponent({
     }
     return {
       locale,
-      input,
+      input1,
+      input2,
       dataCenters,
       radioService,
       inputPurpose,
+      inputDepartment,
       isCreating,
       applyQuota
     }

@@ -32,6 +32,7 @@ export default {
   快捷入口: 'Shortcuts',
   搜索: 'Search',
   筛选服务节点: 'Service Node Filter',
+  个人云主机: 'Personal Servers',
 
   // 个人资源
   个人: 'Personal',
@@ -49,14 +50,14 @@ export default {
   管理员: 'Manager',
   成员: 'Member',
 
-  // vmtable
+  // server table
   长期: 'Long Term',
   进入详情页面: 'Details',
   复制到剪切板: 'Copy to Clipboard',
   已到期: 'Expired',
   编辑备注: 'Edit Notes',
   进入远程控制: 'Enter VNC',
-  请开机以使用远程控制: 'Start VM before using remote console',
+  请开机以使用远程控制: 'Start server before using remote console',
   远程执行中: 'Executing',
   操作: 'Operations',
   更多: 'More',
