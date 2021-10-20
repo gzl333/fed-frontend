@@ -195,7 +195,7 @@
               </q-btn>
 
               <q-btn icon="delete" flat dense padding="none" color="primary"
-                     @click="$store.dispatch('server/deleteQuotaDialog', {quotaId: props.row.id,isGroup})">
+                     @click="$store.dispatch('server/triggerDeleteQuotaDialog', {quotaId: props.row.id,isGroup, isJump: false})">
                 <q-tooltip>删除</q-tooltip>
               </q-btn>
 

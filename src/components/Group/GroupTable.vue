@@ -125,7 +125,7 @@ export default defineComponent({
       required: true
     }
   },
-  setup (props) {
+  setup (/* props */) {
     // const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 

@@ -28,7 +28,8 @@
                 {{ $t('云主机详情') }}
               </q-tooltip>
               <!--创建时间距离当下小于1小时则打上new标记-->
-              <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
+              <q-badge style="top:-10px;"
+                        v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
                        color="light-green" floating transparent rounded align="middle">
                 new
               </q-badge>
@@ -139,6 +140,7 @@
               </div>
 
               <q-btn
+                :disable="props.row.lock === 'lock-operation'"
                 v-if="hoverRow === props.row.name && (!isGroup || (isGroup && $store.state.account.tables.groupTable.byId[props.row?.vo_id]?.myRole !== 'member')) "
                 class="col-shrink q-px-none q-ma-none" flat dense icon="edit" size="xs" color="primary"
                 @click="$store.dispatch('server/editServerNoteDialog',{serverId:props.row.id, isGroup})">

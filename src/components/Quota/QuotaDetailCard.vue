@@ -299,7 +299,7 @@
                       </q-btn>
 
                       <q-btn icon="delete" flat dense padding="none" color="primary"
-                             @click="deleteAndJump(quota.id)">
+                             @click="$store.dispatch('server/triggerDeleteQuotaDialog', {quotaId,isGroup,isJump: true})">
                         <q-tooltip>删除</q-tooltip>
                       </q-btn>
 
@@ -314,13 +314,10 @@
             <!--            云主机列表开始-->
             <div class="row">
               <div class="col">
-
                 <div class="q-pt-lg q-pb-sm text-grey">
                   关联云主机列表
                 </div>
-
-                <server-table :servers="servers" is-group is-hide-group/>
-
+                <server-table :servers="servers" :is-group="isGroup" is-hide-group/>
               </div>
             </div>
             <!--            云主机列表结束-->
@@ -338,7 +335,7 @@ import { computed, defineComponent } from 'vue'
 import ServerTable from 'components/Server/ServerTable.vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
-import { useRouter } from 'vue-router'
+// import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
@@ -358,7 +355,6 @@ export default defineComponent({
   },
   setup (props) {
     const $store = useStore<StateInterface>()
-    const $router = useRouter()
     const { locale } = useI18n({ useScope: 'global' })
 
     // // 进入本页面强制更新vmtable ???
@@ -369,21 +365,10 @@ export default defineComponent({
     // 根据quota.servers获取server对象数组
     const servers = computed(() => quota.value.servers?.map((serverId) => props.isGroup ? $store.state.server.tables.groupServerTable.byId[serverId] : $store.state.server.tables.personalServerTable.byId[serverId]))
 
-    const deleteAndJump = async () => {
-      const isDeleted = await $store.dispatch('server/deleteQuotaDialog', {
-        quotaId: props.quotaId,
-        isGroup: props.isGroup
-      })
-      if (isDeleted) {
-        // void $router.push({ path: '/my/personal/quota/list' })
-        void $router.back()
-      }
-    }
     return {
       locale,
       quota,
-      servers,
-      deleteAndJump
+      servers
     }
   }
 })
