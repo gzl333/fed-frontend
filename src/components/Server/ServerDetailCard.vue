@@ -22,14 +22,16 @@
               <div class="col-4">
                 <div class="row items-center q-pt-xs">
                   <q-btn
-                    class="col-shrink text-h4 text-bold" flat padding="none" color="primary"
+                    class="col-shrink text-h4 text-bold" flat no-caps padding="none" color="primary"
                     @click="clickToCopy(server.ipv4)">{{ server.ipv4 }}
                     <q-tooltip>
                       复制
                     </q-tooltip>
                     <!--创建时间距离当下小于1小时则打上new标记-->
-                    <q-badge v-if="(new Date() - new Date(server.creation_time)) < 1000 * 60 * 60 * 1 "
-                             color="light-green" floating transparent rounded align="middle">new
+                    <q-badge style="top:-10px;"
+                             v-if="(new Date() - new Date(server.creation_time)) < 1000 * 60 * 60 * 1 "
+                             color="light-green" floating transparent rounded align="middle">
+                      new
                     </q-badge>
                   </q-btn>
 
@@ -45,6 +47,7 @@
                     </span>
 
                     <q-btn v-if="!isGroup || isGroup && myRole!=='member'"
+                           :disable="toggle"
                            class="col-shrink q-px-xs" flat dense icon="edit" size="sm" color="primary"
                            @click="$store.dispatch('server/editServerNoteDialog',{serverId:server.id, isGroup})">
                       <q-tooltip>
@@ -150,7 +153,7 @@
                          :disable="server.lock === 'lock-operation'"
                          icon="delete" text-color="red"
                          unelevated flat padding="none" size="lg"
-                         @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'delete', isGroup})">
+                         @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'delete', isGroup, isJump: true})">
                     <q-tooltip>
                       删除
                     </q-tooltip>
@@ -160,7 +163,7 @@
                          :disable="server.lock === 'lock-operation'"
                          icon="delete_forever" text-color="red"
                          unelevated flat padding="none" size="lg"
-                         @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'delete_force', isGroup})">
+                         @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'delete_force', isGroup, isJump: true})">
                     <q-tooltip>
                       强制删除
                     </q-tooltip>

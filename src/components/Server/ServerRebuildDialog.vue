@@ -11,7 +11,7 @@
 
       <q-separator/>
 
-      <q-card-section class="q-pt-lg">
+      <q-card-section>
 
         <div class="row q-pb-lg items-center">
           <div class="col-2 text-grey-7">
@@ -93,7 +93,7 @@
           </div>
         </div>
 
-        <div class="row q-pb-lg items-center">
+        <div class="row items-center">
           <div class="col-2 text-grey-7">
             操作系统
           </div>
@@ -101,6 +101,12 @@
             {{ server.image }}
           </div>
         </div>
+
+      </q-card-section>
+
+      <q-separator/>
+
+      <q-card-section>
 
         <div class="row q-pb-lg items-center">
           <div class="col-2 text-grey-7">
@@ -114,22 +120,22 @@
 
         <div class="row items-center">
           <div class="col text-grey-7">
-            请阅读以下注意事项，并在同意后勾选：
+            请仔细阅读以下事项，并在确认后勾选：
           </div>
         </div>
 
         <q-checkbox style="margin-left: -10px;" v-model="check" color="primary">
           <div class="text-primary">
-            {{ $t('我了解重建将抹去云主机内全部数据，且无法恢复') }}
+            {{ $t('我了解重建云主机会抹去全部数据，且无法恢复') }}
           </div>
         </q-checkbox>
 
       </q-card-section>
 
       <!-- buttons example -->
-      <q-card-actions align="right">
-        <q-btn color="primary" :label="$t('取消')" @click="onCancelClick"/>
-        <q-btn color="primary" :label="$t('确认')" :disable="!check" @click="onOKClick"/>
+      <q-card-actions align="between">
+        <q-btn class="q-ma-sm" color="primary" unelevated :label="$t('确认')" :disable="!check" @click="onOKClick"/>
+        <q-btn class="q-ma-sm" color="primary" unelevated :label="$t('取消')" @click="onCancelClick"/>
       </q-card-actions>
     </q-card>
   </q-dialog>

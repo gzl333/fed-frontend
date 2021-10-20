@@ -4,14 +4,14 @@
     <q-card class="q-dialog-plugin dialog-primary ">
 
       <q-card-section class="row items-center justify-center q-pb-md">
-        <div class="text-primary">{{ action === 'delete' ? $t('删除云主机') : $t('强制删除云主机') }}</div>
+        <div class="text-negative">{{ action === 'delete' ? $t('删除云主机') : $t('强制删除云主机') }}</div>
         <q-space/>
         <q-btn icon="close" flat dense size="sm" v-close-popup/>
       </q-card-section>
 
       <q-separator/>
 
-      <q-card-section class="q-pt-lg">
+      <q-card-section>
 
         <div class="row q-pb-lg items-center">
           <div class="col-2 text-grey-7">
@@ -87,51 +87,76 @@
           </div>
         </div>
 
-        <div class="row q-pb-lg items-center">
+        <div class="row  items-center">
           <div class="col-2 text-grey-7">
             可用期
           </div>
           <div class="col">
             {{ new Date(server.creation_time).toLocaleString(locale) }} -
             {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString(locale) : '永久有效' }}
-            <q-icon v-if="server.expiration_time !== null && (new Date(server.expiration_time).getTime() - new Date().getTime()) < 0"
-                    name="help_outline" color="red" size="xs">
+            <q-icon
+              v-if="server.expiration_time !== null && (new Date(server.expiration_time).getTime() - new Date().getTime()) < 0"
+              name="help_outline" color="red" size="xs">
               <q-tooltip>{{ $t('云主机已到期。如需继续使用该云主机，请立即与云联邦管理员联系。否则可能会被定期清除。') }}</q-tooltip>
             </q-icon>
           </div>
         </div>
 
-        <div class="row q-pb-lg items-center">
-          <div class="col-2 text-grey-7">
-            删除锁定
-          </div>
-          <div class="col">
-            <q-toggle
-              ref="toggle_btn"
-              v-model="toggle"
-              checked-icon="lock"
-              unchecked-icon="lock_open"
-              color="light-green"
-              size="lg"
-              @click=" $store.dispatch('server/toggleDeleteLock', {isGroup:isGroup, serverId: serverId})"
-            >
-              <q-tooltip v-if="server.lock === 'free'">
-                {{ $t('未锁定云主机删除操作') }}
-              </q-tooltip>
-              <q-tooltip v-else>
-                {{ $t('已锁定云主机删除操作') }}
-              </q-tooltip>
-            </q-toggle>
+      </q-card-section>
+
+      <q-separator/>
+
+      <q-card-section>
+        <div class="row items-center">
+          <div class="col text-grey-7">
+            请仔细阅读以下事项，并在确认后勾选：
           </div>
         </div>
 
-        <div class="text-primary"> 被删除的云主机将无法自行恢复，确认删除？</div>
+        <q-checkbox style="margin-left: -10px;" v-model="check1" color="primary">
+          <div class="text-primary">
+            {{ $t('我了解删除云主机会丢失全部数据，且无法自行恢复') }}
+          </div>
+        </q-checkbox>
+
+        <q-checkbox style="margin-left: -10px;" v-model="check2" color="primary">
+          <div class="text-primary">
+            {{ $t('我了解已经消耗的云主机配额无法恢复') }}
+          </div>
+        </q-checkbox>
+
+        <div class="row items-center">
+          <div class="col text-grey-7">
+            请解除锁定，并确认删除：
+          </div>
+        </div>
+
+        <q-toggle
+          style="margin-left: -12px;"
+          ref="toggle_btn"
+          :disable="!check1 || !check2"
+          v-model="toggle"
+          :label="toggle?$t('已锁定'):$t('已解除')"
+          checked-icon="lock"
+          unchecked-icon="lock_open"
+          color="light-green"
+          size="lg"
+          @update:model-value=" $store.dispatch('server/toggleDeleteLock', {isGroup:isGroup, serverId: serverId})"
+        >
+          <q-tooltip v-if="server.lock === 'free'">
+            {{ $t('未锁定云主机删除操作') }}
+          </q-tooltip>
+          <q-tooltip v-else>
+            {{ $t('已锁定云主机删除操作') }}
+          </q-tooltip>
+        </q-toggle>
+
       </q-card-section>
 
       <!-- buttons example -->
-      <q-card-actions align="right">
-        <q-btn color="primary" :label="$t('取消')" @click="onCancelClick"/>
-        <q-btn color="primary" :label="$t('确认')" @click="onOKClick"/>
+      <q-card-actions align="between">
+        <q-btn class="q-ma-sm" color="primary" unelevated :disable="toggle" :label="$t('确认')" @click="onOKClick"/>
+        <q-btn class="q-ma-sm" color="primary" unelevated :label="$t('取消')" @click="onCancelClick"/>
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -187,6 +212,9 @@ export default defineComponent({
     // 进入时检查lock状态
     keepServerDeleteLock()
 
+    const check1 = ref(false)
+    const check2 = ref(false)
+
     // lock toggle
     const toggle_btn = ref<HTMLElement>()
     const toggle = ref(computed(() => server.value.lock !== 'free'))
@@ -229,7 +257,9 @@ export default defineComponent({
       locale,
       server,
       toggle,
-      toggle_btn
+      toggle_btn,
+      check1,
+      check2
     }
   }
 })

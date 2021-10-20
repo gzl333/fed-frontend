@@ -489,7 +489,7 @@ export default defineComponent({
             multiLine: false
           })
           // 跳转
-          void $router.push({ path: props.isGroup ? '/my/group/server' : '/my/personal/server' })
+          void $router.back()
         } else if (respPostServer.status === 202) {
           // notify
           Notify.create({
@@ -503,7 +503,7 @@ export default defineComponent({
             multiLine: false
           })
           // 跳转
-          void $router.push({ path: props.isGroup ? '/my/group/server' : '/my/personal/server' })
+          void $router.back()
         }
         // 改变按钮状态，不管响应结果如何，得到响应之后就恢复按钮状态
         isDeploying.value = false

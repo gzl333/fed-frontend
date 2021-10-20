@@ -483,7 +483,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           classes: 'notification-positive shadow-15',
           icon: 'check_circle',
           textColor: 'light-green',
-          message: '修改配额申请成功',
+          message: '成功修改配额申请',
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,
@@ -525,7 +525,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           classes: 'notification-positive shadow-15',
           icon: 'check_circle',
           textColor: 'light-green',
-          message: '配额申请已经删除',
+          message: '成功删除配额申请',
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,
@@ -576,7 +576,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           classes: 'notification-positive shadow-15',
           icon: 'check_circle',
           textColor: 'light-green',
-          message: '取消配额申请成功',
+          message: '成功取消配额申请',
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,
@@ -612,7 +612,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         classes: 'notification-positive shadow-15',
         icon: 'check_circle',
         textColor: 'light-green',
-        message: '提交配额申请成功',
+        message: '成功提交配额申请',
         position: 'bottom',
         closeBtn: true,
         timeout: 5000,
@@ -620,7 +620,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       })
       // jump 成功才跳转
       // @ts-ignore
-      data.vo_id ? this.$router.push('/my/group/quota/application') : this.$router.push('/my/personal/quota/application')
+      this.$router.back()
     }
   },
   // 领取活动赠送配额
@@ -717,7 +717,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           classes: 'notification-positive shadow-15',
           icon: 'check_circle',
           textColor: 'light-green',
-          message: '修改VPN密码成功',
+          message: '成功修改VPN密码',
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,
@@ -728,7 +728,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   },
   // 操作云主机实例时，向endpoint_url发请求； 进行其他云联邦操作时向每个前端部署对应的后端（例如vms）发请求
   // todo 细分各种操作;重命名为triggerXxxDialog
-  serverOperationDialog (context, payload: { serverId: string; action: string; isGroup?: boolean }) {
+  serverOperationDialog (context, payload: { serverId: string; action: string; isGroup?: boolean; isJump?: boolean }) {
     // 所有操作都要用的信息
     const server = payload.isGroup ? context.state.tables.groupServerTable.byId[payload.serverId] : context.state.tables.personalServerTable.byId[payload.serverId]
     // 去掉协议
@@ -811,7 +811,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
             textColor: 'positive',
             // spinner: true,
             icon: 'check_circle',
-            message: `删除云主机成功${server.ipv4 || ''}`,
+            message: `成功删除云主机: ${server.ipv4 || ''}`,
             position: 'bottom',
             closeBtn: true,
             timeout: 5000,
@@ -821,11 +821,15 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           // void await new Promise(resolve => (
           //   setTimeout(resolve, 1000)
           // ))
-          // 更新userServerTable或groupServerTable
-          payload.isGroup ? void await context.dispatch('loadGroupServerTable') : void await context.dispatch('loadPersonalServerTable')
-          // jump 成功才跳转
-          // @ts-ignore
-          payload.isGroup ? this.$router.push('/my/group/server') : this.$router.push('/my/personal/server')
+          // 更新userServerTable或groupServerTable // 可以优化成直接删除
+          payload.isGroup ? void context.dispatch('loadGroupServerTable') : void context.dispatch('loadPersonalServerTable')
+          // 更新personal/group quotaTable, 删除了server，对应quota里面servers字段也更新了。// 可以优化成直接删除
+          payload.isGroup ? void context.dispatch('loadGroupQuotaTable') : void context.dispatch('loadPersonalQuotaTable')
+          // 是否跳转
+          if (payload.isJump) {
+            // @ts-ignore
+            this.$router.back()
+          }
         } catch {
           // 若请求失败则应更新单个server status
           void context.dispatch('loadSingleServerStatus', {
@@ -898,7 +902,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           classes: 'notification-positive shadow-15',
           icon: 'check_circle',
           textColor: 'light-green',
-          message: '成功修改云主机备注为：' + respPatchRemark.data.remarks,
+          message: '成功修改云主机备注为: ' + respPatchRemark.data.remarks,
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,
@@ -907,55 +911,55 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       }
     })
   },
-  deleteQuotaDialog (context, payload: { quotaId: string; isGroup: boolean }) {
-    // 把整个对话框对象包在promise里。删除成功、失败包装为promise结果值。
-    const promise = new Promise((resolve/*, reject */) => {
-      // 操作的确认提示
-      Dialog.create({
-        class: 'dialog-primary',
-        title: '删除配额',
-        message:
-          '删除后的配额无法恢复。 确认删除此配额？',
-        focus: 'cancel',
-        ok: {
-          label: '确认',
-          push: false,
-          outline: true,
-          color: 'primary'
-        },
-        cancel: {
-          label: '放弃',
-          push: false,
-          unelevated: true,
-          color: 'primary'
+  triggerDeleteQuotaDialog (context, payload: { quotaId: string; isGroup?: boolean; isJump?: boolean }) {
+    // todo 删除配额对话框再详细
+    // 操作的确认提示
+    Dialog.create({
+      class: 'dialog-primary',
+      title: '删除配额',
+      message:
+        '删除后的配额无法恢复。 确认删除此配额？',
+      focus: 'cancel',
+      ok: {
+        label: '确认',
+        push: false,
+        outline: true,
+        color: 'primary'
+      },
+      cancel: {
+        label: '放弃',
+        push: false,
+        unelevated: true,
+        color: 'primary'
+      }
+    }).onOk(async () => {
+      const respDelete = await $api.quota.deleteQuota({ path: { id: payload.quotaId } })
+      if (respDelete.status === 204) {
+        // 更新personal/group QuotaTable
+        context.commit('deleteSingleItem', {
+          table: payload.isGroup ? context.state.tables.groupQuotaTable : context.state.tables.personalQuotaTable,
+          id: payload.quotaId
+        })
+        // 通知
+        Notify.create({
+          classes: 'notification-positive shadow-15',
+          icon: 'check_circle',
+          textColor: 'light-green',
+          message: '成功删除配额',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+        // 是否跳转
+        if (payload.isJump) {
+          // @ts-ignore
+          this.$router.back()
         }
-      }).onOk(async () => {
-        const respDelete = await $api.quota.deleteQuota({ path: { id: payload.quotaId } })
-        if (respDelete.status === 204) {
-          context.commit('deleteSingleItem', {
-            table: payload.isGroup ? context.state.tables.groupQuotaTable : context.state.tables.personalQuotaTable,
-            id: payload.quotaId
-          })
-          // 通知
-          Notify.create({
-            classes: 'notification-positive shadow-15',
-            icon: 'check_circle',
-            textColor: 'light-green',
-            message: '配额删除成功',
-            position: 'bottom',
-            closeBtn: true,
-            timeout: 5000,
-            multiLine: false
-          })
-          resolve(true)
-        } else {
-          resolve(false) // todo 研究 resolve/reject 被await区别！！ 信息用boolean表达是否删除。因为接收处用的await语法，用reject会被catch。
-        }
-      })
+      }
     })
-    return promise
   },
-  triggerServerRebuildDialog (context, payload: { serverId: string, isGroup: boolean }) {
+  triggerServerRebuildDialog (context, payload: { serverId: string, isGroup?: boolean }) {
     Dialog.create({
       component: ServerRebuildDialog,
       componentProps: {
@@ -973,7 +977,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         classes: 'notification-positive shadow-15',
         textColor: 'positive',
         spinner: true,
-        message: `正在重建云主机${server.ipv4 || ''}...`,
+        message: `正在重建云主机: ${server.ipv4 || ''}`,
         position: 'bottom',
         closeBtn: true,
         timeout: 5000,
@@ -999,7 +1003,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
             classes: 'notification-positive shadow-15',
             textColor: 'positive',
             icon: 'check_circle',
-            message: `重建成功云主机${server.ipv4 || ''}`,
+            message: `成功重建云主机: ${server.ipv4 || ''}`,
             position: 'bottom',
             closeBtn: true,
             timeout: 5000,
