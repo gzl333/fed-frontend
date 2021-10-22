@@ -18,23 +18,23 @@ export default defineComponent({
   components: {},
   props: {
     chartData: {
-      type: Object,
+      type: Array,
       required: true
     }
   },
   setup (props) {
     const container = ref<HTMLElement>()
     const lineData: any = ref([])
-    lineData.value.push(0)
-    lineData.value.push(props.chartData.usage)
-    lineData.value.push(props.chartData.min)
-    lineData.value.push(props.chartData.max)
-    const getChartData = (data: []) => {
-      console.log('我是data', data)
+    const getChartData = () => {
+      lineData.value = props.chartData
+      lineData.value.unshift(0)
+    }
+    const refreshChart = (data: []) => {
       lineData.value = data
     }
     onMounted(() => {
       const chart = echarts.init(container.value!)
+      getChartData()
       const option = computed(() => ({
         grid: {
           left: 0,
@@ -69,7 +69,8 @@ export default defineComponent({
     })
     return {
       container,
-      getChartData
+      getChartData,
+      refreshChart
     }
   }
 })
