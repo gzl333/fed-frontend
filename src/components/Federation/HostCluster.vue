@@ -158,21 +158,11 @@ export default defineComponent({
       })
       for (let i = 0; i < length; i++) {
         const hostObject: Record<string, any> = {}
-        if (!hostObject.isShowHost) {
-          hostObject.isShowHost = true
-        }
-        if (!hostObject.isShowStatus) {
-          hostObject.isShowStatus = true
-        }
-        if (!hostObject.isShowCpu) {
-          hostObject.isShowCpu = true
-        }
-        if (!hostObject.isShowMem) {
-          hostObject.isShowMem = true
-        }
-        if (!hostObject.isShowDisk) {
-          hostObject.isShowDisk = true
-        }
+        hostObject.isShowHost = true
+        hostObject.isShowStatus = true
+        hostObject.isShowCpu = true
+        hostObject.isShowMem = true
+        hostObject.isShowDisk = true
         for (const item of hostQuery) {
           config.query.query = item
           await $api.monitor.getMonitorServerQuery(config).then((res) => {
@@ -191,44 +181,46 @@ export default defineComponent({
       }
       return hostDataArr
     }
-    const refresh = async (payload: { service_id: string, type: string, num: number }) => {
+    const getData = async (payload: { service_id: string, query: string, num: number }) => {
       const config = {
         query: {
           service_id: payload.service_id,
-          query: ''
+          query: payload.query
         }
       }
+      await $api.monitor.getMonitorServerQuery(config).then((res) => {
+        hostData.value[payload.num][payload.query] = res.data[payload.num].value[1]
+      })
+    }
+    const refresh = async (payload: { service_id: string, type: string, num: number }) => {
       if (payload.type === 'host') {
         hostData.value[payload.num].isShowHost = false
         const hostQueryArr = ['host_count', 'host_up_count']
         for (const item of hostQueryArr) {
-          config.query.query = item
-          await $api.monitor.getMonitorServerQuery(config).then((res) => {
-            hostData.value[payload.num][item] = res.data[payload.num].value[1]
-            hostData.value[payload.num].isShowHost = true
+          void await getData({
+            service_id: payload.service_id,
+            query: item,
+            num: payload.num
           })
         }
+        hostData.value[payload.num].isShowHost = true
       } else if (payload.type === 'healthy') {
         hostData.value[payload.num].isShowStatus = false
-        config.query.query = 'health_status'
-        void await $api.monitor.getMonitorServerQuery(config).then((res) => {
-          hostData.value[payload.num].health_status = res.data[payload.num].value[1]
-          hostData.value[payload.num].isShowStatus = true
+        void await getData({
+          service_id: payload.service_id,
+          query: 'health_status',
+          num: payload.num
         })
+        hostData.value[payload.num].isShowStatus = true
       } else if (payload.type === 'cpu') {
         hostData.value[payload.num].isShowCpu = false
         const cpuArr = ['cpu_usage', 'min_cpu_usage', 'max_cpu_usage']
         const cpuChart: number[] = []
         for (const item of cpuArr) {
-          config.query.query = item
-          await $api.monitor.getMonitorServerQuery(config).then((res) => {
-            if (item === 'cpu_usage') {
-              hostData.value[payload.num].cpu_usage = res.data[payload.num].value[1]
-            } else if (item === 'min_cpu_usage') {
-              hostData.value[payload.num].min_cpu_usage = res.data[payload.num].value[1]
-            } else {
-              hostData.value[payload.num].max_cpu_usage = res.data[payload.num].value[1]
-            }
+          void await getData({
+            service_id: payload.service_id,
+            query: item,
+            num: payload.num
           })
         }
         cpuChart.push(0)
@@ -242,15 +234,10 @@ export default defineComponent({
         const memArr = ['mem_usage', 'min_mem_usage', 'max_mem_usage']
         const memChart: number[] = []
         for (const item of memArr) {
-          config.query.query = item
-          await $api.monitor.getMonitorServerQuery(config).then((res) => {
-            if (item === 'mem_usage') {
-              hostData.value[payload.num].mem_usage = res.data[payload.num].value[1]
-            } else if (item === 'min_mem_usage') {
-              hostData.value[payload.num].min_mem_usage = res.data[payload.num].value[1]
-            } else {
-              hostData.value[payload.num].max_mem_usage = res.data[payload.num].value[1]
-            }
+          void await getData({
+            service_id: payload.service_id,
+            query: item,
+            num: payload.num
           })
         }
         memChart.push(0)
@@ -264,15 +251,10 @@ export default defineComponent({
         const diskArr = ['disk_usage', 'min_disk_usage', 'max_disk_usage']
         const diskChart: number[] = []
         for (const item of diskArr) {
-          config.query.query = item
-          await $api.monitor.getMonitorServerQuery(config).then((res) => {
-            if (config.query.query === 'disk_usage') {
-              hostData.value[payload.num].disk_usage = res.data[payload.num].value[1]
-            } else if (config.query.query === 'min_disk_usage') {
-              hostData.value[payload.num].min_disk_usage = res.data[payload.num].value[1]
-            } else {
-              hostData.value[payload.num].max_disk_usage = res.data[payload.num].value[1]
-            }
+          void await getData({
+            service_id: payload.service_id,
+            query: item,
+            num: payload.num
           })
         }
         diskChart.push(0)

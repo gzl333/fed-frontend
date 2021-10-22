@@ -1,7 +1,6 @@
 <template>
   <div class="StorageCluster">
     <div v-if="JSON.stringify(storageData) !== '{}'">
-<!--      <div>{{storageData}}</div>-->
       <div v-for="(item, index) in storageData" :key="index">
       <div class="text-subtitle1 text-weight-bold">{{ item.name }}</div>
       <div class="row">
@@ -164,42 +163,36 @@ export default defineComponent({
     void getStorageQuery({ service_id: props.id }).then((res) => {
       storageData.value = res
     })
-    const refresh = async (payload: { service_id: string, query: string, num: number }) => {
+    const getData = async (payload: { service_id: string, query: string, num: number }) => {
       const config = {
         query: {
           service_id: payload.service_id,
           query: payload.query
         }
       }
-      let newData = payload.query
+      await $api.monitor.getMonitorCephQuery(config).then((res) => {
+        storageData.value[payload.num][payload.query] = res.data[payload.num].value[1]
+      })
+    }
+    const refresh = async (payload: { service_id: string, query: string, num: number }) => {
       if (payload.query === 'health_status') {
         isShowHealth.value = false
-        await $api.monitor.getMonitorCephQuery(config).then((res) => {
-          storageData.value[payload.num][newData] = res.data[payload.num].value[1]
-          isShowHealth.value = true
-        })
+        void await getData({ service_id: payload.service_id, query: payload.query, num: payload.num })
+        isShowHealth.value = true
       } else if (payload.query === 'cluster_total_bytes') {
         isShowClusterTotal.value = false
-        await $api.monitor.getMonitorCephQuery(config).then((res) => {
-          storageData.value[payload.num][newData] = res.data[payload.num].value[1]
-          isShowClusterTotal.value = true
-        })
+        void await getData({ service_id: payload.service_id, query: payload.query, num: payload.num })
+        isShowClusterTotal.value = true
       } else if (payload.query === 'cluster_total_used_bytes') {
         isShowClusterUsed.value = false
-        await $api.monitor.getMonitorCephQuery(config).then((res) => {
-          storageData.value[payload.num][newData] = res.data[payload.num].value[1]
-          isShowClusterUsed.value = true
-        })
+        void await getData({ service_id: payload.service_id, query: payload.query, num: payload.num })
+        isShowClusterUsed.value = true
       } else {
         isShowOSD.value = false
         const arr = payload.query.split(',')
         for (const item of arr) {
-          config.query.query = item
-          newData = item
-          await $api.monitor.getMonitorCephQuery(config).then((res) => {
-            storageData.value[payload.num][newData] = res.data[payload.num].value[1]
-            isShowOSD.value = true
-          })
+          void await getData({ service_id: payload.service_id, query: item, num: payload.num })
+          isShowOSD.value = true
         }
       }
     }
