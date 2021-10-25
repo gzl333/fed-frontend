@@ -76,6 +76,36 @@ const getters: GetterTree<FedModuleInterface, StateInterface> = {
       disk_size_used
     }
   },
+  getPieCpuNum (state): Record<string, string | number>[] {
+    const dataArr: Record<string, string | number>[] = []
+    for (const item of state.tables.serviceAllocationTable.allIds) {
+      const dataObj: Record<string, string | number> = {}
+      dataObj.name = state.tables.serviceTable.byId[item]?.name
+      dataObj.value = state.tables.fedAllocationTable.byId[item]?.vcpu_total + state.tables.serviceAllocationTable.byId[item]?.vcpu_total
+      dataArr.push(dataObj)
+    }
+    return dataArr
+  },
+  getPieRamNum (state): Record<string, string | number>[] {
+    const dataArr: Record<string, string | number>[] = []
+    for (const item of state.tables.serviceAllocationTable.allIds) {
+      const dataObj: Record<string, string | number> = {}
+      dataObj.name = state.tables.serviceTable.byId[item]?.name
+      dataObj.value = state.tables.fedAllocationTable.byId[item]?.ram_total + state.tables.serviceAllocationTable.byId[item]?.ram_total
+      dataArr.push(dataObj)
+    }
+    return dataArr
+  },
+  getPieDiskNum (state): Record<string, string | number>[] {
+    const dataArr: Record<string, string | number>[] = []
+    for (const item of state.tables.serviceAllocationTable.allIds) {
+      const dataObj: Record<string, string | number> = {}
+      dataObj.name = state.tables.serviceTable.byId[item]?.name
+      dataObj.value = state.tables.fedAllocationTable.byId[item]?.disk_size_total + state.tables.serviceAllocationTable.byId[item]?.disk_size_total
+      dataArr.push(dataObj)
+    }
+    return dataArr
+  },
   getServices (state): { value: string; label: string; }[] {
     const serviceOptions = []
     for (const group of Object.values(state.tables.serviceTable.byId)) {
