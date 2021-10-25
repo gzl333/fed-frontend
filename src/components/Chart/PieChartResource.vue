@@ -52,7 +52,7 @@ export default defineComponent({
         // },
         series: [
           {
-            name: 'Access From',
+            name: '提供者',
             type: 'pie',
             radius: '50%',
             data: props.data,
