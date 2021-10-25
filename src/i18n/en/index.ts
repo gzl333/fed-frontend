@@ -17,15 +17,15 @@ export default {
   // global header
   使用手册: 'User manual',
   // global left drawer
-  中国科技云联邦: 'Global Open Science Cloud',
+  中国科技云联邦: 'CSTCloud Federation',
   我的首页: 'Home',
   个人资源: 'Personal Resource',
   项目组资源: 'Group Resource',
   资源提供: 'Resource Provider',
-  联邦管理: 'Monitor Management',
+  联邦管理: 'Federation Management',
 
   // main page
-  联邦机构: 'Monitor Organizations',
+  联邦机构: 'Federation Organizations',
   接入机构: 'Organization Connected',
   接入服务: 'Service Connected',
   在用资源: 'Resource in Use',

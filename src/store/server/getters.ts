@@ -54,7 +54,7 @@ const getters: GetterTree<ServerModuleInterface, StateInterface> = {
     return Object.values(state.tables.serviceNetworkTable.byLocalId).filter(network => !network.public && network.service === serviceId)
   },
   getImagesByServiceId: (state) => (serviceId: string): ImageInterface[] => {
-    return Object.values(state.tables.serviceImageTable.byLocalId).filter(image => image.service === serviceId)
+    return Object.values(state.tables.serviceImageTable.byLocalId).filter(image => image.service === serviceId).sort((a, b) => a.name.localeCompare(b.name, 'en'))
   },
   // 只返回未删除guota
   getPersonalValidQuotasByServiceId: (state) => (serviceId: string): QuotaInterface[] => {

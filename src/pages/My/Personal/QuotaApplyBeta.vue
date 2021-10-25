@@ -268,7 +268,7 @@ export default defineComponent({
           ram: 16384,
           disk_size: 0,
           duration_days: 100,
-          purpose: '中心内测-' + inputDepartment.value + '-' + inputPurpose.value,
+          purpose: '中心内测 - ' + inputDepartment.value + ' - ' + inputPurpose.value,
           company: $store.state.account.items.decoded?.orgName,
           contact: $store.state.account.items.decoded?.email
         }

@@ -362,7 +362,10 @@
 
                 <div class="row q-pb-md items-center">
                   <div class="col-2 text-grey">操作系统</div>
-                  <div class="col"> {{ server.image }}</div>
+                  <div class="col">
+                  <q-icon v-if="getOsIconName(server.image)" :name="getOsIconName(server.image)" flat size="md" />
+                    {{ server.image }}
+                  </div>
                 </div>
 
                 <div v-if="server.image_desc" class="row q-pb-md">
@@ -410,6 +413,7 @@ import useCopyToClipboard from 'src/hooks/useCopyToClipboard'
 import ServerStatus from 'components/Server/ServerStatus.vue'
 import GroupRoleChip from 'components/Group/GroupRoleChip.vue'
 import { useI18n } from 'vue-i18n'
+import useGetOsIconName from 'src/hooks/useGetOsIconName'
 
 export default defineComponent({
   name: 'ServerDetailCard',
@@ -459,6 +463,9 @@ export default defineComponent({
     // 复制信息到剪切板
     const clickToCopy = useCopyToClipboard()
 
+    // 获取os的icon名称
+    const getOsIconName = useGetOsIconName()
+
     return {
       locale,
       server,
@@ -469,7 +476,8 @@ export default defineComponent({
       myRole,
       isPwd,
       isPwdVpn,
-      clickToCopy
+      clickToCopy,
+      getOsIconName
     }
   }
 })

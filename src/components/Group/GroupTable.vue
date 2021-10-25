@@ -78,16 +78,12 @@
 
           <q-td key="operation" :props="props">
 
-            <div class="row justify-center items-center q-gutter-xs">
+            <div class="column justify-center items-start q-gutter-xs">
+
               <q-btn icon="info" flat dense padding="none" color="primary"
                      :to="{path: `/my/group/detail/${props.row.id}`}">
-                <q-tooltip>详情</q-tooltip>
+                {{$t('查看详情')}}
               </q-btn>
-
-              <!--              <q-btn :disable="props.row.myRole!=='owner'" icon="settings" flat dense padding="none" color="primary"-->
-              <!--                     :to="{path: `/my/group_obsolete/edit/${props.row.id}`}">-->
-              <!--                <q-tooltip>设置</q-tooltip>-->
-              <!--              </q-btn>-->
 
             </div>
 
