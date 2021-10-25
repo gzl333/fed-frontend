@@ -44,9 +44,11 @@
           <div class="col">
             <q-radio
               v-for="service in dataCenter.services.map(id => $store.state.fed.tables.serviceTable.byId[id])"
-              dense v-model="radioService" :val="service.id"
-              :label=" locale === 'zh' ? service.name : service.name_en" :key="service.id"
-              class="q-pb-sm q-mr-lg"/>
+              dense v-model="radioService" :val="service.id" :key="service.id" class="q-pb-sm q-mr-lg">
+              <div :class="radioService===service.id ? 'text-primary' : 'text-black'">
+                {{ locale === 'zh' ? service.name : service.name_en }}
+              </div>
+            </q-radio>
           </div>
         </div>
       </div>

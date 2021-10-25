@@ -181,22 +181,25 @@
           </q-td>
 
           <q-td key="operation" :props="props">
-            <div class="column justify-center items-center q-gutter-xs">
+            <div class="column justify-center items-start q-gutter-xs">
 
               <q-btn icon="add_circle" flat dense padding="none" color="primary"
                      :disable="props.row.expired || props.row.exhausted"
                      :to="{path: isGroup ? `/my/group/server/deploy` : `/my/personal/server/deploy`, query:{quota:props.row.id}}">
-                <q-tooltip>使用该配额创建云主机</q-tooltip>
+                {{ $t('新建云主机')}}
+                <q-tooltip>使用该配额新建云主机</q-tooltip>
               </q-btn>
 
               <q-btn icon="info" flat dense padding="none" color="primary"
                      :to="{path: isGroup ? `/my/group/quota/detail/${props.row.id}` : `/my/personal/quota/detail/${props.row.id}`}">
-                <q-tooltip>详情</q-tooltip>
+                {{ $t('配额详情')}}
+                <q-tooltip>查看配额详情</q-tooltip>
               </q-btn>
 
               <q-btn icon="delete" flat dense padding="none" color="primary"
                      @click="$store.dispatch('server/triggerDeleteQuotaDialog', {quotaId: props.row.id,isGroup, isJump: false})">
-                <q-tooltip>删除</q-tooltip>
+                {{ $t('删除配额')}}
+                <q-tooltip>删除该配额</q-tooltip>
               </q-btn>
 
             </div>

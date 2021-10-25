@@ -95,6 +95,9 @@
 
           <q-td key="purpose" :props="props">
             {{ props.row.purpose }}
+            <q-tooltip>
+              {{ props.row.purpose }}
+            </q-tooltip>
           </q-td>
           <q-td key="applicant" :props="props">
             <div>{{ props.row.contact }}</div>
@@ -102,25 +105,28 @@
           </q-td>
           <q-td key="operation" :props="props">
             <div v-if="$store.state.account.tables.groupTable.byId[props.row.vo_id]?.myRole === 'member'">
-              普通组员没有修改权限
+              无操作权限
             </div>
-            <div v-else>
+            <div v-else class="column justify-center items-center q-gutter-xs">
 
-              <div v-if="props.row.status === 'wait'">
-                <q-btn label="修改申请" flat dense padding="none" color="primary"
-                       @click="$store.dispatch('server/editQuotaApplicationDialog',{apply_id: props.row.id, isGroup})"/>
-              </div>
+              <q-btn v-if="props.row.status === 'wait'" icon="edit" flat dense padding="none"
+                     disable
+                     color="primary"
+                     @click="$store.dispatch('server/editQuotaApplicationDialog',{apply_id: props.row.id, isGroup})">
+                {{ $t('修改申请') }}
+              </q-btn>
 
-              <div v-if="props.row.status === 'wait'">
-                <q-btn label="取消申请" flat dense padding="none" color="primary"
-                       @click="$store.dispatch('server/cancelQuotaApplicationDialog',{apply_id: props.row.id, isGroup})"/>
-              </div>
+              <q-btn v-if="props.row.status === 'wait'" icon="close" flat dense padding="none"
+                     color="primary"
+                     @click="$store.dispatch('server/cancelQuotaApplicationDialog',{apply_id: props.row.id, isGroup})">
+                {{ $t('取消申请') }}
+              </q-btn>
 
-              <div>
-                <q-btn label="删除记录" flat dense padding="none" color="primary"
-                       @click="$store.dispatch('server/deleteQuotaApplicationDialog', {apply_id: props.row.id, isGroup})"
-                />
-              </div>
+              <q-btn icon="delete" flat dense padding="none" color="primary"
+                     @click="$store.dispatch('server/deleteQuotaApplicationDialog', {apply_id: props.row.id, isGroup})">
+                {{ $t('删除记录') }}
+              </q-btn>
+
             </div>
           </q-td>
         </q-tr>

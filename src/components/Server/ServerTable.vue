@@ -29,7 +29,7 @@
               </q-tooltip>
               <!--创建时间距离当下小于1小时则打上new标记-->
               <q-badge style="top:-10px;"
-                        v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
+                       v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
                        color="light-green" floating transparent rounded align="middle">
                 new
               </q-badge>
@@ -72,19 +72,19 @@
               }}
             </div>
 
-<!--            <q-tooltip class="column items-center">-->
-<!--              <div>-->
-<!--                {{-->
-<!--                  locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[props.row.service]?.name : $store.state.fed.tables.serviceTable.byId[props.row.service]?.name_en-->
-<!--                }}-->
-<!--              </div>-->
-<!--              <div>-->
-<!--                {{-->
-<!--                  locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name :-->
-<!--                    $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name_en-->
-<!--                }}-->
-<!--              </div>-->
-<!--            </q-tooltip>-->
+            <!--            <q-tooltip class="column items-center">-->
+            <!--              <div>-->
+            <!--                {{-->
+            <!--                  locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[props.row.service]?.name : $store.state.fed.tables.serviceTable.byId[props.row.service]?.name_en-->
+            <!--                }}-->
+            <!--              </div>-->
+            <!--              <div>-->
+            <!--                {{-->
+            <!--                  locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name :-->
+            <!--                    $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name_en-->
+            <!--                }}-->
+            <!--              </div>-->
+            <!--            </q-tooltip>-->
           </q-td>
 
           <q-td key="serviceType" :props="props">
@@ -92,9 +92,15 @@
           </q-td>
 
           <q-td key="image" :props="props">
+
+            <div>
+              <q-icon v-if="getOsIconName(props.row.image)" :name="getOsIconName(props.row.image)" flat size="md" color="primary"/>
+            </div>
+
             {{ props.row.image }}
             <q-tooltip>
               {{ props.row.image }}
+<!--              {{ props.row.image_desc}}-->
             </q-tooltip>
           </q-td>
 
@@ -196,6 +202,7 @@ import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
 
 import useCopyToClipboard from 'src/hooks/useCopyToClipboard'
+import useGetOsIconName from 'src/hooks/useGetOsIconName'
 
 import ServerStatus from 'components/Server/ServerStatus.vue'
 import ServerOperationBtnGroup from 'components/Server/ServerOperationBtnGroup.vue'
@@ -657,6 +664,9 @@ export default defineComponent({
     // 复制信息到剪切板
     const clickToCopy = useCopyToClipboard()
 
+    // 获取os的icon名称
+    const getOsIconName = useGetOsIconName()
+
     // table row hover
     const hoverRow = ref('')
     const onMouseEnterRow = (rowName: string) => {
@@ -674,7 +684,8 @@ export default defineComponent({
       clickToCopy,
       hoverRow,
       onMouseEnterRow,
-      onMouseLeaveRow
+      onMouseLeaveRow,
+      getOsIconName
     }
   }
 })

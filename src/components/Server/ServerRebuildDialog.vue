@@ -98,6 +98,7 @@
             操作系统
           </div>
           <div class="col">
+            <q-icon v-if="getOsIconName(server.image)" :name="getOsIconName(server.image)" flat size="md" />
             {{ server.image }}
           </div>
         </div>
@@ -114,7 +115,30 @@
           </div>
           <div class="col-8">
             <q-select ref="selectDom" v-if="images.length !== 0" outlined v-model="select" dense
-                      :options="images" map-options emit-value option-label="name" option-value="id"/>
+                      :options="images" map-options emit-value option-label="name" option-value="id">
+              <!--当前选项的内容插槽-->
+              <template v-slot:selected-item="scope">
+                <span :class="select===scope.opt.id ? 'text-primary' : 'text-black'">
+                  <q-icon v-if="getOsIconName(scope.opt.name)" :name="getOsIconName(scope.opt.name)"
+                          class="q-pl-xs q-pr-md" flat size="md"/>
+                {{ scope.opt.name }}
+                </span>
+
+              </template>
+              <!--待选项的内容插槽-->
+              <template v-slot:option="scope">
+                <q-item v-bind="scope.itemProps">
+                  <q-item-section avatar>
+                    <q-icon v-if="getOsIconName(scope.opt.name)" :name="getOsIconName(scope.opt.name)" flat size="md"/>
+                  </q-item-section>
+                  <q-item-section>
+                    <q-item-label>{{ scope.opt.name }}</q-item-label>
+                    <!--                    <q-item-label caption>{{ scope.opt.description }}</q-item-label>-->
+                  </q-item-section>
+                </q-item>
+              </template>
+
+            </q-select>
           </div>
         </div>
 
@@ -147,6 +171,7 @@ import { Notify, useDialogPluginComponent } from 'quasar'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
+import useGetOsIconName from 'src/hooks/useGetOsIconName'
 
 export default defineComponent({
   name: 'ServerRebuildDialog',
@@ -180,6 +205,9 @@ export default defineComponent({
     const select = ref(server.value.image_id)
     const check = ref(false)
 
+    // 获取os的icon名称
+    const getOsIconName = useGetOsIconName()
+
     // 确定时
     const onOKClick = () => {
       if (select.value === '') {
@@ -209,7 +237,8 @@ export default defineComponent({
       images,
       select,
       selectDom,
-      check
+      check,
+      getOsIconName
     }
   }
 })
