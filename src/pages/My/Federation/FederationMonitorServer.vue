@@ -2,7 +2,7 @@
   <div class="FederationMonitorServer">
     <div class="row justify-end q-mt-xs">
       <q-icon class="col-1" name="refresh" size="md" v-show="isShow" @click="refresh"/>
-      <q-select outlined v-model="filterSelection" :options="filterOptions" label="刷新时间" class="col-3"/>
+      <q-select outlined dense v-model="filterSelection" :options="filterOptions" label="刷新时间" class="col-3"/>
     </div>
     <host-cluster v-for="(serviceId, index) in services" :key="serviceId" :id="serviceId" :ref="el=>{divNodes[index] = el}" @is-emit="childEmit"></host-cluster>
   </div>
@@ -25,15 +25,15 @@ export default defineComponent({
     const services = computed(() => $store.state.fed.tables.serviceTable.allIds)
     const isShow = ref(true)
     const filterSelection = ref({
-      label: '每5s刷新',
-      value: 5
+      label: '每30s刷新',
+      value: 30
     })
     const divNodes = ref<typeof HostCluster[]>([])
     const filterOptions = [
-      {
-        label: '每5s刷新',
-        value: 5
-      },
+      // {
+      //   label: '每5s刷新',
+      //   value: 5
+      // },
       {
         label: '每30s刷新',
         value: 30

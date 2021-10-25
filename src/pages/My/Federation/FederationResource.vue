@@ -2,7 +2,7 @@
   <div class="FederationResource">
       <div class="row">
         <div class="row column col-grow">
-          <div class="text-dark text-h5 text-weight-bold">资源提供者</div>
+          <div class="text-dark text-h5 ">当前机构</div>
           <bei-jing-map></bei-jing-map>
           <div class="row">
             <div class="col-auto">
@@ -64,86 +64,22 @@
           </q-card>
         </div>
       </div>
-<!--      <q-separator class="q-mt-xl text-separator"/>-->
-    <hr class="hr0 q-mt-lg"/>
+    <q-separator class="q-my-lg"/>
+    <div class="text-h5">当前服务</div>
+         <div v-for="dataCenter in dataCenters" :key="dataCenter.id" class="row items-center q-gutter-lg q-my-md">
+           <div class="text-bold text-subtitle1"> {{dataCenter.name}}:</div>
+           <div v-for="service in dataCenter.services" :key="service" class="text-h7">
+             {{ $store.state.fed.tables.serviceTable.byId[service]?.name }}
+           </div>
+         </div>
+    <q-separator class="q-my-lg"/>
+    <div class="text-h5">资源分布</div>
     <div class="row q-mt-lg">
         <resource-pie-chart :data="cpuNum" title="CPU" ></resource-pie-chart>
         <resource-pie-chart :data="ramNum" title="内存"></resource-pie-chart>
         <resource-pie-chart :data="diskNum" title="硬盘"></resource-pie-chart>
     </div>
-    <hr class="hr2"/>
-<!--    <div class="q-pa-md row items-start q-gutter-md">-->
-<!--      <div>-->
-<!--        <div class="text-center text-subtitle1 text-weight-bold">服务自主资源配置</div>-->
-<!--        <q-card class="my-card text-subtitle2 text-weight-bold q-mt-md q-pa-md">-->
-<!--          <q-card-section>-->
-<!--            <span>公网IP总量：{{ privateNum.public_ip_total }}个</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>公网IP使用量：{{ privateNum.public_ip_used }}个</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>私网IP总量：{{ privateNum.private_ip_total }}个</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>私网IP使用量：{{ privateNum.private_ip_used }}个</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>CPU核心总量：{{ privateNum.vcpu_total }}核</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>CPU核心使用量：{{ privateNum.vcpu_used }}核</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>内存总量：{{ privateNum.ram_total / 1024 }}GB</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>内存使用量：{{ privateNum.ram_used / 1024 }}GB</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>硬盘总量：{{ privateNum.disk_size_total }}GB</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>硬盘使用量：{{ privateNum.disk_size_used }}GB</span>-->
-<!--          </q-card-section>-->
-<!--        </q-card>-->
-<!--      </div>-->
-<!--      <div>-->
-<!--        <div class="text-center text-subtitle1 text-weight-bold">联邦资源配置</div>-->
-<!--        <q-card class="my-card text-subtitle2 text-weight-bold q-mt-md q-pa-md">-->
-<!--          <q-card-section>-->
-<!--            <span>公网IP总量：{{ shareNum.public_ip_total }}个</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>公网IP使用量：{{ shareNum.public_ip_used }}个</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>私网IP总量：{{ shareNum.private_ip_total }}个</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>私网IP使用量：{{ shareNum.private_ip_used }}个</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>CPU核心总量：{{ shareNum.vcpu_total }}核</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>CPU核心使用量：{{ shareNum.vcpu_used }}核</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>内存总量：{{ shareNum.ram_total / 1024 }}GB</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>内存使用量：{{ shareNum.ram_used / 1024 }}GB</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>硬盘总量：{{ shareNum.disk_size_total }}GB</span>-->
-<!--          </q-card-section>-->
-<!--          <q-card-section>-->
-<!--            <span>硬盘使用量：{{ shareNum.disk_size_used }}GB</span>-->
-<!--          </q-card-section>-->
-<!--        </q-card>-->
-<!--      </div>-->
-<!--    </div>-->
+    <q-separator class="q-my-lg"/>
   </div>
 </template>
 
@@ -151,7 +87,7 @@
 import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
-import ResourcePieChart from 'components/Chart/ResourcePieChart.vue'
+import ResourcePieChart from 'components/Chart/PieChartResource.vue'
 import BeiJingMap from 'components/Chart/BeiJingMap.vue'
 export default defineComponent({
   name: 'FederationResource',
@@ -168,13 +104,15 @@ export default defineComponent({
     const ramNum = computed(() => $store.getters['fed/getPieRamNum'])
     const diskNum = computed(() => $store.getters['fed/getPieDiskNum'])
     const tab = ref('one')
+    const dataCenters = computed(() => Object.values($store.state.fed.tables.dataCenterTable.byId))
     return {
       privateNum,
       shareNum,
       tab,
       cpuNum,
       ramNum,
-      diskNum
+      diskNum,
+      dataCenters
     }
   }
 })
@@ -207,16 +145,6 @@ export default defineComponent({
         background: $nord8;
       }
     }
-  }
-  .hr0 {
-    height:1px;
-    border:none;
-    border-top:2px dashed #4C566A;
-  }
-  .hr2 {
-    height:3px;
-    border:none;
-    border-top:3px double #1d1d1d;
   }
 }
 </style>

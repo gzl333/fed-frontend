@@ -51,16 +51,24 @@
                     <q-tab-panels v-model="tab1" animated class="non-selectable">
                       <q-tab-panel name="fed" class="tab1" style="overflow: hidden;">
                         <div class="row justify-start items-center q-gutter-lg counts">
-                          <div class="col-auto">
+                          <div class="col-auto row items-end">
                             当前机构数量：
-                            <span class="text-primary text-h4">
-                              {{ $store.state.fed.tables.dataCenterTable.allIds?.length }}
+                            <span>
+                              <q-btn flat dense padding="none" :to="{path:'/my/federation/resource'}">
+                                 <div class="text-primary text-h4">
+                                   {{ $store.state.fed.tables.dataCenterTable.allIds?.length }}
+                                 </div>
+                              </q-btn>
                             </span>
                           </div>
-                          <div class="col-auto">
+                          <div class="col-auto row items-end">
                             当前服务数量：
-                            <span class="text-primary text-h4">
-                              {{ $store.state.fed.tables.serviceTable.allIds?.length }}
+                            <span>
+                              <q-btn flat dense padding="none" :to="{path:'/my/federation/resource'}" >
+                                 <div class="text-primary text-h4">
+                                   {{ $store.state.fed.tables.serviceTable.allIds?.length }}
+                                 </div>
+                              </q-btn>
                             </span>
                           </div>
                         </div>
