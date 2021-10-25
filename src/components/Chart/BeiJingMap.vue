@@ -1,5 +1,5 @@
 <template>
-  <div class="CityMap">
+  <div class="BeiJingMap">
     <div ref="container" :style="{ width: '700px', height: '450px' }"/>
   </div>
 </template>
@@ -137,7 +137,7 @@ export default defineComponent({
           {
             name: '中国科学院计算机网络信息中心',
             value: 10,
-            coords: [[116.304872, 39.96553], [116.1, 40.9]]
+            coords: [[116.342428, 39.99322], [116.1, 40.9]]
           },
           {
             name: '地球大数据科学工程专项',
@@ -165,8 +165,8 @@ export default defineComponent({
           },
           itemStyle: {
             normal: {
-              areaColor: '#ECEFF4', // 地图整体的颜色
-              borderColor: '#4C566A' // 边缘线颜色
+              areaColor: '#ECEFF4',
+              borderColor: '#4C566A'
             }
           }
         }
@@ -181,6 +181,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.CityMap {
+.BeiJingMap {
 }
 </style>
