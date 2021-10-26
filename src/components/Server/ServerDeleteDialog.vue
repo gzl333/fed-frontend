@@ -94,11 +94,11 @@
           <div class="col">
             {{ new Date(server.creation_time).toLocaleString(locale) }} -
             {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString(locale) : '永久有效' }}
-            <q-icon
-              v-if="server.expiration_time !== null && (new Date(server.expiration_time).getTime() - new Date().getTime()) < 0"
-              name="help_outline" color="red" size="xs">
-              <q-tooltip>{{ $t('云主机已到期。如需继续使用该云主机，请立即与云联邦管理员联系。否则可能会被定期清除。') }}</q-tooltip>
-            </q-icon>
+<!--            <q-icon-->
+<!--              v-if="server.expiration_time !== null && (new Date(server.expiration_time).getTime() - new Date().getTime()) < 0"-->
+<!--              name="help_outline" color="red" size="xs">-->
+<!--              <q-tooltip>{{ $t('云主机已到期') }}</q-tooltip>-->
+<!--            </q-icon>-->
           </div>
         </div>
 

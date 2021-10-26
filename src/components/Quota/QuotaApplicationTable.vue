@@ -76,11 +76,12 @@
           </q-td>
 
           <q-td key="service" :props="props">
+            <div>{{ $store.state.fed.tables.serviceTable.byId[props.row.service]?.name }}</div>
             <div>{{
                 $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name
               }}
             </div>
-            <div>{{ $store.state.fed.tables.serviceTable.byId[props.row.service]?.name }}</div>
+
           </q-td>
 
           <q-td key="duration_days" :props="props">

@@ -30,11 +30,11 @@
           </q-td>
 
           <q-td key="service" :props="props">
+            <div>{{ $store.state.fed.tables.serviceTable.byId[props.row.service]?.name }}</div>
             <div>{{
                 $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name
               }}
             </div>
-            <div>{{ $store.state.fed.tables.serviceTable.byId[props.row.service]?.name }}</div>
           </q-td>
 
           <q-td key="duration_days" :props="props">
@@ -186,19 +186,19 @@
               <q-btn icon="add_circle" flat dense padding="none" color="primary"
                      :disable="props.row.expired || props.row.exhausted"
                      :to="{path: isGroup ? `/my/group/server/deploy` : `/my/personal/server/deploy`, query:{quota:props.row.id}}">
-                {{ $t('新建云主机')}}
+                {{ $t('新建云主机') }}
                 <q-tooltip>使用该配额新建云主机</q-tooltip>
               </q-btn>
 
               <q-btn icon="info" flat dense padding="none" color="primary"
                      :to="{path: isGroup ? `/my/group/quota/detail/${props.row.id}` : `/my/personal/quota/detail/${props.row.id}`}">
-                {{ $t('配额详情')}}
+                {{ $t('配额详情') }}
                 <q-tooltip>查看配额详情</q-tooltip>
               </q-btn>
 
               <q-btn icon="delete" flat dense padding="none" color="primary"
                      @click="$store.dispatch('server/triggerDeleteQuotaDialog', {quotaId: props.row.id,isGroup, isJump: false})">
-                {{ $t('删除配额')}}
+                {{ $t('删除配额') }}
                 <q-tooltip>删除该配额</q-tooltip>
               </q-btn>
 

@@ -125,10 +125,10 @@
                 <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(',')[1] }}</div>
               </div>
 
-              <q-icon v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0"
-                      name="help_outline" color="red" size="xs">
-                <q-tooltip>{{ $t('云主机已到期。如需继续使用该云主机，请立即与云联邦管理员联系。否则可能会被定期清除。') }}</q-tooltip>
-              </q-icon>
+<!--              <q-icon v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0"-->
+<!--                      name="help_outline" color="red" size="xs">-->
+<!--                <q-tooltip>{{ $t('云主机已到期') }}</q-tooltip>-->
+<!--              </q-icon>-->
             </div>
           </q-td>
 
