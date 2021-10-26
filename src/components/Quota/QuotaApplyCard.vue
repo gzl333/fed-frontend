@@ -14,11 +14,22 @@
           {{ $t('项目组') }}
         </div>
         <div class="row items-center q-gutter-md q-pb-lg">
-          <div class="col-auto ">
+          <div class="col-auto text-bold row items-center ">
             {{ $t('使用该配额的项目组') }}
+            <q-icon name="help_outline" color="grey" size="xs">
+              <q-tooltip>{{ $t('只有组长和管理员可以申请项目组云主机配额') }}</q-tooltip>
+            </q-icon>
           </div>
           <q-select v-if="groups.length !== 0" class="col-4" outlined v-model="radioGroup" dense
-                    :options="groups" map-options emit-value option-label="name" option-value="id"/>
+                    :options="groups" map-options emit-value option-label="name" option-value="id">
+            <!--当前选项的内容插槽-->
+            <template v-slot:selected-item="scope">
+                <span :class="radioGroup===scope.opt.id ? 'text-primary' : 'text-black'">
+                {{ scope.opt.name }}
+                </span>
+            </template>
+
+          </q-select>
           <div v-else>
             <div class="row items-center">
               暂无项目组，请
@@ -42,13 +53,35 @@
           </div>
 
           <div class="col">
-            <q-radio
-              v-for="service in dataCenter.services.map(id => $store.state.fed.tables.serviceTable.byId[id])"
-              dense v-model="radioService" :val="service.id" :key="service.id" class="q-pb-sm q-mr-lg">
-              <div :class="radioService===service.id ? 'text-primary' : 'text-black'">
-                {{ locale === 'zh' ? service.name : service.name_en }}
-              </div>
-            </q-radio>
+            <div class="row items-center q-pb-sm"
+                 v-for="service in dataCenter.services.map(id => $store.state.fed.tables.serviceTable.byId[id])"
+                 :key="service.id">
+
+              <q-radio class="col-auto" dense v-model="radioService" :val="service.id" :key="service.id">
+
+                <span :class="radioService===service.id ? 'text-primary' : 'text-black'">
+                  {{ locale === 'zh' ? service.name : service.name_en }}
+                </span>
+                <span>
+                  <q-icon
+                    class="q-px-sm"
+                    v-if="service.service_type.toLowerCase().includes('ev')"
+                    name="img:svg/EVCloud-Logo-Horizontal.svg"
+                    style="width: 100px;height: 20px"/>
+                  <q-tooltip>{{ $t('该节点的服务种类为EVCloud') }}</q-tooltip>
+                </span>
+                <span>
+                  <q-icon
+                    class="q-px-sm"
+                    v-if="service.service_type.toLowerCase().includes('open')"
+                    name="img:svg/OpenStack-Logo-Horizontal.svg"
+                    style="width: 100px;height: 20px"/>
+                   <q-tooltip>{{ $t('该节点的服务种类为OpenStack') }}</q-tooltip>
+                </span>
+
+              </q-radio>
+
+            </div>
           </div>
         </div>
       </div>
@@ -222,9 +255,31 @@
             服务节点
           </div>
           <div class="col item-radios">
-            {{
-              $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[radioService]?.data_center]?.name
-            }} - {{ $store.state.fed.tables.serviceTable.byId[radioService]?.name }}
+
+            <span>
+                {{
+                locale === 'zh' ?
+                  `${$store.state.fed.tables.dataCenterTable.byId[radioDataCenter]?.name} - ${$store.state.fed.tables.serviceTable.byId[radioService]?.name}` :
+                  `${$store.state.fed.tables.dataCenterTable.byId[radioDataCenter]?.name_en} - ${$store.state.fed.tables.serviceTable.byId[radioService]?.name_en}`
+              }}
+            </span>
+
+            <span>
+                <q-icon
+                  v-if="$store.state.fed.tables.serviceTable.byId[radioService]?.service_type.toLowerCase().includes('ev')"
+                  name="img:svg/EVCloud-Logo-Horizontal.svg"
+                  style="width: 100px;height: 20px"/>
+                <q-tooltip>{{ $t('该节点的服务种类为EVCloud') }}</q-tooltip>
+              </span>
+
+            <span>
+                <q-icon
+                  v-if="$store.state.fed.tables.serviceTable.byId[radioService]?.service_type.toLowerCase().includes('open')"
+                  name="img:svg/OpenStack-Logo-Horizontal.svg"
+                  style="width: 100px;height: 20px"/>
+                <q-tooltip>{{ $t('该节点的服务种类为OpenStack') }}</q-tooltip>
+              </span>
+
           </div>
         </div>
 
@@ -352,6 +407,7 @@ export default defineComponent({
 */
     // radio 初始状态 (1)
     const radioService = ref('')
+    const radioDataCenter = computed(() => $store.state.fed.tables.serviceTable.byId[radioService.value]?.data_center || '')
     const radioGroup = ref('')
     // radio的默认选择 (2)
     const chooseRadioService = () => {
@@ -468,6 +524,7 @@ export default defineComponent({
       dataCenters,
       radioGroup,
       radioService,
+      radioDataCenter,
       sliderDuration,
       sliderCpu,
       sliderRam,

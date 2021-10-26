@@ -14,11 +14,23 @@
           {{ $t('项目组') }}
         </div>
         <div class="row items-center q-gutter-md q-pb-lg">
-          <div class="col-auto text-bold ">
+          <div class="col-auto text-bold row items-center ">
             {{ $t('使用该云主机的项目组') }}
+            <q-icon name="help_outline" color="grey" size="xs">
+              <q-tooltip>{{ $t('只有组长和管理员可以创建项目组云主机') }}</q-tooltip>
+            </q-icon>
           </div>
           <q-select v-if="groups.length !== 0" class="col-4" outlined v-model="radioGroup" dense
-                    :options="groups" map-options emit-value option-label="name" option-value="id"/>
+                    :options="groups" map-options emit-value option-label="name" option-value="id">
+
+            <!--当前选项的内容插槽-->
+            <template v-slot:selected-item="scope">
+                <span :class="radioGroup===scope.opt.id ? 'text-primary' : 'text-black'">
+                {{ scope.opt.name }}
+                </span>
+            </template>
+
+          </q-select>
           <div v-else>
             <div class="row items-center">
               {{ $t('暂无项目组，请') }}
@@ -47,9 +59,27 @@
                  :key="service.id">
 
               <q-radio class="col-auto" dense v-model="radioService" :val="service.id" :key="service.id">
-                <div :class="radioService===service.id ? 'text-primary' : 'text-black'">
+
+                <span :class="radioService===service.id ? 'text-primary' : 'text-black'">
                   {{ locale === 'zh' ? service.name : service.name_en }}
-                </div>
+                </span>
+                <span>
+                  <q-icon
+                    class="q-px-sm"
+                    v-if="service.service_type.toLowerCase().includes('ev')"
+                    name="img:svg/EVCloud-Logo-Horizontal.svg"
+                    style="width: 100px;height: 20px"/>
+                  <q-tooltip>{{ $t('该节点的服务种类为EVCloud') }}</q-tooltip>
+                </span>
+                <span>
+                  <q-icon
+                    class="q-px-sm"
+                    v-if="service.service_type.toLowerCase().includes('open')"
+                    name="img:svg/OpenStack-Logo-Horizontal.svg"
+                    style="width: 100px;height: 20px"/>
+                   <q-tooltip>{{ $t('该节点的服务种类为OpenStack') }}</q-tooltip>
+                </span>
+
               </q-radio>
 
             </div>
@@ -156,15 +186,15 @@
           </div>
         </div>
 
-<!--        <div v-if="publicNetworks.length === 0 && privateNetworks.length === 0" class="row item-row">-->
-<!--          <div class="col-shrink item-title">-->
-<!--            {{ $t('该服务节点无可用网络类型，请选择其它服务节点') }}-->
-<!--          </div>-->
-<!--        </div>-->
+        <!--        <div v-if="publicNetworks.length === 0 && privateNetworks.length === 0" class="row item-row">-->
+        <!--          <div class="col-shrink item-title">-->
+        <!--            {{ $t('该服务节点无可用网络类型，请选择其它服务节点') }}-->
+        <!--          </div>-->
+        <!--        </div>-->
 
         <div v-else class="row item-row">
           <div class="col-shrink item-title">
-            {{ $t('暂无可用网络类型，请选择可用配额') }}
+            {{ $t('请选择可用配额以展示可用网络类型') }}
           </div>
         </div>
 
@@ -187,7 +217,7 @@
             </q-radio>
           </div>
         </div>
-        <div v-else>{{ $t('暂无可用镜像，请选择可用配额') }}</div>
+        <div v-else>{{ $t('请选择可用配额以展示系统镜像') }}</div>
       </div>
 
       <div class="col section">
@@ -204,7 +234,7 @@
             </q-radio>
           </div>
         </div>
-        <div v-else>{{ $t('暂无可用配置，请选择可用配额') }}</div>
+        <div v-else>{{ $t('请选择可用配额以展示可用配置') }}</div>
       </div>
 
       <div class="col section">
@@ -242,11 +272,31 @@
           <div class="col">
             <div
               v-if="$store.state.fed.tables.dataCenterTable.byId[radioDataCenter] && $store.state.fed.tables.serviceTable.byId[radioService]">
-              {{
-                locale === 'zh' ?
-                  `${$store.state.fed.tables.dataCenterTable.byId[radioDataCenter].name} - ${$store.state.fed.tables.serviceTable.byId[radioService].name}` :
-                  `${$store.state.fed.tables.dataCenterTable.byId[radioDataCenter].name_en} - ${$store.state.fed.tables.serviceTable.byId[radioService].name_en}`
-              }}
+
+              <span>
+                {{
+                  locale === 'zh' ?
+                    `${$store.state.fed.tables.dataCenterTable.byId[radioDataCenter]?.name} - ${$store.state.fed.tables.serviceTable.byId[radioService]?.name}` :
+                    `${$store.state.fed.tables.dataCenterTable.byId[radioDataCenter]?.name_en} - ${$store.state.fed.tables.serviceTable.byId[radioService]?.name_en}`
+                }}
+              </span>
+
+              <span>
+                <q-icon
+                  v-if="$store.state.fed.tables.serviceTable.byId[radioService]?.service_type.toLowerCase().includes('ev')"
+                  name="img:svg/EVCloud-Logo-Horizontal.svg"
+                  style="width: 100px;height: 20px"/>
+                <q-tooltip>{{ $t('该节点的服务种类为EVCloud') }}</q-tooltip>
+              </span>
+
+              <span>
+                <q-icon
+                  v-if="$store.state.fed.tables.serviceTable.byId[radioService]?.service_type.toLowerCase().includes('open')"
+                  name="img:svg/OpenStack-Logo-Horizontal.svg"
+                  style="width: 100px;height: 20px"/>
+                <q-tooltip>{{ $t('该节点的服务种类为OpenStack') }}</q-tooltip>
+              </span>
+
             </div>
             <div v-else class="text-red">{{ $t('请选择服务节点') }}</div>
           </div>
@@ -288,8 +338,12 @@
             {{ $t('系统镜像') }}
           </div>
           <div class="col">
-            <div v-if="radioQuota && $store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name">
-              <q-icon v-if="getOsIconName($store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name)" :name="getOsIconName($store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name)" flat size="md" />
+            <div
+              v-if="radioQuota && $store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name">
+              <q-icon
+                v-if="getOsIconName($store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name)"
+                :name="getOsIconName($store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name)"
+                flat size="md"/>
               {{ $store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name }}
             </div>
             <div v-else class="text-red">{{ $t('请选择系统镜像') }}</div>
@@ -459,8 +513,19 @@ export default defineComponent({
     /* 新建云主机 */
     const isDeploying = ref(false)
     const deployServer = async () => {
-      // 如果radio没有选择全，则弹出通知
-      if (!radioService.value || !radioNetwork.value || !radioImage.value || !radioFlavor.value || !radioQuota.value) {
+      if (!radioQuota.value) {
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'error',
+          textColor: 'negative',
+          message: '请选择可用配额',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      } else if (!radioNetwork.value || !radioImage.value || !radioFlavor.value) {
+        // 如果radio没有选择全，则弹出通知
         Notify.create({
           classes: 'notification-negative shadow-15',
           icon: 'error',

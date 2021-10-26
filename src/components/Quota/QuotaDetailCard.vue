@@ -50,11 +50,34 @@
                   <div class="col-10">
                     <div class="column justify-center items-center" style="height: 100px">
 
-                      <div>{{
-                          $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[quota.service]?.data_center]?.name
+                      <div>
+                        {{
+                          locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[quota.service]?.name : $store.state.fed.tables.serviceTable.byId[quota.service]?.name_en
                         }}
                       </div>
-                      <div>{{ $store.state.fed.tables.serviceTable.byId[quota.service]?.name }}</div>
+                      <div>
+                        {{
+                          locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[quota.service]?.data_center]?.name :
+                            $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[quota.service]?.data_center]?.name_en
+                        }}
+                      </div>
+                      <div>
+                        <div>
+                          <q-icon
+                            v-if="$store.state.fed.tables.serviceTable.byId[quota.service]?.service_type.toLowerCase().includes('ev')"
+                            name="img:svg/EVCloud-Logo-Horizontal.svg"
+                            style="width: 100px;height: 20px"/>
+                          <q-tooltip>{{$t('该节点的服务种类为EVCloud')}}</q-tooltip>
+                        </div>
+
+                        <div>
+                          <q-icon
+                            v-if="$store.state.fed.tables.serviceTable.byId[quota.service]?.service_type.toLowerCase().includes('open')"
+                            name="img:svg/OpenStack-Logo-Horizontal.svg"
+                            style="width: 100px;height: 20px"/>
+                          <q-tooltip>{{$t('该节点的服务种类为OpenStack')}}</q-tooltip>
+                        </div>
+                      </div>
 
                     </div>
                   </div>

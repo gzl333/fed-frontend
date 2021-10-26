@@ -14,10 +14,10 @@
       <q-card-section class="q-pt-lg">
 
         <div v-if="isGroup" class="row q-pb-lg">
-          <div class="col-2 text-grey-7">
+          <div class="col-2 text-grey-7 row items-center">
             项目组
             <q-icon name="help_outline" color="grey" size="xs">
-              <q-tooltip>{{ $t('如需修改项目组，请提交新的申请') }}</q-tooltip>
+              <q-tooltip>{{ $t('如需修改项目组，请提交新的项目组配额申请') }}</q-tooltip>
             </q-icon>
           </div>
           <div class="col">
@@ -26,17 +26,41 @@
         </div>
 
         <div class="row q-pb-lg">
-          <div class="col-2 text-grey-7">
+          <div class="col-2 text-grey-7 row items-center">
             服务节点
             <q-icon name="help_outline" color="grey" size="xs">
-              <q-tooltip>{{ $t('如需修改服务节点，请提交新的申请') }}</q-tooltip>
+              <q-tooltip>{{ $t('如需修改服务节点，请提交新的项目组配额申请') }}</q-tooltip>
             </q-icon>
           </div>
           <div class="col">
-            {{
-              $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[currentApplication.service].data_center].name
-            }}
-            - {{ $store.state.fed.tables.serviceTable.byId[currentApplication.service].name }}
+            <span>
+              {{
+                locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[currentApplication.service]?.name : $store.state.fed.tables.serviceTable.byId[currentApplication.service]?.name_en
+              }} -
+            </span>
+            <span>
+              {{
+                locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.data_center]?.name :
+                  $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.data_center]?.name_en
+              }}
+            </span>
+            <span>
+              <span>
+                <q-icon
+                  v-if="$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.service_type.toLowerCase().includes('ev')"
+                  name="img:svg/EVCloud-Logo-Horizontal.svg"
+                  style="width: 100px;height: 20px"/>
+                <q-tooltip>{{$t('该节点的服务种类为EVCloud')}}</q-tooltip>
+              </span>
+
+              <span>
+                <q-icon
+                  v-if="$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.service_type.toLowerCase().includes('open')"
+                  name="img:svg/OpenStack-Logo-Horizontal.svg"
+                  style="width: 100px;height: 20px"/>
+                <q-tooltip>{{$t('该节点的服务种类为OpenStack')}}</q-tooltip>
+              </span>
+            </span>
           </div>
         </div>
 

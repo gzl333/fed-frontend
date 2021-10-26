@@ -71,25 +71,36 @@
                   $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name_en
               }}
             </div>
+            <div>
+              <div>
+                <q-icon
+                  v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"
+                  name="img:svg/EVCloud-Logo-Horizontal.svg"
+                  style="width: 100px;height: 20px"/>
+                <q-tooltip>{{$t('该节点的服务种类为EVCloud')}}</q-tooltip>
+              </div>
 
-            <!--            <q-tooltip class="column items-center">-->
-            <!--              <div>-->
-            <!--                {{-->
-            <!--                  locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[props.row.service]?.name : $store.state.fed.tables.serviceTable.byId[props.row.service]?.name_en-->
-            <!--                }}-->
-            <!--              </div>-->
-            <!--              <div>-->
-            <!--                {{-->
-            <!--                  locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name :-->
-            <!--                    $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name_en-->
-            <!--                }}-->
-            <!--              </div>-->
-            <!--            </q-tooltip>-->
+              <div>
+                <q-icon
+                  v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"
+                  name="img:svg/OpenStack-Logo-Horizontal.svg"
+                  style="width: 100px;height: 20px"/>
+                <q-tooltip>{{$t('该节点的服务种类为OpenStack')}}</q-tooltip>
+              </div>
+            </div>
           </q-td>
 
-          <q-td key="serviceType" :props="props">
-            {{ $store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type }}
-          </q-td>
+<!--          <q-td key="serviceType" :props="props">-->
+
+<!--            <q-icon v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"-->
+<!--                    name="img:svg/EVCloud-Logo-Vertical.svg"-->
+<!--                    style="width: 80px;height: 40px"/>-->
+
+<!--            <q-icon v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"-->
+<!--                    name="img:svg/OpenStack-Logo-Vertical.svg"-->
+<!--                    style="width: 80px;height: 40px"/>-->
+
+<!--          </q-td>-->
 
           <q-td key="image" :props="props">
 
@@ -260,15 +271,15 @@ export default defineComponent({
           style: 'padding: 15px 0px',
           headerStyle: 'padding: 0 2px'
         },
-        {
-          name: 'serviceType',
-          label: '服务种类',
-          field: 'serviceType',
-          align: 'center',
-          classes: 'ellipsis',
-          style: 'padding: 15px 0px',
-          headerStyle: 'padding: 0 2px'
-        },
+        // {
+        //   name: 'serviceType',
+        //   label: '服务种类',
+        //   field: 'serviceType',
+        //   align: 'center',
+        //   classes: 'ellipsis',
+        //   style: 'padding: 15px 0px',
+        //   headerStyle: 'padding: 0 2px'
+        // },
         {
           name: 'image',
           label: '操作系统',
@@ -359,15 +370,15 @@ export default defineComponent({
             style: 'padding: 15px 0px',
             headerStyle: 'padding: 0 2px'
           },
-          {
-            name: 'serviceType',
-            label: '服务种类',
-            field: 'serviceType',
-            align: 'center',
-            classes: 'ellipsis',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 2px'
-          },
+          // {
+          //   name: 'serviceType',
+          //   label: '服务种类',
+          //   field: 'serviceType',
+          //   align: 'center',
+          //   classes: 'ellipsis',
+          //   style: 'padding: 15px 0px',
+          //   headerStyle: 'padding: 0 2px'
+          // },
           {
             name: 'image',
             label: '操作系统',
@@ -467,15 +478,15 @@ export default defineComponent({
           classes: 'ellipsis',
           headerStyle: 'padding: 0 0 0 1px'
         },
-        {
-          name: 'serviceType',
-          label: 'Service Type',
-          field: 'serviceType',
-          align: 'center',
-          classes: 'ellipsis',
-          headerStyle: 'padding: 0 0 0 1px',
-          style: 'padding: 15px 0px'
-        },
+        // {
+        //   name: 'serviceType',
+        //   label: 'Service Type',
+        //   field: 'serviceType',
+        //   align: 'center',
+        //   classes: 'ellipsis',
+        //   headerStyle: 'padding: 0 0 0 1px',
+        //   style: 'padding: 15px 0px'
+        // },
         {
           name: 'image',
           label: 'OS',
@@ -566,15 +577,15 @@ export default defineComponent({
             headerStyle: 'padding: 0 0 0 1px',
             style: 'padding: 15px 0px'
           },
-          {
-            name: 'serviceType',
-            label: 'Service Type',
-            field: 'serviceType',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 0 0 1px',
-            style: 'max-width: 120px;padding: 15px 0px'
-          },
+          // {
+          //   name: 'serviceType',
+          //   label: 'Service Type',
+          //   field: 'serviceType',
+          //   align: 'center',
+          //   classes: 'ellipsis',
+          //   headerStyle: 'padding: 0 0 0 1px',
+          //   style: 'max-width: 120px;padding: 15px 0px'
+          // },
           {
             name: 'image',
             label: 'OS',

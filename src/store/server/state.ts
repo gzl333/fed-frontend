@@ -130,6 +130,29 @@ export interface QuotaApplicationInterface {
   classification: 'personal' | 'vo'
   result_desc: string // 拒绝理由
 
+  // todo 详情请求接口里字段更多
+  // "user": {
+  //   "id": "6",
+  //   "name": "zlguo@cnic.cn"
+  // },
+  // "approve_user": {
+  //   "id": "6",
+  //   "name": "zlguo@cnic.cn"
+  // },
+  // "approve_time": "2021-10-14T02:20:57.646748Z",
+  // "vo": {
+  //   "id": "7b4be382-2c04-11ec-a8b5-c8009fe2eb03",
+  //   "name": "测试很长的项目组名称长长长长长",
+  //   "company": "中国科学院计算机网络信息中心中",
+  //   "description": "中国科学院计算机网络信息中心中",
+  //   "creation_time": "2021-10-13T09:03:50.172953Z",
+  //   "owner": {
+  //     "id": "6",
+  //     "username": "zlguo@cnic.cn"
+  //   },
+  //   "status": "active"
+  // }
+
   // 来自补充
   vo_id?: string
 }

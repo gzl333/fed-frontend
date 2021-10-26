@@ -76,12 +76,34 @@
           </q-td>
 
           <q-td key="service" :props="props">
-            <div>{{ $store.state.fed.tables.serviceTable.byId[props.row.service]?.name }}</div>
-            <div>{{
-                $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name
+            <div>
+              {{
+                locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[props.row.service]?.name : $store.state.fed.tables.serviceTable.byId[props.row.service]?.name_en
               }}
             </div>
+            <div>
+              {{
+                locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name :
+                  $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name_en
+              }}
+            </div>
+            <div>
+              <div>
+                <q-icon
+                  v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"
+                  name="img:svg/EVCloud-Logo-Horizontal.svg"
+                  style="width: 100px;height: 20px"/>
+                <q-tooltip>{{$t('该节点的服务种类为EVCloud')}}</q-tooltip>
+              </div>
 
+              <div>
+                <q-icon
+                  v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"
+                  name="img:svg/OpenStack-Logo-Horizontal.svg"
+                  style="width: 100px;height: 20px"/>
+                <q-tooltip>{{$t('该节点的服务种类为OpenStack')}}</q-tooltip>
+              </div>
+            </div>
           </q-td>
 
           <q-td key="duration_days" :props="props">
@@ -111,7 +133,6 @@
             <div v-else class="column justify-center items-center q-gutter-xs">
 
               <q-btn v-if="props.row.status === 'wait'" icon="edit" flat dense padding="none"
-                     disable
                      color="primary"
                      @click="$store.dispatch('server/editQuotaApplicationDialog',{apply_id: props.row.id, isGroup})">
                 {{ $t('修改申请') }}
@@ -178,54 +199,50 @@ export default defineComponent({
     // 列表分栏定义
     const columnsZH = props.isGroup && !props.isHideGroup // 是group且不hide时使用这个配置
       ? [
-
           {
             name: 'status',
             label: '申请状态',
             field: 'status',
             align: 'center',
-            style: 'padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'group',
-            label: '所属组',
-            field: 'group',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px',
+            style: 'padding: 15px 0px'
           },
           {
             name: 'creation_time',
             label: '申请时间',
             field: 'creation_time',
             align: 'center',
-            style: 'padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px',
+            style: 'padding: 15px 0px'
           },
           {
             name: 'service',
             label: '服务节点',
             field: 'service',
             align: 'center',
-            style: 'padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px',
+            style: 'padding: 15px 0px'
           },
           {
             name: 'duration_days',
             label: '云主机时长',
             field: 'duration_days',
             align: 'center',
-            style: 'padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px',
+            style: 'padding: 15px 0px'
           },
           {
             name: 'configuration',
             label: 'CPU/内存/私网IP/公网IP/云硬盘',
             field: 'configuration',
             align: 'center',
-            style: 'padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px',
+            style: 'padding: 15px 0px'
           },
           {
             name: 'purpose',
@@ -233,8 +250,8 @@ export default defineComponent({
             field: 'purpose',
             align: 'center',
             classes: 'ellipsis',
-            style: 'max-width: 200px;padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
+            headerStyle: 'padding: 0 2px',
+            style: 'max-width: 150px;padding: 15px 0px'
           },
           {
             name: 'applicant',
@@ -242,15 +259,16 @@ export default defineComponent({
             field: 'applicant',
             align: 'center',
             classes: 'ellipsis',
-            style: 'max-width: 200px;padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
+            headerStyle: 'padding: 0 2px',
+            style: 'max-width: 200px;padding: 15px 0px'
           },
           {
             name: 'operation',
             label: '操作',
             field: 'operation',
             align: 'center',
-            headerStyle: 'padding: 0 5px'
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px'
           }
         ] : [
           {
@@ -258,40 +276,54 @@ export default defineComponent({
             label: '申请状态',
             field: 'status',
             align: 'center',
-            style: 'padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px',
+            style: 'padding: 15px 0px'
+          },
+          {
+            name: 'group',
+            label: '所属组',
+            field: 'group',
+            align: 'center',
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px',
+            style: 'max-width: 130px;padding: 15px 0px'
           },
           {
             name: 'creation_time',
             label: '申请时间',
             field: 'creation_time',
             align: 'center',
-            style: 'padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px',
+            style: 'padding: 15px 0px'
           },
           {
             name: 'service',
             label: '服务节点',
             field: 'service',
             align: 'center',
-            style: 'padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px',
+            style: 'padding: 15px 0px'
           },
           {
             name: 'duration_days',
             label: '云主机时长',
             field: 'duration_days',
             align: 'center',
-            style: 'padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px',
+            style: 'padding: 15px 0px'
           },
           {
             name: 'configuration',
             label: 'CPU/内存/私网IP/公网IP/云硬盘',
             field: 'configuration',
             align: 'center',
-            style: 'padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px',
+            style: 'padding: 15px 0px'
           },
           {
             name: 'purpose',
@@ -299,8 +331,8 @@ export default defineComponent({
             field: 'purpose',
             align: 'center',
             classes: 'ellipsis',
-            style: 'max-width: 200px;padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
+            headerStyle: 'padding: 0 2px',
+            style: 'max-width: 150px;padding: 15px 0px'
           },
           {
             name: 'applicant',
@@ -308,15 +340,16 @@ export default defineComponent({
             field: 'applicant',
             align: 'center',
             classes: 'ellipsis',
-            style: 'max-width: 200px;padding: 15px 5px',
-            headerStyle: 'padding: 0 5px'
+            headerStyle: 'padding: 0 2px',
+            style: 'max-width: 200px;padding: 15px 0px'
           },
           {
             name: 'operation',
             label: '操作',
             field: 'operation',
             align: 'center',
-            headerStyle: 'padding: 0 5px'
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px'
           }
         ]
     const columnsEN = columnsZH // todo 翻译

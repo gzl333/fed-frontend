@@ -329,11 +329,11 @@
                   <div class="col-2 text-grey">可用期</div>
                   <div class="col"> {{ new Date(server.creation_time).toLocaleString(locale) }} -
                     {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString(locale) : '永久有效' }}
-<!--                    <q-icon-->
-<!--                      v-if="server.expiration_time !== null && (new Date(server.expiration_time).getTime() - new Date().getTime()) < 0"-->
-<!--                      name="help_outline" color="red" size="xs">-->
-<!--                      <q-tooltip>{{ $t('云主机已到期') }}</q-tooltip>-->
-<!--                    </q-icon>-->
+                    <!--                    <q-icon-->
+                    <!--                      v-if="server.expiration_time !== null && (new Date(server.expiration_time).getTime() - new Date().getTime()) < 0"-->
+                    <!--                      name="help_outline" color="red" size="xs">-->
+                    <!--                      <q-tooltip>{{ $t('云主机已到期') }}</q-tooltip>-->
+                    <!--                    </q-icon>-->
                   </div>
                 </div>
 
@@ -363,12 +363,12 @@
                 <div class="row q-pb-md items-center">
                   <div class="col-2 text-grey">操作系统</div>
                   <div class="col">
-                  <q-icon v-if="getOsIconName(server.image)" :name="getOsIconName(server.image)" flat size="md" />
+                    <q-icon v-if="getOsIconName(server.image)" :name="getOsIconName(server.image)" flat size="md"/>
                     {{ server.image }}
                   </div>
                 </div>
 
-                <div v-if="server.image_desc" class="row q-pb-md">
+                <div v-if="server.image_desc" class="row q-pb-md items-center">
                   <div class="col-2 text-grey">系统描述</div>
                   <div class="col"> {{ server.image_desc }}</div>
                 </div>
@@ -377,21 +377,33 @@
 
               <div class="col-4">
 
-                <div class="row q-pb-md">
+                <div class="row q-pb-md items-center">
                   <div class="col-2 text-grey">所属机构</div>
                   <div class="col">
                     {{ $store.state.fed.tables.dataCenterTable.byId[service.data_center]?.name }}
                   </div>
                 </div>
 
-                <div class="row q-pb-md">
+                <div class="row q-pb-md items-center">
                   <div class="col-2 text-grey">服务节点</div>
                   <div class="col"> {{ service.name }}</div>
                 </div>
 
-                <div class="row q-pb-md">
+                <div class="row q-pb-md items-center">
                   <div class="col-2 text-grey">服务类型</div>
-                  <div class="col"> {{ service.service_type }}</div>
+                  <div class="col">
+
+                    <q-icon
+                      v-if="service.service_type.toLowerCase().includes('ev')"
+                      name="img:svg/EVCloud-Logo-Horizontal.svg"
+                      style="width: 130px;height: 25px"/>
+
+                    <q-icon
+                      v-if="service.service_type.toLowerCase().includes('open')"
+                      name="img:svg/OpenStack-Logo-Horizontal.svg"
+                      style="width: 130px;height: 25px"/>
+
+                  </div>
                 </div>
 
               </div>

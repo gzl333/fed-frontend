@@ -46,7 +46,8 @@
           </div>
           <div class="col">
             {{
-              $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[server.service].data_center].name
+              locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[server.service]?.data_center]?.name :
+                $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[server.service]?.data_center]?.name_en
             }}
           </div>
         </div>
@@ -56,7 +57,10 @@
             服务节点
           </div>
           <div class="col">
-            {{ $store.state.fed.tables.serviceTable.byId[server.service].name }}
+            {{
+              locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[server.service]?.name : $store.state.fed.tables.serviceTable.byId[server.service]?.name_en
+            }}
+
           </div>
         </div>
 
@@ -85,11 +89,11 @@
           <div class="col">
             {{ new Date(server.creation_time).toLocaleString(locale) }} -
             {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString(locale) : '永久有效' }}
-<!--            <q-icon-->
-<!--              v-if="server.expiration_time !== null && (new Date(server.expiration_time).getTime() - new Date().getTime()) < 0"-->
-<!--              name="help_outline" color="red" size="xs">-->
-<!--              <q-tooltip>{{ $t('云主机已到期') }}</q-tooltip>-->
-<!--            </q-icon>-->
+            <!--            <q-icon-->
+            <!--              v-if="server.expiration_time !== null && (new Date(server.expiration_time).getTime() - new Date().getTime()) < 0"-->
+            <!--              name="help_outline" color="red" size="xs">-->
+            <!--              <q-tooltip>{{ $t('云主机已到期') }}</q-tooltip>-->
+            <!--            </q-icon>-->
           </div>
         </div>
 
@@ -98,7 +102,7 @@
             操作系统
           </div>
           <div class="col">
-            <q-icon v-if="getOsIconName(server.image)" :name="getOsIconName(server.image)" flat size="md" />
+            <q-icon v-if="getOsIconName(server.image)" :name="getOsIconName(server.image)" flat size="md"/>
             {{ server.image }}
           </div>
         </div>
@@ -116,6 +120,7 @@
           <div class="col-8">
             <q-select ref="selectDom" v-if="images.length !== 0" outlined v-model="select" dense
                       :options="images" map-options emit-value option-label="name" option-value="id">
+
               <!--当前选项的内容插槽-->
               <template v-slot:selected-item="scope">
                 <span :class="select===scope.opt.id ? 'text-primary' : 'text-black'">
@@ -123,8 +128,8 @@
                           class="q-pl-xs q-pr-md" flat size="md"/>
                 {{ scope.opt.name }}
                 </span>
-
               </template>
+
               <!--待选项的内容插槽-->
               <template v-slot:option="scope">
                 <q-item v-bind="scope.itemProps">

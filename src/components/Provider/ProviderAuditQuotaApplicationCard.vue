@@ -23,10 +23,34 @@
         <div class="row q-py-sm">
           <div class="col-3 text-grey-7">服务节点</div>
           <div class="col">
-            {{
-              $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[currentApplication.service].data_center].name
-            }}
-            - {{ $store.state.fed.tables.serviceTable.byId[currentApplication.service].name }}
+            <span>
+              {{
+                locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[currentApplication.service]?.name : $store.state.fed.tables.serviceTable.byId[currentApplication.service]?.name_en
+              }} -
+            </span>
+            <span>
+              {{
+                locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.data_center]?.name :
+                  $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.data_center]?.name_en
+              }}
+            </span>
+            <span>
+              <span>
+                <q-icon
+                  v-if="$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.service_type.toLowerCase().includes('ev')"
+                  name="img:svg/EVCloud-Logo-Horizontal.svg"
+                  style="width: 100px;height: 20px"/>
+                <q-tooltip>{{$t('该节点的服务种类为EVCloud')}}</q-tooltip>
+              </span>
+
+              <span>
+                <q-icon
+                  v-if="$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.service_type.toLowerCase().includes('open')"
+                  name="img:svg/OpenStack-Logo-Horizontal.svg"
+                  style="width: 100px;height: 20px"/>
+                <q-tooltip>{{$t('该节点的服务种类为OpenStack')}}</q-tooltip>
+              </span>
+            </span>
           </div>
         </div>
 

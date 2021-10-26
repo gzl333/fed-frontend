@@ -1,13 +1,13 @@
 <template>
   <div class="PersonalServerDeploy">
     <div class="column q-py-md">
+
       <div class="col">
-        <div class="row items-center title-area">
+        <div class="row items-center title-area q-pb-md">
           <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                  @click="$router.back()"/>
           <span>{{ $t('新建个人云主机') }}</span>
         </div>
-
       </div>
 
       <div class="col">

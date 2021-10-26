@@ -2,18 +2,20 @@
   <div class="Apply">
     <div class="column q-py-md">
 
-      <div class="col q-pb-md title-area">
-        <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
-               @click="$router.back"/>
-        {{ $t('申请个人云主机配额') }}
+      <div class="col">
+        <div class="row items-center title-area q-pb-md">
+          <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
+                 @click="$router.back()"/>
+          <span>{{ $t('申请个人云主机配额') }}</span>
+        </div>
       </div>
 
       <div class="col">
         <quota-apply-card :is-group="false" :service-id="serviceDesignated"/>
       </div>
+
     </div>
   </div>
-
 </template>
 
 <script lang="ts">
