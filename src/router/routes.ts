@@ -51,7 +51,7 @@ const routes: RouteRecordRaw[] = [
         }
       },
       {
-        // 网络中心内测公告
+        // 网络中心试用公告
         path: 'center-beta',
         component: () => import('pages/News/CenterBeta.vue'),
         meta: {

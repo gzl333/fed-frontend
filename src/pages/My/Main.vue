@@ -19,7 +19,7 @@
               </template>
               <div>
                 <q-btn class="text-h6" flat padding="none" color="primary" :to="{path: '/news/center-beta'}">
-                  中国科技云联邦内测公告
+                  中国科技云联邦试用公告
                 </q-btn>
               </div>
             </q-banner>
@@ -98,7 +98,7 @@
                         <q-item clickable to="/news/center-beta">
                           <q-item-section>
                             <div class="row justify-between">
-                              <div class="col-auto">中国科技云联邦进行网络中心内测</div>
+                              <div class="col-auto">中国科技云联邦进行网络中心试用</div>
                               <div class="col-auto">2021-10-26</div>
                             </div>
                           </q-item-section>
@@ -116,7 +116,7 @@
                         <q-item clickable>
                           <q-item-section>
                             <div class="row justify-between">
-                              <div class="col-auto">中国科技云联邦alpha版本上线</div>
+                              <div class="col-auto">中国科技云联邦beta版本上线</div>
                               <div class="col-auto">2021-07-01</div>
                             </div>
                           </q-item-section>

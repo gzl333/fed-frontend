@@ -14,7 +14,7 @@
           <span class="q-focus-helper">test</span>
           <img src="https://cdn.quasar.dev/img/mountains.jpg">
           <q-card-section>
-            <div class="text-h5" >网络中心内测公告</div>
+            <div class="text-h5" >网络中心试用公告</div>
             <div class="text-subtitle2">by 科技云部</div>
           </q-card-section>
           <q-card-section class="q-pt-none">

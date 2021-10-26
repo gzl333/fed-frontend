@@ -5,7 +5,7 @@
       <div class="col q-pb-md title-area">
         <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                @click="$router.back"/>
-        {{ $t('网络中心内测-申请个人云主机配额') }}
+        {{ $t('试用-申请个人云主机配额') }}
       </div>
 
       <div class="col">
@@ -48,7 +48,7 @@
               <div class="col-1">
                 云主机时长
               </div>
-              <div class="col-6 q-mr-md">
+              <div class="col-6 text-bold">
                 100天
               </div>
 
@@ -58,7 +58,7 @@
               <div class="col-1">
                 CPU
               </div>
-              <div class="col-6">
+              <div class="col-6 text-bold">
                 8核
               </div>
             </div>
@@ -67,7 +67,7 @@
               <div class="col-1">
                 内存
               </div>
-              <div class="col-6">
+              <div class="col-6 text-bold">
                 16GB
               </div>
             </div>
@@ -76,7 +76,7 @@
               <div class="col-1">
                 私网IP
               </div>
-              <div class="col-6">
+              <div class="col-6 text-bold">
                 无
               </div>
             </div>
@@ -85,7 +85,7 @@
               <div class="col-1">
                 公网IP
               </div>
-              <div class="col-6">
+              <div class="col-6 text-bold">
                 1个
               </div>
             </div>
@@ -251,7 +251,7 @@ export default defineComponent({
           classes: 'notification-negative shadow-15',
           icon: 'mdi-alert',
           textColor: 'negative',
-          message: '请填写备注',
+          message: '请填写配额用途',
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,
@@ -268,7 +268,7 @@ export default defineComponent({
           ram: 16384,
           disk_size: 0,
           duration_days: 100,
-          purpose: '中心内测 - ' + inputDepartment.value + ' - ' + inputPurpose.value,
+          purpose: '中心试用 - ' + inputDepartment.value + ' - ' + inputPurpose.value,
           company: $store.state.account.items.decoded?.orgName,
           contact: $store.state.account.items.decoded?.email
         }

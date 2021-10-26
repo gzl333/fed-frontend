@@ -2,7 +2,7 @@
   <div class="CenterBeta">
     <div class="column items-center">
       <div class="col-auto title-area text-center">
-        <div class="text-white text-h3">内测公告</div>
+        <div class="text-white text-h3">试用公告</div>
       </div>
 
       <div class="col-auto card-area">
@@ -10,9 +10,9 @@
         <q-card class="q-my-xl shadow-24">
           <!--        <img src="https://cdn.quasar.dev/img/mountains.jpg">-->
           <q-card-section>
-            <div class="text-h6">中国科技云联邦将开启网络中心内部使用测试。用户可申请测试配额，并使用配额创建云主机。</div>
-            <div class="text-h6 q-pb-md">内测时间：2021.10.26 - 2021.10.29</div>
-            <div class="text-h6">本次内测配额统一规格为:</div>
+            <div class="text-h6">中国科技云联邦将开启内部试用。用户可申请试用配额，并使用配额创建云主机。</div>
+            <div class="text-h6 q-pb-md">申请时间：2021.10.26 - 2021.10.29</div>
+            <div class="text-h6">本次试用配额统一规格为:</div>
             <div class="text-h6">CPU： 8核</div>
             <div class="text-h6">内存： 16GB</div>
             <div class="text-h6">公网IP： 1个</div>
@@ -21,7 +21,7 @@
           </q-card-section>
 
           <q-card-section>
-            <div class="text-h6">内测活动联系人: 科技云部 余宁</div>
+            <div class="text-h6">试用活动联系人: 科技云部 余宁</div>
             <div class="text-h6">Email: yuning@cstnet.cn</div>
             <!--            <div class="text-h6">电话: 58812831</div>-->
           </q-card-section>
@@ -34,7 +34,7 @@
             <q-btn class="q-px-xl"
                    unelevated color="primary" size="md" padding="sm"
                    @click="gotoApply">
-              申请内测配额
+              申请试用配额
             </q-btn>
 
             <div class="text-h6">2. 等待配额批准后，使用配额
