@@ -21,19 +21,26 @@
         </div>
 
         <div class="row q-py-sm">
+          <div class="col-3 text-grey-7">
+            所属机构
+          </div>
+          <div class="col">
+            {{
+              locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.data_center]?.name :
+                $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.data_center]?.name_en
+            }}
+          </div>
+        </div>
+
+        <div class="row q-py-sm">
           <div class="col-3 text-grey-7">服务节点</div>
           <div class="col">
             <span>
               {{
                 locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[currentApplication.service]?.name : $store.state.fed.tables.serviceTable.byId[currentApplication.service]?.name_en
-              }} -
-            </span>
-            <span>
-              {{
-                locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.data_center]?.name :
-                  $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.data_center]?.name_en
               }}
             </span>
+
             <span>
               <span>
                 <q-icon

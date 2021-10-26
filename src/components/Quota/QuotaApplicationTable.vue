@@ -133,6 +133,7 @@
             <div v-else class="column justify-center items-center q-gutter-xs">
 
               <q-btn v-if="props.row.status === 'wait'" icon="edit" flat dense padding="none"
+                     disable
                      color="primary"
                      @click="$store.dispatch('server/editQuotaApplicationDialog',{apply_id: props.row.id, isGroup})">
                 {{ $t('修改申请') }}
