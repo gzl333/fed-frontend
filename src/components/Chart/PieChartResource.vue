@@ -44,12 +44,17 @@ export default defineComponent({
           left: 'center'
         },
         tooltip: {
-          trigger: 'item'
+          trigger: 'item',
+          formatter: function (data: any) {
+            if (props.title === '内存') {
+              return data.seriesName + '<br/>' + data.name + ': ' + data.value / 1024 + ' GB'
+            } else if (props.title === 'CPU') {
+              return data.seriesName + '<br/>' + data.name + ': ' + data.value + ' 核'
+            } else {
+              return data.seriesName + '<br/>' + data.name + ': ' + data.value + ' GB'
+            }
+          }
         },
-        // legend: {
-        //   orient: 'vertical',
-        //   left: 'left'
-        // },
         series: [
           {
             name: '提供者',

@@ -1,11 +1,10 @@
 <template>
   <div class="StorageCluster">
-    <div v-if="JSON.stringify(storageData) !== '{}'">
       <div v-for="(item, index) in storageData" :key="index">
       <div class="text-subtitle1 text-weight-bold">{{ item.name }}</div>
       <div class="row">
         <div class="col-6 row q-mt-md">
-          <div style="width: 195px">
+          <div style="width: 194px">
             <q-card flat bordered class="my-card q-pb-md no-border-radius">
               <div class="row">
                 <div class="col-11 text-center">集群状态</div>
@@ -14,22 +13,19 @@
               </div>
               <div :class="item.health_status === '0' ? 'text-positive text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : item.health_status === '1' ?
                     'text-warning text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : 'text-negative text-center text-h4 text-weight-bold q-mt-xl q-pb-xl'">
-                {{
-                  item.health_status === '0' ? 'Healthy' : item.health_status === '1' ? 'Warning' : 'Fatal'
-                }}
+                {{ item.health_status === '0' ? 'Healthy' : item.health_status === '1' ? 'Warning' : 'Fatal' }}
               </div>
             </q-card>
           </div>
-          <div class="q-ml-sm" style="width: 195px">
+          <div class="q-ml-sm" style="width: 200px">
             <q-card flat bordered class="q-pb-md no-border-radius">
               <div class="row">
                 <div class="col-11 text-center">集群容量</div>
                 <q-icon name="loop" class="col-1" size="xs" v-show="isShowClusterTotal"
                         @click="refresh({ service_id: item.service_id, query: 'cluster_total_bytes', num: index })"/>
               </div>
-              <div class="text-center text-h4 text-weight-regular q-mt-xl q-pb-xl">{{
-                  (item.cluster_total_bytes / Math.pow(1024, 5)).toFixed(2) + 'PiB'
-                }}
+              <div class="text-center text-h4 text-weight-regular q-mt-xl q-pb-xl">
+                {{ (item.cluster_total_bytes / Math.pow(1024, 5)).toFixed(2) + 'PiB' }}
               </div>
             </q-card>
           </div>
@@ -40,9 +36,8 @@
                 <q-icon name="loop" class="col-1" size="xs" v-show="isShowClusterUsed"
                         @click="refresh({ service_id: item.service_id, query: 'cluster_total_used_bytes', num: index })"/>
               </div>
-              <div class="text-center text-h4 text-weight-regular q-mt-xl q-pb-xl">{{
-                  (item.cluster_total_used_bytes / Math.pow(1024, 4)).toFixed(2) + 'TiB'
-                }}
+              <div class="text-center text-h4 text-weight-regular q-mt-xl q-pb-xl">
+                {{ (item.cluster_total_used_bytes / Math.pow(1024, 4)).toFixed(2) + 'TiB' }}
               </div>
             </q-card>
           </div>
@@ -103,7 +98,6 @@
         </div>
       </div>
       </div>
-    </div>
   </div>
 </template>
 
@@ -146,12 +140,12 @@ export default defineComponent({
           config.query.query = item
           await $api.monitor.getMonitorCephQuery(config).then((res) => {
             if (!storageObject.name) {
-              storageObject.name = res.data[0].monitor.name
+              storageObject.name = res.data[i].monitor.name
             }
             if (!storageObject.service_id) {
-              storageObject.service_id = res.data[0].monitor.service_id
+              storageObject.service_id = res.data[i].monitor.service_id
             }
-            storageObject[item] = res.data[0].value[1]
+            storageObject[item] = res.data[i].value[1]
           }).catch((error) => {
             console.log(error)
           })

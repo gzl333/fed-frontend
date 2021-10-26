@@ -1,6 +1,5 @@
 <template>
   <div class="StorageCluster">
-    <div v-if="JSON.stringify(hostData) !== '{}'">
       <div v-for="(item, index) in hostData" :key="index">
         <div class="text-subtitle1 text-weight-bold">{{ item.name }}</div>
         <div class="row q-mt-sm">
@@ -117,7 +116,6 @@
           </div>
         </div>
       </div>
-    </div>
   </div>
 </template>
 
