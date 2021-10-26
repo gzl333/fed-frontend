@@ -61,6 +61,18 @@
               locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[server.service]?.name : $store.state.fed.tables.serviceTable.byId[server.service]?.name_en
             }}
 
+            <q-icon
+              v-if="$store.state.fed.tables.serviceTable.byId[server.service]?.service_type.toLowerCase().includes('ev')"
+              name="img:svg/EVCloud-Logo-Horizontal.svg"
+              style="width: 100px;height: 20px"/>
+            <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>
+
+            <q-icon
+              v-if="$store.state.fed.tables.serviceTable.byId[server.service]?.service_type.toLowerCase().includes('open')"
+              name="img:svg/OpenStack-Logo-Horizontal.svg"
+              style="width: 100px;height: 20px"/>
+            <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>
+
           </div>
         </div>
 
@@ -154,7 +166,7 @@
         </div>
 
         <q-checkbox style="margin-left: -10px;" v-model="check" color="primary">
-          <div class="text-primary">
+          <div :class="check?'text-primary':'text-black'">
             {{ $t('我了解重建云主机会抹去全部数据，且无法恢复') }}
           </div>
         </q-checkbox>

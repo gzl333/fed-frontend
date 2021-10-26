@@ -109,11 +109,11 @@
           <div class="col">
             {{ new Date(server.creation_time).toLocaleString(locale) }} -
             {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString(locale) : '永久有效' }}
-<!--            <q-icon-->
-<!--              v-if="server.expiration_time !== null && (new Date(server.expiration_time).getTime() - new Date().getTime()) < 0"-->
-<!--              name="help_outline" color="red" size="xs">-->
-<!--              <q-tooltip>{{ $t('云主机已到期') }}</q-tooltip>-->
-<!--            </q-icon>-->
+            <!--            <q-icon-->
+            <!--              v-if="server.expiration_time !== null && (new Date(server.expiration_time).getTime() - new Date().getTime()) < 0"-->
+            <!--              name="help_outline" color="red" size="xs">-->
+            <!--              <q-tooltip>{{ $t('云主机已到期') }}</q-tooltip>-->
+            <!--            </q-icon>-->
           </div>
         </div>
 
@@ -129,13 +129,13 @@
         </div>
 
         <q-checkbox style="margin-left: -10px;" v-model="check1" color="primary">
-          <div class="text-primary">
+          <div :class="check1?'text-primary':'text-black'">
             {{ $t('我了解删除云主机会丢失全部数据，且无法自行恢复') }}
           </div>
         </q-checkbox>
 
         <q-checkbox style="margin-left: -10px;" v-model="check2" color="primary">
-          <div class="text-primary">
+          <div :class="check2?'text-primary':'text-black'">
             {{ $t('我了解已经消耗的云主机配额无法恢复') }}
           </div>
         </q-checkbox>
@@ -151,13 +151,13 @@
           ref="toggle_btn"
           :disable="!check1 || !check2"
           v-model="toggle"
-          :label="toggle?$t('已锁定'):$t('已解除')"
           checked-icon="lock"
           unchecked-icon="lock_open"
           color="light-green"
           size="lg"
           @update:model-value=" $store.dispatch('server/toggleDeleteLock', {isGroup:isGroup, serverId: serverId})"
         >
+          <span :class="toggle?'text-black':'text-primary'">{{ toggle ? $t('已锁定') : $t('已解除') }}</span>
           <q-tooltip v-if="server.lock === 'free'">
             {{ $t('未锁定云主机删除操作') }}
           </q-tooltip>
@@ -170,7 +170,8 @@
 
       <!-- buttons example -->
       <q-card-actions align="between">
-        <q-btn class="q-ma-sm" color="primary" unelevated :disable="toggle || !check1 || !check2" :label="$t('确认')" @click="onOKClick"/>
+        <q-btn class="q-ma-sm" color="primary" unelevated :disable="toggle || !check1 || !check2" :label="$t('确认')"
+               @click="onOKClick"/>
         <q-btn class="q-ma-sm" color="primary" unelevated :label="$t('取消')" @click="onCancelClick"/>
       </q-card-actions>
     </q-card>
