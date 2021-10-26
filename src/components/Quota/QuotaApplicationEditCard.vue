@@ -50,7 +50,7 @@
                   v-if="$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.service_type.toLowerCase().includes('ev')"
                   name="img:svg/EVCloud-Logo-Horizontal.svg"
                   style="width: 100px;height: 20px"/>
-                <q-tooltip>{{$t('该节点的服务种类为EVCloud')}}</q-tooltip>
+                <q-tooltip>{{$t('该节点的服务类型为EVCloud')}}</q-tooltip>
               </span>
 
               <span>
@@ -58,7 +58,7 @@
                   v-if="$store.state.fed.tables.serviceTable.byId[currentApplication.service]?.service_type.toLowerCase().includes('open')"
                   name="img:svg/OpenStack-Logo-Horizontal.svg"
                   style="width: 100px;height: 20px"/>
-                <q-tooltip>{{$t('该节点的服务种类为OpenStack')}}</q-tooltip>
+                <q-tooltip>{{$t('该节点的服务类型为OpenStack')}}</q-tooltip>
               </span>
             </span>
           </div>
