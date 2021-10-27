@@ -30,10 +30,6 @@ export default defineComponent({
     })
     const divNodes = ref<typeof HostCluster[]>([])
     const filterOptions = [
-      // {
-      //   label: '每5s刷新',
-      //   value: 5
-      // },
       {
         label: '每30s刷新',
         value: 30
@@ -56,16 +52,16 @@ export default defineComponent({
       }
     ]
     let timer = setInterval(() => {
+      isShow.value = false
       divNodes.value.forEach((node) => {
-        isShow.value = false
         node.intervalRefresh()
       })
     }, filterSelection.value.value * 1000)
     watch(filterSelection, () => {
       clearInterval(timer)
       timer = setInterval(() => {
+        isShow.value = false
         divNodes.value.forEach((node) => {
-          isShow.value = false
           node.intervalRefresh()
         })
       }, filterSelection.value.value * 1000)

@@ -1,6 +1,6 @@
 <template>
   <div class="StorageCluster">
-      <div v-for="(item, index) in storageData" :key="index">
+    <div v-for="(item, index) in storageData" :key="index">
       <div class="text-subtitle1 text-weight-bold">{{ item.name }}</div>
       <div class="row">
         <div class="col-6 row q-mt-md">
@@ -97,7 +97,7 @@
           </q-card>
         </div>
       </div>
-      </div>
+    </div>
   </div>
 </template>
 
@@ -171,23 +171,39 @@ export default defineComponent({
     const refresh = async (payload: { service_id: string, query: string, num: number }) => {
       if (payload.query === 'health_status') {
         isShowHealth.value = false
-        void await getData({ service_id: payload.service_id, query: payload.query, num: payload.num })
+        void await getData({
+          service_id: payload.service_id,
+          query: payload.query,
+          num: payload.num
+        })
         isShowHealth.value = true
       } else if (payload.query === 'cluster_total_bytes') {
         isShowClusterTotal.value = false
-        void await getData({ service_id: payload.service_id, query: payload.query, num: payload.num })
+        void await getData({
+          service_id: payload.service_id,
+          query: payload.query,
+          num: payload.num
+        })
         isShowClusterTotal.value = true
       } else if (payload.query === 'cluster_total_used_bytes') {
         isShowClusterUsed.value = false
-        void await getData({ service_id: payload.service_id, query: payload.query, num: payload.num })
+        void await getData({
+          service_id: payload.service_id,
+          query: payload.query,
+          num: payload.num
+        })
         isShowClusterUsed.value = true
       } else {
         isShowOSD.value = false
         const arr = payload.query.split(',')
         for (const item of arr) {
-          void await getData({ service_id: payload.service_id, query: item, num: payload.num })
-          isShowOSD.value = true
+          void await getData({
+            service_id: payload.service_id,
+            query: item,
+            num: payload.num
+          })
         }
+        isShowOSD.value = true
       }
     }
     const intervalRefresh = () => {
