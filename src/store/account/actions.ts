@@ -240,7 +240,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
   },
   /* 修改group信息 */
 
-  /* 增加group人员 */
+  /* 增加group成员 */
   addGroupMemberDialog (context, groupId: string) {
     Dialog.create({
       component: GroupAddMemberCard,
@@ -266,7 +266,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
           classes: 'notification-positive shadow-15',
           icon: 'mdi-check-circle',
           textColor: 'light-green',
-          message: '已经成功添加人员:' + member.user.username,
+          message: '已经成功添加成员:' + member.user.username,
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,
@@ -279,7 +279,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
           classes: 'notification-negative shadow-15',
           icon: 'mdi-alert',
           textColor: 'negative',
-          message: '添加人员失败：' + member.username + ' - ' + member.message,
+          message: '添加成员失败：' + member.username + ' - ' + member.message,
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,
@@ -288,14 +288,14 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
       }
     })
   },
-  /* 增加group人员 */
+  /* 增加group成员 */
 
-  /* 移除group人员 */
+  /* 移除group成员 */
   removeSingleGroupMemberDialog (context, payload: { groupId: string; username: string }) {
     // 操作的确认提示
     Dialog.create({
       class: 'dialog-primary',
-      title: '移除项目组人员：' + payload.username,
+      title: '移除项目组成员：' + payload.username,
       message:
         '确认移除?',
       focus: 'cancel',
@@ -324,7 +324,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
           classes: 'notification-positive shadow-15',
           icon: 'mdi-check-circle',
           textColor: 'light-green',
-          message: '已经移除项目组人员：' + payload.username,
+          message: '已经移除项目组成员：' + payload.username,
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,
@@ -333,14 +333,14 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
       }
     })
   },
-  /* 移除group人员 */
+  /* 移除group成员 */
 
-  /* 修改group人员角色 */
+  /* 修改group成员角色 */
   editGroupMemberRoleDialog (context, payload: { groupId: string; member_id: string; role: 'member' | 'leader'; role_name: string }) {
     // 操作的确认提示
     Dialog.create({
       class: 'dialog-primary',
-      title: '将人员设置为：' + payload.role_name,
+      title: '将成员设置为：' + payload.role_name,
       message:
         '确认设置?',
       focus: 'cancel',
@@ -374,7 +374,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
           classes: 'notification-positive shadow-15',
           icon: 'mdi-check-circle',
           textColor: 'light-green',
-          message: '已经设置人员：' + respPostMemberRole.data.user.username + '为' + payload.role_name,
+          message: '已经设置成员：' + respPostMemberRole.data.user.username + '为' + payload.role_name,
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,
@@ -383,7 +383,7 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
       }
     })
   },
-  /* 修改group人员角色 */
+  /* 修改group成员角色 */
 
   /* 新建group */
   async createGroupDialog (context, payload: { name: string; company: string; description: string; }) {

@@ -6,7 +6,7 @@ const $store = {
     },
     tables: {
       groupTable: {}, // 用户的项目组关系与信息
-      groupMemberTable: {} // 各个项目组的人员信息
+      groupMemberTable: {} // 各个项目组的成员信息
     }
   },
   /* 账户部分 */

@@ -13,7 +13,7 @@
         <!--直接从url进入本页面时，tables尚未载入，应显示loading界面。对取属性进行缓冲，不出现undefined错误-->
         <div class="row">
 
-          <div v-if="!server || !service || !vpn" class="col">
+          <div v-if="!server || !service || (service.need_vpn && !vpn) " class="col">
             正在加载，请稍候
           </div>
 
@@ -178,15 +178,20 @@
 
                 <div class="row q-pb-md items-center">
                   <div class="col-3 text-grey">系统初始用户名</div>
-                  <div class="col">
-                    {{ server.default_user }}
-                    <q-btn
-                      class="col-shrink q-px-xs" flat color="primary" icon="content_copy" size="sm"
-                      @click="clickToCopy(server.default_user)">
-                      <q-tooltip>
-                        复制
-                      </q-tooltip>
-                    </q-btn>
+                  <div class="col-shrink">
+                    <div v-if="server?.default_user === null || server?.default_user===''">
+                      {{ $t('服务节点未提供') }}
+                    </div>
+                    <div v-else>
+                      {{ server.default_user }}
+                      <q-btn
+                        class="col-shrink q-px-xs" flat color="primary" icon="content_copy" size="sm"
+                        @click="clickToCopy(server.default_user)">
+                        <q-tooltip>
+                          复制
+                        </q-tooltip>
+                      </q-btn>
+                    </div>
                   </div>
                 </div>
 
@@ -194,7 +199,7 @@
                   <div class="col-3 text-grey">系统初始密码</div>
                   <div class="col-shrink">
                     <div v-if="server?.default_password === null || server?.default_password===''">
-                      {{ $t('后台无记录') }}
+                      {{ $t('服务节点未提供') }}
                     </div>
                     <!--根据内容改变长度的input. 一个字母占8像素，一个汉字占16像素.https://github.com/quasarframework/quasar/issues/1958-->
                     <q-input v-else

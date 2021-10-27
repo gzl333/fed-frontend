@@ -173,13 +173,13 @@
                            :ripple="false"
                            name="member"
                            icon="group"
-                           :label="$t('人员')"/>
+                           :label="$t('成员')"/>
                   </q-tabs>
 
                   <q-btn v-show="tab==='member' && group.myRole !== 'member' " class="col-shrink" icon="add" size="md"
                          unelevated dense padding="xs"
                          color="primary" @click="$store.dispatch('account/addGroupMemberDialog', groupId)">
-                    新增人员
+                    新增成员
                   </q-btn>
 
                   <q-btn v-show="tab==='server' && group.myRole !== 'member'" class="col-shrink" icon="add" size="md"

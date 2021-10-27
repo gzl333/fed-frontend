@@ -17,7 +17,7 @@
       <template v-slot:body="props">
         <q-tr :props="props">
 
-          <q-td key="group" :props="props">
+          <q-td v-if="isGroup && !isHideGroup" key="group" :props="props">
             <q-btn
               class="q-ma-none" :label="$store.state.account.tables.groupTable.byId[props.row.vo_id].name"
               color="primary"
@@ -41,23 +41,36 @@
                   $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name_en
               }}
             </div>
-            <div>
-              <div>
-                <q-icon
-                  v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"
-                  name="img:svg/EVCloud-Logo-Horizontal.svg"
-                  style="width: 100px;height: 20px"/>
-                <q-tooltip>{{$t('该节点的服务类型为EVCloud')}}</q-tooltip>
-              </div>
 
-              <div>
-                <q-icon
-                  v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"
-                  name="img:svg/OpenStack-Logo-Horizontal.svg"
-                  style="width: 100px;height: 20px"/>
-                <q-tooltip>{{$t('该节点的服务类型为OpenStack')}}</q-tooltip>
-              </div>
+            <div>
+              <q-icon
+                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"
+                name="img:svg/EVCloud-Logo-Horizontal.svg"
+                style="width: 100px;height: 20px"/>
+              <!--                <q-tooltip>{{$t('该节点的服务类型为EVCloud')}}</q-tooltip>-->
             </div>
+
+            <div>
+              <q-icon
+                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"
+                name="img:svg/OpenStack-Logo-Horizontal.svg"
+                style="width: 100px;height: 20px"/>
+              <!--                <q-tooltip>{{$t('该节点的服务类型为OpenStack')}}</q-tooltip>-->
+            </div>
+
+            <q-tooltip class="bg-grey-4" :offset="[0, -35]">
+              <span class="text-black">
+                {{ $t('该节点的服务类型为') }}
+              </span>
+              <q-icon
+                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"
+                name="img:svg/EVCloud-Logo-Horizontal.svg"
+                style="width: 100px;height: 20px"/>
+              <q-icon
+                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"
+                name="img:svg/OpenStack-Logo-Horizontal.svg"
+                style="width: 100px;height: 20px"/>
+            </q-tooltip>
           </q-td>
 
           <q-td key="duration_days" :props="props">

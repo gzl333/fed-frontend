@@ -8,7 +8,7 @@
       :rows="members"
       :columns="columns"
       row-key="name"
-      no-data-label="项目组人员为空"
+      no-data-label="项目组成员为空"
       hide-pagination
       :pagination="paginationTable"
     >
@@ -56,7 +56,7 @@
               </q-btn>
 
               <q-btn v-else icon="mdi-account-multiple-remove" flat dense padding="none" color="primary"
-                     @click="$store.dispatch('account/editGroupMemberRoleDialog', {groupId, member_id: props.row.id, role:'member', role_name: '成员'})">
+                     @click="$store.dispatch('account/editGroupMemberRoleDialog', {groupId, member_id: props.row.id, role:'member', role_name: '组员'})">
                 <q-tooltip>取消管理员</q-tooltip>
               </q-btn>
 

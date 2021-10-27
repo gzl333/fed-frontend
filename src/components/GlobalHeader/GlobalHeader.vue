@@ -2,9 +2,13 @@
   <div class="GlobalHeader">
     <div class="row">
       <q-toolbar class="q-pa-none">
-        <q-toolbar-title>
+        <q-toolbar-title shrink>
           <!--中英文静态资源的替换-->
-          <img :src="$t('resource.title')" alt="中国科技云联邦" class="title q-pt-sm">
+<!--          <img :src="$t('resource.title')" alt="中国科技云联邦" class="title q-pt-sm">-->
+
+          <q-icon v-if="locale==='zh'" name="img:svg/fed-title-cn.svg" style="width: 300px;height: 40px; opacity: 0.7"/>
+          <q-icon v-else name="img:svg/fed-title-en.svg" style="width: 390px;height: 40px; opacity: 0.7"/>
+
         </q-toolbar-title>
 
         <q-space/>
@@ -133,6 +137,7 @@ export default defineComponent({
     }
 
     return {
+      locale,
       localeModel,
       localeOptions,
       currentUser,

@@ -8,7 +8,7 @@
         ... use q-card-section for it?
       -->
       <q-card-section>
-        <div class="text-h6 q-pb-lg">{{ $t('增加人员') }}</div>
+        <div class="text-h6 q-pb-lg">{{ $t('增加成员') }}</div>
       </q-card-section>
 
       <q-card-section>

@@ -61,17 +61,21 @@
               locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[server.service]?.name : $store.state.fed.tables.serviceTable.byId[server.service]?.name_en
             }}
 
-            <q-icon
-              v-if="$store.state.fed.tables.serviceTable.byId[server.service]?.service_type.toLowerCase().includes('ev')"
-              name="img:svg/EVCloud-Logo-Horizontal.svg"
-              style="width: 100px;height: 20px"/>
+            <span>
+              <q-icon
+                v-if="$store.state.fed.tables.serviceTable.byId[server.service]?.service_type.toLowerCase().includes('ev')"
+                name="img:svg/EVCloud-Logo-Horizontal.svg"
+                style="width: 100px;height: 20px"/>
             <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>
+            </span>
 
-            <q-icon
-              v-if="$store.state.fed.tables.serviceTable.byId[server.service]?.service_type.toLowerCase().includes('open')"
-              name="img:svg/OpenStack-Logo-Horizontal.svg"
-              style="width: 100px;height: 20px"/>
+            <span>
+              <q-icon
+                v-if="$store.state.fed.tables.serviceTable.byId[server.service]?.service_type.toLowerCase().includes('open')"
+                name="img:svg/OpenStack-Logo-Horizontal.svg"
+                style="width: 100px;height: 20px"/>
             <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>
+            </span>
 
           </div>
         </div>

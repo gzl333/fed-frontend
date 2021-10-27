@@ -47,7 +47,7 @@
             </q-btn>
           </q-td>
 
-          <q-td key="group" :props="props">
+          <q-td v-if="isGroup && !isHideGroup" key="group" :props="props">
             <q-btn
               class="q-ma-none" :label="$store.state.account.tables.groupTable.byId[props.row.vo_id]?.name"
               color="primary"
@@ -71,47 +71,61 @@
                   $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name_en
               }}
             </div>
-            <div>
-              <div>
-                <q-icon
-                  v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"
-                  name="img:svg/EVCloud-Logo-Horizontal.svg"
-                  style="width: 100px;height: 20px"/>
-                <q-tooltip>{{$t('该节点的服务类型为EVCloud')}}</q-tooltip>
-              </div>
 
-              <div>
-                <q-icon
-                  v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"
-                  name="img:svg/OpenStack-Logo-Horizontal.svg"
-                  style="width: 100px;height: 20px"/>
-                <q-tooltip>{{$t('该节点的服务类型为OpenStack')}}</q-tooltip>
-              </div>
+            <div>
+              <q-icon
+                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"
+                name="img:svg/EVCloud-Logo-Horizontal.svg"
+                style="width: 100px;height: 20px"/>
+              <!--                            <q-tooltip>{{$t('该节点的服务类型为EVCloud')}}</q-tooltip>-->
             </div>
+
+            <div>
+              <q-icon
+                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"
+                name="img:svg/OpenStack-Logo-Horizontal.svg"
+                style="width: 100px;height: 20px"/>
+              <!--                            <q-tooltip>{{$t('该节点的服务类型为OpenStack')}}</q-tooltip>-->
+            </div>
+
+            <q-tooltip class="bg-grey-4" :offset="[0, -15]">
+              <span class="text-black">
+                {{ $t('该节点的服务类型为') }}
+              </span>
+              <q-icon
+                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"
+                name="img:svg/EVCloud-Logo-Horizontal.svg"
+                style="width: 100px;height: 20px"/>
+              <q-icon
+                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"
+                name="img:svg/OpenStack-Logo-Horizontal.svg"
+                style="width: 100px;height: 20px"/>
+            </q-tooltip>
           </q-td>
 
-<!--          <q-td key="serviceType" :props="props">-->
+          <!--          <q-td key="serviceType" :props="props">-->
 
-<!--            <q-icon v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"-->
-<!--                    name="img:svg/EVCloud-Logo-Vertical.svg"-->
-<!--                    style="width: 80px;height: 40px"/>-->
+          <!--            <q-icon v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"-->
+          <!--                    name="img:svg/EVCloud-Logo-Vertical.svg"-->
+          <!--                    style="width: 80px;height: 40px"/>-->
 
-<!--            <q-icon v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"-->
-<!--                    name="img:svg/OpenStack-Logo-Vertical.svg"-->
-<!--                    style="width: 80px;height: 40px"/>-->
+          <!--            <q-icon v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"-->
+          <!--                    name="img:svg/OpenStack-Logo-Vertical.svg"-->
+          <!--                    style="width: 80px;height: 40px"/>-->
 
-<!--          </q-td>-->
+          <!--          </q-td>-->
 
           <q-td key="image" :props="props">
 
             <div>
-              <q-icon v-if="getOsIconName(props.row.image)" :name="getOsIconName(props.row.image)" flat size="md" color="primary"/>
+              <q-icon v-if="getOsIconName(props.row.image)" :name="getOsIconName(props.row.image)" flat size="md"
+                      color="primary"/>
             </div>
 
             {{ props.row.image }}
-            <q-tooltip>
+            <q-tooltip :offset="[0, -15]">
               {{ props.row.image }}
-<!--              {{ props.row.image_desc}}-->
+              <!--              {{ props.row.image_desc}}-->
             </q-tooltip>
           </q-td>
 
@@ -136,10 +150,10 @@
                 <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(',')[1] }}</div>
               </div>
 
-<!--              <q-icon v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0"-->
-<!--                      name="help_outline" color="red" size="xs">-->
-<!--                <q-tooltip>{{ $t('云主机已到期') }}</q-tooltip>-->
-<!--              </q-icon>-->
+              <!--              <q-icon v-if="(new Date(props.row.expiration_time).getTime() - new Date().getTime()) < 0"-->
+              <!--                      name="help_outline" color="red" size="xs">-->
+              <!--                <q-tooltip>{{ $t('云主机已到期') }}</q-tooltip>-->
+              <!--              </q-icon>-->
             </div>
           </q-td>
 
@@ -348,7 +362,7 @@ export default defineComponent({
           field: 'operation',
           align: 'center',
           classes: 'ellipsis',
-          style: 'padding: 15px 0px',
+          style: 'padding: 15px 0px;width: 150px;',
           headerStyle: 'padding: 0 2px'
         }
         ] : [
@@ -447,7 +461,7 @@ export default defineComponent({
             field: 'operation',
             align: 'center',
             classes: 'ellipsis',
-            style: 'padding: 15px 0px',
+            style: 'padding: 15px 0px;width: 150px;',
             headerStyle: 'padding: 0 0 0 1px'
           }
         ]
@@ -556,7 +570,7 @@ export default defineComponent({
           align: 'center',
           classes: 'ellipsis',
           headerStyle: 'padding: 0 0 0 1px',
-          style: 'padding: 15px 0px'
+          style: 'padding: 15px 0px;width: 150px;'
         }
         ] : [
           {
@@ -655,7 +669,7 @@ export default defineComponent({
             align: 'center',
             classes: 'ellipsis',
             headerStyle: 'padding: 0 0 0 1px',
-            style: 'padding: 15px 0px'
+            style: 'padding: 15px 0px;width: 150px;'
           }
         ]
 

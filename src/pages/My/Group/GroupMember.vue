@@ -7,7 +7,7 @@
           <div class="col">
             <q-btn icon="arrow_back_ios" color="primary" flat unelevated dense
                    @click="goBack"/>
-            项目组人员
+            项目组成员
           </div>
         </div>
 
@@ -61,17 +61,17 @@
             </div>
 
             <!--项目组信息行结束-->
-            <!--人员列表开始-->
+            <!--成员列表开始-->
             <div class="row">
               <div class="col">
 
                 <div class="row justify-between items-center q-pt-lg q-pb-sm ">
                   <div class="col-auto text-grey">
-                    人员列表
+                    成员列表
                   </div>
                   <div class="col-auto">
                     <q-btn icon="add" unelevated dense padding="xs" color="primary">
-                      增加人员
+                      增加成员
                     </q-btn>
                   </div>
                 </div>
@@ -80,7 +80,7 @@
 
               </div>
             </div>
-            <!--人员列表结束-->
+            <!--成员列表结束-->
           </div>
         </div>
 

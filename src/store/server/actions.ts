@@ -108,12 +108,14 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   async loadUserVpnTable (context) {
     context.commit('clearTable', context.state.tables.userVpnTable)
     for (const serviceId of context.rootState.fed.tables.serviceTable.allIds) {
-      const respVpn = await $api.vpn.getVpn({ path: { service_id: serviceId } })
-      Object.assign(respVpn.data.vpn, { id: serviceId })
-      context.commit('storeTable', {
-        table: context.state.tables.userVpnTable,
-        tableObj: { [serviceId]: respVpn.data.vpn }
-      })
+      if (context.rootState.fed.tables.serviceTable.byId[serviceId]?.need_vpn) {
+        const respVpn = await $api.vpn.getVpn({ path: { service_id: serviceId } })
+        Object.assign(respVpn.data.vpn, { id: serviceId })
+        context.commit('storeTable', {
+          table: context.state.tables.userVpnTable,
+          tableObj: { [serviceId]: respVpn.data.vpn }
+        })
+      }
     }
   },
   async loadPersonalQuotaTable (context) {

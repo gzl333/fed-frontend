@@ -145,7 +145,7 @@ export default defineComponent({
       },
       {
         name: 'member',
-        label: '组员',
+        label: '成员',
         field: 'member',
         align: 'center',
         style: 'padding: 15px 0px',

@@ -256,8 +256,10 @@ const getters: GetterTree<ServerModuleInterface, StateInterface> = {
     return serviceOptions
   },
   // 获取个人有quota/server的vpn对象
-  getPersonalAvailableVpns: (state, getters): VpnInterface[] => {
-    const serviceIds = getters.getPersonalAvailableServiceIds as string[]
+  getPersonalAvailableVpns: (state, getters, rootState): VpnInterface[] => {
+    // service.need_vpn才加入
+    const serviceIds = getters.getPersonalAvailableServiceIds.filter((serviceId: string) => rootState.fed.tables.serviceTable.byId[serviceId]?.need_vpn) as string[]
+    // serviceId -> service对象
     const vpns = serviceIds.map((serviceId) => state.tables.userVpnTable.byId[serviceId])
     return vpns
   }

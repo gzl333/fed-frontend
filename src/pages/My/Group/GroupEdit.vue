@@ -140,7 +140,7 @@
                     <q-tab class="q-px-none q-py-none q-mr-md"
                            :ripple="false"
                            name="member"
-                           label="人员"/>
+                           label="成员"/>
                     <q-tab class="q-px-none q-py-none q-mr-md"
                            :ripple="false"
                            name="server"
@@ -152,7 +152,7 @@
                   </q-tabs>
 
                   <q-btn v-show="tab==='member'" class="col-shrink" icon="add" size="md" unelevated dense padding="xs" color="primary">
-                    新增人员
+                    新增成员
                   </q-btn>
 
                   <q-btn v-show="tab==='server'" class="col-shrink" icon="add" size="md" unelevated dense padding="xs" color="primary">

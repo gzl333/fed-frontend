@@ -91,7 +91,7 @@ const mutation: MutationTree<AccountModuleInterface> = {
     state.tables.groupTable.byId[payload.groupId].myRole = payload.myRole
   },
   storeGroupMemberTableSingleMember (state, payload: { groupId: string; member: SingleMemberInterface }) {
-    // 增加人员，修改角色用。为了避免数组有重复，采取以下逻辑：
+    // 增加成员，修改角色用。为了避免数组有重复，采取以下逻辑：
     // 删掉已有的同名member
     state.tables.groupMemberTable.byId[payload.groupId].members = state.tables.groupMemberTable.byId[payload.groupId].members.filter((member) => {
       return member.user.username !== payload.member.user.username

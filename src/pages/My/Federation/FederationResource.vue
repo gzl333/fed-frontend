@@ -73,9 +73,19 @@
     <q-separator class="q-my-lg"/>
     <div class="text-h5">当前服务数量：{{ $store.state.fed.tables.serviceTable.allIds?.length }}</div>
     <div v-for="dataCenter in dataCenters" :key="dataCenter.id" class="row items-center q-gutter-lg q-my-md">
-      <div class="text-bold text-subtitle1"> {{ dataCenter.name }}:</div>
-      <div v-for="service in dataCenter.services" :key="service" class="text-h7">
+      <div class="column items-center text-bold text-subtitle1"> {{ dataCenter.name }}:</div>
+      <div v-for="service in dataCenter.services" :key="service" class="text-h7 column items-center">
         {{ $store.state.fed.tables.serviceTable.byId[service]?.name }}
+        <div>
+          <q-icon
+            v-if="$store.state.fed.tables.serviceTable.byId[service]?.service_type.toLowerCase().includes('ev')"
+            name="img:svg/EVCloud-Logo-Horizontal.svg"
+            style="width: 100px;height: 20px"/>
+          <q-icon
+            v-if="$store.state.fed.tables.serviceTable.byId[service]?.service_type.toLowerCase().includes('open')"
+            name="img:svg/OpenStack-Logo-Horizontal.svg"
+            style="width: 100px;height: 20px"/>
+        </div>
       </div>
     </div>
     <q-separator class="q-my-lg"/>

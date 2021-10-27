@@ -117,6 +117,16 @@
                   </div>
                 </div>
 
+                <div class="row q-pb-sm items-center">
+<!--                  <div class="col-2 text-grey">-->
+<!--                    VPN 使用方法-->
+<!--                  </div>-->
+                  <div class="col">
+                    <q-btn label="查看VPN使用方法" class="" color="primary" padding="none" dense flat
+                           @click="gotoManualVpn"/>
+                  </div>
+                </div>
+
               </q-tab-panel>
 
             </q-tab-panels>
@@ -175,13 +185,20 @@ export default defineComponent({
     // 修改密码loading状态
     const isLoading = ref(false)
 
+    const gotoManualVpn = () => {
+      // 中文访问/manual 英文访问/manual/en
+      const url = computed(() => location.origin + (locale.value === 'zh' ? '/manual/vpn' : '/manual/en/vpn'))
+      window.open(url.value)
+    }
+
     return {
       locale,
       vpns,
       tab,
       isPwds,
       isLoading,
-      clickToCopy
+      clickToCopy,
+      gotoManualVpn
     }
   }
 })

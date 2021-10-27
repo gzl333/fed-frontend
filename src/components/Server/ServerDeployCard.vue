@@ -58,7 +58,7 @@
                  v-for="service in dataCenter.services.map(id => $store.state.fed.tables.serviceTable.byId[id])"
                  :key="service.id">
 
-              <q-radio class="col-auto" dense v-model="radioService" :val="service.id" :key="service.id">
+              <q-radio class="col-auto non-selectable" dense v-model="radioService" :val="service.id" :key="service.id">
 
                 <span :class="radioService===service.id ? 'text-primary' : 'text-black'">
                   {{ locale === 'zh' ? service.name : service.name_en }}
@@ -112,8 +112,9 @@
             </div>
 
             <div v-else>
-              <q-radio v-for="quota in quotasUsable"
-                       dense v-model="radioQuota" :val="quota.id" :key="quota.id" class="radio"
+              <q-radio v-for="quota in quotasUsable" :val="quota.id" :key="quota.id"
+                       class="radio non-selectable"
+                       dense v-model="radioQuota"
                        :disable="quota.expired || quota.exhausted">
                 <quota-detail-card-intense :quota="quota" :is-group="isGroup"/>
               </q-radio>
@@ -131,15 +132,18 @@
             <div v-if="quotasUnusable.length === 0">{{ $t('无') }}</div>
             <div v-else>
               <div class="row">
-                <q-btn class="q-pa-none" color="primary" flat dense padding="none" size="md"
-                       @click="isFolded=!isFolded">
-                  {{ isFolded ? $t('展开') : $t('折叠') }}
-                </q-btn>
+                <!--                <q-btn class="q-pa-none" color="primary" flat dense padding="none" size="md"-->
+                <!--                       @click="isFolded=!isFolded">-->
+                <!--                  {{ isFolded ? $t('展开') : $t('折叠') }}-->
+                <!--                </q-btn>-->
+                <a class="text-primary" style="cursor: pointer;"
+                   @click="isFolded=!isFolded" :to="{path:'/my'}">{{ isFolded ? $t('展开') : $t('折叠') }}</a>
               </div>
               <div v-if="!isFolded">
-                <q-radio v-for="quota in quotasUnusable" dense v-model="radioQuota" :val="quota.id"
-                         :key="quota.id" class="radio"
-                         :disable="quota.expired || quota.exhausted">
+                <q-radio v-for="quota in quotasUnusable" :val="quota.id" :key="quota.id"
+                         class="radio non-selectable"
+                         v-model="radioQuota"
+                         dense :disable="quota.expired || quota.exhausted">
                   <quota-detail-card-intense :quota="quota" :is-group="isGroup"/>
                 </q-radio>
               </div>
@@ -161,8 +165,8 @@
             {{ $t('私网IP段') }}
           </div>
           <div class="col">
-            <q-radio v-for="network in privateNetworks" dense v-model="radioNetwork"
-                     :val="network.id" :key="network.id" class="radio">
+            <q-radio v-for="network in privateNetworks" :val="network.id" :key="network.id" v-model="radioNetwork"
+                     class="radio non-selectable" dense>
               <div :class="radioNetwork===network.id ? 'text-primary' : 'text-black'">
                 {{ network.name }}
               </div>
@@ -177,8 +181,8 @@
             {{ $t('公网IP段') }}
           </div>
           <div class="col">
-            <q-radio v-for="network in publicNetworks" dense v-model="radioNetwork"
-                     :val="network.id" :key="network.id" class="radio">
+            <q-radio v-for="network in publicNetworks" :val="network.id" :key="network.id" v-model="radioNetwork"
+                     class="radio non-selectable" dense>
               <div :class="radioNetwork===network.id ? 'text-primary' : 'text-black'">
                 {{ network.name }}
               </div>
@@ -194,7 +198,7 @@
 
         <div v-else class="row item-row">
           <div class="col-shrink item-title">
-            {{ $t('请选择可用配额以展示可用网络类型') }}
+            {{ $t('请选择可用配额以列举可用网络类型') }}
           </div>
         </div>
 
@@ -204,10 +208,10 @@
         <div class="text-h7 text-primary section-title">
           {{ $t('系统镜像') }}
         </div>
-        <div v-if="images.length > 0 && radioQuota" class="row item-row">
+        <div v-if="images.length > 0 && radioQuota " class="row item-row">
           <div class="col">
-            <q-radio v-for="image in images" dense v-model="radioImage" :val="image.id"
-                     :key="image.id" class="radio">
+            <q-radio v-for="image in images" :val="image.id" :key="image.id"
+                     class="radio non-selectable" dense v-model="radioImage">
               <div class="column items-center q-pr-md" :class="radioImage===image.id ? 'text-primary' : 'text-black'">
                 <div>
                   <q-icon v-if="getOsIconName(image.name)" :name="getOsIconName(image.name)" flat size="md"/>
@@ -217,7 +221,7 @@
             </q-radio>
           </div>
         </div>
-        <div v-else>{{ $t('请选择可用配额以展示系统镜像') }}</div>
+        <div v-else>{{ $t('请选择可用配额以列举可用系统镜像') }}</div>
       </div>
 
       <div class="col section">
@@ -226,15 +230,15 @@
         </div>
         <div v-if="flavors.length > 0 && radioQuota" class="row item-row">
           <div class="col">
-            <q-radio v-for="flavor in flavors" dense v-model="radioFlavor" :val="flavor.id"
-                     :key="flavor.id" class="radio">
+            <q-radio v-for="flavor in flavors" :val="flavor.id" :key="flavor.id"
+                      class="radio non-selectable" dense v-model="radioFlavor" >
               <div :class="radioFlavor===flavor.id ? 'text-primary' : 'text-black'">
                 {{ `${flavor.vcpus}${$t('核')}/${flavor.ram / 1024}GB` }}
               </div>
             </q-radio>
           </div>
         </div>
-        <div v-else>{{ $t('请选择可用配额以展示可用配置') }}</div>
+        <div v-else>{{ $t('请选择可用配额以列举可用配置') }}</div>
       </div>
 
       <div class="col section">

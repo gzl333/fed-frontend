@@ -173,7 +173,7 @@ export default defineComponent({
         value: 'leader'
       },
       {
-        label: '作为成员',
+        label: '作为组员',
         value: 'member'
       }
     ]
@@ -217,7 +217,7 @@ export default defineComponent({
     //   },
     //   {
     //     name: 'member',
-    //     label: '组员',
+    //     label: '成员',
     //     field: 'member',
     //     align: 'center',
     //     style: 'padding: 15px 0px',

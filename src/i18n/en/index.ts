@@ -48,7 +48,7 @@ export default {
   组云主机配额: 'Group Server Quota',
   组长: 'Owner',
   管理员: 'Manager',
-  成员: 'Member',
+  组员: 'Member',
 
   // server table
   长期: 'Long Term',

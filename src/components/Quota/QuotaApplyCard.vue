@@ -57,7 +57,7 @@
                  v-for="service in dataCenter.services.map(id => $store.state.fed.tables.serviceTable.byId[id])"
                  :key="service.id">
 
-              <q-radio class="col-auto" dense v-model="radioService" :val="service.id" :key="service.id">
+              <q-radio class="col-auto non-selectable" dense v-model="radioService" :val="service.id" :key="service.id">
 
                 <span :class="radioService===service.id ? 'text-primary' : 'text-black'">
                   {{ locale === 'zh' ? service.name : service.name_en }}

@@ -47,7 +47,7 @@
 
           <q-item v-if="server.status!==1" clickable v-close-popup class="bg-white text-primary"
                   :disable="server.lock === 'lock-operation'"
-                  @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'start'}, isGroup)">
+                  @click="$store.dispatch('server/serverOperationDialog',{ serverId: server.id, action: 'start', isGroup})">
             <div class="row">
               <q-item-section class="col-auto">
                 <q-icon name="play_arrow" size="sm"/>
@@ -62,7 +62,7 @@
 
           <q-item v-if="server.status!==5" clickable v-close-popup class="bg-white text-primary"
                   :disable="server.lock === 'lock-operation'"
-                  @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'reboot',isGroup})">
+                  @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'reboot', isGroup})">
             <div class="row">
               <q-item-section class="col-auto">
                 <q-icon name="restart_alt" size="sm"/>
@@ -77,7 +77,7 @@
 
           <q-item v-if="server.status!==5" clickable v-close-popup class="bg-white text-primary"
                   :disable="server.lock === 'lock-operation'"
-                  @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'shutdown',isGroup})">
+                  @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'shutdown', isGroup})">
             <div class="row">
               <q-item-section class="col-auto">
                 <q-icon name="power_settings_new" size="sm"/>
@@ -92,7 +92,7 @@
 
           <q-item v-if="server.status!==5" clickable v-close-popup class="bg-white text-primary"
                   :disable="server.lock === 'lock-operation'"
-                  @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'poweroff',isGroup})">
+                  @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'poweroff', isGroup})">
             <div class="row">
               <q-item-section class="col-auto">
                 <q-icon name="power_off" size="sm"/>
@@ -112,7 +112,7 @@
 
             <q-item clickable v-close-popup class="bg-white text-primary"
                     :disable="server.lock === 'lock-operation'"
-                    @click="$store.dispatch('server/triggerServerRebuildDialog',{serverId: server.id,isGroup})">
+                    @click="$store.dispatch('server/triggerServerRebuildDialog',{serverId: server.id, isGroup})">
               <div class="row">
                 <q-item-section class="col-auto">
                   <q-icon name="build" size="sm"/>
@@ -129,7 +129,7 @@
 
             <q-item v-if="server.status!==1" clickable v-close-popup class="bg-white text-red"
                     :disable="server.lock === 'lock-operation'"
-                    @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'delete',isGroup})">
+                    @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'delete', isGroup})">
               <div class="row">
                 <q-item-section class="col-auto">
                   <q-icon name="delete" size="sm"/>
@@ -144,7 +144,7 @@
 
             <q-item clickable v-close-popup class="bg-white text-red"
                     :disable="server.lock === 'lock-operation'"
-                    @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'delete_force',isGroup})">
+                    @click="$store.dispatch('server/serverOperationDialog',{serverId: server.id, action: 'delete_force', isGroup})">
               <div class="row">
                 <q-item-section class="col-auto">
                   <q-icon name="delete_forever" size="sm"/>
