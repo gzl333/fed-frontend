@@ -61,6 +61,7 @@
               <div class="col q-gutter-lg">
 
                 <q-toggle
+                  style="margin-left: 10px;"
                   v-model="toggle"
                   checked-icon="lock"
                   unchecked-icon="lock_open"
@@ -225,7 +226,7 @@
                 </div>
 
                 <div v-if="service.need_vpn" class="row q-pb-md items-center ">
-                  <div class="col-3 text-grey ">VPN用户名</div>
+                  <div class="col-3 text-grey ">VPN 用户名</div>
                   <div class="col">
                     {{ vpn.username }}
                     <q-btn class="col-shrink q-px-xs" flat color="primary" icon="content_copy" size="sm"
@@ -238,7 +239,7 @@
                 </div>
 
                 <div v-if="service.need_vpn" class="row q-pb-md items-center">
-                  <div class="col-3 text-grey">VPN密码</div>
+                  <div class="col-3 text-grey">VPN 密码</div>
 
                   <div class="col-shrink">
                     <!--根据内容改变长度的input. 一个字母占8像素，一个汉字占16像素.https://github.com/quasarframework/quasar/issues/1958-->
@@ -266,7 +267,7 @@
                 </div>
 
                 <div v-if="service.need_vpn" class="row q-pb-md items-center">
-                  <div class="col-3 text-grey">VPN配置文件</div>
+                  <div class="col-3 text-grey">VPN 配置文件</div>
                   <div class="col">
                     <q-btn label="下载" class=" " color="primary" padding="none" dense flat
                            @click="$store.dispatch('server/fetchConfig', server.service)"/>
@@ -281,11 +282,19 @@
                   </div>
                 </div>
 
+                <div v-if="service.need_vpn" class="row q-pb-md items-center">
+                  <!--                  <div class="col-3 text-grey">VPN 使用方法</div>-->
+                  <!--                  <div class="col">-->
+                  <q-btn label="查看VPN使用方法" class="" color="primary" padding="none" dense flat
+                         @click="gotoManualVpn"/>
+                  <!--                  </div>-->
+                </div>
+
               </div>
 
               <div class="col-4">
                 <div v-if="isGroup" class="row q-pb-md items-center">
-                  <div class="col-2 text-grey">所属组</div>
+                  <div class="col-3 text-grey">所属组</div>
                   <div class="col-shrink">
                     <q-btn flat dense color="primary" padding="none"
                            :to="{path:  `/my/group/detail/${$store.state.account.tables.groupTable.byId[server.vo_id].id}`}">
@@ -298,21 +307,14 @@
                 </div>
 
                 <div v-if="isGroup" class="row q-pb-md items-center">
-                  <div class="col-2 text-grey">我的角色</div>
+                  <div class="col-3 text-grey">我的角色</div>
                   <div class="col-shrink">
                     <group-role-chip :role="myRole"/>
                   </div>
                 </div>
 
                 <div class="row q-pb-md items-center">
-                  <div class="col-2 text-grey">创建人</div>
-                  <div class="col-shrink">
-                    {{ server.user.username }}
-                  </div>
-                </div>
-
-                <div class="row q-pb-md items-center">
-                  <div class="col-2 text-grey">所用配额</div>
+                  <div class="col-3 text-grey">关联配额</div>
                   <div class="col-shrink">
 
                     <div v-if="quota">
@@ -325,15 +327,31 @@
                       <!--                      {{ quota?.display }}-->
                     </div>
 
-                    <div v-else>所用配额已删除</div>
+                    <div v-else>关联配额已删除</div>
 
                   </div>
                 </div>
 
                 <div class="row q-pb-md items-center">
-                  <div class="col-2 text-grey">可用期</div>
-                  <div class="col"> {{ new Date(server.creation_time).toLocaleString(locale) }} -
-                    {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString(locale) : '永久有效' }}
+                  <div class="col-3 text-grey">创建者</div>
+                  <div class="col-shrink">
+                    {{ server.user.username }}
+                  </div>
+                </div>
+
+                <div class="row q-pb-md items-center">
+                  <div class="col-3 text-grey">创建时间</div>
+                  <div class="col">
+                    {{ new Date(server.creation_time).toLocaleString(locale) }}
+                  </div>
+                </div>
+
+                <div class="row q-pb-md items-center">
+                  <div class="col-3 text-grey">到期时间</div>
+                  <div class="col">
+                    <div>
+                      {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString(locale) : '永久有效' }}
+                    </div>
                     <!--                    <q-icon-->
                     <!--                      v-if="server.expiration_time !== null && (new Date(server.expiration_time).getTime() - new Date().getTime()) < 0"-->
                     <!--                      name="help_outline" color="red" size="xs">-->
@@ -342,8 +360,17 @@
                   </div>
                 </div>
 
+                <div class="row q-pb-md items-center" v-if="server.expiration_time">
+                  <div class="col-3 text-grey">可用天数</div>
+                  <div class="col">
+                    {{
+                      Math.ceil((new Date(server.expiration_time) - new Date(server.creation_time)) / (1000 * 60 * 60 * 24))
+                    }}天
+                  </div>
+                </div>
+
                 <div class="row q-pb-md items-center">
-                  <div class="col-2 text-grey">云主机ID</div>
+                  <div class="col-3 text-grey">云主机ID</div>
                   <div class="col">
                     {{ server.id }}
                     <q-btn class="q-px-xs" flat color="primary" icon="content_copy" size="sm"
@@ -356,17 +383,17 @@
                 </div>
 
                 <div class="row q-pb-md items-center">
-                  <div class="col-2 text-grey">配置</div>
-                  <div class="col"> {{ server.vcpus }}核 / {{ server.ram / 1024 }}GB</div>
+                  <div class="col-3 text-grey">硬件配置</div>
+                  <div class="col"> {{ server.vcpus }}核CPU / {{ server.ram / 1024 }}GB内存</div>
                 </div>
 
                 <div class="row q-pb-md items-center">
-                  <div class="col-2 text-grey">IP类型</div>
+                  <div class="col-3 text-grey">IP地址类型</div>
                   <div class="col"> {{ server.public_ip ? '公网' : '私网' }}</div>
                 </div>
 
                 <div class="row q-pb-md items-center">
-                  <div class="col-2 text-grey">操作系统</div>
+                  <div class="col-3 text-grey">操作系统</div>
                   <div class="col">
                     <q-icon v-if="getOsIconName(server.image)" :name="getOsIconName(server.image)" flat size="md"/>
                     {{ server.image }}
@@ -374,7 +401,7 @@
                 </div>
 
                 <div v-if="server.image_desc" class="row q-pb-md items-center">
-                  <div class="col-2 text-grey">系统描述</div>
+                  <div class="col-3 text-grey">系统描述</div>
                   <div class="col"> {{ server.image_desc }}</div>
                 </div>
 
@@ -483,6 +510,12 @@ export default defineComponent({
     // 获取os的icon名称
     const getOsIconName = useGetOsIconName()
 
+    const gotoManualVpn = () => {
+      // 中文访问/manual 英文访问/manual/en
+      const url = computed(() => location.origin + (locale.value === 'zh' ? '/manual/vpn' : '/manual/en/vpn'))
+      window.open(url.value)
+    }
+
     return {
       locale,
       server,
@@ -494,7 +527,8 @@ export default defineComponent({
       isPwd,
       isPwdVpn,
       clickToCopy,
-      getOsIconName
+      getOsIconName,
+      gotoManualVpn
     }
   }
 })

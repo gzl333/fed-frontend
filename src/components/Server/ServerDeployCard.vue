@@ -100,7 +100,7 @@
           </div>
           <div class="col">
             <div v-if="quotasUsable.length === 0" class="row items-center">
-              {{ $t('该服务节点无可用云主机配额，请选择其它服务节点。 或') }}
+              {{ $t('无可用配额，请选择其它服务节点。 或') }}
               <q-btn v-if="isGroup" flat padding="none" color="primary"
                      :to="`/my/group/quota/apply?group=${radioGroup}&service=${radioService}`">
                 {{ $t('申请项目组云主机配额') }}
