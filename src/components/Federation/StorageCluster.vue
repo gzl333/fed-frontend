@@ -1,99 +1,98 @@
 <template>
   <div class="StorageCluster">
-    <div v-for="(item, index) in storageData" :key="index">
+    <div class="q-mt-md" v-for="(item, index) in storageData" :key="index">
       <div class="text-subtitle1 text-weight-bold">{{ item.name }}</div>
-      <div class="row">
-        <div class="col-6 row q-mt-md">
-          <div style="width: 194px">
+      <div class="row q-col-gutter-xs">
+        <div class="col-6 row q-col-gutter-sm">
+          <div class="col-4">
             <q-card flat bordered class="my-card q-pb-md no-border-radius">
               <div class="row">
                 <div class="col-11 text-center">集群状态</div>
                 <q-icon class="col-1" name="loop" size="xs" v-show="isShowHealth"
                         @click="refresh({ service_id: item.service_id, query: 'health_status', num: index })"/>
               </div>
-              <div :class="item.health_status === '0' ? 'text-positive text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : item.health_status === '1' ?
+              <div :class="!item.health_status ? 'text-center text-h4 q-mt-xl q-pb-xl' : item.health_status === '0' ? 'text-positive text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : item.health_status === '1' ?
                     'text-warning text-center text-h4 text-weight-bold q-mt-xl q-pb-xl' : 'text-negative text-center text-h4 text-weight-bold q-mt-xl q-pb-xl'">
-                {{ item.health_status === '0' ? 'Healthy' : item.health_status === '1' ? 'Warning' : 'Fatal' }}
+                {{ !item.health_status ? '暂无数据' : item.health_status === '0' ? 'Healthy' : item.health_status === '1' ? 'Warning' : 'Fatal' }}
               </div>
             </q-card>
           </div>
-          <div class="q-ml-sm" style="width: 200px">
+          <div class="col-4">
             <q-card flat bordered class="q-pb-md no-border-radius">
               <div class="row">
                 <div class="col-11 text-center">集群容量</div>
                 <q-icon name="loop" class="col-1" size="xs" v-show="isShowClusterTotal"
                         @click="refresh({ service_id: item.service_id, query: 'cluster_total_bytes', num: index })"/>
               </div>
-              <div class="text-center text-h4 text-weight-regular q-mt-xl q-pb-xl">
-                {{ (item.cluster_total_bytes / Math.pow(1024, 5)).toFixed(2) + 'PiB' }}
+              <div class="text-center text-h4 q-mt-xl q-pb-xl">
+                {{ !item.cluster_total_bytes ? '暂无数据' : (item.cluster_total_bytes / Math.pow(1024, 5)).toFixed(2) + 'PiB' }}
               </div>
             </q-card>
           </div>
-          <div class="q-ml-sm" style="width: 200px">
+          <div class="col-4">
             <q-card flat bordered class="q-pb-md no-border-radius">
               <div class="row">
                 <div class="col-11 text-center">当前容量</div>
                 <q-icon name="loop" class="col-1" size="xs" v-show="isShowClusterUsed"
                         @click="refresh({ service_id: item.service_id, query: 'cluster_total_used_bytes', num: index })"/>
               </div>
-              <div class="text-center text-h4 text-weight-regular q-mt-xl q-pb-xl">
-                {{ (item.cluster_total_used_bytes / Math.pow(1024, 4)).toFixed(2) + 'TiB' }}
+              <div class="text-center text-h4 q-mt-xl q-pb-xl">
+                {{ !item.cluster_total_used_bytes ? '暂无数据' : (item.cluster_total_used_bytes / Math.pow(1024, 4)).toFixed(2) + 'TiB' }}
               </div>
             </q-card>
           </div>
         </div>
-        <div class="col-5 right">
-          <div class="row">
+        <div class="col-5">
+        <q-card flat bordered class="no-border-radius q-pb-sm">
+          <div class="row q-pb-xs">
             <div class="col-11 text-center">OSD状态</div>
             <q-icon name="loop" class="col-1" size="xs" v-show="isShowOSD"
                     @click="refresh({ service_id: item.service_id, query: 'osd_in,osd_out,osd_up,osd_down', num: index })"/>
           </div>
-          <div class="row q-ml-md">
-            <div class="row col-12 q-ml-md q-mt-sm">
+          <div class="row q-ml-md q-mt-xs q-pb-xs">
+            <div class="row col-12 q-ml-md q-pb-sm">
               <div class="col-5">
                 <q-card flat bordered class="no-border-radius">
                   <div class="text-center">OSD IN</div>
-                  <div class="text-center text-h5 text-weight-bold text-positive q-mt-md q-pb-sm">
-                    {{ item.osd_in }}
+                  <div :class="!item.osd_in ? 'text-center text-h6 q-mt-xs' : 'text-center text-h5 text-weight-bold text-positive q-mt-xs'">
+                    {{ !item.osd_in ? '暂无数据' : item.osd_in }}
                   </div>
                 </q-card>
               </div>
               <div class="col-5 q-ml-lg">
                 <q-card flat bordered class="no-border-radius">
                   <div class="text-center">OSD UP</div>
-                  <div class="text-center text-h5 text-weight-bold text-positive q-mt-md q-pb-sm">
-                    {{ item.osd_up }}
+                  <div :class="!item.osd_up ? 'text-center text-h6 q-mt-xs' : 'text-center text-h5 text-weight-bold text-positive q-mt-xs'">
+                    {{ !item.osd_up ? '暂无数据' : item.osd_up }}
                   </div>
                 </q-card>
               </div>
               <div class="col-5 q-mt-sm">
                 <q-card flat bordered class="no-border-radius">
                   <div class="text-center">OSD OUT</div>
-                  <div class="text-center text-h5 text-weight-bold q-mt-md q-pb-sm">
-                    {{ item.osd_out }}
+                  <div :class="!item.osd_out ? 'text-center text-h6 q-mt-xs' : 'text-center text-h5 text-weight-bold q-mt-xs'">
+                    {{ !item.osd_out ? '暂无数据' : item.osd_out }}
                   </div>
                 </q-card>
               </div>
               <div class="col-5 q-ml-lg q-mt-sm">
                 <q-card flat bordered class="no-border-radius">
                   <div class="text-center">OSD DOWN</div>
-                  <div class="text-center text-h5 text-weight-bold q-mt-md q-pb-sm">
-                    {{ item.osd_down }}
+                  <div :class="!item.osd_down ? 'text-center text-h6 q-mt-xs' : 'text-center text-h5 text-weight-bold q-mt-xs'">
+                    {{ !item.osd_down ? '暂无数据' : item.osd_down }}
                   </div>
                 </q-card>
               </div>
             </div>
           </div>
+        </q-card>
         </div>
         <div class="col-1">
-          <q-card flat bordered class="no-border-radius q-pb-md">
-            <q-card-section>
-              <div class="text-center q-mt-xl">
-                <p class="text-primary">Go To</p>
-                <p class="text-primary">Grafana</p>
-                <p>详细信息</p>
+          <q-card flat bordered class="no-border-radius q-pb-sm">
+              <div class="text-center q-mt-lg q-pb-lg">
+                <p class="text-primary text-h6">Go To Grafana</p>
+                <p class="text-h7">详细信息</p>
               </div>
-            </q-card-section>
           </q-card>
         </div>
       </div>
@@ -145,7 +144,9 @@ export default defineComponent({
             if (!storageObject.service_id) {
               storageObject.service_id = res.data[i].monitor.service_id
             }
-            storageObject[item] = res.data[i].value[1]
+            if (res.data[i].value !== null) {
+              storageObject[item] = res.data[i].value[1]
+            }
           }).catch((error) => {
             console.log(error)
           })
@@ -165,7 +166,9 @@ export default defineComponent({
         }
       }
       await $api.monitor.getMonitorCephQuery(config).then((res) => {
-        storageData.value[payload.num][payload.query] = res.data[payload.num].value[1]
+        if (res.data[payload.num].value !== null) {
+          storageData.value[payload.num][payload.query] = res.data[payload.num].value[1]
+        }
       })
     }
     const refresh = async (payload: { service_id: string, query: string, num: number }) => {
@@ -236,8 +239,5 @@ export default defineComponent({
 
 <style lang="scss" scoped>
 .StorageCluster {
-  .right {
-    border: 1px solid $grey-4;
-  }
 }
 </style>

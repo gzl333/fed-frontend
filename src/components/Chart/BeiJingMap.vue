@@ -120,15 +120,15 @@ export default defineComponent({
         color: '#ff8003',
         opacity: 1,
         polyline: true,
-        // label: {
-        //   show: true,
-        //   padding: [10, 20],
-        //   color: '#fff',
-        //   backgroundColor: '#4C566A',
-        //   borderRadius: 6,
-        //   position: 'end',
-        //   formatter: '{b}'
-        // },
+        label: {
+          show: true,
+          padding: [10, 20],
+          color: '#fff',
+          backgroundColor: '#4C566A',
+          borderRadius: 6,
+          position: 'start',
+          formatter: '{b}'
+        },
         lineStyle: {
           type: 'solid',
           opacity: 1,
@@ -165,7 +165,7 @@ export default defineComponent({
         },
         lineStyle: {
           type: 'solid',
-          opacity: 1,
+          opacity: 0,
           color: '#B48EAD'
         },
         data: [
