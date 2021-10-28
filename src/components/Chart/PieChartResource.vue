@@ -55,6 +55,7 @@ export default defineComponent({
             }
           }
         },
+        // color: ['#F2C037', '#4caf50', '#027BE3'],
         series: [
           {
             name: '提供者',

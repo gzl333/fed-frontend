@@ -115,8 +115,42 @@ export default defineComponent({
       })
       seriesData.push({
         type: 'lines',
-        symbol: 'circle',
-        symbolSize: [10, 10],
+        // symbol: ['circle', 'circle'],
+        // symbolSize: [10, 10],
+        color: '#ff8003',
+        opacity: 1,
+        polyline: true,
+        // label: {
+        //   show: true,
+        //   padding: [10, 20],
+        //   color: '#fff',
+        //   backgroundColor: '#4C566A',
+        //   borderRadius: 6,
+        //   position: 'end',
+        //   formatter: '{b}'
+        // },
+        lineStyle: {
+          type: 'solid',
+          opacity: 1,
+          color: '#B48EAD'
+        },
+        data: [
+          {
+            name: '中国科学院计算机网络信息中心',
+            value: 10,
+            coords: [[116.342428, 39.99322], [116.322062, 41.06346], [115.693518, 41.06424]]
+          }
+          // {
+          //   name: '地球大数据科学工程专项',
+          //   value: 10,
+          //   coords: [[116.63853, 40.322563], [115.73853, 40.8]]
+          // }
+        ]
+      })
+      seriesData.push({
+        type: 'lines',
+        symbol: ['circle'],
+        symbolSize: [8, 8],
         color: '#ff8003',
         opacity: 1,
         label: {
@@ -125,7 +159,9 @@ export default defineComponent({
           color: '#fff',
           backgroundColor: '#4C566A',
           borderRadius: 6,
-          formatter: '{b}'
+          position: 'end',
+          formatter: '{b}',
+          opacity: 1
         },
         lineStyle: {
           type: 'solid',
@@ -136,13 +172,13 @@ export default defineComponent({
           {
             name: '中国科学院计算机网络信息中心',
             value: 10,
-            coords: [[116.342428, 39.99322], [116.1, 40.9]]
-          },
-          {
-            name: '地球大数据科学工程专项',
-            value: 10,
-            coords: [[116.63853, 40.322563], [115.73853, 40.8]]
+            coords: [[116.342428, 39.99322], [115.999518, 41.06424]]
           }
+          // {
+          //   name: '地球大数据科学工程专项',
+          //   value: 10,
+          //   coords: [[116.63853, 40.322563], [115.73853, 40.8]]
+          // }
         ]
       })
       const option = {
