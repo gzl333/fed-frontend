@@ -137,7 +137,7 @@
                 <!--                  {{ isFolded ? $t('展开') : $t('折叠') }}-->
                 <!--                </q-btn>-->
                 <a class="text-primary" style="cursor: pointer;"
-                   @click="isFolded=!isFolded" :to="{path:'/my'}">{{ isFolded ? $t('展开') : $t('折叠') }}</a>
+                   @click="isFolded=!isFolded" :to="{path:'/my'}">{{ isFolded ? $t('展开') : $t('收起') }}</a>
               </div>
               <div v-if="!isFolded">
                 <q-radio v-for="quota in quotasUnusable" :val="quota.id" :key="quota.id"
@@ -157,88 +157,127 @@
         <div class="text-h7 text-primary section-title">
           {{ $t('网络类型') }}
         </div>
-
-        <div
-          v-if="privateNetworks.length > 0 && radioQuota && (isGroup ? ($store.state.server.tables.groupQuotaTable.byId[radioQuota]?.private_ip_total - $store.state.server.tables.groupQuotaTable.byId[radioQuota]?.private_ip_used)>0 : ($store.state.server.tables.personalQuotaTable.byId[radioQuota]?.private_ip_total-$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.private_ip_used)>0)"
-          class="row item-row">
-          <div class="col-1 text-bold">
-            {{ $t('私网IP段') }}
-          </div>
-          <div class="col">
-            <q-radio v-for="network in privateNetworks" :val="network.id" :key="network.id" v-model="radioNetwork"
-                     class="radio non-selectable" dense>
-              <div :class="radioNetwork===network.id ? 'text-primary' : 'text-black'">
-                {{ network.name }}
-              </div>
-            </q-radio>
-          </div>
-        </div>
-
-        <div
-          v-if="publicNetworks.length > 0 && radioQuota && (isGroup ? ($store.state.server.tables.groupQuotaTable.byId[radioQuota]?.public_ip_total-$store.state.server.tables.groupQuotaTable.byId[radioQuota]?.public_ip_used)>0 : ($store.state.server.tables.personalQuotaTable.byId[radioQuota]?.public_ip_total-$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.public_ip_used)>0)"
-          class="row item-row">
-          <div class="col-1 text-bold">
-            {{ $t('公网IP段') }}
-          </div>
-          <div class="col">
-            <q-radio v-for="network in publicNetworks" :val="network.id" :key="network.id" v-model="radioNetwork"
-                     class="radio non-selectable" dense>
-              <div :class="radioNetwork===network.id ? 'text-primary' : 'text-black'">
-                {{ network.name }}
-              </div>
-            </q-radio>
-          </div>
-        </div>
-
-        <!--        <div v-if="publicNetworks.length === 0 && privateNetworks.length === 0" class="row item-row">-->
-        <!--          <div class="col-shrink item-title">-->
-        <!--            {{ $t('该服务节点无可用网络类型，请选择其它服务节点') }}-->
-        <!--          </div>-->
-        <!--        </div>-->
-
-        <div v-else class="row item-row">
+        <!--未选择配额-->
+        <div v-if="!radioQuota" class="row item-row">
           <div class="col-shrink item-title">
             {{ $t('请选择可用配额以列举可用网络类型') }}
           </div>
+        </div>
+        <!--选择了配额-->
+        <div v-else>
+
+          <div
+            v-if="privateNetworks.length > 0 && (isGroup ? ($store.state.server.tables.groupQuotaTable.byId[radioQuota]?.private_ip_total - $store.state.server.tables.groupQuotaTable.byId[radioQuota]?.private_ip_used)>0 : ($store.state.server.tables.personalQuotaTable.byId[radioQuota]?.private_ip_total-$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.private_ip_used)>0)"
+            class="row item-row">
+            <div class="col-1 text-bold">
+              {{ $t('私网IP段') }}
+            </div>
+            <div class="col">
+              <q-radio v-for="network in privateNetworks" :val="network.id" :key="network.id" v-model="radioNetwork"
+                       class="radio non-selectable" dense>
+                <div :class="radioNetwork===network.id ? 'text-primary' : 'text-black'">
+                  {{ network.name }}
+                </div>
+              </q-radio>
+            </div>
+          </div>
+
+          <div
+            v-if="publicNetworks.length > 0 && (isGroup ? ($store.state.server.tables.groupQuotaTable.byId[radioQuota]?.public_ip_total-$store.state.server.tables.groupQuotaTable.byId[radioQuota]?.public_ip_used)>0 : ($store.state.server.tables.personalQuotaTable.byId[radioQuota]?.public_ip_total-$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.public_ip_used)>0)"
+            class="row item-row">
+            <div class="col-1 text-bold">
+              {{ $t('公网IP段') }}
+            </div>
+            <div class="col">
+              <q-radio v-for="network in publicNetworks" :val="network.id" :key="network.id" v-model="radioNetwork"
+                       class="radio non-selectable" dense>
+                <div :class="radioNetwork===network.id ? 'text-primary' : 'text-black'">
+                  {{ network.name }}
+                </div>
+              </q-radio>
+            </div>
+          </div>
+
+          <!--节点只有公网，但余额只有私网；节点只有私网，余额只有公网。则无可用配额-->
+          <div
+            v-if="(publicNetworks.length>0 && (isGroup ? ($store.state.server.tables.groupQuotaTable.byId[radioQuota]?.private_ip_total - $store.state.server.tables.groupQuotaTable.byId[radioQuota]?.private_ip_used)>0 : ($store.state.server.tables.personalQuotaTable.byId[radioQuota]?.private_ip_total-$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.private_ip_used)>0)) || privateNetworks.length>0 && ((isGroup ? ($store.state.server.tables.groupQuotaTable.byId[radioQuota]?.public_ip_total-$store.state.server.tables.groupQuotaTable.byId[radioQuota]?.public_ip_used)>0 : ($store.state.server.tables.personalQuotaTable.byId[radioQuota]?.public_ip_total-$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.public_ip_used)>0))"
+            class="row item-row">
+            <div class="col-shrink item-title">
+              {{ $t('暂无可用网络类型，请选择其他可用配额') }}
+            </div>
+          </div>
+
+          <!--        <div v-if="publicNetworks.length === 0 && privateNetworks.length === 0" class="row item-row">-->
+          <!--          <div class="col-shrink item-title">-->
+          <!--            {{ $t('该服务节点无可用网络类型，请选择其它服务节点') }}-->
+          <!--          </div>-->
+          <!--        </div>-->
+
         </div>
 
       </div>
 
       <div class="col section">
         <div class="text-h7 text-primary section-title">
-          {{ $t('系统镜像') }}
+          {{ $t('操作系统') }}
         </div>
-        <div v-if="images.length > 0 && radioQuota " class="row item-row">
-          <div class="col">
-            <q-radio v-for="image in images" :val="image.id" :key="image.id"
-                     class="radio non-selectable" dense v-model="radioImage">
-              <div class="column items-center q-pr-md" :class="radioImage===image.id ? 'text-primary' : 'text-black'">
-                <div>
-                  <q-icon v-if="getOsIconName(image.name)" :name="getOsIconName(image.name)" flat size="md"/>
-                </div>
-                {{ image.name }}
-              </div>
-            </q-radio>
+
+        <div v-if="!radioQuota" class="row item-row">
+          <div class="col-shrink item-title">
+            {{ $t('请选择可用配额以列举可用操作系统') }}
           </div>
         </div>
-        <div v-else>{{ $t('请选择可用配额以列举可用系统镜像') }}</div>
+
+        <div v-else>
+          <div v-if="images.length > 0" class="row item-row">
+            <div class="col">
+              <q-radio v-for="image in images" :val="image.id" :key="image.id"
+                       class="radio non-selectable" dense v-model="radioImage">
+                <div class="column items-center q-pr-md" :class="radioImage===image.id ? 'text-primary' : 'text-black'">
+                  <div>
+                    <q-icon v-if="getOsIconName(image.name)" :name="getOsIconName(image.name)" flat size="md"/>
+                  </div>
+                  {{ image.name }}
+                </div>
+              </q-radio>
+            </div>
+          </div>
+          <div v-else class="row item-row">
+            <div class="col-shrink item-title">
+              {{ $t('该服务节点无可用操作系统，请选择其它服务节点') }}
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="col section">
         <div class="text-h7 text-primary section-title">
           CPU/{{ $t('内存') }}
         </div>
-        <div v-if="flavors.length > 0 && radioQuota" class="row item-row">
-          <div class="col">
-            <q-radio v-for="flavor in flavors" :val="flavor.id" :key="flavor.id"
-                      class="radio non-selectable" dense v-model="radioFlavor" >
-              <div :class="radioFlavor===flavor.id ? 'text-primary' : 'text-black'">
-                {{ `${flavor.vcpus}${$t('核')}/${flavor.ram / 1024}GB` }}
-              </div>
-            </q-radio>
+
+        <div v-if="!radioQuota" class="row item-row">
+          <div class="col-shrink item-title">
+            {{ $t('请选择可用配额以列举可用配置') }}
           </div>
         </div>
-        <div v-else>{{ $t('请选择可用配额以列举可用配置') }}</div>
+
+        <div v-else>
+          <div v-if="flavors.length > 0" class="row item-row">
+            <div class="col">
+              <q-radio v-for="flavor in flavors" :val="flavor.id" :key="flavor.id"
+                       class="radio non-selectable" dense v-model="radioFlavor">
+                <div :class="radioFlavor===flavor.id ? 'text-primary' : 'text-black'">
+                  {{ `${flavor.vcpus}${$t('核')}/${flavor.ram / 1024}GB` }}
+                </div>
+              </q-radio>
+            </div>
+          </div>
+          <div v-else class="row item-row">
+            <div class="col-shrink item-title">
+              {{ $t('该服务节点无可用配置，请选择其它服务节点') }}
+            </div>
+          </div>
+        </div>
       </div>
 
       <div class="col section">
@@ -466,8 +505,13 @@ export default defineComponent({
     // network选项取决于两部分： 1.配额里公网私网的数量。 2.该服务的network配置，这是最基础条件。
     const chooseNetwork = () => {
       const currentQuota = computed(() => props.isGroup ? $store.state.server.tables.groupQuotaTable.byId[radioQuota.value] : $store.state.server.tables.personalQuotaTable.byId[radioQuota.value])
+      // todo 重新写选择网络的逻辑
       // 1.配额有私网
       if (currentQuota.value?.private_ip_total - currentQuota.value?.private_ip_used > 0) {
+        // 如果节点配有私网ip, 则选择私网第一个
+        if (privateNetworks.value.length > 0) {
+          radioNetwork.value = privateNetworks.value[0]?.id
+        }
         radioNetwork.value = privateNetworks.value[0]?.id || publicNetworks.value[0]?.id || ''
       } else { // 2. 配额只有公网
         radioNetwork.value = publicNetworks.value[0]?.id || ''
