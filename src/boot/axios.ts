@@ -37,18 +37,24 @@ const errorNotifier = (error: AxiosError) => {
     const errorInfo = errorRespMap.get(errorStatus) || ''
     console.log('error status: ', errorStatus + '-' + errorInfo)
     console.log('error message: ', error.response.data.message)
-    // 用户通知
-    Notify.create({
-      classes: 'notification-negative shadow-15',
-      icon: 'mdi-alert',
-      textColor: 'negative',
-      message: errorStatus + '-' + errorInfo,
-      caption: error.response.data.message,
-      position: 'bottom',
-      closeBtn: true,
-      timeout: 5000,
-      multiLine: false
-    })
+
+    // 无需通知用户的特殊情况
+    if (error.response.data.code === 'NoMonitorJob') {
+      // 没有配置监控
+    } else {
+      // 用户通知
+      Notify.create({
+        classes: 'notification-negative shadow-15',
+        icon: 'mdi-alert',
+        textColor: 'negative',
+        message: errorStatus + '-' + errorInfo,
+        caption: error.response.data.message,
+        position: 'bottom',
+        closeBtn: true,
+        timeout: 5000,
+        multiLine: false
+      })
+    }
   } else { // 没有响应时
     // console打印
     console.log(error.message)
