@@ -36,6 +36,7 @@ export default defineComponent({
   },
   setup (props) {
     const container = ref<HTMLElement>()
+    // console.log('data', props.data)
     onMounted(() => {
       const chart = echarts.init(container.value!)
       const option = computed(() => ({

@@ -3,19 +3,20 @@
     <div class="row">
       <div class="row column col-grow">
         <div class="text-dark text-h5 ">当前机构数量：{{ $store.state.fed.tables.dataCenterTable.allIds?.length }}</div>
-        <bei-jing-map></bei-jing-map>
-        <!--          <div class="row">-->
-        <!--            <div class="col-auto">-->
-        <!--              <span class="text-dark text-h4 text-weight-bold">{{ $store.state.fed.tables.dataCenterTable.allIds?.length }}</span>-->
-        <!--              <span class="text-dark text-h6 text-weight-bold q-ml-sm">机构</span>-->
-        <!--            </div>-->
-        <!--            <div class="col-auto q-ml-md">-->
-        <!--          <span class="text-dark text-h4 text-weight-bold">{{ $store.state.fed.tables.serviceTable.allIds?.length }}</span>-->
-        <!--          <span class="text-dark text-h6 text-weight-bold q-ml-sm">服务</span>-->
-        <!--        </div>-->
-        <!--        </div>-->
+        <div class="row">
+          <div class="q-pa-lg">
+            <q-option-group
+              v-model="group"
+              :options="options"
+              color="yellow"
+              type="toggle"
+              @update:model-value="transfer"
+            />
+          </div>
+          <bei-jing-map ref="map"></bei-jing-map>
+        </div>
       </div>
-      <div class="box q-pa-md col-5">
+      <div class="box q-pa-md col-4 q-mt-xl">
         <q-card class="my-card no-shadow">
           <q-card-section class="row justify-center">
             <div class="title text-h6 text-center text-weight-bold col-4 shadow-5">资源总量</div>
@@ -28,42 +29,42 @@
           <q-tab-panels v-model="tab" animated>
             <q-tab-panel name="one">
               <div class="row text-center">
-                <span class="text-h6 col-2 q-mt-lg">CPU</span>
-                <div class="cpu text-h4 col-8 q-pa-md text-weight-bold text-white">{{ privateNum.vcpu_total }}</div>
-                <span class="text-h6 col-2 q-mt-lg text-weight-bold">核</span>
-              </div>
-              <div class="row text-center q-mt-lg">
-                <span class="text-h6 col-2 q-mt-lg text-weight-bold">内存</span>
-                <div class="mem text-h4 col-8 q-pa-md text-weight-bold text-white">{{
-                    privateNum.ram_total / 1024
-                  }}
+                <span class="text-h6 col-2 q-mt-md">CPU</span>
+                <div class="cpu text-h5 col-8 text-weight-bold text-white q-py-md">
+                  {{ privateNum.vcpu_total }}
                 </div>
-                <span class="text-h6 col-2 q-mt-lg text-weight-bold">GB</span>
+                <span class="text-h6 col-2 text-weight-bold q-mt-md">核</span>
               </div>
-              <div class="row text-center q-mt-lg">
-                <span class="text-h6 col-2 q-mt-lg text-weight-bold">硬盘</span>
-                <div class="disk text-h4 col-8 q-pa-md text-weight-bold text-white">{{
-                    privateNum.disk_size_total
-                  }}
+              <div class="row text-center q-mt-md">
+                <span class="text-h6 col-2 text-weight-bold q-mt-md">内存</span>
+                <div class="mem text-h5 col-8 text-weight-bold text-white q-py-md">
+                  {{privateNum.ram_total / 1024 }}
                 </div>
-                <span class="text-h6 col-2 q-mt-lg text-weight-bold">GB</span>
+                <span class="text-h6 col-2 text-weight-bold q-mt-md">GB</span>
+              </div>
+              <div class="row text-center q-mt-md">
+                <span class="text-h6 col-2 text-weight-bold q-mt-md">硬盘</span>
+                <div class="disk text-h5 col-8 text-weight-bold text-white q-py-md">
+                  {{privateNum.disk_size_total }}
+                </div>
+                <span class="text-h6 col-2 text-weight-bold q-mt-md">GB</span>
               </div>
             </q-tab-panel>
             <q-tab-panel name="two">
               <div class="row text-center">
-                <span class="text-h6 col-2 q-mt-lg">CPU</span>
-                <div class="cpu text-h4 col-8 q-pa-md text-weight-bold text-white">{{ shareNum.vcpu_total }}</div>
-                <span class="text-h6 col-2 q-mt-lg text-weight-bold">核</span>
+                <span class="text-h6 col-2 q-mt-md">CPU</span>
+                <div class="cpu text-h5 col-8 q-py-md text-weight-bold text-white">{{ shareNum.vcpu_total }}</div>
+                <span class="text-h6 col-2 q-mt-md text-weight-bold">核</span>
               </div>
               <div class="row text-center q-mt-md">
                 <span class="text-h6 col-2 q-mt-lg text-weight-bold">内存</span>
-                <div class="mem text-h4 col-8 q-pa-md text-weight-bold text-white">{{ shareNum.ram_total / 1024 }}</div>
-                <span class="text-h6 col-2 q-mt-lg text-weight-bold">GB</span>
+                <div class="mem text-h5 col-8 q-py-md text-weight-bold text-white">{{ shareNum.ram_total / 1024 }}</div>
+                <span class="text-h6 col-2 q-mt-md text-weight-bold">GB</span>
               </div>
               <div class="row text-center q-mt-md">
                 <span class="text-h6 col-2 q-mt-lg text-weight-bold">硬盘</span>
-                <div class="disk text-h4 col-8 q-pa-md text-weight-bold text-white">{{ shareNum.disk_size_total }}</div>
-                <span class="text-h6 col-2 q-mt-lg text-weight-bold">GB</span>
+                <div class="disk text-h5 col-8 q-py-md text-weight-bold text-white">{{ shareNum.disk_size_total }}</div>
+                <span class="text-h6 col-2 q-mt-md text-weight-bold">GB</span>
               </div>
             </q-tab-panel>
           </q-tab-panels>
@@ -120,16 +121,41 @@ export default defineComponent({
     const cpuNum = computed(() => $store.getters['fed/getPieCpuNum'])
     const ramNum = computed(() => $store.getters['fed/getPieRamNum'])
     const diskNum = computed(() => $store.getters['fed/getPieDiskNum'])
-    const tab = ref('one')
     const dataCenters = computed(() => Object.values($store.state.fed.tables.dataCenterTable.byId))
+    const tab = ref('one')
+    const group = ref([])
+    const options = [
+      { label: '中国科学院计算机网络信息中心', value: '1' },
+      { label: '地球大数据科学工程专项', value: '2' }
+    ]
+    const map: any = ref(null)
+    const transfer = (value: []) => {
+      const coordinateArr = []
+      for (const item of value) {
+        const coordinateObj: Record<string, string | number | number[]> = {}
+        coordinateObj.name = $store.state.fed.tables.dataCenterTable.byId[item].name
+        coordinateObj.value = 10
+        if (item === '1') {
+          coordinateObj.LngAndLat = [116.342428, 39.99322]
+        } else {
+          coordinateObj.LngAndLat = [116.63853, 40.322563]
+        }
+        coordinateArr.push(coordinateObj)
+      }
+      map.value.change(coordinateArr)
+    }
     return {
+      transfer,
+      map,
       privateNum,
       shareNum,
       tab,
       cpuNum,
       ramNum,
       diskNum,
-      dataCenters
+      dataCenters,
+      group,
+      options
     }
   }
 })
@@ -147,13 +173,11 @@ export default defineComponent({
     linear-gradient(to top, #306EEF, #306EEF) right bottom no-repeat, /*下右*/
     linear-gradient(to left, #306EEF, #306EEF) right bottom no-repeat; /*右下*/
     background-size: 3px 50px, 50px 3px, 3px 50px, 50px 3px;
-
     .my-card {
       .title {
         //border: #cceff5 5px double;
         background-color: #fafcfd;
       }
-
       .cpu {
         background: $nord8;
       }
