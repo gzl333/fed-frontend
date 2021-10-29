@@ -6,10 +6,12 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-            <q-input disable dense outlined v-model="text" stack-label :label="$t('搜索')">
-              <template v-slot:append>
-                <!--                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>-->
+            <q-input dense outlined v-model="search">
+              <template v-slot:prepend>
                 <q-icon name="search"/>
+              </template>
+              <template v-slot:append>
+                <q-icon name="close" @click="search = ''" class="cursor-pointer" />
               </template>
             </q-input>
           </div>
@@ -27,110 +29,7 @@
 
     </div>
 
-    <!--    <q-table-->
-    <!--      flat-->
-    <!--      card-class=""-->
-    <!--      table-class=""-->
-    <!--      table-header-class="bg-grey-1 text-grey"-->
-    <!--      :rows="groups"-->
-    <!--      :columns="columns"-->
-    <!--      row-key="name"-->
-    <!--      no-data-label="暂无项目组"-->
-    <!--      hide-pagination-->
-    <!--      :pagination="paginationTable"-->
-    <!--    >-->
-
-    <!--      <template v-slot:body="props">-->
-    <!--        <q-tr :props="props">-->
-
-    <!--          <q-td key="name" :props="props">-->
-    <!--            <q-btn-->
-    <!--              class="q-ma-none" :label="props.row.name" color="primary" padding="xs" flat dense unelevated-->
-    <!--              :to="{path: `/my/group/detail/${props.row.id}`}">-->
-    <!--              <q-tooltip>-->
-    <!--                {{ $t('详情') }}-->
-    <!--              </q-tooltip>-->
-    <!--              &lt;!&ndash;创建时间距离当下小于1小时则打上new标记&ndash;&gt;-->
-    <!--              <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "-->
-    <!--                       color="light-green" floating transparent rounded align="middle">new-->
-    <!--              </q-badge>-->
-    <!--            </q-btn>-->
-    <!--          </q-td>-->
-
-    <!--          <q-td key="role" :props="props">-->
-    <!--            <GroupRoleChip class="non-selectable" :role="props.row.myRole"/>-->
-    <!--          </q-td>-->
-
-    <!--          <q-td key="member" :props="props">-->
-    <!--            <q-btn color="primary" flat padding="none" dense-->
-    <!--                   :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'member'} }">-->
-    <!--              {{ $store.state.account.tables.groupMemberTable.byId[props.row.id]?.members.length }}人-->
-    <!--            </q-btn>-->
-    <!--          </q-td>-->
-
-    <!--          <q-td key="server" :props="props">-->
-    <!--            <q-btn color="primary" flat padding="none" dense-->
-    <!--                   :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'server'} }">-->
-    <!--              {{ $store.getters['server/getGroupServersByGroupId'](props.row.id).length }}台-->
-    <!--            </q-btn>-->
-    <!--          </q-td>-->
-
-    <!--          <q-td key="quota" :props="props">-->
-    <!--            <q-btn color="primary" flat padding="none" dense-->
-    <!--                   :to="{path:`/my/group/detail/${props.row.id}`, query: {show: 'quota'} }">-->
-    <!--              {{ $store.getters['server/getGroupQuotasByGroupIdByStatus'](props.row.id, 'valid').length }}个-->
-    <!--            </q-btn>-->
-    <!--          </q-td>-->
-
-    <!--          <q-td key="desc" :props="props">-->
-    <!--            {{ props.row.description }}-->
-    <!--          </q-td>-->
-
-    <!--          <q-td key="company" :props="props">-->
-    <!--            {{ props.row.company }}-->
-    <!--          </q-td>-->
-
-    <!--          <q-td key="creation_time" :props="props">-->
-    <!--            <div v-if="locale==='zh'">-->
-    <!--              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[0] }}</div>-->
-    <!--              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[1] }}</div>-->
-    <!--            </div>-->
-
-    <!--            <div v-else>-->
-    <!--              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[0] }}</div>-->
-    <!--              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[1] }}</div>-->
-    <!--            </div>-->
-    <!--          </q-td>-->
-
-    <!--          <q-td key="operation" :props="props">-->
-
-    <!--            <div class="row justify-center items-center q-gutter-xs">-->
-    <!--              <q-btn icon="info" flat dense padding="none" color="primary"-->
-    <!--                     :to="{path: `/my/group/detail/${props.row.id}`}">-->
-    <!--                <q-tooltip>详情</q-tooltip>-->
-    <!--              </q-btn>-->
-
-    <!--              &lt;!&ndash;              <q-btn :disable="props.row.myRole!=='owner'" icon="settings" flat dense padding="none" color="primary"&ndash;&gt;-->
-    <!--              &lt;!&ndash;                     :to="{path: `/my/group_obsolete/edit/${props.row.id}`}">&ndash;&gt;-->
-    <!--              &lt;!&ndash;                <q-tooltip>设置</q-tooltip>&ndash;&gt;-->
-    <!--              &lt;!&ndash;              </q-btn>&ndash;&gt;-->
-
-    <!--            </div>-->
-
-    <!--          </q-td>-->
-
-    <!--        </q-tr>-->
-    <!--      </template>-->
-
-    <!--      &lt;!&ndash;      <template v-slot:bottom>&ndash;&gt;-->
-    <!--      &lt;!&ndash;      todo 批量操作&ndash;&gt;-->
-    <!--      &lt;!&ndash;      </template>&ndash;&gt;-->
-
-    <!--    </q-table>-->
-
-    <!--    <q-separator/>-->
-
-    <group-table :groups="groups"/>
+    <group-table :groups="groups" :search="search.trim().toLowerCase()"/>
 
   </div>
 </template>
@@ -197,104 +96,19 @@ export default defineComponent({
     ]
     const filterOptions = computed(() => locale.value === 'zh' ? filterOptionsZH : filterOptionsEN)
 
-    // // group分栏定义
-    // const columnsZH = [
-    //   {
-    //     name: 'name',
-    //     label: '项目组名称',
-    //     field: 'name',
-    //     align: 'center',
-    //     style: 'padding: 15px 0px',
-    //     headerStyle: 'padding: 0 5px'
-    //   },
-    //   {
-    //     name: 'role',
-    //     label: '我的角色',
-    //     field: 'role',
-    //     align: 'center',
-    //     style: 'padding: 15px 0px',
-    //     headerStyle: 'padding: 0 5px'
-    //   },
-    //   {
-    //     name: 'member',
-    //     label: '成员',
-    //     field: 'member',
-    //     align: 'center',
-    //     style: 'padding: 15px 0px',
-    //     headerStyle: 'padding: 0 5px'
-    //   },
-    //   {
-    //     name: 'server',
-    //     label: '云主机',
-    //     field: 'server',
-    //     align: 'center',
-    //     style: 'padding: 15px 0px',
-    //     headerStyle: 'padding: 0 5px'
-    //   },
-    //   {
-    //     name: 'quota',
-    //     label: '可用配额',
-    //     field: 'quota',
-    //     align: 'center',
-    //     style: 'padding: 15px 0px',
-    //     headerStyle: 'padding: 0 5px'
-    //   },
-    //   {
-    //     name: 'desc',
-    //     label: '备注',
-    //     field: 'desc',
-    //     align: 'center',
-    //     style: 'padding: 15px 0px',
-    //     headerStyle: 'padding: 0 5px'
-    //   },
-    //   {
-    //     name: 'company',
-    //     label: '所属单位',
-    //     field: 'company',
-    //     align: 'center',
-    //     style: 'padding: 15px 0px',
-    //     headerStyle: 'padding: 0 5px'
-    //   },
-    //   {
-    //     name: 'creation_time',
-    //     label: '创建时间',
-    //     field: 'creation_time',
-    //     align: 'center',
-    //     style: 'padding: 15px 0px',
-    //     headerStyle: 'padding: 0 5px'
-    //   },
-    //   {
-    //     name: 'operation',
-    //     label: '操作',
-    //     field: 'operation',
-    //     align: 'center',
-    //     style: 'padding: 15px 0px',
-    //     headerStyle: 'padding: 0 5px'
-    //   }
-    // ]
-    // const columnsEN = columnsZH
-    //
-    // // i18n影响该配置对象取值
-    // const columns = computed(() => locale.value === 'zh' ? columnsZH : columnsEN)
-    //
-    // // q-pagination 所需配置对象
-    // const paginationTable = ref({
-    //   // sortBy: 'desc',
-    //   // descending: false,
-    //   page: 1,
-    //   rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
-    // })
-
     // group data
     const groups = computed(() => $store.getters['account/getGroupsByFilter'](filterSelection.value.value))
+
+    // 搜索框
+    const search = ref('')
 
     return {
       locale,
       filterSelection,
       filterOptions,
-      // columns,
-      // paginationTable,
-      groups
+
+      groups,
+      search
     }
   }
 })

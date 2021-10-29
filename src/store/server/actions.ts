@@ -65,11 +65,16 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     context.commit('clearTable', context.state.tables.fedFlavorTable)
     const respFlavor = await $api.flavor.getFlavor()
     for (const flavor of respFlavor.data.flavors) {
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.fedFlavorTable,
-        tableObj: { [flavor.id]: flavor }
+        item: { [flavor.id]: flavor }
       })
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.fedFlavorTable,
+      isLoaded: true
+    })
   },
   async loadServiceNetworkTable (context) {
     for (const serviceId of context.rootState.fed.tables.serviceTable.allIds) {
@@ -81,12 +86,17 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           localId: `${serviceId}-${network.id}`
         })
-        context.commit('storeTableLocalId', {
+        context.commit('storeItemLocalId', {
           table: context.state.tables.serviceNetworkTable,
-          tableObj: { [network.localId]: network }
+          item: { [network.localId]: network }
         })
       }
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.serviceNetworkTable,
+      isLoaded: true
+    })
   },
   async loadServiceImageTable (context) {
     for (const serviceId of context.rootState.fed.tables.serviceTable.allIds) {
@@ -98,12 +108,17 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
           localId: `${serviceId}-${image.id}`
         })
-        context.commit('storeTableLocalId', {
+        context.commit('storeItemLocalId', {
           table: context.state.tables.serviceImageTable,
-          tableObj: { [image.localId]: image }
+          item: { [image.localId]: image }
         })
       }
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.serviceImageTable,
+      isLoaded: true
+    })
   },
   async loadUserVpnTable (context) {
     context.commit('clearTable', context.state.tables.userVpnTable)
@@ -111,12 +126,17 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       if (context.rootState.fed.tables.serviceTable.byId[serviceId]?.need_vpn) {
         const respVpn = await $api.vpn.getVpn({ path: { service_id: serviceId } })
         Object.assign(respVpn.data.vpn, { id: serviceId })
-        context.commit('storeTable', {
+        context.commit('storeItem', {
           table: context.state.tables.userVpnTable,
-          tableObj: { [serviceId]: respVpn.data.vpn }
+          item: { [serviceId]: respVpn.data.vpn }
         })
       }
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.userVpnTable,
+      isLoaded: true
+    })
   },
   async loadPersonalQuotaTable (context) {
     // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
@@ -146,11 +166,16 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
 
       // normalize data
       const normalizedData = normalize(data, quota)
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.personalQuotaTable,
-        tableObj: normalizedData.entities.quota
+        item: normalizedData.entities.quota
       })
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.personalQuotaTable,
+      isLoaded: true
+    })
   },
   // 更新整个userServerTable
   async loadPersonalServerTable (context) {
@@ -167,11 +192,16 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     })
     for (const data of respServer.data.servers) {
       const normalizedData = normalize(data, server)
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.personalServerTable,
-        tableObj: normalizedData.entities.server
+        item: normalizedData.entities.server
       })
     }
+    // 存完所有item再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.personalServerTable,
+      isLoaded: true
+    })
     // 建立personalServerTable之后，分别更新每个server status, 并发更新，无需await
     for (const serverId of context.state.tables.personalServerTable.allIds) {
       void context.dispatch('loadSingleServerStatus', {
@@ -197,9 +227,9 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       })
       for (const data of respGroupServer.data.servers) {
         const normalizedData = normalize(data, server)
-        context.commit('storeTable', {
+        context.commit('storeItem', {
           table: context.state.tables.groupServerTable,
-          tableObj: normalizedData.entities.server
+          item: normalizedData.entities.server
         })
       }
     }
@@ -210,6 +240,11 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         serverId
       })
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.groupServerTable,
+      isLoaded: true
+    })
   },
   // 获取并保存单个server的status
   async loadSingleServerStatus (context, payload: {
@@ -247,24 +282,29 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     })
     const normalizedData = normalize(respSingleServer.data.server, server)
     if (payload.isGroup) {
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.groupServerTable,
-        tableObj: normalizedData.entities.server
+        item: normalizedData.entities.server
       })
       void context.dispatch('loadSingleServerStatus', {
         isGroup: true,
         serverId: payload.serverId
       })
     } else {
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.personalServerTable,
-        tableObj: normalizedData.entities.server
+        item: normalizedData.entities.server
       })
       void context.dispatch('loadSingleServerStatus', {
         isGroup: false,
         serverId: payload.serverId
       })
     }
+    // 存完所有item再改isLoaded. load single server也算load了table
+    context.commit('storeStatus', {
+      table: context.state.tables.personalServerTable,
+      isLoaded: true
+    })
   },
   // 所有groupQuota根据quotaId存在一个对象里，不区分group，getter里区分group取
   async loadGroupQuotaTable (context) {
@@ -303,12 +343,17 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         // normalize data
         const normalizedData = normalize(data, quota)
         // 存入groupQuotaTable
-        context.commit('storeTable', {
+        context.commit('storeItem', {
           table: context.state.tables.groupQuotaTable,
-          tableObj: normalizedData.entities.quota
+          item: normalizedData.entities.quota
         })
       }
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.groupQuotaTable,
+      isLoaded: true
+    })
   },
   // 默认personalQuotaApplicationTable只保存undeleted的application
   async loadPersonalQuotaApplicationTable (context) {
@@ -320,11 +365,16 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     const application = new schema.Entity('application', { service })
     for (const data of respApply.data.results) {
       const normalizedData = normalize(data, application)
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.personalQuotaApplicationTable,
-        tableObj: normalizedData.entities.application
+        item: normalizedData.entities.application
       })
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.personalQuotaApplicationTable,
+      isLoaded: true
+    })
   },
   async loadGroupQuotaApplicationTable (context) {
     // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新）
@@ -350,13 +400,52 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
           // normalize data
           const normalizedData = normalize(data, application)
           // 存入
-          context.commit('storeTable', {
+          context.commit('storeItem', {
             table: context.state.tables.groupQuotaApplicationTable,
-            tableObj: normalizedData.entities.application
+            item: normalizedData.entities.application
           })
         }
       }
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.groupQuotaApplicationTable,
+      isLoaded: true
+    })
+  },
+  // todo 把personal/group/admin quota application 全部扩展为从单独接口查询，再添加此方法;否则会面对表内对象字段不同的情况
+  async loadSingleQuotaApplication (context, payload: { applicationId: string; isGroup: boolean }) {
+    const respSingleApplication = await $api.apply.getApplyQuotaApplyId({ path: { apply_id: payload.applicationId } })
+    // 将响应normalize，存入state里的userServerTable
+    // normalize
+    const service = new schema.Entity('service')
+    const application = new schema.Entity('application', { service })
+    const normalizedData = normalize(respSingleApplication.data, application)
+    console.log(normalizedData)
+    // if (payload.isGroup) {
+    //   context.commit('storeItem', {
+    //     table: context.state.tables.groupServerTable,
+    //     item: normalizedData.entities.server
+    //   })
+    //   void context.dispatch('loadSingleServerStatus', {
+    //     isGroup: true,
+    //     serverId: payload.serverId
+    //   })
+    // } else {
+    //   context.commit('storeItem', {
+    //     table: context.state.tables.personalServerTable,
+    //     item: normalizedData.entities.server
+    //   })
+    //   void context.dispatch('loadSingleServerStatus', {
+    //     isGroup: false,
+    //     serverId: payload.serverId
+    //   })
+    // }
+    // // 存完所有item再改isLoaded. load single server也算load了table
+    // context.commit('storeStatus', {
+    //   table: context.state.tables.personalServerTable,
+    //   isLoaded: true
+    // })
   },
   async loadFedQuotaActivityTable (context) {
     // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新
@@ -381,11 +470,16 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     })
     for (const data of respActivity.data.results) {
       const normalizedData = normalize(data, quotaActivity)
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.fedQuotaActivityTable,
-        tableObj: normalizedData.entities.quotaActivity
+        item: normalizedData.entities.quotaActivity
       })
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.fedQuotaActivityTable,
+      isLoaded: true
+    })
   },
   /* tables */
 
@@ -475,10 +569,10 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         const service = new schema.Entity('service')
         const application = new schema.Entity('application', { service })
         const normalizedData = normalize(respPatchApplyQuota.data, application)
-        // 保存进table
-        context.commit('storeTable', {
+        // 只保存单个item不改isLoaded状态
+        context.commit('storeItem', {
           table: payload.isGroup ? context.state.tables.groupQuotaApplicationTable : context.state.tables.personalQuotaApplicationTable,
-          tableObj: normalizedData.entities.application
+          item: normalizedData.entities.application
         })
         // 通知
         Notify.create({
@@ -568,10 +662,10 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         const service = new schema.Entity('service')
         const application = new schema.Entity('application', { service })
         const normalizedData = normalize(respPostApplyQuotaCancel.data, application)
-        // 存入table
-        context.commit('storeTable', {
+        // 只保存单个item不改isLoaded状态
+        context.commit('storeItem', {
           table: payload.isGroup ? context.state.tables.groupQuotaApplicationTable : context.state.tables.personalQuotaApplicationTable,
-          tableObj: normalizedData.entities.application
+          item: normalizedData.entities.application
         })
         // 通知
         Notify.create({
@@ -604,9 +698,9 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       })
       const normalizedData = normalize(respPostApplyQuota.data, application)
       // store
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: data.vo_id ? context.state.tables.groupQuotaApplicationTable : context.state.tables.personalQuotaApplicationTable,
-        tableObj: normalizedData.entities.application
+        item: normalizedData.entities.application
       })
       // data.vo_id ? context.commit('storeGroupQuotaApplicationTable', normalizedData.entities.application) : context.commit('storeUserQuotaApplicationTable', normalizedData.entities.application)
       // notify
@@ -711,9 +805,10 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         body: { password: payload.password }
       })
       if (respPatchVpnPassword.status === 200) {
-        context.commit('storeTable', {
+        // 只保存单个item不改isLoaded状态
+        context.commit('storeItem', {
           table: context.state.tables.userVpnTable,
-          tableObj: { [payload.serviceId]: Object.assign(respPatchVpnPassword.data.vpn, { id: vpn.id }) }
+          item: { [payload.serviceId]: Object.assign(respPatchVpnPassword.data.vpn, { id: vpn.id }) }
         })
         Notify.create({
           classes: 'notification-positive shadow-15',

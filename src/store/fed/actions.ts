@@ -84,10 +84,15 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
       // 添加上services/personalServices空字段
       Object.values(normalizedData.entities.dataCenter!)[0].services = []
       Object.values(normalizedData.entities.dataCenter!)[0].personalServices = []
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.dataCenterTable,
-        tableObj: normalizedData.entities.dataCenter
+        item: normalizedData.entities.dataCenter
       })
+    })
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.dataCenterTable,
+      isLoaded: true
     })
   },
   /* serviceTable */
@@ -101,15 +106,20 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
     respService.data.results.forEach((data: Record<string, never>) => {
       const normalizedData = normalize(data, service)
       // context.commit('storeServiceTable', normalizedData.entities.service)
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.serviceTable,
-        tableObj: normalizedData.entities.service
+        item: normalizedData.entities.service
       })
       // 将本serviceId补充进对应dataCenter的services字段
       context.commit('storeDataCenterTableServices', {
         dataCenterId: Object.values(normalizedData.entities.service!)[0].data_center,
         serviceId: Object.values(normalizedData.entities.service!)[0].id
       })
+    })
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.serviceTable,
+      isLoaded: true
     })
   },
   /* serviceAllocationTable */
@@ -121,11 +131,16 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
     for (const data of respPQuota.data.results) {
       Object.assign(data, { id: data.service.id })
       const normalizedData = normalize(data, allocation)
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.serviceAllocationTable,
-        tableObj: normalizedData.entities.allocation
+        item: normalizedData.entities.allocation
       })
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.serviceAllocationTable,
+      isLoaded: true
+    })
   },
   /* fedAllocationTable */
   async loadFedAllocationTable (context) {
@@ -136,11 +151,16 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
     for (const data of respSQuota.data.results) {
       Object.assign(data, { id: data.service.id })
       const normalizedData = normalize(data, allocation)
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.fedAllocationTable,
-        tableObj: normalizedData.entities.allocation
+        item: normalizedData.entities.allocation
       })
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.fedAllocationTable,
+      isLoaded: true
+    })
   }
 }
 

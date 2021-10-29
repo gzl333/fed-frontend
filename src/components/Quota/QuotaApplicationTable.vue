@@ -9,9 +9,15 @@
       :rows="applications"
       :columns="columns"
       row-key="name"
+      :loading="isGroup ? !$store.state.server.tables.groupQuotaApplicationTable.isLoaded : !$store.state.server.tables.personalQuotaApplicationTable.isLoaded"
+      color="primary"
+      loading-label="网络请求中，请稍候..."
       no-data-label="暂无配额申请记录"
       hide-pagination
       :pagination="paginationTable"
+      :filter="search"
+      :filter-method="searchMethod"
+      no-results-label="无搜索结果"
     >
 
       <template v-slot:body="props">
@@ -182,8 +188,8 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { QuotaApplicationInterface } from 'src/store/server/state'
-import { useStore } from 'vuex'
-import { StateInterface } from 'src/store'
+// import { useStore } from 'vuex'
+// import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
@@ -201,10 +207,14 @@ export default defineComponent({
     isHideGroup: {
       type: Boolean,
       required: false
+    },
+    search: {
+      type: String,
+      required: false
     }
   },
   setup (props) {
-    const $store = useStore<StateInterface>()
+    // const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
     // 应强制更新table,刷新quota状态 todo
@@ -223,15 +233,6 @@ export default defineComponent({
             style: 'padding: 15px 0px'
           },
           {
-            name: 'creation_time',
-            label: '申请时间',
-            field: 'creation_time',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'padding: 15px 0px'
-          },
-          {
             name: 'group',
             label: '所属组',
             field: 'group',
@@ -239,6 +240,15 @@ export default defineComponent({
             classes: 'ellipsis',
             headerStyle: 'padding: 0 2px',
             style: 'max-width: 130px;padding: 15px 0px'
+          },
+          {
+            name: 'creation_time',
+            label: '申请时间',
+            field: 'creation_time',
+            align: 'center',
+            classes: 'ellipsis',
+            headerStyle: 'padding: 0 2px',
+            style: 'padding: 15px 0px'
           },
           {
             name: 'service',
@@ -379,12 +389,14 @@ export default defineComponent({
       rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
     })
 
+    // 搜索方法，可扩展成更模糊的
+    const searchMethod = (rows: QuotaApplicationInterface[], terms: string): QuotaApplicationInterface[] => rows.filter(application => application.id.toLowerCase().includes(terms) || application.duration_days.toString().includes(terms) || application.vcpu.toString().includes(terms) || (application.ram / 1024).toString().includes(terms) || application.private_ip.toString().includes(terms) || application.public_ip.toString().includes(terms) || application.disk_size.toString().includes(terms) || application.purpose.toLowerCase().includes(terms) || application.contact.toLowerCase().includes(terms) || application.company.toLowerCase().includes(terms))
+
     return {
-      props,
-      $store,
       locale,
       columns,
-      paginationTable
+      paginationTable,
+      searchMethod
     }
   }
 })

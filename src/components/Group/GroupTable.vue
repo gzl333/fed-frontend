@@ -9,9 +9,15 @@
       :rows="groups"
       :columns="columns"
       row-key="name"
+      :loading="!$store.state.account.tables.groupTable.isLoaded"
+      color="primary"
+      loading-label="网络请求中，请稍候..."
       no-data-label="暂无项目组"
       hide-pagination
       :pagination="paginationTable"
+      :filter="search"
+      :filter-method="searchMethod"
+      no-results-label="无搜索结果"
     >
 
       <template v-slot:body="props">
@@ -119,6 +125,10 @@ export default defineComponent({
     groups: {
       type: Array as PropType<GroupInterface[]>,
       required: true
+    },
+    search: {
+      type: String,
+      required: false
     }
   },
   setup (/* props */) {
@@ -213,10 +223,14 @@ export default defineComponent({
       rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
     })
 
+    // 搜索方法，可扩展成更模糊的
+    const searchMethod = (rows: GroupInterface[], terms: string): GroupInterface[] => rows.filter(group => group.id.toLowerCase().includes(terms) || group.name.toLowerCase().includes(terms) || group.description.toLowerCase().includes(terms) || group.company.toLowerCase().includes(terms))
+
     return {
       locale,
       columns,
-      paginationTable
+      paginationTable,
+      searchMethod
     }
   }
 })

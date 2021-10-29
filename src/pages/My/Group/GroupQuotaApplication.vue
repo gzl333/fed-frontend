@@ -6,10 +6,12 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-            <q-input disable dense outlined v-model="text" stack-label :label="$t('搜索')">
-              <template v-slot:append>
-                <!--                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>-->
+            <q-input dense outlined v-model="search">
+              <template v-slot:prepend>
                 <q-icon name="search"/>
+              </template>
+              <template v-slot:append>
+                <q-icon name="close" @click="search = ''" class="cursor-pointer" />
               </template>
             </q-input>
           </div>
@@ -27,7 +29,7 @@
 
     </div>
 
-    <quota-application-table :applications="applications" is-group/>
+    <quota-application-table :applications="applications" :search="search.trim().toLowerCase()" is-group/>
 
   </div>
 </template>
@@ -80,12 +82,15 @@ export default defineComponent({
     ]
     // 获取quota列表数据
     const applications = computed(() => $store.getters['server/getGroupApplicationsByFilter'](filterSelection.value.value))
+    // 搜索框
+    const search = ref('')
 
     return {
       $store,
       applications,
       filterOptions,
-      filterSelection
+      filterSelection,
+      search
     }
   }
 })

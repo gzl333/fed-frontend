@@ -194,7 +194,7 @@ const vm = {
           id: 'id1',
           creation_time: '2021-03-19T03:26:58.793601Z',
           endpoint_url: 'http://gosc.cstcloud.cn/',
-          image: 'CentOS_Stream', // server创建时的操作系统镜像名称
+          image: 'CentOS_Stream', // server创建时的操作操作系统名称
           ipv4: '159.226.235.62',
           name: '6c660b3707304132a787fba87bbfb56b',
           public_ip: true,

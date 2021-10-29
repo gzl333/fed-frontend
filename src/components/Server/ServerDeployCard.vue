@@ -90,8 +90,17 @@
       </div>
 
       <div class="col section">
-        <div class="text-h7 text-primary section-title">
+        <div class="text-h7 text-primary section-title row justify-between">
           {{ $t('云主机配额') }}
+
+          <q-btn v-if="isGroup" unelevated icon="add" padding="xs" color="primary"
+                 :to="`/my/group/quota/apply?group=${radioGroup}&service=${radioService}`">
+            {{ $t('申请新配额') }}
+          </q-btn>
+          <q-btn v-else unelevated icon="add" padding="xs" color="primary"
+                 :to="`/my/personal/quota/apply?service=${radioService}`">
+            {{ $t('申请新配额') }}
+          </q-btn>
         </div>
 
         <div class="row item-row">
@@ -99,16 +108,9 @@
             {{ $t('可用配额') }}
           </div>
           <div class="col">
+
             <div v-if="quotasUsable.length === 0" class="row items-center">
-              {{ $t('无可用配额，请选择其它服务节点。 或') }}
-              <q-btn v-if="isGroup" flat padding="none" color="primary"
-                     :to="`/my/group/quota/apply?group=${radioGroup}&service=${radioService}`">
-                {{ $t('申请项目组云主机配额') }}
-              </q-btn>
-              <q-btn v-else flat padding="none" color="primary"
-                     :to="`/my/personal/quota/apply?service=${radioService}`">
-                {{ $t('申请个人云主机配额') }}
-              </q-btn>
+              {{ $t('无') }}
             </div>
 
             <div v-else>
@@ -119,6 +121,7 @@
                 <quota-detail-card-intense :quota="quota" :is-group="isGroup"/>
               </q-radio>
             </div>
+
           </div>
         </div>
 
@@ -136,7 +139,7 @@
                 <!--                       @click="isFolded=!isFolded">-->
                 <!--                  {{ isFolded ? $t('展开') : $t('折叠') }}-->
                 <!--                </q-btn>-->
-                <a class="text-primary" style="cursor: pointer;"
+                <a class="text-primary cursor-pointer"
                    @click="isFolded=!isFolded" :to="{path:'/my'}">{{ isFolded ? $t('展开') : $t('收起') }}</a>
               </div>
               <div v-if="!isFolded">
@@ -165,9 +168,9 @@
         </div>
         <!--选择了配额-->
         <div v-else>
-
+          <!--显示部分，只要符合条件就都显示；选择部分只能选一个，不可以都选-->
           <div
-            v-if="privateNetworks.length > 0 && (isGroup ? ($store.state.server.tables.groupQuotaTable.byId[radioQuota]?.private_ip_total - $store.state.server.tables.groupQuotaTable.byId[radioQuota]?.private_ip_used)>0 : ($store.state.server.tables.personalQuotaTable.byId[radioQuota]?.private_ip_total-$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.private_ip_used)>0)"
+            v-if="privateNetworks.length > 0 && (currentQuota.private_ip_total - currentQuota.private_ip_used)>0"
             class="row item-row">
             <div class="col-1 text-bold">
               {{ $t('私网IP段') }}
@@ -183,7 +186,7 @@
           </div>
 
           <div
-            v-if="publicNetworks.length > 0 && (isGroup ? ($store.state.server.tables.groupQuotaTable.byId[radioQuota]?.public_ip_total-$store.state.server.tables.groupQuotaTable.byId[radioQuota]?.public_ip_used)>0 : ($store.state.server.tables.personalQuotaTable.byId[radioQuota]?.public_ip_total-$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.public_ip_used)>0)"
+            v-if="publicNetworks.length > 0 && (currentQuota.public_ip_total-currentQuota.public_ip_used)>0"
             class="row item-row">
             <div class="col-1 text-bold">
               {{ $t('公网IP段') }}
@@ -198,20 +201,22 @@
             </div>
           </div>
 
-          <!--节点只有公网，但余额只有私网；节点只有私网，余额只有公网。则无可用配额-->
+          <!--节点配置只有公网，但余额只有私网；节点配置只有私网，余额只有公网。则无可用配额-->
           <div
-            v-if="(publicNetworks.length>0 && (isGroup ? ($store.state.server.tables.groupQuotaTable.byId[radioQuota]?.private_ip_total - $store.state.server.tables.groupQuotaTable.byId[radioQuota]?.private_ip_used)>0 : ($store.state.server.tables.personalQuotaTable.byId[radioQuota]?.private_ip_total-$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.private_ip_used)>0)) || privateNetworks.length>0 && ((isGroup ? ($store.state.server.tables.groupQuotaTable.byId[radioQuota]?.public_ip_total-$store.state.server.tables.groupQuotaTable.byId[radioQuota]?.public_ip_used)>0 : ($store.state.server.tables.personalQuotaTable.byId[radioQuota]?.public_ip_total-$store.state.server.tables.personalQuotaTable.byId[radioQuota]?.public_ip_used)>0))"
+            v-if="((publicNetworks.length>0 && privateNetworks.length===0) && ((currentQuota.private_ip_total - currentQuota.private_ip_used)>0) && ((currentQuota.public_ip_total - currentQuota.public_ip_used)===0)) ||
+                  ((publicNetworks.length===0 && privateNetworks.length>0) && ((currentQuota.private_ip_total - currentQuota.private_ip_used)===0) && ((currentQuota.public_ip_total - currentQuota.public_ip_used)>0))"
             class="row item-row">
             <div class="col-shrink item-title">
-              {{ $t('暂无可用网络类型，请选择其他可用配额') }}
+              {{ $t('暂无可用网络类型，请选择其他配额') }}
             </div>
           </div>
 
-          <!--        <div v-if="publicNetworks.length === 0 && privateNetworks.length === 0" class="row item-row">-->
-          <!--          <div class="col-shrink item-title">-->
-          <!--            {{ $t('该服务节点无可用网络类型，请选择其它服务节点') }}-->
-          <!--          </div>-->
-          <!--        </div>-->
+          <div v-if="publicNetworks.length === 0 && privateNetworks.length === 0"
+               class="row item-row">
+            <div class="col-shrink item-title">
+              {{ $t('该服务节点无可用网络类型，请选择其它服务节点') }}
+            </div>
+          </div>
 
         </div>
 
@@ -369,7 +374,7 @@
           </div>
           <div class="col">
             <div
-              v-if="radioQuota && $store.state.server.tables.serviceNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name">
+              v-if="$store.state.server.tables.serviceNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name">
               {{ $store.state.server.tables.serviceNetworkTable.byLocalId[`${radioService}-${radioNetwork}`]?.name }}
             </div>
             <div v-else class="text-red">{{ $t('请选择网络类型') }}</div>
@@ -378,18 +383,18 @@
 
         <div class="row item-row items-center">
           <div class="col-shrink item-title-narrow text-grey">
-            {{ $t('系统镜像') }}
+            {{ $t('操作系统') }}
           </div>
           <div class="col">
             <div
-              v-if="radioQuota && $store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name">
+              v-if="$store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name">
               <q-icon
                 v-if="getOsIconName($store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name)"
                 :name="getOsIconName($store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name)"
                 flat size="md"/>
               {{ $store.state.server.tables.serviceImageTable.byLocalId[`${radioService}-${radioImage}`]?.name }}
             </div>
-            <div v-else class="text-red">{{ $t('请选择系统镜像') }}</div>
+            <div v-else class="text-red">{{ $t('请选择操作系统') }}</div>
           </div>
         </div>
 
@@ -398,7 +403,7 @@
             CPU/{{ $t('内存') }}
           </div>
           <div class="col ">
-            <div v-if="radioQuota && $store.state.server.tables.fedFlavorTable.byId[radioFlavor]">
+            <div v-if="$store.state.server.tables.fedFlavorTable.byId[radioFlavor]">
               {{
                 `${$store.state.server.tables.fedFlavorTable.byId[radioFlavor].vcpus}核/${$store.state.server.tables.fedFlavorTable.byId[radioFlavor].ram / 1024}GB`
               }}
@@ -488,7 +493,8 @@ export default defineComponent({
     const images = computed(() => $store.getters['server/getImagesByServiceId'](radioService.value))
     const quotasValid = computed(() => props.isGroup ? $store.getters['server/getGroupValidQuotasByServiceId'](radioService.value, radioGroup.value) : $store.getters['server/getPersonalValidQuotasByServiceId'](radioService.value))
     const quotasInvalid = computed(() => props.isGroup ? $store.getters['server/getGroupInvalidQuotasByServiceId'](radioService.value, radioGroup.value) : $store.getters['server/getPersonalInvalidQuotasByServiceId'](radioService.value))
-
+    // 当前quota对象
+    const currentQuota = computed(() => props.isGroup ? $store.state.server.tables.groupQuotaTable.byId[radioQuota.value] : $store.state.server.tables.personalQuotaTable.byId[radioQuota.value])
     // radio选项 初始状态 (1)
     const radioGroup = ref('')
     const radioService = ref('')
@@ -501,20 +507,44 @@ export default defineComponent({
 
     /* table 进入页面过程中选择默认项 */
 
+    /* 分为显示和选择动作两部分。
+    * 显示部分在标签里进行逻辑判断，哪些显示，哪些不显示
+    * 选择动作在ts部分，radio真正选择了哪些值 */
+
     // 选择network选项的逻辑
-    // network选项取决于两部分： 1.配额里公网私网的数量。 2.该服务的network配置，这是最基础条件。
+    // network选项取决于两部分：  1.该服务的network配置，公网/私网各有多少，这是最基础条件。2.配额里公网/私网的余额。
     const chooseNetwork = () => {
-      const currentQuota = computed(() => props.isGroup ? $store.state.server.tables.groupQuotaTable.byId[radioQuota.value] : $store.state.server.tables.personalQuotaTable.byId[radioQuota.value])
-      // todo 重新写选择网络的逻辑
-      // 1.配额有私网
-      if (currentQuota.value?.private_ip_total - currentQuota.value?.private_ip_used > 0) {
-        // 如果节点配有私网ip, 则选择私网第一个
-        if (privateNetworks.value.length > 0) {
-          radioNetwork.value = privateNetworks.value[0]?.id
+      // radioQuota选了才选network，否则为空
+      if (!radioQuota.value) {
+        radioNetwork.value = ''
+      } else {
+        if (privateNetworks.value.length === 0 && publicNetworks.value.length === 0) {
+          // 1. 配置里私网公网都没有： 选项必为空
+          radioNetwork.value = ''
+        } else if (privateNetworks.value.length > 0 && publicNetworks.value.length === 0) {
+          // 2. 配置里私网有，公网没有：查看配额余额，有私网则选私网里第一项；没有私网，则选项为空
+          if (currentQuota.value?.private_ip_total - currentQuota.value?.private_ip_used > 0) {
+            radioNetwork.value = privateNetworks.value[0]?.id
+          } else {
+            radioNetwork.value = ''
+          }
+        } else if (privateNetworks.value.length === 0 && publicNetworks.value.length > 0) {
+          // 3. 配置里私网没有，公网有：查看配额余额，有公网则选公网第一项；没有公网，则选项为空
+          if (currentQuota.value?.public_ip_total - currentQuota.value?.public_ip_used > 0) {
+            radioNetwork.value = publicNetworks.value[0]?.id
+          } else {
+            radioNetwork.value = ''
+          }
+        } else {
+          // 4. 配置里私网公网都有： 查看配额余额，有私网则选私网里第一项；没有私网则看有没有公网，有则选择公网第一项；配额余额里公网私网都没有，则选项为空
+          if (currentQuota.value?.private_ip_total - currentQuota.value?.private_ip_used > 0) {
+            radioNetwork.value = privateNetworks.value[0]?.id
+          } else if (currentQuota.value?.public_ip_total - currentQuota.value?.public_ip_used > 0) {
+            radioNetwork.value = publicNetworks.value[0]?.id
+          } else {
+            radioNetwork.value = ''
+          }
         }
-        radioNetwork.value = privateNetworks.value[0]?.id || publicNetworks.value[0]?.id || ''
-      } else { // 2. 配额只有公网
-        radioNetwork.value = publicNetworks.value[0]?.id || ''
       }
     }
 
@@ -533,9 +563,9 @@ export default defineComponent({
       }
       // 选择network
       chooseNetwork()
-      // image flavor 总是默认选第一项
-      radioImage.value = images.value[0]?.id || ''
-      radioFlavor.value = flavors.value[0]?.id || ''
+      // image和flavor， 没选择quota，则为空；选择了quota的情况下：image flavor 总是默认选第一项
+      radioImage.value = radioQuota.value ? images.value[0]?.id || '' : ''
+      radioFlavor.value = radioQuota.value ? flavors.value[0]?.id || '' : ''
     }
     // setup时调用一次 (3) table已加载时进入页面要选一次默认值
     chooseRadioDefaults()
@@ -545,10 +575,11 @@ export default defineComponent({
 
     /* (5) 在table都加载后，3个radio，随着group/service变化选择默认项 */
     watch([radioGroup, radioService], () => {
-      // 在group/service变化后, quota image flavor 总是默认选第一项
+      // 在group/service变化后, quota 总是默认选第一项
       radioQuota.value = quotasValid.value[0]?.id || ''
-      radioImage.value = images.value[0]?.id || ''
-      radioFlavor.value = flavors.value[0]?.id || ''
+      // 在group/service变化后,image和flavor， 没选择quota，则为空；选择了quota的情况下：image flavor 总是默认选第一项
+      radioImage.value = radioQuota.value ? images.value[0]?.id || '' : ''
+      radioFlavor.value = radioQuota.value ? flavors.value[0]?.id || '' : ''
       // 切换group/service时，不可用quota也恢复折叠
       isFolded.value = true
     })
@@ -572,13 +603,37 @@ export default defineComponent({
           timeout: 5000,
           multiLine: false
         })
-      } else if (!radioNetwork.value || !radioImage.value || !radioFlavor.value) {
+      } else if (!radioNetwork.value) {
         // 如果radio没有选择全，则弹出通知
         Notify.create({
           classes: 'notification-negative shadow-15',
           icon: 'error',
           textColor: 'negative',
-          message: '请选择正确的云主机配置',
+          message: '请选择可用网络类型',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      } else if (!radioImage.value) {
+        // 如果radio没有选择全，则弹出通知
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'error',
+          textColor: 'negative',
+          message: '请选择可用操作系统',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      } else if (!radioFlavor.value) {
+        // 如果radio没有选择全，则弹出通知
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'error',
+          textColor: 'negative',
+          message: '请选择可用硬件配置',
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,
@@ -673,7 +728,8 @@ export default defineComponent({
       isFolded,
       isDeploying,
       deployServer,
-      getOsIconName
+      getOsIconName,
+      currentQuota
     }
   }
 })

@@ -30,7 +30,10 @@
       :rows="rows"
       :columns="columns"
       row-key="name"
-      no-data-label="无结果"
+      :loading="!$store.state.provider.tables.adminServerTable.isLoaded"
+      color="primary"
+      loading-label="网络请求中，请稍候..."
+      no-data-label="暂无云主机"
       hide-pagination
       :pagination="paginationTable"
     >
@@ -143,7 +146,7 @@ export default defineComponent({
       },
       {
         name: 'image',
-        label: '系统镜像',
+        label: '操作系统',
         field: 'image',
         align: 'center',
         style: 'padding: 15px 0px',

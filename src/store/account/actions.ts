@@ -142,11 +142,16 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
       Object.assign(data, { myRole })
       // normalize
       const normalizedData = normalize(data, group)
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.groupTable,
-        tableObj: normalizedData.entities.group
+        item: normalizedData.entities.group
       })
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.groupTable,
+      isLoaded: true
+    })
   },
   // 根据groupTable,建立groupMemberTable
   async loadGroupMemberTable (context) {
@@ -161,9 +166,9 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
       const groupMember = new schema.Entity('groupMember')
       const normalizedData = normalize(respGroupMember.data, groupMember)
       // 存入state
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.groupMemberTable,
-        tableObj: normalizedData.entities.groupMember
+        item: normalizedData.entities.groupMember
       })
 
       // 给groupTable补充role字段
@@ -178,6 +183,11 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
         }
       }
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.groupMemberTable,
+      isLoaded: true
+    })
   },
   /* table */
 
@@ -205,9 +215,9 @@ const actions: ActionTree<AccountModuleInterface, StateInterface> = {
         // 保存响应内最新信息
         const newGroup = { [respPatchGroup.data.id]: respPatchGroup.data }
         // 保存最新group
-        context.commit('storeTable', {
+        context.commit('storeItem', {
           table: context.state.tables.groupTable,
-          tableObj: newGroup
+          item: newGroup
         })
         // 弹出通知
         Notify.create({

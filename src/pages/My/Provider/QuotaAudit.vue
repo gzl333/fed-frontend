@@ -6,10 +6,12 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-            <q-input disable dense outlined v-model="text" stack-label label="搜索">
-              <template v-slot:append>
-                <!--                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>-->
+            <q-input dense outlined v-model="search">
+              <template v-slot:prepend>
                 <q-icon name="search"/>
+              </template>
+              <template v-slot:append>
+                <q-icon name="close" @click="search = ''" class="cursor-pointer" />
               </template>
             </q-input>
           </div>
@@ -34,9 +36,15 @@
       :rows="rows"
       :columns="columns"
       row-key="name"
-      no-data-label="无结果"
+      :loading="!$store.state.provider.tables.adminQuotaApplicationTable.isLoaded"
+      color="primary"
+      loading-label="网络请求中，请稍候..."
+      no-data-label="暂无配额申请"
       hide-pagination
       :pagination="paginationTable"
+      :filter="search"
+      :filter-method="searchMethod"
+      no-results-label="无搜索结果"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -106,14 +114,14 @@
                 v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"
                 name="img:svg/EVCloud-Logo-Horizontal.svg"
                 style="width: 100px;height: 20px"/>
-<!--              <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>-->
+              <!--              <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>-->
             </div>
             <div>
               <q-icon
                 v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"
                 name="img:svg/OpenStack-Logo-Horizontal.svg"
                 style="width: 100px;height: 20px"/>
-<!--              <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>-->
+              <!--              <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>-->
             </div>
 
             <q-tooltip class="bg-grey-4" :offset="[0, -15]">
@@ -187,6 +195,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
+import { QuotaApplicationInterface } from 'src/store/server/state'
 
 export default defineComponent({
   name: 'Manage',
@@ -312,10 +321,11 @@ export default defineComponent({
       rowsPerPage: 9999 // 此为能显示的最大行数
     })
 
-    // 正在操作的applicationId
-    const currentId = ref('')
-    // 正在操作的application对象
-    const currentApplication = computed(() => $store.state.provider.tables.adminQuotaApplicationTable.byId[currentId.value])
+    // 搜索框
+    const search = ref('')
+
+    // 搜索方法，可扩展成更模糊的
+    const searchMethod = (rows: QuotaApplicationInterface[], terms: string): QuotaApplicationInterface[] => rows.filter(application => application.id.toLowerCase().includes(terms) || application.duration_days.toString().includes(terms) || application.vcpu.toString().includes(terms) || (application.ram / 1024).toString().includes(terms) || application.private_ip.toString().includes(terms) || application.public_ip.toString().includes(terms) || application.disk_size.toString().includes(terms) || application.purpose.toLowerCase().includes(terms) || application.contact.toLowerCase().includes(terms) || application.company.toLowerCase().includes(terms))
 
     return {
       locale,
@@ -324,7 +334,8 @@ export default defineComponent({
       rows,
       filterOptions,
       filterSelection,
-      currentApplication
+      search,
+      searchMethod
     }
   }
 })

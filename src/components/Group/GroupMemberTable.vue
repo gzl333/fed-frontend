@@ -8,7 +8,10 @@
       :rows="members"
       :columns="columns"
       row-key="name"
-      no-data-label="项目组成员为空"
+      :loading="!$store.state.account.tables.groupMemberTable.isLoaded"
+      color="primary"
+      loading-label="网络请求中，请稍候..."
+      no-data-label="项目组暂无成员"
       hide-pagination
       :pagination="paginationTable"
     >

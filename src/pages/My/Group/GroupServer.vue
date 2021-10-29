@@ -6,9 +6,12 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-            <q-input disable dense outlined v-model="text" stack-label :label="$t('搜索')">
-              <template v-slot:append>
+            <q-input dense outlined v-model="search">
+              <template v-slot:prepend>
                 <q-icon name="search"/>
+              </template>
+              <template v-slot:append>
+                <q-icon name="close" @click="search = ''" class="cursor-pointer" />
               </template>
             </q-input>
           </div>
@@ -25,7 +28,7 @@
       </div>
     </div>
 
-    <server-table :servers="rows" is-group/>
+    <server-table :servers="rows" :search="search.trim().toLowerCase()" is-group/>
 
   </div>
 </template>
@@ -54,12 +57,14 @@ export default defineComponent({
     const filterOptions = computed(() => $store.getters['account/getGroupOptions'])
 
     const rows = computed(() => $store.getters['server/getGroupServersByGroupId'](filterSelection.value.value))
-
+    // 搜索框
+    const search = ref('')
     return {
       $store,
       filterSelection,
       filterOptions,
-      rows
+      rows,
+      search
     }
   }
 })

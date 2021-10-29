@@ -9,9 +9,15 @@
       :rows="props.quotas"
       :columns="columns"
       row-key="name"
-      no-data-label="暂无可用配额，请申请后使用"
+      :loading="isGroup ? !$store.state.server.tables.groupQuotaTable.isLoaded : !$store.state.server.tables.personalQuotaTable.isLoaded"
+      color="primary"
+      loading-label="网络请求中，请稍候..."
+      no-data-label="暂无配额"
       hide-pagination
       :pagination="paginationTable"
+      :filter="search"
+      :filter-method="searchMethod"
+      no-results-label="无搜索结果"
     >
 
       <template v-slot:body="props">
@@ -276,6 +282,10 @@ export default defineComponent({
     isHideGroup: {
       type: Boolean,
       required: false
+    },
+    search: {
+      type: String,
+      required: false
     }
   },
   setup (props) {
@@ -499,6 +509,10 @@ export default defineComponent({
     const onMouseLeaveRow = () => {
       hoverRow.value = ''
     }
+
+    // 搜索方法，可扩展成更模糊的
+    const searchMethod = (rows: QuotaInterface[], terms: string): QuotaInterface[] => rows.filter(quota => quota.id.toLowerCase().includes(terms) || quota.duration_days.toString().includes(terms) || quota.private_ip_total.toString().includes(terms) || quota.public_ip_total.toString().includes(terms) || quota.vcpu_total.toString().includes(terms) || (quota.ram_total / 1024).toString().includes(terms) || quota.disk_size_total.toString().includes(terms))
+
     return {
       props,
       $store,
@@ -507,7 +521,8 @@ export default defineComponent({
       paginationTable,
       hoverRow,
       onMouseEnterRow,
-      onMouseLeaveRow
+      onMouseLeaveRow,
+      searchMethod
     }
   }
 })

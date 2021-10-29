@@ -9,9 +9,15 @@
       :rows="servers"
       :columns="columns"
       row-key="name"
-      :no-data-label="$t('暂无可用云主机，请创建后使用')"
+      :loading="isGroup ? !$store.state.server.tables.groupServerTable.isLoaded : !$store.state.server.tables.personalServerTable.isLoaded"
+      color="primary"
+      loading-label="网络请求中，请稍候..."
+      no-data-label="暂无云主机"
       hide-pagination
       :pagination="paginationTable"
+      :filter="search"
+      :filter-method="searchMethod"
+      no-results-label="无搜索结果"
     >
 
       <template v-slot:body="props">
@@ -19,7 +25,6 @@
               @mouseenter="onMouseEnterRow(props.row.name)"
               @mouseleave="onMouseLeaveRow"
         >
-
           <q-td key="ip" :props="props">
             <q-btn
               class="q-ma-none" :label="props.row.ipv4" color="primary" padding="none" flat dense unelevated no-caps
@@ -249,6 +254,10 @@ export default defineComponent({
     },
     isHideGroup: {
       type: Boolean,
+      required: false
+    },
+    search: {
+      type: String,
       required: false
     }
   },
@@ -701,6 +710,9 @@ export default defineComponent({
       hoverRow.value = ''
     }
 
+    // 搜索方法，可扩展成更模糊的
+    const searchMethod = (rows: ServerInterface[], terms: string): ServerInterface[] => rows.filter(server => server.id.toLowerCase().includes(terms) || server.ipv4.toLowerCase().includes(terms) || server.image.toLowerCase().includes(terms) || server.remarks.toLowerCase().includes(terms))
+
     return {
       locale,
       columns,
@@ -710,7 +722,8 @@ export default defineComponent({
       hoverRow,
       onMouseEnterRow,
       onMouseLeaveRow,
-      getOsIconName
+      getOsIconName,
+      searchMethod
     }
   }
 })

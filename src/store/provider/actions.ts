@@ -17,11 +17,16 @@ const actions: ActionTree<ProviderModuleInterface, StateInterface> = {
     const quotaApplication = new schema.Entity('quotaApplication', { service })
     for (const data of respApply.data.results) {
       const normalizedData = normalize(data, quotaApplication)
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.adminQuotaApplicationTable,
-        tableObj: normalizedData.entities.quotaApplication
+        item: normalizedData.entities.quotaApplication
       })
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.adminQuotaApplicationTable,
+      isLoaded: true
+    })
   },
   async loadAdminServerTable (context, payload: { page?: number; page_size?: number }) {
     context.commit('clearTable', context.state.tables.adminServerTable)
@@ -31,11 +36,16 @@ const actions: ActionTree<ProviderModuleInterface, StateInterface> = {
     // if (respGroupServer.data) {
     for (const data of respGroupServer.data.servers) {
       const normalizedData = normalize(data, server)
-      context.commit('storeTable', {
+      context.commit('storeItem', {
         table: context.state.tables.adminServerTable,
-        tableObj: normalizedData.entities.server
+        item: normalizedData.entities.server
       })
     }
+    // load table的最后再改isLoaded
+    context.commit('storeStatus', {
+      table: context.state.tables.adminServerTable,
+      isLoaded: true
+    })
     // }
     return respGroupServer
   },
@@ -53,9 +63,10 @@ const actions: ActionTree<ProviderModuleInterface, StateInterface> = {
       const service = new schema.Entity('service')
       const quotaApplication = new schema.Entity('quotaApplication', { service })
       const normalizedData = normalize(respSuspend.data, quotaApplication)
-      context.commit('storeTable', {
+      // 只保存单个item不改isLoaded状态
+      context.commit('storeItem', {
         table: context.state.tables.adminQuotaApplicationTable,
-        tableObj: normalizedData.entities.quotaApplication
+        item: normalizedData.entities.quotaApplication
       })
     }
     Dialog.create({
@@ -73,10 +84,12 @@ const actions: ActionTree<ProviderModuleInterface, StateInterface> = {
           const service = new schema.Entity('service')
           const quotaApplication = new schema.Entity('quotaApplication', { service })
           const normalizedData = normalize(respApprove.data, quotaApplication)
-          context.commit('storeTable', {
+          // 只保存单个item不改isLoaded状态
+          context.commit('storeItem', {
             table: context.state.tables.adminQuotaApplicationTable,
-            tableObj: normalizedData.entities.quotaApplication
+            item: normalizedData.entities.quotaApplication
           })
+
           // notify
           Notify.create({
             classes: 'notification-positive shadow-15',
@@ -101,10 +114,12 @@ const actions: ActionTree<ProviderModuleInterface, StateInterface> = {
           const service = new schema.Entity('service')
           const quotaApplication = new schema.Entity('quotaApplication', { service })
           const normalizedData = normalize(respReject.data, quotaApplication)
-          context.commit('storeTable', {
+          // 只保存单个item不改isLoaded状态
+          context.commit('storeItem', {
             table: context.state.tables.adminQuotaApplicationTable,
-            tableObj: normalizedData.entities.quotaApplication
+            item: normalizedData.entities.quotaApplication
           })
+
           // notify
           Notify.create({
             classes: 'notification-positive shadow-15',

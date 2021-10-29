@@ -6,10 +6,12 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-            <q-input disable dense outlined v-model="text" stack-label label="搜索">
-              <template v-slot:append>
-                <!--                      <q-icon v-if="text !== ''" name="close" @click="text = ''" class="cursor-pointer"/>-->
+            <q-input dense outlined v-model="search">
+              <template v-slot:prepend>
                 <q-icon name="search"/>
+              </template>
+              <template v-slot:append>
+                <q-icon name="close" @click="search = ''" class="cursor-pointer" />
               </template>
             </q-input>
           </div>
@@ -27,7 +29,7 @@
 
     </div>
 
-    <quota-table :quotas="quotas" :is-group="true"/>
+    <quota-table :quotas="quotas" :search="search.trim().toLowerCase()" is-group/>
 
   </div>
 </template>
@@ -69,11 +71,14 @@ export default defineComponent({
     ]
 
     const quotas = computed(() => $store.getters['server/getGroupQuotasByFilter'](filterSelection.value.value))
+    // 搜索框
+    const search = ref('')
 
     return {
       quotas,
       filterSelection,
-      filterOptions
+      filterOptions,
+      search
     }
   }
 })
