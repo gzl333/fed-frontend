@@ -9,8 +9,10 @@
 
       <div class="col-auto card-area">
 
+<!--        <q-card class="q-my-xl shadow-24 q-hoverable cursor-pointer" square v-ripple-->
+<!--                @click="$router.push({path: '/news/center-beta'})">-->
         <q-card class="q-my-xl shadow-24 q-hoverable cursor-pointer" square v-ripple
-                @click="$router.push({path: '/news/center-beta'})">
+                >
           <span class="q-focus-helper">test</span>
           <img src="https://cdn.quasar.dev/img/mountains.jpg">
           <q-card-section>
@@ -23,7 +25,7 @@
         </q-card>
 
         <q-card class="q-my-xl shadow-24 q-hoverable cursor-pointer" square v-ripple
-                @click="$router.push({path: '/news/closed-beta'})">
+                >
           <!--https://stackoverflow.com/questions/64890882/how-to-create-a-clickable-q-card-with-hover-effect-->
           <span class="q-focus-helper">test</span>
           <img src="https://cdn.quasar.dev/img/mountains.jpg">

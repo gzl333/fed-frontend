@@ -413,39 +413,39 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
       isLoaded: true
     })
   },
-  // todo 把personal/group/admin quota application 全部扩展为从单独接口查询，再添加此方法;否则会面对表内对象字段不同的情况
-  async loadSingleQuotaApplication (context, payload: { applicationId: string; isGroup: boolean }) {
+  // personal/group quota application table建立时用列举接口，有较少字段；单独更新时从详情接口取，有较多字段，但也只用基本部分。
+  // 单独更新personal/groupQuotaApplicationTable里的一个application对象
+  async loadSingleQuotaApplicationStatus (context, payload: { applicationId: string; isGroup: boolean }) {
+    // 先清空application的status，显示为获取中。注意不是删除整个application，这样则会丢失整个条目。
+    const table = payload.isGroup ? context.state.tables.groupQuotaApplicationTable : context.state.tables.personalQuotaApplicationTable
+    context.commit('storeField', {
+      table,
+      id: payload.applicationId,
+      field: 'status',
+      value: ''
+    })
+    // 获取最新的application对象，存入table
     const respSingleApplication = await $api.apply.getApplyQuotaApplyId({ path: { apply_id: payload.applicationId } })
-    // 将响应normalize，存入state里的userServerTable
-    // normalize
-    const service = new schema.Entity('service')
-    const application = new schema.Entity('application', { service })
-    const normalizedData = normalize(respSingleApplication.data, application)
-    console.log(normalizedData)
-    // if (payload.isGroup) {
-    //   context.commit('storeItem', {
-    //     table: context.state.tables.groupServerTable,
-    //     item: normalizedData.entities.server
-    //   })
-    //   void context.dispatch('loadSingleServerStatus', {
-    //     isGroup: true,
-    //     serverId: payload.serverId
-    //   })
-    // } else {
-    //   context.commit('storeItem', {
-    //     table: context.state.tables.personalServerTable,
-    //     item: normalizedData.entities.server
-    //   })
-    //   void context.dispatch('loadSingleServerStatus', {
-    //     isGroup: false,
-    //     serverId: payload.serverId
-    //   })
-    // }
-    // // 存完所有item再改isLoaded. load single server也算load了table
-    // context.commit('storeStatus', {
-    //   table: context.state.tables.personalServerTable,
-    //   isLoaded: true
-    // })
+    if (respSingleApplication.status === 200) {
+      if (payload.isGroup) {
+        // 补充vo_id字段
+        Object.assign(respSingleApplication.data, { vo_id: respSingleApplication.data.vo.id })
+      }
+      // normalize
+      const service = new schema.Entity('service')
+      const application = new schema.Entity('application', { service })
+      const normalizedData = normalize(respSingleApplication.data, application)
+      context.commit('storeItem', {
+        table,
+        item: normalizedData.entities.application
+      })
+
+      // // 存完所有item再改isLoaded. load single server也算load了table
+      // context.commit('storeStatus', {
+      //   table: context.state.tables.personalServerTable,
+      //   isLoaded: true
+      // })
+    }
   },
   async loadFedQuotaActivityTable (context) {
     // 先清空table，避免多次更新时数据累加（凡是需要强制刷新的table，都要先清空再更新
@@ -684,6 +684,7 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
   /*  提交配额申请 */
   async submitApplyQuota (context, data: { vo_id?: string; service_id: string; private_ip?: number; public_ip?: number; vcpu?: number; ram?: number; disk_size?: number; duration_days: number; company?: string; contact?: string; purpose?: string }) {
     const respPostApplyQuota = await $api.apply.postApplyQuota({ body: data })
+    console.log(data)
     if (respPostApplyQuota.status === 201) {
       if (data.vo_id) {
         // 如果是组配额，则需要补充vo_id字段,响应里是vo对象，再加一个vo_id字段

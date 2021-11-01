@@ -113,6 +113,7 @@ export interface ServerInterface {
 
 // 配额申请接口
 export interface QuotaApplicationInterface {
+  // 以下字段出现在列举接口的响应里
   private_ip: number
   public_ip: number
   vcpu: number
@@ -130,31 +131,31 @@ export interface QuotaApplicationInterface {
   classification: 'personal' | 'vo'
   result_desc: string // 拒绝理由
 
-  // todo 详情请求接口里字段更多
-  // "user": {
-  //   "id": "6",
-  //   "name": "zlguo@cnic.cn"
-  // },
-  // "approve_user": {
-  //   "id": "6",
-  //   "name": "zlguo@cnic.cn"
-  // },
-  // "approve_time": "2021-10-14T02:20:57.646748Z",
-  // "vo": {
-  //   "id": "7b4be382-2c04-11ec-a8b5-c8009fe2eb03",
-  //   "name": "测试很长的项目组名称长长长长长",
-  //   "company": "中国科学院计算机网络信息中心中",
-  //   "description": "中国科学院计算机网络信息中心中",
-  //   "creation_time": "2021-10-13T09:03:50.172953Z",
-  //   "owner": {
-  //     "id": "6",
-  //     "username": "zlguo@cnic.cn"
-  //   },
-  //   "status": "active"
-  // }
-
   // 来自补充
   vo_id?: string
+
+  // 以下字段出现在详情接口的响应里
+  user?: {
+    id: string
+    name: string
+  }
+  approve_user?: null | {
+    id: string
+    name: string
+  }
+  approve_time?: null | string
+  vo?: null | {
+    id: string
+    name: string
+    company: string
+    description: string
+    creation_time: string
+    owner: {
+      id: string
+      username: string
+    },
+    status: string
+  }
 }
 
 // 赠送配额活动

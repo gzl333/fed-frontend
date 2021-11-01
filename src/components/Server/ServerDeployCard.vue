@@ -163,7 +163,7 @@
         <!--未选择配额-->
         <div v-if="!radioQuota" class="row item-row">
           <div class="col-shrink item-title">
-            {{ $t('请选择可用配额以列举可用网络类型') }}
+            {{ $t('请选择可用配额以列举网络类型') }}
           </div>
         </div>
         <!--选择了配额-->
@@ -229,7 +229,7 @@
 
         <div v-if="!radioQuota" class="row item-row">
           <div class="col-shrink item-title">
-            {{ $t('请选择可用配额以列举可用操作系统') }}
+            {{ $t('请选择可用配额以列举操作系统') }}
           </div>
         </div>
 
@@ -262,7 +262,7 @@
 
         <div v-if="!radioQuota" class="row item-row">
           <div class="col-shrink item-title">
-            {{ $t('请选择可用配额以列举可用配置') }}
+            {{ $t('请选择可用配额以列举配置') }}
           </div>
         </div>
 

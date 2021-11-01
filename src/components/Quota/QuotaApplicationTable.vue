@@ -23,34 +23,14 @@
       <template v-slot:body="props">
         <q-tr :props="props">
 
-          <q-td key="status" :props="props">
+          <q-td key="status" :props="props" class="non-selectable">
 
-            <q-badge v-if="props.row.status === 'wait'" color="black" outline>
-              {{ $t('待审批') }}
-            </q-badge>
-            <q-badge v-if="props.row.status === 'pending'" color="primary" outline>
-              {{ $t('审批中') }}
-            </q-badge>
-            <q-badge v-if="props.row.status === 'pass'" color="light-green" outline>
-              {{ $t('已通过') }}
-            </q-badge>
-            <div v-if="props.row.status === 'reject'">
-              <q-badge color="red" outline>
-                {{ $t('已拒绝') }}
-              </q-badge>
-              <div>
-                <q-icon name="help_outline" color="red" size="xs">
-                  <q-tooltip>{{ $t('拒绝原因: ') }}{{ props.row.result_desc }}</q-tooltip>
-                </q-icon>
-              </div>
-            </div>
-            <q-badge v-if="props.row.status === 'cancel'" color="grey" outline>
-              {{ $t('已取消') }}
-            </q-badge>
+            <quota-status-chip :is-group="isGroup" :application="props.row"/>
+
             <!--创建时间距离当下小于1小时则打上new标记-->
-
             <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "
-                     style="top:10px" label="new" color="light-green" floating transparent rounded align="middle">
+                     class="q-mt-lg q-mr-sm" label="new" color="light-green" floating transparent rounded
+                     align="middle">
             </q-badge>
 
           </q-td>
@@ -152,7 +132,6 @@
             <div v-else class="column justify-center items-center q-gutter-xs">
 
               <q-btn v-if="props.row.status === 'wait'" icon="edit" flat dense padding="none"
-                     disable
                      color="primary"
                      @click="$store.dispatch('server/editQuotaApplicationDialog',{apply_id: props.row.id, isGroup})">
                 {{ $t('修改申请') }}
@@ -188,13 +167,16 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { QuotaApplicationInterface } from 'src/store/server/state'
+import QuotaStatusChip from 'components/Quota/QuotaStatusChip.vue'
 // import { useStore } from 'vuex'
 // import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'QuotaApplicationTable',
-  components: {},
+  components: {
+    QuotaStatusChip
+  },
   props: {
     applications: {
       type: Array as PropType<QuotaApplicationInterface[]>,
@@ -230,7 +212,7 @@ export default defineComponent({
             align: 'center',
             classes: 'ellipsis',
             headerStyle: 'padding: 0 2px',
-            style: 'padding: 15px 0px'
+            style: 'padding: 15px 0px;width: 95px;' // 固定宽度，防止窄chip抖动
           },
           {
             name: 'group',
@@ -257,7 +239,7 @@ export default defineComponent({
             align: 'center',
             classes: 'ellipsis',
             headerStyle: 'padding: 0 2px',
-            style: 'padding: 15px 0px'
+            style: 'padding: 20px 0px' // 更大的上下padding，避免更新状态时抖动
           },
           {
             name: 'duration_days',
@@ -311,7 +293,7 @@ export default defineComponent({
             align: 'center',
             classes: 'ellipsis',
             headerStyle: 'padding: 0 2px',
-            style: 'padding: 15px 0px'
+            style: 'padding: 15px 0px;width: 95px;' // 固定宽度，防止窄chip抖动
           },
           {
             name: 'creation_time',
@@ -329,7 +311,7 @@ export default defineComponent({
             align: 'center',
             classes: 'ellipsis',
             headerStyle: 'padding: 0 2px',
-            style: 'padding: 15px 0px'
+            style: 'padding: 20px 0px' // 更大的上下padding，避免更新状态时抖动
           },
           {
             name: 'duration_days',

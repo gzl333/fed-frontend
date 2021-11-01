@@ -6,14 +6,8 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-            <q-input dense outlined v-model="search">
-              <template v-slot:prepend>
-                <q-icon name="search"/>
-              </template>
-              <template v-slot:append>
-                <q-icon name="close" @click="search = ''" class="cursor-pointer" />
-              </template>
-            </q-input>
+            <q-select outlined dense stack-label label="筛选服务节点" v-model="serviceSelection"
+                      :options="serviceOptions"/>
           </div>
         </div>
       </div>
@@ -21,8 +15,8 @@
       <div class="col-2">
         <div class="row justify-end">
           <div class="col">
-            <q-select outlined dense stack-label label="筛选" v-model="filterSelection"
-                      :options="filterOptions"/>
+            <q-select outlined dense stack-label label="筛选申请状态" v-model="statusSelection"
+                      :options="statusOptions"/>
           </div>
         </div>
       </div>
@@ -50,38 +44,85 @@
         <q-tr :props="props">
 
           <q-td key="status" :props="props">
-            <q-badge v-if="props.row.status === 'wait'" color="black" outline>
-              {{ $t('待审批') }}
-            </q-badge>
-            <q-badge v-if="props.row.status === 'pending'" color="primary" outline>
-              {{ $t('审批中') }}
-            </q-badge>
-            <q-badge v-if="props.row.status === 'pass'" color="light-green" outline>
-              {{ $t('已通过') }}
-            </q-badge>
-            <div v-if="props.row.status === 'reject'">
-              <q-badge color="red" outline>
-                {{ $t('已拒绝') }}
-              </q-badge>
-              <div>
-                <q-icon name="help_outline" color="red" size="xs">
-                  <q-tooltip>{{ $t('拒绝原因: ') }}{{ props.row.result_desc }}</q-tooltip>
-                </q-icon>
-              </div>
-            </div>
-            <q-badge v-if="props.row.status === 'cancel'" color="grey" outline>
-              {{ $t('已取消') }}
-            </q-badge>
-            <!--创建时间距离当下小于1小时则打上new标记-->
-            <!--            <q-badge v-if="(new Date() - new Date(props.row.creation_time)) < 1000 * 60 * 60 * 1 "-->
-            <!--                     style="top:10px" color="light-green" floating transparent rounded align="middle">-->
-            <!--              new-->
-            <!--            </q-badge>-->
 
+            <q-chip v-if="!props.row.status"
+                    style="width: 90px;" class="text-bold " outline :ripple="false" color="grey-5">
+              <div class="row items-center justify-center full-width">
+                {{ $t('无状态') }}
+              </div>
+            </q-chip>
+
+            <q-chip v-if="props.row.status === 'wait'"
+                    style="width: 90px;" class="text-bold" outline :ripple="false" color="black">
+              <div class="row items-center justify-center full-width">
+                {{ $t('待审批') }}
+              </div>
+            </q-chip>
+
+            <q-chip v-if="props.row.status === 'pending'"
+                    style="width: 90px;" class="text-bold" outline :ripple="false" color="primary">
+              <div class="row items-center justify-center full-width">
+                {{ $t('审批中') }}
+              </div>
+              <q-icon name="info_outline" size="xs"/>
+              <q-tooltip class="bg-grey-4 text-black" :offset="[0, 0]">
+                <div>{{ $t('挂起人: ') }}</div>
+                <div class="text-bold">{{ props.row?.approve_user?.name }}</div>
+                <div>{{ $t('挂起时间: ') }}</div>
+                <div class="text-bold">
+                  {{ new Date(props.row?.approve_time).toLocaleString(locale) }}
+                </div>
+              </q-tooltip>
+            </q-chip>
+
+            <q-chip v-if="props.row.status === 'pass'"
+                    style="width: 90px;" class="text-bold" outline :ripple="false" color="light-green">
+              <div class="row items-center justify-center full-width">
+                {{ $t('已通过') }}
+              </div>
+              <q-icon name="info_outline" size="xs"/>
+              <q-tooltip class="bg-grey-4 text-black" :offset="[0, 0]">
+                <div>{{ $t('审批人: ') }}</div>
+                <div class="text-bold">{{ props.row?.approve_user?.name }}</div>
+                <div>{{ $t('审批时间: ') }}</div>
+                <div class="text-bold">
+                  {{ new Date(props.row?.approve_time).toLocaleString(locale) }}
+                </div>
+              </q-tooltip>
+            </q-chip>
+
+            <div v-if="props.row.status === 'reject'">
+              <q-chip style="width: 90px;" class="text-bold" outline :ripple="false" color="red">
+                <div class="row items-center justify-center full-width">
+                  {{ $t('已拒绝') }}
+                </div>
+                <q-icon name="info_outline" size="xs"/>
+              </q-chip>
+              <q-tooltip class="bg-grey-4 text-black" :offset="[0, 0]">
+                <div>{{ $t('审批人: ') }}</div>
+                <div class="text-bold">{{ props.row?.approve_user?.name }}</div>
+                <div>{{ $t('审批时间: ') }}</div>
+                <div class="text-bold">
+                  {{ new Date(props.row?.approve_time).toLocaleString(locale) }}
+                </div>
+                <div>{{ $t('拒绝原因: ') }}</div>
+                <div class="text-bold" style="max-width: 150px;">{{ props.row.result_desc }}</div>
+              </q-tooltip>
+            </div>
+
+            <q-chip v-if="props.row.status === 'cancel'"
+                    style="width: 90px;" class="text-bold" outline :ripple="false" color="grey">
+              <div class="row items-center justify-center full-width">
+                {{ $t('已取消') }}
+              </div>
+            </q-chip>
+
+            <!--wait状态则打上new标记-->
             <q-badge v-if="props.row.status === 'wait'"
-                     style="top:10px" color="light-green" floating transparent rounded align="middle">
+                     class="q-mt-lg q-mr-sm" color="light-green" floating transparent rounded align="middle">
               new
             </q-badge>
+
           </q-td>
 
           <q-td key="creation_time" :props="props">
@@ -150,8 +191,16 @@
           </q-td>
 
           <q-td key="vo" :props="props">
-            {{ props.row.classification === 'vo' ? $t('项目组') : $t('个人') }}
+            <div v-if="props.row.classification === 'vo'">
+              <q-icon name="group" color="grey" size="md"/>
+              <div>{{ $t('项目组') }}</div>
+            </div>
+            <div v-else>
+              <q-icon name="person" color="grey" size="md"/>
+              <div>{{ $t('个人') }}</div>
+            </div>
           </q-td>
+
           <q-td key="purpose" :props="props">
             {{ props.row.purpose }}
             <q-tooltip :offset="[0, -15]">
@@ -195,7 +244,6 @@ import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
-import { QuotaApplicationInterface } from 'src/store/server/state'
 
 export default defineComponent({
   name: 'Manage',
@@ -205,16 +253,20 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
-    // adminQuotaApplicationTable数据更新来自后台，进入页面后应强制更新table
-    void $store.dispatch('provider/loadAdminQuotaApplicationTable')
+    // // adminQuotaApplicationTable数据更新来自后台，进入页面后应强制更新table
+    // void $store.dispatch('provider/loadAdminQuotaApplicationTable')
+
+    // service filter
+    const serviceSelection = ref('')
+    const serviceOptions = computed(() => $store.state.account.items.vmsAdmin)
 
     // list filter
-    const filterSelection = ref({
+    const statusSelection = ref({
       label: '全部状态',
       value: '0'
     })
 
-    const filterOptions = [
+    const statusOptions = [
       {
         label: '全部状态',
         value: '0'
@@ -242,7 +294,7 @@ export default defineComponent({
     ]
 
     // 获取列表数据
-    const rows = computed(() => $store.getters['provider/getAdminApplicationsByFilter'](filterSelection.value.value))
+    const rows = computed(() => $store.getters['provider/getAdminApplicationsByFilter'](statusSelection.value.value))
 
     // 列表分栏定义
     const columns = [
@@ -321,21 +373,15 @@ export default defineComponent({
       rowsPerPage: 9999 // 此为能显示的最大行数
     })
 
-    // 搜索框
-    const search = ref('')
-
-    // 搜索方法，可扩展成更模糊的
-    const searchMethod = (rows: QuotaApplicationInterface[], terms: string): QuotaApplicationInterface[] => rows.filter(application => application.id.toLowerCase().includes(terms) || application.duration_days.toString().includes(terms) || application.vcpu.toString().includes(terms) || (application.ram / 1024).toString().includes(terms) || application.private_ip.toString().includes(terms) || application.public_ip.toString().includes(terms) || application.disk_size.toString().includes(terms) || application.purpose.toLowerCase().includes(terms) || application.contact.toLowerCase().includes(terms) || application.company.toLowerCase().includes(terms))
-
     return {
       locale,
       paginationTable,
       columns,
       rows,
-      filterOptions,
-      filterSelection,
-      search,
-      searchMethod
+      serviceOptions,
+      serviceSelection,
+      statusOptions,
+      statusSelection
     }
   }
 })

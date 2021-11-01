@@ -10,7 +10,7 @@
               <template v-slot:prepend>
                 <q-icon name="search"/>
               </template>
-              <template v-slot:append>
+              <template v-slot:append v-if="search">
                 <q-icon name="close" @click="search = ''" class="cursor-pointer" />
               </template>
             </q-input>

@@ -8,6 +8,7 @@ import ProviderAuditQuotaApplicationCard from 'components/Provider/ProviderAudit
 
 const actions: ActionTree<ProviderModuleInterface, StateInterface> = {
   /* tables */
+  // todo admin quota application 全部从详情接口里取出，因为要用审批人字段
   async loadAdminQuotaApplicationTable (context) {
     context.commit('clearTable', context.state.tables.adminQuotaApplicationTable)
     // 再获取数据并更新table
@@ -16,7 +17,8 @@ const actions: ActionTree<ProviderModuleInterface, StateInterface> = {
     const service = new schema.Entity('service')
     const quotaApplication = new schema.Entity('quotaApplication', { service })
     for (const data of respApply.data.results) {
-      const normalizedData = normalize(data, quotaApplication)
+      const respApplyDetail = await $api.apply.getApplyQuotaApplyIdAdmin({ path: { apply_id: data.id } })
+      const normalizedData = normalize(respApplyDetail.data, quotaApplication)
       context.commit('storeItem', {
         table: context.state.tables.adminQuotaApplicationTable,
         item: normalizedData.entities.quotaApplication

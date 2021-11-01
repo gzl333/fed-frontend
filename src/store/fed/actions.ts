@@ -5,7 +5,7 @@ import { $api } from 'boot/api'
 import { normalize, schema } from 'normalizr'
 
 const actions: ActionTree<FedModuleInterface, StateInterface> = {
-  /* $store加载总起点 */
+  /* $store加载总顺序，体现依赖关系 */
   loadAllTables (context) {
     if (!context.state.tables.dataCenterTable.isLoaded) {
       void context.dispatch('loadDataCenterTable').then(() => {
