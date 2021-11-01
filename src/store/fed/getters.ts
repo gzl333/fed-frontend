@@ -78,33 +78,123 @@ const getters: GetterTree<FedModuleInterface, StateInterface> = {
   },
   getPieCpuNum (state): Record<string, string | number>[] {
     const dataArr: Record<string, string | number>[] = []
-    for (const item of state.tables.serviceAllocationTable.allIds) {
-      const dataObj: Record<string, string | number> = {}
-      dataObj.name = state.tables.serviceTable.byId[item]?.name
-      dataObj.value = state.tables.fedAllocationTable.byId[item]?.vcpu_total + state.tables.serviceAllocationTable.byId[item]?.vcpu_total
-      dataArr.push(dataObj)
+    if (state.tables.fedAllocationTable.allIds.length > state.tables.serviceAllocationTable.allIds.length) {
+      for (const item of state.tables.fedAllocationTable.allIds) {
+        const dataObj: Record<string, string | number> = {}
+        if (state.tables.serviceAllocationTable.allIds.indexOf(item) !== -1) {
+          dataObj.name = state.tables.serviceTable.byId[item]?.name
+          dataObj.value = state.tables.fedAllocationTable.byId[item]?.vcpu_total + state.tables.serviceAllocationTable.byId[item]?.vcpu_total
+        } else {
+          dataObj.name = state.tables.serviceTable.byId[item]?.name
+          dataObj.value = state.tables.fedAllocationTable.byId[item]?.vcpu_total
+        }
+        dataArr.push(dataObj)
+      }
+    } else if (state.tables.fedAllocationTable.allIds.length < state.tables.serviceAllocationTable.allIds.length) {
+      for (const item of state.tables.serviceAllocationTable.allIds) {
+        const dataObj: Record<string, string | number> = {}
+        if (state.tables.fedAllocationTable.allIds.indexOf(item) !== -1) {
+          dataObj.name = state.tables.serviceTable.byId[item]?.name
+          dataObj.value = state.tables.fedAllocationTable.byId[item]?.vcpu_total + state.tables.serviceAllocationTable.byId[item]?.vcpu_total
+        } else {
+          dataObj.name = state.tables.serviceTable.byId[item]?.name
+          dataObj.value = state.tables.serviceAllocationTable.byId[item]?.vcpu_total
+        }
+        dataArr.push(dataObj)
+      }
+    } else {
+      for (const item of state.tables.serviceAllocationTable.allIds) {
+        const dataObj: Record<string, string | number> = {}
+        dataObj.name = state.tables.serviceTable.byId[item]?.name
+        dataObj.value = state.tables.fedAllocationTable.byId[item]?.vcpu_total + state.tables.serviceAllocationTable.byId[item]?.vcpu_total
+        dataArr.push(dataObj)
+      }
     }
     return dataArr
   },
   getPieRamNum (state): Record<string, string | number>[] {
     const dataArr: Record<string, string | number>[] = []
-    for (const item of state.tables.serviceAllocationTable.allIds) {
-      const dataObj: Record<string, string | number> = {}
-      dataObj.name = state.tables.serviceTable.byId[item]?.name
-      dataObj.value = state.tables.fedAllocationTable.byId[item]?.ram_total + state.tables.serviceAllocationTable.byId[item]?.ram_total
-      dataArr.push(dataObj)
+    if (state.tables.fedAllocationTable.allIds.length > state.tables.serviceAllocationTable.allIds.length) {
+      for (const item of state.tables.fedAllocationTable.allIds) {
+        const dataObj: Record<string, string | number> = {}
+        if (state.tables.serviceAllocationTable.allIds.indexOf(item) !== -1) {
+          dataObj.name = state.tables.serviceTable.byId[item]?.name
+          dataObj.value = state.tables.fedAllocationTable.byId[item]?.ram_total + state.tables.serviceAllocationTable.byId[item]?.ram_total
+        } else {
+          dataObj.name = state.tables.serviceTable.byId[item]?.name
+          dataObj.value = state.tables.fedAllocationTable.byId[item]?.ram_total
+        }
+        dataArr.push(dataObj)
+      }
+    } else if (state.tables.fedAllocationTable.allIds.length < state.tables.serviceAllocationTable.allIds.length) {
+      for (const item of state.tables.serviceAllocationTable.allIds) {
+        const dataObj: Record<string, string | number> = {}
+        if (state.tables.fedAllocationTable.allIds.indexOf(item) !== -1) {
+          dataObj.name = state.tables.serviceTable.byId[item]?.name
+          dataObj.value = state.tables.fedAllocationTable.byId[item]?.ram_total + state.tables.serviceAllocationTable.byId[item]?.ram_total
+        } else {
+          dataObj.name = state.tables.serviceTable.byId[item]?.name
+          dataObj.value = state.tables.serviceAllocationTable.byId[item]?.ram_total
+        }
+        dataArr.push(dataObj)
+      }
+    } else {
+      for (const item of state.tables.serviceAllocationTable.allIds) {
+        const dataObj: Record<string, string | number> = {}
+        dataObj.name = state.tables.serviceTable.byId[item]?.name
+        dataObj.value = state.tables.fedAllocationTable.byId[item]?.ram_total + state.tables.serviceAllocationTable.byId[item]?.ram_total
+        dataArr.push(dataObj)
+      }
     }
     return dataArr
   },
   getPieDiskNum (state): Record<string, string | number>[] {
     const dataArr: Record<string, string | number>[] = []
-    for (const item of state.tables.serviceAllocationTable.allIds) {
-      const dataObj: Record<string, string | number> = {}
-      dataObj.name = state.tables.serviceTable.byId[item]?.name
-      dataObj.value = state.tables.fedAllocationTable.byId[item]?.disk_size_total + state.tables.serviceAllocationTable.byId[item]?.disk_size_total
-      dataArr.push(dataObj)
+    if (state.tables.fedAllocationTable.allIds.length > state.tables.serviceAllocationTable.allIds.length) {
+      for (const item of state.tables.fedAllocationTable.allIds) {
+        const dataObj: Record<string, string | number> = {}
+        if (state.tables.serviceAllocationTable.allIds.indexOf(item) !== -1) {
+          dataObj.name = state.tables.serviceTable.byId[item]?.name
+          dataObj.value = state.tables.fedAllocationTable.byId[item]?.disk_size_total + state.tables.serviceAllocationTable.byId[item]?.disk_size_total
+        } else {
+          dataObj.name = state.tables.serviceTable.byId[item]?.name
+          dataObj.value = state.tables.fedAllocationTable.byId[item]?.disk_size_total
+        }
+        dataArr.push(dataObj)
+      }
+    } else if (state.tables.fedAllocationTable.allIds.length < state.tables.serviceAllocationTable.allIds.length) {
+      for (const item of state.tables.serviceAllocationTable.allIds) {
+        const dataObj: Record<string, string | number> = {}
+        if (state.tables.fedAllocationTable.allIds.indexOf(item) !== -1) {
+          dataObj.name = state.tables.serviceTable.byId[item]?.name
+          dataObj.value = state.tables.fedAllocationTable.byId[item]?.disk_size_total + state.tables.serviceAllocationTable.byId[item]?.disk_size_total
+        } else {
+          dataObj.name = state.tables.serviceTable.byId[item]?.name
+          dataObj.value = state.tables.serviceAllocationTable.byId[item]?.disk_size_total
+        }
+        dataArr.push(dataObj)
+      }
+    } else {
+      for (const item of state.tables.serviceAllocationTable.allIds) {
+        const dataObj: Record<string, string | number> = {}
+        dataObj.name = state.tables.serviceTable.byId[item]?.name
+        dataObj.value = state.tables.fedAllocationTable.byId[item]?.disk_size_total + state.tables.serviceAllocationTable.byId[item]?.disk_size_total
+        dataArr.push(dataObj)
+      }
     }
     return dataArr
+  },
+  getMechanismOptions (state): { value: string; label: string; }[] {
+    const groupOptions = []
+    for (const group of Object.values(state.tables.dataCenterTable.byId)) {
+      groupOptions.push(
+        {
+          label: group.name,
+          value: group.id
+        }
+      )
+    }
+    return groupOptions
   },
   getServices (state): { value: string; label: string; }[] {
     const serviceOptions = []

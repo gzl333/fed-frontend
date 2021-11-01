@@ -7,7 +7,7 @@
           <div class="q-pa-lg">
             <q-option-group
               v-model="group"
-              :options="options"
+              :options="filterOptions"
               color="yellow"
               type="toggle"
               @update:model-value="transfer"
@@ -119,15 +119,13 @@ export default defineComponent({
     const privateNum = computed(() => $store.getters['fed/getPrivateNum'])
     const shareNum = computed(() => $store.getters['fed/getShareNum'])
     const cpuNum = computed(() => $store.getters['fed/getPieCpuNum'])
+    console.log(cpuNum)
     const ramNum = computed(() => $store.getters['fed/getPieRamNum'])
     const diskNum = computed(() => $store.getters['fed/getPieDiskNum'])
+    const filterOptions = computed(() => $store.getters['fed/getMechanismOptions'])
     const dataCenters = computed(() => Object.values($store.state.fed.tables.dataCenterTable.byId))
     const tab = ref('one')
     const group = ref([])
-    const options = [
-      { label: '中国科学院计算机网络信息中心', value: '1' },
-      { label: '地球大数据科学工程专项', value: '2' }
-    ]
     const map: any = ref(null)
     const transfer = (value: []) => {
       const coordinateArr = []
@@ -155,7 +153,7 @@ export default defineComponent({
       diskNum,
       dataCenters,
       group,
-      options
+      filterOptions
     }
   }
 })
