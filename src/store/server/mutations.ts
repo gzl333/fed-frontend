@@ -86,14 +86,14 @@ const mutation: MutationTree<ServerModuleInterface> = {
   },
 
   // 保存单个item的单个field
-  storeField (state: ServerModuleInterface, payload: {
+  storeField<T> (state: ServerModuleInterface, payload: {
     table: {
-      byId: Record<string, ServerInterface> // 此处固定为ServerInterface
+      byId: Record<string, T> // 此处固定为ServerInterface
       allIds: string[]
       isLoaded: boolean
     }
     id: string
-    field: keyof ServerInterface
+    field: keyof T
     value: never // todo 可以更加细化，利用field: SeverInterface[field]
   }) {
     payload.table.byId[payload.id][payload.field] = payload.value

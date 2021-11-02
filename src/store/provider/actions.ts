@@ -8,12 +8,26 @@ import ProviderAuditQuotaApplicationCard from 'components/Provider/ProviderAudit
 
 const actions: ActionTree<ProviderModuleInterface, StateInterface> = {
   /* tables */
-  // todo admin quota application 全部从详情接口里取出，因为要用审批人字段
-  async loadAdminQuotaApplicationTable (context) {
+  async loadAdminQuotaApplicationTable (context, payload?: {
+    page?: number;
+    pageSize?: number;
+    serviceId?: string;
+    status?: 'wait' | 'pending' | 'pass' | 'reject' | 'cancel'
+  }) {
     context.commit('clearTable', context.state.tables.adminQuotaApplicationTable)
-    // 再获取数据并更新table
-    // todo 当前只请求了一次，若超过200项，应多次请求至最后，待完成此逻辑
-    const respApply = await $api.apply.getApplyQuotaAdmin({ query: { deleted: false } })
+    // 获取数据并更新table
+    const respApply = await $api.apply.getApplyQuotaAdmin({
+      query: {
+        deleted: false,
+        // ...(payload?.serviceId) && { service: payload.serviceId }, // 有条件添加属性 https://stackoverflow.com/a/40560953
+        // ...(payload?.status) && { status: [payload.status as string] }
+        page: payload?.page,
+        page_size: payload?.pageSize,
+        service: payload?.serviceId,
+        status: [payload?.status as string]
+      }
+    })
+    // 再向详情接口发送请求
     const service = new schema.Entity('service')
     const quotaApplication = new schema.Entity('quotaApplication', { service })
     for (const data of respApply.data.results) {
@@ -29,6 +43,8 @@ const actions: ActionTree<ProviderModuleInterface, StateInterface> = {
       table: context.state.tables.adminQuotaApplicationTable,
       isLoaded: true
     })
+    // 返回count值
+    return respApply.data.count
   },
   async loadAdminServerTable (context, payload: { page?: number; page_size?: number }) {
     context.commit('clearTable', context.state.tables.adminServerTable)

@@ -168,7 +168,7 @@ export const $api = {
         page_size?: number;
         deleted?: boolean;
         service?: string;
-        status?: string[]
+        status?: string[];
       }
     }) {
       const config = {

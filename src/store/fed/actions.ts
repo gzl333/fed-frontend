@@ -67,9 +67,10 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
       })
     }
 
-    if (!context.rootState.provider.tables.adminQuotaApplicationTable.isLoaded) {
-      void context.dispatch('provider/loadAdminQuotaApplicationTable', null, { root: true })
-    }
+    // 以下表格为分页，在页面自身加载时load
+    // if (!context.rootState.provider.tables.adminQuotaApplicationTable.isLoaded) {
+    //   void context.dispatch('provider/loadAdminQuotaApplicationTable', null, { root: true })
+    // }
   },
   /* $store加载总起点 */
 

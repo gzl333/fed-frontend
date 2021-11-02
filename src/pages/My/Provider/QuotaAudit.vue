@@ -6,17 +6,40 @@
       <div class="col-3">
         <div class="row justify-start">
           <div class="col">
-            <q-select outlined dense stack-label label="筛选服务节点" v-model="serviceSelection"
-                      :options="serviceOptions"/>
+            <q-select outlined dense stack-label :label="$t('筛选服务节点')" v-model="serviceSelection"
+                      :options="serviceOptions" emit-value map-options option-value="value"
+                      :option-label="locale==='zh'? 'label':'labelEn'"
+                      @update:model-value="onFilterChange"/>
           </div>
+        </div>
+      </div>
+
+      <div class="col-5" v-if="pagination.count">
+        <div class="row justify-center items-center q-gutter-sm">
+          <q-pagination v-model="pagination.page"
+                        :max="Math.ceil(pagination.count / pagination.rowsPerPage )"
+                        :max-pages="8"
+                        direction-links
+                        boundary-links
+                        boundary-numbers
+                        flat
+                        :ripple="false"
+          />
+          <div class="text-grey">
+            <q-select v-model="pagination.rowsPerPage" :options="[5,10,15,20,25,30]" dense/>
+            项/页
+          </div>
+          <div class="text-grey">共计{{ pagination.count }}项</div>
         </div>
       </div>
 
       <div class="col-2">
         <div class="row justify-end">
           <div class="col">
-            <q-select outlined dense stack-label label="筛选申请状态" v-model="statusSelection"
-                      :options="statusOptions"/>
+            <q-select outlined dense stack-label :label="$t('筛选申请状态')" v-model="statusSelection"
+                      :options="statusOptions" emit-value map-options option-value="value"
+                      :option-label="locale==='zh'? 'label':'labelEn'"
+                      @update:model-value="onFilterChange"/>
           </div>
         </div>
       </div>
@@ -36,14 +59,11 @@
       no-data-label="暂无配额申请"
       hide-pagination
       :pagination="paginationTable"
-      :filter="search"
-      :filter-method="searchMethod"
-      no-results-label="无搜索结果"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
 
-          <q-td key="status" :props="props">
+          <q-td key="status" :props="props" class="non-selectable">
 
             <q-chip v-if="!props.row.status"
                     style="width: 90px;" class="text-bold " outline :ripple="false" color="grey-5">
@@ -165,19 +185,19 @@
               <!--              <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>-->
             </div>
 
-            <q-tooltip class="bg-grey-4" :offset="[0, -15]">
-              <span class="text-black">
-                {{ $t('该节点的服务类型为') }}
-              </span>
-              <q-icon
-                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"
-                name="img:svg/EVCloud-Logo-Horizontal.svg"
-                style="width: 100px;height: 20px"/>
-              <q-icon
-                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"
-                name="img:svg/OpenStack-Logo-Horizontal.svg"
-                style="width: 100px;height: 20px"/>
-            </q-tooltip>
+            <!--            <q-tooltip class="bg-grey-4" :offset="[0, -15]">-->
+            <!--              <span class="text-black">-->
+            <!--                {{ $t('该节点的服务类型为') }}-->
+            <!--              </span>-->
+            <!--              <q-icon-->
+            <!--                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"-->
+            <!--                name="img:svg/EVCloud-Logo-Horizontal.svg"-->
+            <!--                style="width: 100px;height: 20px"/>-->
+            <!--              <q-icon-->
+            <!--                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"-->
+            <!--                name="img:svg/OpenStack-Logo-Horizontal.svg"-->
+            <!--                style="width: 100px;height: 20px"/>-->
+            <!--            </q-tooltip>-->
           </q-td>
 
           <q-td key="duration_days" :props="props">
@@ -229,8 +249,9 @@
           </q-td>
         </q-tr>
       </template>
+
       <!--      <template v-slot:bottom>-->
-      <!--      todo 批量操作-->
+      <!--   todo 批量操作-->
       <!--      </template>-->
     </q-table>
 
@@ -240,7 +261,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
@@ -253,48 +274,47 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
-    // // adminQuotaApplicationTable数据更新来自后台，进入页面后应强制更新table
-    // void $store.dispatch('provider/loadAdminQuotaApplicationTable')
-
     // service filter
     const serviceSelection = ref('')
-    const serviceOptions = computed(() => $store.state.account.items.vmsAdmin)
+    const serviceOptions = computed(() => $store.getters['provider/getServiceOptions'])
 
-    // list filter
-    const statusSelection = ref({
-      label: '全部状态',
-      value: '0'
-    })
-
+    // status filter
+    const statusSelection = ref('')
     const statusOptions = [
       {
+        value: '',
         label: '全部状态',
-        value: '0'
+        labelEn: 'All Status'
       },
       {
+        value: 'wait',
         label: '待审批',
-        value: 'wait'
+        labelEn: 'Submitted'
       },
       {
+        value: 'pending',
         label: '审批中',
-        value: 'pending'
+        labelEn: 'Auditing'
       },
       {
+        value: 'pass',
         label: '已通过',
-        value: 'pass'
+        labelEn: 'Approved'
       },
       {
+        value: 'reject',
         label: '已拒绝',
-        value: 'reject'
+        labelEn: 'Rejected'
       },
       {
+        value: 'cancel',
         label: '已取消',
-        value: 'cancel'
+        labelEn: 'Canceled'
       }
     ]
 
-    // 获取列表数据
-    const rows = computed(() => $store.getters['provider/getAdminApplicationsByFilter'](statusSelection.value.value))
+    // 获取列表数据,虽然是从后端分页读取，但仍要用getter传参数筛选。因为table更新过程中突然改变参数，会导致新旧数据存入同一个表中。不加筛选的话，就会新旧数据同时显示了。
+    const rows = computed(() => $store.getters['provider/getAdminApplicationsByServiceIdByStatus'](serviceSelection.value, statusSelection.value))
 
     // 列表分栏定义
     const columns = [
@@ -365,13 +385,44 @@ export default defineComponent({
       }
     ]
 
-    // q-pagination 所需配置对象
+    // Table所需配置对象，不用table的分页，此配置对象只为设置表格显示最大值。
     const paginationTable = ref({
-      // sortBy: 'desc',
-      // descending: false,
+      sortBy: 'desc',
+      descending: false,
       page: 1,
-      rowsPerPage: 9999 // 此为能显示的最大行数
+      rowsPerPage: 99999 // 此为能显示的最大行数
     })
+
+    // 同时这个对象也被pagination组件使用。
+    const pagination = ref({
+      page: 1,
+      rowsPerPage: 10,
+      count: 0
+    })
+
+    // 更新表格，并更细count值
+    const updateProviderQuotaApplicationTable = async () => {
+      pagination.value.count = await $store.dispatch('provider/loadAdminQuotaApplicationTable', {
+        page: pagination.value.page,
+        pageSize: pagination.value.rowsPerPage,
+        serviceId: serviceSelection.value,
+        status: statusSelection.value
+      })
+    }
+
+    // 当筛选参数变化时
+    const onFilterChange = () => {
+      // 分页信息复位
+      pagination.value.page = 1
+      // 更新table
+      void updateProviderQuotaApplicationTable()
+    }
+
+    // 当pagination参数变化时
+    watch(pagination.value, updateProviderQuotaApplicationTable)
+
+    // onMounted时加载初始table第一页
+    onMounted(updateProviderQuotaApplicationTable)
 
     return {
       locale,
@@ -381,7 +432,9 @@ export default defineComponent({
       serviceOptions,
       serviceSelection,
       statusOptions,
-      statusSelection
+      statusSelection,
+      onFilterChange,
+      pagination
     }
   }
 })

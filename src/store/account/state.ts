@@ -59,8 +59,8 @@ export interface AccountModuleInterface {
     // 账户在云联邦内的身份
     fedRole: 'ordinary' | 'federal-admin' // 联邦层级：普通用户还是管理员
     vmsAdmin: string[] // 有vms管理员权限的接入服务id
-    // adminObs: string[]
-    // adminHpc: string[]
+    // obsAdmin: string[]
+    // hpsAdmin: string[]
 
     // layout
     isRightDrawerOpen: boolean

@@ -194,23 +194,24 @@
           </div>
         </div>
 
-        <div class="row items-center q-py-md">
-          <div class="col-1">
-            云硬盘
-          </div>
-          <div class="col-6">
-            <q-slider
-              v-model="sliderDisk"
-              :min="0"
-              :max="1024"
-              :step="128"
-              label
-              :label-value="sliderDisk + 'GB'"
-              label-always
-              color="primary"
-            />
-          </div>
-        </div>
+<!--        <div class="row items-center q-py-md">-->
+<!--          <div class="col-1">-->
+<!--            云硬盘-->
+<!--          </div>-->
+<!--          <div class="col-6">-->
+<!--            <q-slider-->
+<!--              v-model="sliderDisk"-->
+<!--              :min="0"-->
+<!--              :max="1024"-->
+<!--              :step="128"-->
+<!--              label-->
+<!--              :label-value="sliderDisk + 'GB'"-->
+<!--              label-always-->
+<!--              color="primary"-->
+<!--            />-->
+<!--          </div>-->
+<!--        </div>-->
+
       </div>
 
       <div class="section">
@@ -328,14 +329,14 @@
           </div>
         </div>
 
-        <div class="row item-row">
-          <div class="col-shrink item-title-narrow text-grey">
-            云硬盘
-          </div>
-          <div class="col item-radios">
-            {{ sliderDisk }}GB
-          </div>
-        </div>
+<!--        <div class="row item-row">-->
+<!--          <div class="col-shrink item-title-narrow text-grey">-->
+<!--            云硬盘-->
+<!--          </div>-->
+<!--          <div class="col item-radios">-->
+<!--            {{ sliderDisk }}GB-->
+<!--          </div>-->
+<!--        </div>-->
 
         <div class="row item-row">
           <div class="col-shrink item-title-narrow text-grey">

@@ -8,6 +8,7 @@ const mutation: MutationTree<ProviderModuleInterface> = {
       byId: Record<string, T>
       allIds: string[]
       isLoaded: boolean
+      count?: number
     }
     item: Record<string, T>
   }) {
@@ -21,6 +22,7 @@ const mutation: MutationTree<ProviderModuleInterface> = {
       byId: Record<string, T>
       allIds: string[]
       isLoaded: boolean
+      count?: number
     }
     isLoaded: boolean
   }) {
@@ -31,10 +33,26 @@ const mutation: MutationTree<ProviderModuleInterface> = {
     byId: Record<string, T>
     allIds: string[]
     isLoaded: boolean
+    count?: number
   }) {
     table.byId = {}
     table.allIds = []
     table.isLoaded = false
+    table.count = 0
+  },
+  // 保存单个item的单个field
+  storeField<T> (state: ProviderModuleInterface, payload: {
+    table: {
+      byId: Record<string, T> // T为byId中单个对象的类型
+      allIds: string[]
+      isLoaded: boolean
+      count?: number
+    }
+    id: string
+    field: keyof T
+    value: never // todo 可以更加细化，利用field: SeverInterface[field]
+  }) {
+    payload.table.byId[payload.id][payload.field] = payload.value
   }
 }
 

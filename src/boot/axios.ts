@@ -1,5 +1,6 @@
 import { boot } from 'quasar/wrappers'
 import axios, { AxiosInstance, AxiosError } from 'axios'
+import qs from 'qs'
 import { i18n } from 'boot/i18n'
 import { Notify } from 'quasar'
 
@@ -13,8 +14,16 @@ declare module '@vue/runtime-core' {
 
 // APIBASE的唯一配置。 包装好接口api base地址的axios实例
 // 每一个前端部署要单独设置
-const apiFed = axios.create({ baseURL: window.location.protocol + '//vms.cstcloud.cn/api' })
-const apiLogin = axios.create({ baseURL: window.location.protocol + '//gosc-login.cstcloud.cn' })
+const apiFed = axios.create({
+  baseURL: window.location.protocol + '//vms.cstcloud.cn/api',
+  // 序列化器，没有这个无法在query里发送数组参数。body里的数组不需要序列化器。 https://github.com/axios/axios/issues/604#issuecomment-321460450
+  paramsSerializer: function (params) {
+    return qs.stringify(params, { arrayFormat: 'comma' })
+  }
+})
+const apiLogin = axios.create({
+  baseURL: window.location.protocol + '//gosc-login.cstcloud.cn'
+})
 
 // 自己写的，把错误打印到console的helper函数，对业务无影响
 const errorNotifier = (error: AxiosError) => {
