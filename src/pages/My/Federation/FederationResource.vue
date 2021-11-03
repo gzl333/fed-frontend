@@ -4,15 +4,17 @@
       <div class="row column col-grow">
         <div class="text-dark text-h5 ">当前机构数量：{{ $store.state.fed.tables.dataCenterTable.allIds?.length }}</div>
         <div class="row">
-          <div class="q-pa-lg">
+        </div>
+        <div class="row">
+          <q-scroll-area class="q-mt-md" style="height: 200px; width: 300px; max-width: 300px;">
             <q-option-group
               v-model="group"
               :options="filterOptions"
-              color="yellow"
+              color="primary"
               type="toggle"
               @update:model-value="transfer"
             />
-          </div>
+          </q-scroll-area>
           <bei-jing-map ref="map"></bei-jing-map>
         </div>
       </div>
@@ -38,14 +40,14 @@
               <div class="row text-center q-mt-md">
                 <span class="text-h6 col-2 text-weight-bold q-mt-md">内存</span>
                 <div class="mem text-h5 col-8 text-weight-bold text-white q-py-md">
-                  {{privateNum.ram_total / 1024 }}
+                  {{ privateNum.ram_total / 1024 }}
                 </div>
                 <span class="text-h6 col-2 text-weight-bold q-mt-md">GB</span>
               </div>
               <div class="row text-center q-mt-md">
                 <span class="text-h6 col-2 text-weight-bold q-mt-md">硬盘</span>
                 <div class="disk text-h5 col-8 text-weight-bold text-white q-py-md">
-                  {{privateNum.disk_size_total }}
+                  {{ privateNum.disk_size_total }}
                 </div>
                 <span class="text-h6 col-2 text-weight-bold q-mt-md">GB</span>
               </div>
@@ -119,7 +121,6 @@ export default defineComponent({
     const privateNum = computed(() => $store.getters['fed/getPrivateNum'])
     const shareNum = computed(() => $store.getters['fed/getShareNum'])
     const cpuNum = computed(() => $store.getters['fed/getPieCpuNum'])
-    console.log(cpuNum)
     const ramNum = computed(() => $store.getters['fed/getPieRamNum'])
     const diskNum = computed(() => $store.getters['fed/getPieDiskNum'])
     const filterOptions = computed(() => $store.getters['fed/getMechanismOptions'])
@@ -145,9 +146,9 @@ export default defineComponent({
     return {
       transfer,
       map,
+      tab,
       privateNum,
       shareNum,
-      tab,
       cpuNum,
       ramNum,
       diskNum,
@@ -173,17 +174,14 @@ export default defineComponent({
     background-size: 3px 50px, 50px 3px, 3px 50px, 50px 3px;
     .my-card {
       .title {
-        //border: #cceff5 5px double;
         background-color: #fafcfd;
       }
       .cpu {
         background: $nord8;
       }
-
       .mem {
         background: $nord8;
       }
-
       .disk {
         background: $nord8;
       }
