@@ -4,9 +4,10 @@
       <q-toolbar class="q-pa-none">
         <q-toolbar-title shrink>
           <!--中英文静态资源的替换-->
-<!--          <img :src="$t('resource.title')" alt="中国科技云联邦" class="title q-pt-sm">-->
+          <!--          <img :src="$t('resource.title')" alt="中国科技云联邦" class="title q-pt-sm">-->
 
-          <q-icon v-if="locale==='zh'" name="img:svg/fed-title-cn.svg" style="width: 250px;height: 30px; opacity: 0.7"/>
+          <q-icon v-if="$i18n.locale==='zh'" name="img:svg/fed-title-cn.svg"
+                  style="width: 250px;height: 30px; opacity: 0.7"/>
           <q-icon v-else name="img:svg/fed-title-en.svg" style="width: 290px;height: 30px; opacity: 0.7"/>
 
         </q-toolbar-title>
@@ -14,7 +15,7 @@
         <q-space/>
         <div class="q-gutter-md row items-center no-wrap">
           <q-select
-            v-model="localeModel"
+            v-model="$i18n.locale"
             :options="localeOptions"
             dense
             borderless
@@ -31,41 +32,14 @@
             {{ $t('使用手册') }}
           </q-btn>
 
-<!--          <q-btn disable :ripple="false" flat dense color="grey" icon="notifications">-->
-<!--            <q-badge color="c-blue-3" text-color="white" floating>-->
-<!--              0-->
-<!--            </q-badge>-->
-<!--            <q-tooltip>系统消息</q-tooltip>-->
-<!--          </q-btn>-->
+          <!--          <q-btn disable :ripple="false" flat dense color="grey" icon="notifications">-->
+          <!--            <q-badge color="c-blue-3" text-color="white" floating>-->
+          <!--              0-->
+          <!--            </q-badge>-->
+          <!--            <q-tooltip>系统消息</q-tooltip>-->
+          <!--          </q-btn>-->
 
           <HeaderDropdown/>
-
-          <!--          <q-btn-dropdown :ripple="false" flat class="q-py-sm q-px-none" :label="currentUser.cstEmail" no-caps>-->
-
-          <!--            <div class="row justify-center no-wrap q-pa-md dropdown-content non-selectable">-->
-          <!--              <div class="column items-center">-->
-          <!--                <q-avatar size="72px" class="q-mt-lg">-->
-          <!--                  <img src="img/default-avatar.png">-->
-          <!--                </q-avatar>-->
-          <!--                <div class="text-subtitle1 q-ma-none q-mt-md text-white">{{ currentUser.cstTrueName }}</div>-->
-          <!--                <div class="text-subtitle1 q-ma-none q-mb-md text-white">{{ currentUser.cstEmail }}</div>-->
-          <!--              </div>-->
-          <!--            </div>-->
-
-          <!--            <q-list class="dropdown-items non-selectable">-->
-          <!--              <q-item clickable disable>-->
-          <!--                <q-item-section>账户设置</q-item-section>-->
-          <!--              </q-item>-->
-          <!--              <q-item clickable tag="a" href="https://passport.escience.cn/user/password.do?act=showChangePassword"-->
-          <!--                      target="_blank">-->
-          <!--                <q-item-section>修改密码</q-item-section>-->
-          <!--              </q-item>-->
-          <!--              <q-item clickable @click="toLogout" class="bg-grey-2">-->
-          <!--                <q-item-section>退出登录</q-item-section>-->
-          <!--              </q-item>-->
-          <!--            </q-list>-->
-
-          <!--          </q-btn-dropdown>-->
 
         </div>
       </q-toolbar>
@@ -92,15 +66,6 @@ export default defineComponent({
     const $q = useQuasar()
     const { locale } = useI18n({ useScope: 'global' })
 
-    // i18n
-    // 保持localeModel与i18n模块同步
-    const localeModel = computed({
-      get: () => locale.value,
-      set: newVal => {
-        locale.value = newVal
-      }
-    })
-
     const localeOptions = [
       {
         value: 'zh',
@@ -112,16 +77,15 @@ export default defineComponent({
       }
     ]
 
-    // 根据localeModel改变Quasar Language Pack
-    watch(localeModel, val => {
-      // 因本地i18n简化为zh和en，此处应补全为'zh-CN'和'en-US'共quasar寻址使用
+    // 根据locale,改变Quasar Language Pack
+    watch(locale, val => {
+      // 因本地i18n简化为zh和en，此处应补全为'zh-CN'和'en-US'供quasar寻址使用
       const locale = val.includes('zh') ? 'zh-CN' : 'en-US'
       void import('quasar/lang/' + locale).then(lang => {
         $q.lang.set(lang.default)
       })
     })
 
-    const currentUser = $store.state.account
     const toggleRightDrawer = () => {
       $store.commit('account/storeIsRightDrawerOpen')
     }
@@ -132,16 +96,8 @@ export default defineComponent({
       window.open(url.value)
     }
 
-    const toLogout = () => {
-      void $store.dispatch('account/cstLogout')
-    }
-
     return {
-      locale,
-      localeModel,
       localeOptions,
-      currentUser,
-      toLogout,
       toggleRightDrawer,
       gotoManual
     }

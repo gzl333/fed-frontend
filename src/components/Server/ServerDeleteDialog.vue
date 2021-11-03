@@ -66,7 +66,7 @@
                 v-if="$store.state.fed.tables.serviceTable.byId[server.service]?.service_type.toLowerCase().includes('ev')"
                 name="img:svg/EVCloud-Logo-Horizontal.svg"
                 style="width: 100px;height: 20px"/>
-            <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>
+<!--            <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>-->
             </span>
 
             <span>
@@ -74,7 +74,7 @@
                 v-if="$store.state.fed.tables.serviceTable.byId[server.service]?.service_type.toLowerCase().includes('open')"
                 name="img:svg/OpenStack-Logo-Horizontal.svg"
                 style="width: 100px;height: 20px"/>
-            <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>
+<!--            <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>-->
             </span>
 
           </div>
@@ -141,7 +141,7 @@
 
         <q-checkbox style="margin-left: -10px;" v-model="check2" color="primary">
           <div :class="check2?'text-primary':'text-black'">
-            {{ $t('我了解已经消耗的云主机配额无法恢复') }}
+            {{ $t('我了解已经消耗的云主机配额不会释放') }}
           </div>
         </q-checkbox>
 

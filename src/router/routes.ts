@@ -295,7 +295,8 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/My/Provider/ProviderIndex.vue'),
         redirect: '/my/provider/quota',
         meta: {
-          title: '资源提供-中国科技云联邦'
+          title: '资源提供-中国科技云联邦',
+          requireServiceAdmin: true // 服务管理员才能访问
         },
         children: [
           {

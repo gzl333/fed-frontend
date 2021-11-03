@@ -56,12 +56,13 @@
             </q-item-section>
           </q-item>
 
-          <q-item
-            clickable
-            :active="activeItem === 'provider'"
-            @click="activeItem = 'provider'"
-            active-class="active-item"
-            to='/my/provider'
+          <!--有服务管理权限的用户才能看到，同时在路由里进行权限限制-->
+          <q-item v-if="$store.state.account.items.vmsAdmin.length > 0"
+                  clickable
+                  :active="activeItem === 'provider'"
+                  @click="activeItem = 'provider'"
+                  active-class="active-item"
+                  to='/my/provider'
           >
             <q-item-section class="column items-center">
               <q-icon name="cloud_upload" size="lg"/>
@@ -85,7 +86,7 @@
 
         </q-list>
 
-        <div class="text-grey text-body2 text-center q-pt-xl">v0.2.6 beta</div>
+        <div class="text-grey text-body2 text-center q-pt-xl">v0.2.7 beta</div>
       </q-scroll-area>
     </div>
   </q-drawer>

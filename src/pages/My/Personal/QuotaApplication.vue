@@ -11,7 +11,7 @@
                 <q-icon name="search"/>
               </template>
               <template v-slot:append v-if="search">
-                <q-icon name="close" @click="search = ''" class="cursor-pointer" />
+                <q-icon name="close" @click="search = ''" class="cursor-pointer"/>
               </template>
             </q-input>
           </div>
@@ -21,8 +21,16 @@
       <div class="col-2">
         <div class="row justify-end">
           <div class="col">
-            <q-select outlined dense stack-label label="筛选" v-model="filterSelection"
-                      :options="filterOptions"/>
+            <q-select outlined dense stack-label label="筛选申请状态" v-model="statusSelection"
+                      :options="statusOptions" emit-value map-options option-value="value"
+                      :option-label="$i18n.locale ==='zh'? 'label':'labelEn'">
+              <!--当前选项的内容插槽-->
+              <template v-slot:selected-item="scope">
+                <span :class="statusSelection===scope.opt.value ? 'text-primary' : 'text-black'">
+                  {{ $i18n.locale === 'zh' ? scope.opt.label : scope.opt.labelEn }}
+                </span>
+              </template>
+            </q-select>
           </div>
         </div>
       </div>
@@ -49,51 +57,49 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
-    // 进入本页面强制更新personalQuotaApplicationTable
-    void $store.dispatch('server/loadPersonalQuotaApplicationTable')
-
-    // application filter
-    const filterSelection = ref({
-      label: '全部状态',
-      value: '0'
-    })
-
-    const filterOptions = [
+    // status filter
+    const statusSelection = ref('0')
+    const statusOptions = [
       {
-        label: '全部状态',
-        value: '0'
+        value: '0',
+        label: '全部申请状态',
+        labelEn: 'All Applications'
       },
       {
+        value: 'wait',
         label: '待审批',
-        value: 'wait'
+        labelEn: 'Submitted'
       },
       {
+        value: 'pending',
         label: '审批中',
-        value: 'pending'
+        labelEn: 'Auditing'
       },
       {
+        value: 'pass',
         label: '已通过',
-        value: 'pass'
+        labelEn: 'Approved'
       },
       {
+        value: 'reject',
         label: '已拒绝',
-        value: 'reject'
+        labelEn: 'Rejected'
       },
       {
+        value: 'cancel',
         label: '已取消',
-        value: 'cancel'
+        labelEn: 'Canceled'
       }
     ]
     // 获取quota列表数据
-    const applications = computed(() => $store.getters['server/getPersonalApplicationsByFilter'](filterSelection.value.value))
+    const applications = computed(() => $store.getters['server/getPersonalApplicationsByFilter'](statusSelection.value))
     // 搜索框
     const search = ref('')
 
     return {
-      $store,
       applications,
-      filterOptions,
-      filterSelection,
+      statusOptions,
+      statusSelection,
       search
     }
   }

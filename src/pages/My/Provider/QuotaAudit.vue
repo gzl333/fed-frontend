@@ -8,28 +8,16 @@
           <div class="col">
             <q-select outlined dense stack-label :label="$t('筛选服务节点')" v-model="serviceSelection"
                       :options="serviceOptions" emit-value map-options option-value="value"
-                      :option-label="locale==='zh'? 'label':'labelEn'"
-                      @update:model-value="onFilterChange"/>
+                      :option-label="$i18n.locale==='zh'? 'label':'labelEn'"
+                      @update:model-value="resetAndReloadTable">
+              <!--当前选项的内容插槽-->
+              <template v-slot:selected-item="scope">
+                <span :class="serviceSelection===scope.opt.value ? 'text-primary' : 'text-black'">
+                {{ $i18n.locale === 'zh' ? scope.opt.label : scope.opt.labelEn }}
+                </span>
+              </template>
+            </q-select>
           </div>
-        </div>
-      </div>
-
-      <div class="col-5" v-if="pagination.count">
-        <div class="row justify-center items-center q-gutter-sm">
-          <q-pagination v-model="pagination.page"
-                        :max="Math.ceil(pagination.count / pagination.rowsPerPage )"
-                        :max-pages="8"
-                        direction-links
-                        boundary-links
-                        boundary-numbers
-                        flat
-                        :ripple="false"
-          />
-          <div class="text-grey">
-            <q-select v-model="pagination.rowsPerPage" :options="[5,10,15,20,25,30]" dense/>
-            项/页
-          </div>
-          <div class="text-grey">共计{{ pagination.count }}项</div>
         </div>
       </div>
 
@@ -38,8 +26,15 @@
           <div class="col">
             <q-select outlined dense stack-label :label="$t('筛选申请状态')" v-model="statusSelection"
                       :options="statusOptions" emit-value map-options option-value="value"
-                      :option-label="locale==='zh'? 'label':'labelEn'"
-                      @update:model-value="onFilterChange"/>
+                      :option-label="$i18n.locale==='zh'? 'label':'labelEn'"
+                      @update:model-value="resetAndReloadTable">
+              <!--当前选项的内容插槽-->
+              <template v-slot:selected-item="scope">
+                <span :class="statusSelection===scope.opt.value ? 'text-primary' : 'text-black'">
+                {{ $i18n.locale === 'zh' ? scope.opt.label : scope.opt.labelEn }}
+                </span>
+              </template>
+            </q-select>
           </div>
         </div>
       </div>
@@ -58,7 +53,7 @@
       loading-label="网络请求中，请稍候..."
       no-data-label="暂无配额申请"
       hide-pagination
-      :pagination="paginationTable"
+      :pagination="{rowsPerPage: 0}"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -90,7 +85,7 @@
                 <div class="text-bold">{{ props.row?.approve_user?.name }}</div>
                 <div>{{ $t('挂起时间: ') }}</div>
                 <div class="text-bold">
-                  {{ new Date(props.row?.approve_time).toLocaleString(locale) }}
+                  {{ new Date(props.row?.approve_time).toLocaleString($i18n.locale) }}
                 </div>
               </q-tooltip>
             </q-chip>
@@ -106,7 +101,7 @@
                 <div class="text-bold">{{ props.row?.approve_user?.name }}</div>
                 <div>{{ $t('审批时间: ') }}</div>
                 <div class="text-bold">
-                  {{ new Date(props.row?.approve_time).toLocaleString(locale) }}
+                  {{ new Date(props.row?.approve_time).toLocaleString($i18n.locale) }}
                 </div>
               </q-tooltip>
             </q-chip>
@@ -123,7 +118,7 @@
                 <div class="text-bold">{{ props.row?.approve_user?.name }}</div>
                 <div>{{ $t('审批时间: ') }}</div>
                 <div class="text-bold">
-                  {{ new Date(props.row?.approve_time).toLocaleString(locale) }}
+                  {{ new Date(props.row?.approve_time).toLocaleString($i18n.locale) }}
                 </div>
                 <div>{{ $t('拒绝原因: ') }}</div>
                 <div class="text-bold" style="max-width: 150px;">{{ props.row.result_desc }}</div>
@@ -146,26 +141,25 @@
           </q-td>
 
           <q-td key="creation_time" :props="props">
-            <div v-if="locale==='zh'">
-              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[0] }}</div>
-              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[1] }}</div>
+            <div v-if="$i18n.locale==='zh'">
+              <div>{{ new Date(props.row.creation_time).toLocaleString($i18n.locale).split(' ')[0] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString($i18n.locale).split(' ')[1] }}</div>
             </div>
-
             <div v-else>
-              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[0] }}</div>
-              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[1] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString($i18n.locale).split(',')[0] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString($i18n.locale).split(',')[1] }}</div>
             </div>
           </q-td>
 
           <q-td key="service" :props="props">
             <div>
               {{
-                locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[props.row.service]?.name : $store.state.fed.tables.serviceTable.byId[props.row.service]?.name_en
+                $i18n.locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[props.row.service]?.name : $store.state.fed.tables.serviceTable.byId[props.row.service]?.name_en
               }}
             </div>
             <div>
               {{
-                locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name :
+                $i18n.locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name :
                   $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name_en
               }}
             </div>
@@ -223,9 +217,9 @@
 
           <q-td key="purpose" :props="props">
             {{ props.row.purpose }}
-            <q-tooltip :offset="[0, -15]">
-              {{ props.row.purpose }}
-            </q-tooltip>
+            <!--            <q-tooltip :offset="[0, -15]">-->
+            <!--              {{ props.row.purpose }}-->
+            <!--            </q-tooltip>-->
           </q-td>
           <q-td key="applicant" :props="props">
             <div>{{ props.row.contact }}</div>
@@ -251,17 +245,46 @@
       </template>
 
       <!--      <template v-slot:bottom>-->
-      <!--   todo 批量操作-->
+      <!--   todo 批量操作 -->
       <!--      </template>-->
     </q-table>
 
     <q-separator/>
 
+    <div v-if="pagination.count" class="row justify-between items-center q-gutter-sm">
+
+      <div class="row items-center justify-between text-grey">
+        共计 <span class="text-black">{{ pagination.count }}</span> 项筛选结果，
+
+        <q-select color="grey" v-model="pagination.rowsPerPage" :options="[5,10,15,20,25,30]" dense options-dense
+                  borderless
+                  @update:model-value="resetAndReloadTable">
+          <!--          &lt;!&ndash;当前选项的内容插槽&ndash;&gt;-->
+          <!--          <template v-slot:selected-item>-->
+          <!--                <span class="text-grey">-->
+          <!--                {{ pagination.rowsPerPage }}-->
+          <!--                </span>-->
+          <!--          </template>-->
+        </q-select>
+        项/页
+      </div>
+
+      <q-pagination v-model="pagination.page"
+                    :max="Math.ceil(pagination.count / pagination.rowsPerPage )"
+                    :max-pages="9"
+                    direction-links
+                    outline
+                    :ripple="false"
+                    @update:model-value="reloadTable"
+      />
+
+    </div>
+
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from 'vue'
+import { computed, defineComponent, onMounted, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
@@ -283,8 +306,8 @@ export default defineComponent({
     const statusOptions = [
       {
         value: '',
-        label: '全部状态',
-        labelEn: 'All Status'
+        label: '全部申请',
+        labelEn: 'All Applications'
       },
       {
         value: 'wait',
@@ -316,61 +339,61 @@ export default defineComponent({
     // 获取列表数据,虽然是从后端分页读取，但仍要用getter传参数筛选。因为table更新过程中突然改变参数，会导致新旧数据存入同一个表中。不加筛选的话，就会新旧数据同时显示了。
     const rows = computed(() => $store.getters['provider/getAdminApplicationsByServiceIdByStatus'](serviceSelection.value, statusSelection.value))
 
-    // 列表分栏定义
-    const columns = [
+    // 分栏定义
+    const columns = computed(() => [
       {
         name: 'status',
-        label: '申请状态',
+        label: locale.value === 'zh' ? '申请状态' : 'Status',
         field: 'status',
         align: 'center',
         style: 'padding: 15px 0px'
       },
       {
         name: 'creation_time',
-        label: '申请时间',
+        label: locale.value === 'zh' ? '申请时间' : 'Submission Time',
         field: 'creation_time',
         align: 'center',
         style: 'padding: 15px 0px'
       },
       {
         name: 'service',
-        label: '服务节点',
+        label: locale.value === 'zh' ? '服务节点' : 'Service Node',
         field: 'service',
         align: 'center',
         style: 'padding: 15px 0px'
       },
       {
         name: 'duration_days',
-        label: '云主机时长',
+        label: locale.value === 'zh' ? '云主机时长' : 'Available Time',
         field: 'duration_days',
         align: 'center',
         style: 'padding: 15px 0px'
       },
       {
         name: 'configuration',
-        label: 'CPU/内存/私网IP/公网IP/云硬盘',
+        label: locale.value === 'zh' ? 'CPU / 内存 / 私网IP / 公网IP / 云硬盘 ' : 'CPU / MEM / Private IP / Public IP / Disk',
         field: 'configuration',
         align: 'center',
         style: 'padding: 15px 0px'
       },
       {
         name: 'vo',
-        label: '配额类型',
+        label: locale.value === 'zh' ? '配额类型' : 'Quota Type',
         field: 'vo',
         align: 'center',
         style: 'padding: 15px 0px'
       },
       {
         name: 'purpose',
-        label: '用途',
+        label: locale.value === 'zh' ? '用途' : 'Purpose',
         field: 'purpose',
         align: 'center',
         classes: 'ellipsis',
-        style: 'max-width: 250px;padding: 15px 5px'
+        style: 'max-width: 250px;padding: 15px 5px;white-space: normal;' // https://forum.quasar-framework.org/topic/844/word-wrap-using-in-datatables/5
       },
       {
         name: 'applicant',
-        label: '申请人',
+        label: locale.value === 'zh' ? '申请人' : 'Applicant',
         field: 'applicant',
         align: 'center',
         classes: 'ellipsis',
@@ -378,30 +401,23 @@ export default defineComponent({
       },
       {
         name: 'operation',
-        label: '操作',
+        label: locale.value === 'zh' ? '操作' : 'Operations',
         field: 'operation',
         align: 'center',
         style: 'padding: 15px 0px'
       }
-    ]
+    ])
 
-    // Table所需配置对象，不用table的分页，此配置对象只为设置表格显示最大值。
-    const paginationTable = ref({
-      sortBy: 'desc',
-      descending: false,
-      page: 1,
-      rowsPerPage: 99999 // 此为能显示的最大行数
-    })
-
-    // 同时这个对象也被pagination组件使用。
+    // 被pagination组件使用。
     const pagination = ref({
-      page: 1,
-      rowsPerPage: 10,
-      count: 0
+      page: 1, // 当前页码
+      rowsPerPage: 10, // 每页条数
+      count: 0 // 总共条数
     })
 
     // 更新表格，并更细count值
-    const updateProviderQuotaApplicationTable = async () => {
+    const reloadTable = async () => {
+      // 更新table并保存count值
       pagination.value.count = await $store.dispatch('provider/loadAdminQuotaApplicationTable', {
         page: pagination.value.page,
         pageSize: pagination.value.rowsPerPage,
@@ -410,31 +426,27 @@ export default defineComponent({
       })
     }
 
-    // 当筛选参数变化时
-    const onFilterChange = () => {
+    // 当两个筛选参数变化时,当rowsPerPage变化时
+    const resetAndReloadTable = () => {
       // 分页信息复位
       pagination.value.page = 1
       // 更新table
-      void updateProviderQuotaApplicationTable()
+      void reloadTable()
     }
 
-    // 当pagination参数变化时
-    watch(pagination.value, updateProviderQuotaApplicationTable)
-
     // onMounted时加载初始table第一页
-    onMounted(updateProviderQuotaApplicationTable)
+    onMounted(reloadTable)
 
     return {
-      locale,
-      paginationTable,
       columns,
       rows,
       serviceOptions,
       serviceSelection,
       statusOptions,
       statusSelection,
-      onFilterChange,
-      pagination
+      pagination,
+      resetAndReloadTable,
+      reloadTable
     }
   }
 })
@@ -447,4 +459,5 @@ export default defineComponent({
 .application-card {
   width: 450px;
 }
+
 </style>

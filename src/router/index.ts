@@ -66,9 +66,10 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
       // home页面，如果已经登录了，则跳转到/my
       next({ path: '/my' })
     } else {
-      // 之前都是登录状态有关的强制跳转。
-      // 进入else后登录状态已经正常，进行页面访问权限的限制跳转
-      if (to.meta.requireFedAdmin && store.state.account.items.fedRole !== 'federal-admin') { // 云联邦管理员才能访问
+      // 之前都是登录状态有关的强制跳转。进入else后登录状态已经正常，进行页面访问权限的限制跳转
+
+      // 云联邦管理员才能访问
+      if (to.meta.requireFedAdmin && store.state.account.items.fedRole !== 'federal-admin') {
         // 跳转回上一个页面
         next(from.fullPath)
         // 弹出通知
@@ -77,6 +78,23 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
           icon: 'mdi-alert-circle',
           textColor: 'primary',
           message: '访问目标页面需要联邦管理员权限',
+          position: 'bottom',
+          closeBtn: true,
+          timeout: 5000,
+          multiLine: false
+        })
+      }
+
+      // 服务管理员才能访问
+      if (to.meta.requireServiceAdmin && store.state.account.items.vmsAdmin.length === 0) {
+        // 跳转回上一个页面
+        next(from.fullPath)
+        // 弹出通知
+        Notify.create({
+          classes: 'notification-primary shadow-15',
+          icon: 'mdi-alert-circle',
+          textColor: 'primary',
+          message: '访问目标页面需要服务管理员权限',
           position: 'bottom',
           closeBtn: true,
           timeout: 5000,

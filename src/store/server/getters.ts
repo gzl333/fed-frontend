@@ -8,7 +8,7 @@ import {
   QuotaInterface,
   ServerInterface
 } from 'src/store/server/state'
-import { i18n } from 'boot/i18n'
+// import { i18n } from 'boot/i18n'
 
 const getters: GetterTree<ServerModuleInterface, StateInterface> = {
   // 根据用户选择的filter来返回application数组
@@ -213,7 +213,7 @@ const getters: GetterTree<ServerModuleInterface, StateInterface> = {
       return rows.sort(sortFn)
     }
   },
-  // 个人有quota和server的serviceId
+  // 个人有quota(全部quota,包括过期和不可用)和server的serviceId
   getPersonalAvailableServiceIds: (state): string[] => {
     let services = [] as string[]
     state.tables.personalQuotaTable.allIds.forEach((id) => services.unshift(state.tables.personalQuotaTable.byId[id].service))
@@ -225,17 +225,9 @@ const getters: GetterTree<ServerModuleInterface, StateInterface> = {
   getPersonalAvailableServices: (state, getters, rootState/*, rootGetters */): { value: string; label: string; }[] => {
     /*    数据结构如下
     const serviceOptions = [
-      {
+      {        value: '0',
         label: '全部节点',
-        value: '0'
-      },
-      {
-        label: '中国科学院计算机网络信息中心 - HR_204机房',
-        value: '1'
-      },
-      {
-        label: '地球大数据科学工程专项 - 怀柔机房一层',
-        value: '2'
+        labelEn: 'All Service Nodes'
       }
     ]
 */
@@ -243,15 +235,18 @@ const getters: GetterTree<ServerModuleInterface, StateInterface> = {
 
     let serviceOptions = serviceIds.map((serviceId) => ({
       value: serviceId,
-      label: i18n.global.locale === 'zh' ? rootState.fed.tables.dataCenterTable.byId[rootState.fed.tables.serviceTable.byId[serviceId]?.data_center]?.name + ' - ' + rootState.fed.tables.serviceTable.byId[serviceId]?.name : rootState.fed.tables.dataCenterTable.byId[rootState.fed.tables.serviceTable.byId[serviceId]?.data_center]?.name_en + ' - ' + rootState.fed.tables.serviceTable.byId[serviceId]?.name_en
+      label: rootState.fed.tables.dataCenterTable.byId[rootState.fed.tables.serviceTable.byId[serviceId]?.data_center]?.name + ' - ' + rootState.fed.tables.serviceTable.byId[serviceId]?.name,
+      labelEn: rootState.fed.tables.dataCenterTable.byId[rootState.fed.tables.serviceTable.byId[serviceId]?.data_center]?.name_en + ' - ' + rootState.fed.tables.serviceTable.byId[serviceId]?.name_en
     }))
 
     // 排序
     serviceOptions = serviceOptions.sort((a, b) => -a.label.localeCompare(b.label, 'zh-CN'))
-    // // vue组件外取i18n中locale字段的方法
+    // vue组件外取i18n中locale字段的方法
+    // i18n.global.locale === 'zh'
     serviceOptions.unshift({
       value: '0',
-      label: i18n.global.locale === 'zh' ? '全部服务节点' : 'All Service Nodes'
+      label: '全部服务节点',
+      labelEn: 'All Service Nodes'
     })
     return serviceOptions
   },

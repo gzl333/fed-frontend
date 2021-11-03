@@ -309,13 +309,13 @@
                   </div>
                   <div class="col-10">
                     <div class="column justify-center items-center" style="height: 100px">
-                      <div v-if="!quota.expired && !quota.exhausted" class="text-light-green">
+                      <div v-if="!quota.expired && !quota.exhausted" class="column justify-center items-center text-light-green">
                         <q-icon name="check_circle_outline" size="sm"/>
-                        可用
+                        <div>可用</div>
                       </div>
-                      <div v-else class="text-red">
+                      <div v-else class="column justify-center items-center text-red">
                         <q-icon name="highlight_off" size="sm"/>
-                        不可用
+                        <div>不可用</div>
                       </div>
                     </div>
                   </div>

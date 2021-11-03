@@ -21,8 +21,16 @@
       <div class="col-3">
         <div class="row justify-end">
           <div class="col">
-            <q-select outlined dense stack-label :label="$t('筛选组')"
-                      v-model="filterSelection" :options="filterOptions"/>
+            <q-select outlined dense stack-label :label="$t('筛选组')" v-model="groupSelection"
+                      :options="groupOptions" emit-value map-options option-value="value"
+                      :option-label="$i18n.locale ==='zh'? 'label':'labelEn'">
+              <!--当前选项的内容插槽-->
+              <template v-slot:selected-item="scope">
+                <span :class="groupSelection===scope.opt.value ? 'text-primary' : 'text-black'">
+                  {{ $i18n.locale === 'zh' ? scope.opt.label : scope.opt.labelEn }}
+                </span>
+              </template>
+            </q-select>
           </div>
         </div>
       </div>
@@ -37,7 +45,7 @@
 import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
-import { useI18n } from 'vue-i18n'
+// import { useI18n } from 'vue-i18n'
 import ServerTable from 'components/Server/ServerTable.vue'
 
 export default defineComponent({
@@ -46,23 +54,19 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const { locale } = useI18n({ useScope: 'global' })
+    // const { locale } = useI18n({ useScope: 'global' })
 
-    // application filter
-    const filterSelection = ref({
-      label: locale.value === 'zh' ? '全部项目组' : 'All Groups',
-      value: '0'
-    })
+    // group filter
+    const groupSelection = ref('0')
 
-    const filterOptions = computed(() => $store.getters['account/getGroupOptions'])
+    const groupOptions = computed(() => $store.getters['account/getGroupOptions'])
 
-    const rows = computed(() => $store.getters['server/getGroupServersByGroupId'](filterSelection.value.value))
+    const rows = computed(() => $store.getters['server/getGroupServersByGroupId'](groupSelection.value))
     // 搜索框
     const search = ref('')
     return {
-      $store,
-      filterSelection,
-      filterOptions,
+      groupSelection,
+      groupOptions,
       rows,
       search
     }

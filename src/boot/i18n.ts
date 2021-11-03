@@ -16,6 +16,8 @@ const i18n = createI18n({
 export default boot(({ app }) => {
   // Set i18n instance on app
   app.use(i18n)
+  // 挂载为全局对象
+  app.config.globalProperties.$i18n = i18n
 })
 
 export { i18n }

@@ -6,7 +6,7 @@
       card-class=""
       table-class=""
       table-header-class="bg-grey-1 text-grey"
-      :rows="props.quotas"
+      :rows="quotas"
       :columns="columns"
       row-key="name"
       :loading="isGroup ? !$store.state.server.tables.groupQuotaTable.isLoaded : !$store.state.server.tables.personalQuotaTable.isLoaded"
@@ -14,7 +14,7 @@
       loading-label="网络请求中，请稍候..."
       no-data-label="暂无配额"
       hide-pagination
-      :pagination="paginationTable"
+      :pagination="{rowsPerPage: 0}"
       :filter="search"
       :filter-method="searchMethod"
       no-results-label="无搜索结果"
@@ -25,12 +25,13 @@
 
           <q-td v-if="isGroup && !isHideGroup" key="group" :props="props">
             <q-btn
-              class="q-ma-none" :label="$store.state.account.tables.groupTable.byId[props.row.vo_id].name"
+              class="q-ma-none"
               color="primary"
               padding="xs" flat dense unelevated
+              :label="$store.state.account.tables.groupTable.byId[props.row.vo_id].name"
               :to="{path: `/my/group/detail/${props.row.vo_id}`}">
               <q-tooltip>
-                {{ $t('查看项目组详情') }}
+                {{ $t('项目组详情') }}
               </q-tooltip>
             </q-btn>
           </q-td>
@@ -38,12 +39,12 @@
           <q-td key="service" :props="props">
             <div>
               {{
-                locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[props.row.service]?.name : $store.state.fed.tables.serviceTable.byId[props.row.service]?.name_en
+                $i18n.locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[props.row.service]?.name : $store.state.fed.tables.serviceTable.byId[props.row.service]?.name_en
               }}
             </div>
             <div>
               {{
-                locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name :
+                $i18n.locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name :
                   $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name_en
               }}
             </div>
@@ -64,19 +65,19 @@
               <!--                <q-tooltip>{{$t('该节点的服务类型为OpenStack')}}</q-tooltip>-->
             </div>
 
-            <q-tooltip class="bg-grey-4" :offset="[0, -35]">
-              <span class="text-black">
-                {{ $t('该节点的服务类型为') }}
-              </span>
-              <q-icon
-                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"
-                name="img:svg/EVCloud-Logo-Horizontal.svg"
-                style="width: 100px;height: 20px"/>
-              <q-icon
-                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"
-                name="img:svg/OpenStack-Logo-Horizontal.svg"
-                style="width: 100px;height: 20px"/>
-            </q-tooltip>
+            <!--            <q-tooltip class="bg-grey-4" :offset="[0, -35]">-->
+            <!--              <span class="text-black">-->
+            <!--                {{ $t('该节点的服务类型为') }}-->
+            <!--              </span>-->
+            <!--              <q-icon-->
+            <!--                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"-->
+            <!--                name="img:svg/EVCloud-Logo-Horizontal.svg"-->
+            <!--                style="width: 100px;height: 20px"/>-->
+            <!--              <q-icon-->
+            <!--                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"-->
+            <!--                name="img:svg/OpenStack-Logo-Horizontal.svg"-->
+            <!--                style="width: 100px;height: 20px"/>-->
+            <!--            </q-tooltip>-->
           </q-td>
 
           <q-td key="duration_days" :props="props">
@@ -190,13 +191,13 @@
           <q-td key="expiration_time" :props="props">
             <div v-if="!props.row.expiration_time">长期有效</div>
             <div v-else :class="props.row.expired?'text-grey':'text-black'">
-              <div v-if="locale==='zh'">
-                <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(' ')[0] }}</div>
-                <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(' ')[1] }}</div>
+              <div v-if="$i18n.locale==='zh'">
+                <div>{{ new Date(props.row.expiration_time).toLocaleString($i18n.locale).split(' ')[0] }}</div>
+                <div>{{ new Date(props.row.expiration_time).toLocaleString($i18n.locale).split(' ')[1] }}</div>
               </div>
               <div v-else>
-                <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(',')[0] }}</div>
-                <div>{{ new Date(props.row.expiration_time).toLocaleString(locale).split(',')[1] }}</div>
+                <div>{{ new Date(props.row.expiration_time).toLocaleString($i18n.locale).split(',')[0] }}</div>
+                <div>{{ new Date(props.row.expiration_time).toLocaleString($i18n.locale).split(',')[1] }}</div>
               </div>
             </div>
             <div v-if="props.row.expired" class="text-grey">
@@ -212,13 +213,13 @@
           </q-td>
 
           <q-td key="status" :props="props">
-            <div v-if="!props.row.expired && !props.row.exhausted" class="text-light-green">
+            <div v-if="!props.row.expired && !props.row.exhausted" class="column justify-center items-center text-light-green">
               <q-icon name="check_circle_outline" size="sm"/>
-              可用
+              <div>可用</div>
             </div>
-            <div v-else class="text-red">
+            <div v-else class="column justify-center items-center text-red">
               <q-icon name="highlight_off" size="sm"/>
-              不可用
+              <div>不可用</div>
             </div>
           </q-td>
 
@@ -239,7 +240,7 @@
               </q-btn>
 
               <q-btn icon="delete" flat dense padding="none" color="primary"
-                     @click="$store.dispatch('server/triggerDeleteQuotaDialog', {quotaId: props.row.id,isGroup, isJump: false})">
+                     @click="$store.dispatch('server/triggerDeleteQuotaDialog', {quotaId: props.row.id, isGroup, isJump: false})">
                 {{ $t('删除配额') }}
                 <q-tooltip>删除该配额</q-tooltip>
               </q-btn>
@@ -263,8 +264,8 @@
 <script lang="ts">
 import { computed, defineComponent, PropType, ref } from 'vue'
 import { QuotaInterface } from 'src/store/server/state'
-import { useStore } from 'vuex'
-import { StateInterface } from 'src/store'
+// import { useStore } from 'vuex'
+// import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
@@ -289,217 +290,108 @@ export default defineComponent({
     }
   },
   setup (props) {
-    const $store = useStore<StateInterface>()
+    // const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
-    // todo 为何报错？ 应强制更新table刷新quota状态，该逻辑是否应在此，而非在调用层。任何使用quota-table时都应该更新quotaTable
-    // if (props.isGroup) {
-    //   void $store.dispatch('vm_obsolete/loadGroupQuotaTable')
-    // } else {
-    //   void $store.dispatch('vm_obsolete/updateUserQuotaTable')
-    // }
-
     // quota列表分栏定义
-    const columnsZH = props.isGroup && !props.isHideGroup // 是group且不hide时使用这个配置
-      ? [
-          {
-            name: 'group',
-            label: '所属组',
-            field: 'group',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'service',
-            label: '所属服务节点',
-            field: 'service',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'duration_days',
-            label: '云主机时长',
-            field: 'duration_days',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'cpu',
-            label: 'CPU',
-            field: 'cpu',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'ram',
-            label: '内存',
-            field: 'ram',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'private_ip',
-            label: '私网IP',
-            field: 'private_ip',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'public_ip',
-            label: '公网IP',
-            field: 'public_ip',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'disk',
-            label: '云硬盘',
-            field: 'disk',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'expiration_time',
-            label: '配额过期时间',
-            field: 'expiration_time',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'server',
-            label: '已建云主机',
-            field: 'server',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'status',
-            label: '配额状态',
-            field: 'status',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'operation',
-            label: '操作',
-            field: 'operation',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          }
-        ] : [
-          {
-            name: 'service',
-            label: '服务节点',
-            field: 'service',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'duration_days',
-            label: '云主机时长',
-            field: 'duration_days',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'cpu',
-            label: 'CPU',
-            field: 'cpu',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'ram',
-            label: '内存',
-            field: 'ram',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'private_ip',
-            label: '私网IP',
-            field: 'private_ip',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'public_ip',
-            label: '公网IP',
-            field: 'public_ip',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'disk',
-            label: '云硬盘',
-            field: 'disk',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'expiration_time',
-            label: '配额过期时间',
-            field: 'expiration_time',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'server',
-            label: '已建云主机',
-            field: 'server',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'status',
-            label: '配额状态',
-            field: 'status',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          },
-          {
-            name: 'operation',
-            label: '操作',
-            field: 'operation',
-            align: 'center',
-            style: 'padding: 15px 0px',
-            headerStyle: 'padding: 0 5px'
-          }
-        ]
-    const columnsEN = columnsZH // todo 翻译
-
-    // i18n影响该配置对象取值
-    const columns = computed(() => locale.value === 'zh' ? columnsZH : columnsEN)
-
-    // q-pagination 所需配置对象
-    const paginationTable = ref({
-      // sortBy: 'desc',
-      // descending: false,
-      page: 1,
-      rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
-    })
+    const columns = computed(() => [
+      ...((props.isGroup && !props.isHideGroup) ? [{ // 是group且不hide时加入这个配置
+        name: 'group',
+        label: locale.value === 'zh' ? '所属组' : 'Group',
+        field: 'group',
+        align: 'center',
+        style: 'padding: 15px 0px; max-width: 110px;white-space: normal;',
+        headerStyle: 'padding: 0 1px'
+      }] : []),
+      {
+        name: 'service',
+        label: locale.value === 'zh' ? '所属服务节点' : 'Service Node',
+        field: 'service',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 1px'
+      },
+      {
+        name: 'duration_days',
+        label: locale.value === 'zh' ? '云主机时长' : 'Available Time',
+        field: 'duration_days',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 1px'
+      },
+      {
+        name: 'cpu',
+        label: locale.value === 'zh' ? 'CPU' : 'CPU',
+        field: 'cpu',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 1px'
+      },
+      {
+        name: 'ram',
+        label: locale.value === 'zh' ? '内存' : 'Memory',
+        field: 'ram',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 1px'
+      },
+      {
+        name: 'private_ip',
+        label: locale.value === 'zh' ? '私网IP' : 'Private IP',
+        field: 'private_ip',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 1px'
+      },
+      {
+        name: 'public_ip',
+        label: locale.value === 'zh' ? '公网IP' : 'Public IP',
+        field: 'public_ip',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 1px'
+      },
+      {
+        name: 'disk',
+        label: locale.value === 'zh' ? '云硬盘' : 'Disk',
+        field: 'disk',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 1px'
+      },
+      {
+        name: 'expiration_time',
+        label: locale.value === 'zh' ? '配额过期时间' : 'Expiration Time',
+        field: 'expiration_time',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 1px'
+      },
+      {
+        name: 'server',
+        label: locale.value === 'zh' ? '已建云主机' : 'Created Server',
+        field: 'server',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 1px'
+      },
+      {
+        name: 'status',
+        label: locale.value === 'zh' ? '配额状态' : 'Status',
+        field: 'status',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 1px'
+      },
+      {
+        name: 'operation',
+        label: locale.value === 'zh' ? '操作' : 'Operations',
+        field: 'operation',
+        align: 'center',
+        style: 'padding: 15px 0px',
+        headerStyle: 'padding: 0 1px'
+      }
+    ])
 
     // table row hover
     const hoverRow = ref('')
@@ -514,11 +406,7 @@ export default defineComponent({
     const searchMethod = (rows: QuotaInterface[], terms: string): QuotaInterface[] => rows.filter(quota => quota.id.toLowerCase().includes(terms) || quota.duration_days.toString().includes(terms) || quota.private_ip_total.toString().includes(terms) || quota.public_ip_total.toString().includes(terms) || quota.vcpu_total.toString().includes(terms) || (quota.ram_total / 1024).toString().includes(terms) || quota.disk_size_total.toString().includes(terms))
 
     return {
-      props,
-      $store,
-      locale,
       columns,
-      paginationTable,
       hoverRow,
       onMouseEnterRow,
       onMouseLeaveRow,

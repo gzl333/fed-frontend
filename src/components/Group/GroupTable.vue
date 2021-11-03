@@ -14,7 +14,7 @@
       loading-label="网络请求中，请稍候..."
       no-data-label="暂无项目组"
       hide-pagination
-      :pagination="paginationTable"
+      :pagination="{rowsPerPage: 0}"
       :filter="search"
       :filter-method="searchMethod"
       no-results-label="无搜索结果"
@@ -71,14 +71,14 @@
           </q-td>
 
           <q-td key="creation_time" :props="props">
-            <div v-if="locale==='zh'">
-              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[0] }}</div>
-              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[1] }}</div>
+            <div v-if="$i18n.locale==='zh'">
+              <div>{{ new Date(props.row.creation_time).toLocaleString($i18n.locale).split(' ')[0] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString($i18n.locale).split(' ')[1] }}</div>
             </div>
 
             <div v-else>
-              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[0] }}</div>
-              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[1] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString($i18n.locale).split(',')[0] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString($i18n.locale).split(',')[1] }}</div>
             </div>
           </q-td>
 
@@ -109,7 +109,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import GroupRoleChip from 'components/Group/GroupRoleChip.vue'
 import { GroupInterface } from 'src/store/account/state'
 // import { useStore } from 'vuex'
@@ -136,18 +136,18 @@ export default defineComponent({
     const { locale } = useI18n({ useScope: 'global' })
 
     // group分栏定义
-    const columnsZH = [
+    const columns = computed(() => [
       {
         name: 'name',
-        label: '项目组名称',
+        label: locale.value === 'zh' ? '项目组名称' : 'Group',
         field: 'name',
         align: 'center',
-        style: 'padding: 15px 0px',
+        style: 'padding: 15px 0px; max-width: 200px;white-space: normal;',
         headerStyle: 'padding: 0 5px'
       },
       {
         name: 'role',
-        label: '我的角色',
+        label: locale.value === 'zh' ? '我的角色' : 'My Role',
         field: 'role',
         align: 'center',
         style: 'padding: 15px 0px',
@@ -155,7 +155,7 @@ export default defineComponent({
       },
       {
         name: 'member',
-        label: '成员',
+        label: locale.value === 'zh' ? '成员' : 'Members',
         field: 'member',
         align: 'center',
         style: 'padding: 15px 0px',
@@ -163,7 +163,7 @@ export default defineComponent({
       },
       {
         name: 'server',
-        label: '云主机',
+        label: locale.value === 'zh' ? '云主机' : 'Servers',
         field: 'server',
         align: 'center',
         style: 'padding: 15px 0px',
@@ -171,7 +171,7 @@ export default defineComponent({
       },
       {
         name: 'quota',
-        label: '可用配额',
+        label: locale.value === 'zh' ? '可用配额' : 'Valid Quotas',
         field: 'quota',
         align: 'center',
         style: 'padding: 15px 0px',
@@ -179,23 +179,24 @@ export default defineComponent({
       },
       {
         name: 'desc',
-        label: '备注',
+        label: locale.value === 'zh' ? '备注' : 'Note',
         field: 'desc',
         align: 'center',
-        style: 'padding: 15px 0px',
+        style: 'padding: 15px 0px; max-width: 150px;white-space: normal;',
         headerStyle: 'padding: 0 5px'
+
       },
       {
         name: 'company',
-        label: '所属单位',
+        label: locale.value === 'zh' ? '所属单位' : 'Organization',
         field: 'company',
         align: 'center',
-        style: 'padding: 15px 0px',
+        style: 'padding: 15px 0px; max-width: 150px;white-space: normal;',
         headerStyle: 'padding: 0 5px'
       },
       {
         name: 'creation_time',
-        label: '创建时间',
+        label: locale.value === 'zh' ? '创建时间' : 'Creation Time',
         field: 'creation_time',
         align: 'center',
         style: 'padding: 15px 0px',
@@ -203,33 +204,19 @@ export default defineComponent({
       },
       {
         name: 'operation',
-        label: '操作',
+        label: locale.value === 'zh' ? '操作' : 'Operations',
         field: 'operation',
         align: 'center',
         style: 'padding: 15px 0px',
         headerStyle: 'padding: 0 5px'
       }
-    ]
-    const columnsEN = columnsZH
-
-    // i18n影响该配置对象取值
-    const columns = computed(() => locale.value === 'zh' ? columnsZH : columnsEN)
-
-    // q-pagination 所需配置对象
-    const paginationTable = ref({
-      // sortBy: 'desc',
-      // descending: false,
-      page: 1,
-      rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
-    })
+    ])
 
     // 搜索方法，可扩展成更模糊的
     const searchMethod = (rows: GroupInterface[], terms: string): GroupInterface[] => rows.filter(group => group.id.toLowerCase().includes(terms) || group.name.toLowerCase().includes(terms) || group.description.toLowerCase().includes(terms) || group.company.toLowerCase().includes(terms))
 
     return {
-      locale,
       columns,
-      paginationTable,
       searchMethod
     }
   }

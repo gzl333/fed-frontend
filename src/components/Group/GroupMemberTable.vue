@@ -13,7 +13,7 @@
       loading-label="网络请求中，请稍候..."
       no-data-label="项目组暂无成员"
       hide-pagination
-      :pagination="paginationTable"
+      :pagination="{rowsPerPage: 0}"
     >
 
       <template v-slot:body="props">
@@ -35,14 +35,14 @@
           </q-td>
 
           <q-td key="time" :props="props">
-            <div v-if="locale==='zh'">
-              <div>{{ new Date(props.row.join_time).toLocaleString(locale).split(' ')[0] }}</div>
-              <div>{{ new Date(props.row.join_time).toLocaleString(locale).split(' ')[1] }}</div>
+            <div v-if="$i18n.locale==='zh'">
+              <div>{{ new Date(props.row.join_time).toLocaleString($i18n.locale).split(' ')[0] }}</div>
+              <div>{{ new Date(props.row.join_time).toLocaleString($i18n.locale).split(' ')[1] }}</div>
             </div>
 
             <div v-else>
-              <div>{{ new Date(props.row.join_time).toLocaleString(locale).split(',')[0] }}</div>
-              <div>{{ new Date(props.row.join_time).toLocaleString(locale).split(',')[1] }}</div>
+              <div>{{ new Date(props.row.join_time).toLocaleString($i18n.locale).split(',')[0] }}</div>
+              <div>{{ new Date(props.row.join_time).toLocaleString($i18n.locale).split(',')[1] }}</div>
             </div>
           </q-td>
 
@@ -51,21 +51,21 @@
           </q-td>
 
           <q-td key="operation" :props="props">
-            <div class="row justify-center items-center q-gutter-xs">
+            <div class="column justify-center items-center q-gutter-xs">
               <q-btn v-if="props.row.role === 'member'" icon="mdi-account-multiple-check" flat dense padding="none"
                      color="primary"
                      @click="$store.dispatch('account/editGroupMemberRoleDialog', {groupId, member_id: props.row.id, role:'leader', role_name: '管理员'})">
-                <q-tooltip>设为管理员</q-tooltip>
+                {{ $t('设为管理员') }}
               </q-btn>
 
               <q-btn v-else icon="mdi-account-multiple-remove" flat dense padding="none" color="primary"
                      @click="$store.dispatch('account/editGroupMemberRoleDialog', {groupId, member_id: props.row.id, role:'member', role_name: '组员'})">
-                <q-tooltip>取消管理员</q-tooltip>
+                {{ $t('取消管理员') }}
               </q-btn>
 
               <q-btn icon="remove_circle" flat dense padding="none" color="primary"
                      @click="$store.dispatch('account/removeSingleGroupMemberDialog', {groupId, username: props.row.user.username})">
-                <q-tooltip>移出项目组</q-tooltip>
+                {{ $t('移出项目组') }}
               </q-btn>
             </div>
           </q-td>
@@ -84,7 +84,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, ref } from 'vue'
+import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
@@ -104,10 +104,10 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
-    const columnsZH = $store.state.account.tables.groupTable.byId[props.groupId].myRole === 'owner' ? [
+    const columns = computed(() => [
       {
         name: 'username',
-        label: '用户名',
+        label: locale.value === 'zh' ? '用户名' : 'Username',
         field: 'username',
         align: 'center',
         style: 'padding: 15px 0px',
@@ -115,7 +115,7 @@ export default defineComponent({
       },
       {
         name: 'role',
-        label: '角色',
+        label: locale.value === 'zh' ? '角色' : 'Role',
         field: 'role',
         align: 'center',
         style: 'padding: 15px 5px',
@@ -123,7 +123,7 @@ export default defineComponent({
       },
       {
         name: 'time',
-        label: '加入时间',
+        label: locale.value === 'zh' ? '加入时间' : 'Join Time',
         field: 'time',
         align: 'center',
         style: 'padding: 15px 5px',
@@ -131,76 +131,26 @@ export default defineComponent({
       },
       {
         name: 'inviter',
-        label: '邀请人',
+        label: locale.value === 'zh' ? '邀请人' : 'Inviter',
         field: 'inviter',
         align: 'center',
         style: 'padding: 15px 5px',
         headerStyle: 'padding: 0 5px'
       },
-      {
+      ...($store.state.account.tables.groupTable.byId[props.groupId].myRole === 'owner' ? [{
         name: 'operation',
-        label: '操作',
+        label: locale.value === 'zh' ? '操作' : 'Operations',
         field: 'operation',
         align: 'center',
         style: 'padding: 15px 5px',
         headerStyle: 'padding: 0 5px'
-      }
-    ] : [
-      {
-        name: 'username',
-        label: '用户名',
-        field: 'username',
-        align: 'center',
-        style: 'padding: 15px 0px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'role',
-        label: '角色',
-        field: 'role',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'time',
-        label: '加入时间',
-        field: 'time',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      },
-      {
-        name: 'inviter',
-        label: '邀请人',
-        field: 'inviter',
-        align: 'center',
-        style: 'padding: 15px 5px',
-        headerStyle: 'padding: 0 5px'
-      }
-    ]
-
-    const columnsEN = columnsZH // todo 翻译
-
-    // i18n影响该配置对象取值
-    const columns = computed(() => locale.value === 'zh' ? columnsZH : columnsEN)
-
-    // q-pagination 所需配置对象
-    const paginationTable = ref({
-      // sortBy: 'desc',
-      // descending: false,
-      page: 1,
-      rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
-    })
+      }] : [])
+    ])
 
     const members = computed(() => $store.getters['account/getGroupMembersByGroupId'](props.groupId))
-    // const members = computed(() => $store.state.account.tables.groupMemberTable.byId[props.groupId].members)
 
     return {
-      $store,
-      locale,
       columns,
-      paginationTable,
       members
     }
   }

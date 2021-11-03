@@ -439,12 +439,6 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
         table,
         item: normalizedData.entities.application
       })
-
-      // // 存完所有item再改isLoaded. load single server也算load了table
-      // context.commit('storeStatus', {
-      //   table: context.state.tables.personalServerTable,
-      //   isLoaded: true
-      // })
     }
   },
   async loadFedQuotaActivityTable (context) {

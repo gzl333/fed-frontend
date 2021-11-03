@@ -11,7 +11,7 @@
                 <q-icon name="search"/>
               </template>
               <template v-slot:append v-if="search">
-                <q-icon name="close" @click="search = ''" class="cursor-pointer" />
+                <q-icon name="close" @click="search = ''" class="cursor-pointer"/>
               </template>
             </q-input>
           </div>
@@ -21,8 +21,16 @@
       <div class="col-2">
         <div class="row justify-end">
           <div class="col">
-            <q-select outlined dense stack-label label="筛选" v-model="filterSelection"
-                      :options="filterOptions"/>
+            <q-select outlined dense stack-label label="筛选配额状态" v-model="statusSelection"
+                      :options="statusOptions" emit-value map-options option-value="value"
+                      :option-label="$i18n.locale ==='zh'? 'label':'labelEn'">
+              <!--当前选项的内容插槽-->
+              <template v-slot:selected-item="scope">
+                <span :class="statusSelection===scope.opt.value ? 'text-primary' : 'text-black'">
+                  {{ $i18n.locale === 'zh' ? scope.opt.label : scope.opt.labelEn }}
+                </span>
+              </template>
+            </q-select>
           </div>
         </div>
       </div>
@@ -49,61 +57,34 @@ export default defineComponent({
   setup () {
     const $store = useStore<StateInterface>()
 
-    // // 进入本页面强制更新vm/userQuotaTable,数据更新来自后台，进入页面后应强制更新table,刷新quota状态
-    // void $store.dispatch('vm_obsolete/updateUserQuotaTable')
-
-    // application filter
-    const filterSelection = ref({
-      label: '全部',
-      value: '0'
-    })
-
-    const filterOptions = [
+    // status filter
+    const statusSelection = ref('0')
+    const statusOptions = [ // 此处修改应与getter对应
       {
-        label: '全部',
-        value: '0'
+        value: '0',
+        label: '全部配额',
+        labelEn: 'All Quotas'
       },
       {
+        value: 'valid',
         label: '可用',
-        value: 'valid'
+        labelEn: 'Valid'
       },
       {
+        value: 'invalid',
         label: '不可用',
-        value: 'invalid'
+        labelEn: 'Invalid'
       }
-      // 此处修改应与getter对应
-      // ,
-      // {
-      //   label: '长期',
-      //   value: null
-      // },
-      // {
-      //   label: '未过期',
-      //   value: 'notExpired'
-      // },
-      // {
-      //   label: '已过期',
-      //   value: 'expired'
-      // },
-      // {
-      //   label: '未用尽',
-      //   value: 'notExhausted'
-      // },
-      // {
-      //   label: '已用尽',
-      //   value: 'exhausted'
-      // }
     ]
-
     // 获取quota数据
-    const quotas = computed(() => $store.getters['server/getPersonalQuotasByFilter'](filterSelection.value.value))
+    const quotas = computed(() => $store.getters['server/getPersonalQuotasByFilter'](statusSelection.value))
     // 搜索框
     const search = ref('')
 
     return {
       quotas,
-      filterSelection,
-      filterOptions,
+      statusSelection,
+      statusOptions,
       search
     }
   }

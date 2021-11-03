@@ -68,7 +68,7 @@
                     v-if="service.service_type.toLowerCase().includes('ev')"
                     name="img:svg/EVCloud-Logo-Horizontal.svg"
                     style="width: 100px;height: 20px"/>
-                  <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>
+<!--                  <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>-->
                 </span>
                 <span>
                   <q-icon
@@ -76,7 +76,7 @@
                     v-if="service.service_type.toLowerCase().includes('open')"
                     name="img:svg/OpenStack-Logo-Horizontal.svg"
                     style="width: 100px;height: 20px"/>
-                   <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>
+<!--                   <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>-->
                 </span>
 
               </q-radio>
@@ -270,7 +270,7 @@
                   v-if="$store.state.fed.tables.serviceTable.byId[radioService]?.service_type.toLowerCase().includes('ev')"
                   name="img:svg/EVCloud-Logo-Horizontal.svg"
                   style="width: 100px;height: 20px"/>
-                <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>
+<!--                <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>-->
               </span>
 
             <span>
@@ -278,7 +278,7 @@
                   v-if="$store.state.fed.tables.serviceTable.byId[radioService]?.service_type.toLowerCase().includes('open')"
                   name="img:svg/OpenStack-Logo-Horizontal.svg"
                   style="width: 100px;height: 20px"/>
-                <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>
+<!--                <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>-->
               </span>
 
           </div>

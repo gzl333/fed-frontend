@@ -1,7 +1,7 @@
 import { GetterTree } from 'vuex'
 import { StateInterface } from '../index'
 import { AccountModuleInterface } from './state'
-import { i18n } from 'boot/i18n'
+// import { i18n } from 'boot/i18n'
 import { GroupInterface, SingleMemberInterface } from 'src/store/account/state'
 
 const getters: GetterTree<AccountModuleInterface, StateInterface> = {
@@ -11,18 +11,18 @@ const getters: GetterTree<AccountModuleInterface, StateInterface> = {
       groupOptions.push(
         {
           value: group.id,
-          label: group.name
+          label: group.name,
+          labelEn: group.name
         }
       )
     }
     // 排序
     groupOptions = groupOptions.sort((a, b) => -a.label.localeCompare(b.label, 'zh-CN'))
-    // // vue组件外取i18n中locale字段的方法
     groupOptions.unshift({
       value: '0',
-      label: i18n.global.locale === 'zh' ? '全部项目组' : 'All Groups'
+      label: '全部项目组',
+      labelEn: 'All Groups'
     })
-
     return groupOptions
   },
   getGroupsByFilter: (state) => (filter: string): GroupInterface[] => {

@@ -11,7 +11,7 @@
                 <q-icon name="search"/>
               </template>
               <template v-slot:append v-if="search">
-                <q-icon name="close" @click="search = ''" class="cursor-pointer" />
+                <q-icon name="close" @click="search = ''" class="cursor-pointer"/>
               </template>
             </q-input>
           </div>
@@ -22,7 +22,15 @@
         <div class="row justify-end">
           <div class="col">
             <q-select outlined dense stack-label :label="$t('筛选服务节点')" v-model="serviceSelection"
-                      :options="serviceOptions"/>
+                      :options="serviceOptions" emit-value map-options option-value="value"
+                      :option-label="$i18n.locale ==='zh'? 'label':'labelEn'">
+              <!--当前选项的内容插槽-->
+              <template v-slot:selected-item="scope">
+                <span :class="serviceSelection===scope.opt.value ? 'text-primary' : 'text-black'">
+                  {{ $i18n.locale === 'zh' ? scope.opt.label : scope.opt.labelEn }}
+                </span>
+              </template>
+            </q-select>
           </div>
         </div>
       </div>
@@ -40,7 +48,7 @@ import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
 import ServerTable from 'components/Server/ServerTable.vue'
-import { useI18n } from 'vue-i18n'
+// import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'PersonalServer',
@@ -48,17 +56,14 @@ export default defineComponent({
   props: {},
   setup () {
     const $store = useStore<StateInterface>()
-    const { locale } = useI18n({ useScope: 'global' })
+    // const { locale } = useI18n({ useScope: 'global' })
 
     // service_id下拉列表
     const serviceOptions = computed(() => $store.getters['server/getPersonalAvailableServices'])
-    const serviceSelection = ref({
-      label: locale.value === 'zh' ? '全部服务节点' : 'All Service Nodes',
-      value: '0'
-    })
+    const serviceSelection = ref('0')
 
     // 获取云主机列表数据
-    const rows = computed(() => $store.getters['server/getPersonalServersByServiceId'](serviceSelection.value.value))
+    const rows = computed(() => $store.getters['server/getPersonalServersByServiceId'](serviceSelection.value))
 
     // 搜索框
     const search = ref('')

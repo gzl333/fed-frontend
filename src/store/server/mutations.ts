@@ -2,7 +2,7 @@ import { MutationTree } from 'vuex'
 import { ServerInterface, ServerModuleInterface } from './state'
 
 const mutation: MutationTree<ServerModuleInterface> = {
-  // 向本模块table中保存item的通用方法
+  // 向本模块table中保存item的通用方法, 天然不会重复
   storeItem<T> (state: ServerModuleInterface, payload: {
     table: {
       byId: Record<string, T>

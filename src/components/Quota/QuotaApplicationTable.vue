@@ -14,7 +14,7 @@
       loading-label="网络请求中，请稍候..."
       no-data-label="暂无配额申请记录"
       hide-pagination
-      :pagination="paginationTable"
+      :pagination="{rowsPerPage: 0}"
       :filter="search"
       :filter-method="searchMethod"
       no-results-label="无搜索结果"
@@ -42,21 +42,21 @@
               padding="xs" flat dense unelevated
               :to="{path: `/my/group/detail/${props.row.vo_id}`}">
               <q-tooltip>
-                {{ $t('查看项目组详情') }}
+                {{ $t('项目组详情') }}
               </q-tooltip>
             </q-btn>
           </q-td>
 
           <q-td key="creation_time" :props="props">
 
-            <div v-if="locale==='zh'">
-              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[0] }}</div>
-              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(' ')[1] }}</div>
+            <div v-if="$i18n.locale==='zh'">
+              <div>{{ new Date(props.row.creation_time).toLocaleString($i18n.locale).split(' ')[0] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString($i18n.locale).split(' ')[1] }}</div>
             </div>
 
             <div v-else>
-              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[0] }}</div>
-              <div>{{ new Date(props.row.creation_time).toLocaleString(locale).split(',')[1] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString($i18n.locale).split(',')[0] }}</div>
+              <div>{{ new Date(props.row.creation_time).toLocaleString($i18n.locale).split(',')[1] }}</div>
             </div>
 
           </q-td>
@@ -64,12 +64,12 @@
           <q-td key="service" :props="props">
             <div>
               {{
-                locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[props.row.service]?.name : $store.state.fed.tables.serviceTable.byId[props.row.service]?.name_en
+                $i18n.locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[props.row.service]?.name : $store.state.fed.tables.serviceTable.byId[props.row.service]?.name_en
               }}
             </div>
             <div>
               {{
-                locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name :
+                $i18n.locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name :
                   $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[props.row.service]?.data_center]?.name_en
               }}
             </div>
@@ -90,19 +90,19 @@
               <!--                <q-tooltip>{{$t('该节点的服务类型为OpenStack')}}</q-tooltip>-->
             </div>
 
-            <q-tooltip class="bg-grey-4" :offset="[0, -15]">
-              <span class="text-black">
-                {{ $t('该节点的服务类型为') }}
-              </span>
-              <q-icon
-                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"
-                name="img:svg/EVCloud-Logo-Horizontal.svg"
-                style="width: 100px;height: 20px"/>
-              <q-icon
-                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"
-                name="img:svg/OpenStack-Logo-Horizontal.svg"
-                style="width: 100px;height: 20px"/>
-            </q-tooltip>
+<!--            <q-tooltip class="bg-grey-4" :offset="[0, -15]">-->
+<!--              <span class="text-black">-->
+<!--                {{ $t('该节点的服务类型为') }}-->
+<!--              </span>-->
+<!--              <q-icon-->
+<!--                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"-->
+<!--                name="img:svg/EVCloud-Logo-Horizontal.svg"-->
+<!--                style="width: 100px;height: 20px"/>-->
+<!--              <q-icon-->
+<!--                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"-->
+<!--                name="img:svg/OpenStack-Logo-Horizontal.svg"-->
+<!--                style="width: 100px;height: 20px"/>-->
+<!--            </q-tooltip>-->
           </q-td>
 
           <q-td key="duration_days" :props="props">
@@ -165,7 +165,7 @@
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, PropType, ref } from 'vue'
+import { computed, defineComponent, PropType } from 'vue'
 import { QuotaApplicationInterface } from 'src/store/server/state'
 import QuotaStatusChip from 'components/Quota/QuotaStatusChip.vue'
 // import { useStore } from 'vuex'
@@ -199,185 +199,95 @@ export default defineComponent({
     // const $store = useStore<StateInterface>()
     const { locale } = useI18n({ useScope: 'global' })
 
-    // 应强制更新table,刷新quota状态 todo
-    // void $store.dispatch('server/xxxx')
-
     // 列表分栏定义
-    const columnsZH = props.isGroup && !props.isHideGroup // 是group且不hide时使用这个配置
-      ? [
-          {
-            name: 'status',
-            label: '申请状态',
-            field: 'status',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'padding: 15px 0px;width: 95px;' // 固定宽度，防止窄chip抖动
-          },
-          {
-            name: 'group',
-            label: '所属组',
-            field: 'group',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'max-width: 130px;padding: 15px 0px'
-          },
-          {
-            name: 'creation_time',
-            label: '申请时间',
-            field: 'creation_time',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'padding: 15px 0px'
-          },
-          {
-            name: 'service',
-            label: '服务节点',
-            field: 'service',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'padding: 20px 0px' // 更大的上下padding，避免更新状态时抖动
-          },
-          {
-            name: 'duration_days',
-            label: '云主机时长',
-            field: 'duration_days',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'padding: 15px 0px'
-          },
-          {
-            name: 'configuration',
-            label: 'CPU/内存/私网IP/公网IP/云硬盘',
-            field: 'configuration',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'padding: 15px 0px'
-          },
-          {
-            name: 'purpose',
-            label: '用途',
-            field: 'purpose',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'max-width: 150px;padding: 15px 0px'
-          },
-          {
-            name: 'applicant',
-            label: '申请人',
-            field: 'applicant',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'max-width: 200px;padding: 15px 0px'
-          },
-          {
-            name: 'operation',
-            label: '操作',
-            field: 'operation',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px'
-          }
-        ] : [
-          {
-            name: 'status',
-            label: '申请状态',
-            field: 'status',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'padding: 15px 0px;width: 95px;' // 固定宽度，防止窄chip抖动
-          },
-          {
-            name: 'creation_time',
-            label: '申请时间',
-            field: 'creation_time',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'padding: 15px 0px'
-          },
-          {
-            name: 'service',
-            label: '服务节点',
-            field: 'service',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'padding: 20px 0px' // 更大的上下padding，避免更新状态时抖动
-          },
-          {
-            name: 'duration_days',
-            label: '云主机时长',
-            field: 'duration_days',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'padding: 15px 0px'
-          },
-          {
-            name: 'configuration',
-            label: 'CPU/内存/私网IP/公网IP/云硬盘',
-            field: 'configuration',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'padding: 15px 0px'
-          },
-          {
-            name: 'purpose',
-            label: '用途',
-            field: 'purpose',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'max-width: 150px;padding: 15px 0px'
-          },
-          {
-            name: 'applicant',
-            label: '申请人',
-            field: 'applicant',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px',
-            style: 'max-width: 200px;padding: 15px 0px'
-          },
-          {
-            name: 'operation',
-            label: '操作',
-            field: 'operation',
-            align: 'center',
-            classes: 'ellipsis',
-            headerStyle: 'padding: 0 2px'
-          }
-        ]
-    const columnsEN = columnsZH // todo 翻译
-
-    // i18n影响该配置对象取值
-    const columns = computed(() => locale.value === 'zh' ? columnsZH : columnsEN)
-
-    // q-pagination 所需配置对象
-    const paginationTable = ref({
-      // sortBy: 'desc',
-      // descending: false,
-      page: 1,
-      rowsPerPage: 200 // 此为能显示的最大行数，取一个较大值，实际显示行数靠自动计算
-    })
+    const columns = computed(() => [
+      {
+        name: 'status',
+        label: locale.value === 'zh' ? '申请状态' : 'Status',
+        field: 'status',
+        align: 'center',
+        classes: 'ellipsis',
+        headerStyle: 'padding: 0 2px',
+        style: 'padding: 15px 0px;width: 95px;' // 固定宽度，防止窄chip抖动
+      },
+      ...((props.isGroup && !props.isHideGroup) ? [{ // 是group且不hide时加入这个配置
+        name: 'group',
+        label: locale.value === 'zh' ? '所属组' : 'Group',
+        field: 'group',
+        align: 'center',
+        classes: 'ellipsis',
+        headerStyle: 'padding: 0 2px',
+        style: 'padding: 15px 0px; max-width: 110px;white-space: normal;'
+      }] : []),
+      {
+        name: 'creation_time',
+        label: locale.value === 'zh' ? '申请时间' : 'Submission Time',
+        field: 'creation_time',
+        align: 'center',
+        classes: 'ellipsis',
+        headerStyle: 'padding: 0 2px',
+        style: 'padding: 15px 0px'
+      },
+      {
+        name: 'service',
+        label: locale.value === 'zh' ? '服务节点' : 'Service Node',
+        field: 'service',
+        align: 'center',
+        classes: 'ellipsis',
+        headerStyle: 'padding: 0 2px',
+        style: 'padding: 20px 0px' // 更大的上下padding，避免更新状态时按钮改变，导致抖动
+      },
+      {
+        name: 'duration_days',
+        label: locale.value === 'zh' ? '云主机时长' : 'Available Time',
+        field: 'duration_days',
+        align: 'center',
+        classes: 'ellipsis',
+        headerStyle: 'padding: 0 2px',
+        style: 'padding: 15px 0px'
+      },
+      {
+        name: 'configuration',
+        label: locale.value === 'zh' ? 'CPU / 内存 / 私网IP / 公网IP / 云硬盘 ' : 'CPU / MEM / Private IP / Public IP / Disk',
+        field: 'configuration',
+        align: 'center',
+        classes: 'ellipsis',
+        headerStyle: 'padding: 0 2px',
+        style: 'padding: 15px 0px'
+      },
+      {
+        name: 'purpose',
+        label: locale.value === 'zh' ? '用途' : 'Purpose',
+        field: 'purpose',
+        align: 'center',
+        classes: 'ellipsis',
+        headerStyle: 'padding: 0 2px',
+        style: 'max-width: 100px;padding: 15px 0px;white-space: normal;'
+      },
+      {
+        name: 'applicant',
+        label: locale.value === 'zh' ? '申请人' : 'Applicant',
+        field: 'applicant',
+        align: 'center',
+        classes: 'ellipsis',
+        headerStyle: 'padding: 0 2px',
+        style: 'max-width: 200px;padding: 15px 0px'
+      },
+      {
+        name: 'operation',
+        label: locale.value === 'zh' ? '操作' : 'Operations',
+        field: 'operation',
+        align: 'center',
+        classes: 'ellipsis',
+        headerStyle: 'padding: 0 2px'
+      }
+    ])
 
     // 搜索方法，可扩展成更模糊的
     const searchMethod = (rows: QuotaApplicationInterface[], terms: string): QuotaApplicationInterface[] => rows.filter(application => application.id.toLowerCase().includes(terms) || application.duration_days.toString().includes(terms) || application.vcpu.toString().includes(terms) || (application.ram / 1024).toString().includes(terms) || application.private_ip.toString().includes(terms) || application.public_ip.toString().includes(terms) || application.disk_size.toString().includes(terms) || application.purpose.toLowerCase().includes(terms) || application.contact.toLowerCase().includes(terms) || application.company.toLowerCase().includes(terms))
 
     return {
-      locale,
       columns,
-      paginationTable,
       searchMethod
     }
   }
