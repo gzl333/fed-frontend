@@ -15,7 +15,9 @@ export default {
   内容已经复制到剪切板: 'Content has been copied to clipboard',
   已经复制到剪切板: 'has been copied to clipboard',
   // global header
-  使用手册: 'User manual',
+  使用手册: 'User Manual',
+  正在使用科技云通行证登录: 'Logged in through CSTCloud Passport',
+  正在使用科技云AAI联盟登录: 'Logged in through CSTCloud AAI',
   // global left drawer
   中国科技云联邦: 'CSTCloud Federation',
   我的首页: 'Home',

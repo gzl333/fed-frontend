@@ -1,24 +1,27 @@
 <template>
   <div class="HeaderDropdown">
 
-    <q-btn-dropdown :ripple="false" flat class="q-py-sm q-px-none"
-                    :label="$store.state.account.items.decoded?.email" no-caps>
+    <q-btn-dropdown :ripple="false" flat class="q-py-none q-px-none text-weight-regular" color="grey-8" no-caps>
+
+      <template v-slot:label class="q-pa-none q-ma-none">
+        <q-icon name="mdi-account-circle-outline"/>
+        {{ $store.state.account.items.decoded?.email }}
+      </template>
 
       <div class="row justify-center no-wrap q-pa-md dropdown-content non-selectable">
         <div class="column items-center">
-          <!--          <q-avatar class="q-mt-lg" size="72px">-->
-          <!--            <img src="img/default-avatar.png">-->
-          <!--          </q-avatar>-->
-          <q-icon class="q-pt-lg" name="mdi-account" color="white" size="90px"/>
-          <div v-if="$store.state.account.items.fedRole === 'federal-admin'" class="q-pb-lg text-white">
+          <q-icon class="q-pt-lg q-pb-none q-ma-none" name="mdi-account" color="white" size="90px"/>
+<!--          <q-icon class="q-pt-lg q-pb-none q-ma-none" name="las la-user-circle" color="white" size="90px"/>-->
+
+          <div v-if="$store.state.account.items.fedRole === 'federal-admin'" class="q-pb-lg text-white" >
             联邦管理员
           </div>
 
-          <div class="text-subtitle1  text-white">{{ $store.state.account.items.decoded?.name }}</div>
-          <div class="text-subtitle1 text-white">{{ $store.state.account.items.decoded?.orgName }}</div>
+          <div class="text-subtitle1  text-white no-wrap">{{ $store.state.account.items.decoded?.name }}</div>
+          <div class="text-subtitle1 text-white no-wrap">{{ $store.state.account.items.decoded?.orgName }}</div>
 
-          <div class="q-py-md text-white">
-            正在使用{{ $store.state.account.items.loginType === 'aai' ? '科技云AAI联盟' : '科技云通行证' }}登录
+          <div class="q-pt-sm text-caption text-grey-5">
+            {{ $store.state.account.items.loginType === 'aai' ? $t('正在使用科技云AAI联盟登录') : $t('正在使用科技云通行证登录') }}
           </div>
         </div>
       </div>

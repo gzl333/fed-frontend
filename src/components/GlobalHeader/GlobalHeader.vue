@@ -13,22 +13,24 @@
         </q-toolbar-title>
 
         <q-space/>
-        <div class="q-gutter-md row items-center no-wrap">
+        <div class="q-gutter-lg row items-center no-wrap">
           <q-select
             v-model="$i18n.locale"
             :options="localeOptions"
+            color="grey"
             dense
             borderless
             emit-value
             map-options
             options-dense
           >
-            <template v-slot:prepend>
-              <q-icon name="language"/>
+            <template v-slot:prepend >
+              <q-icon class="q-pa-none q-ma-none" name="language"/>
             </template>
           </q-select>
 
-          <q-btn color="grey-9" :ripple="false" flat dense no-caps icon="library_books" @click="gotoManual">
+          <q-btn class="text-weight-regular" color="grey-8" :ripple="false" flat dense no-caps no-wrap
+                 icon="mdi-book-open-outline" @click="gotoManual">
             {{ $t('使用手册') }}
           </q-btn>
 
