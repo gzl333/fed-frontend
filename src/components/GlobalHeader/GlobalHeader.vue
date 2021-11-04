@@ -8,7 +8,7 @@
 
           <q-icon v-if="$i18n.locale==='zh'" name="img:svg/fed-title-cn.svg"
                   style="width: 250px;height: 30px; opacity: 0.7"/>
-          <q-icon v-else name="img:svg/fed-title-en.svg" style="width: 290px;height: 30px; opacity: 0.7"/>
+          <q-icon v-else name="img:svg/fed-title-en.svg" style="width: 373px;height: 30px; opacity: 0.7;"/>
 
         </q-toolbar-title>
 
