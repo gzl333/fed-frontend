@@ -50,7 +50,8 @@
 
                     <q-tab-panels v-model="tab1" animated class="non-selectable">
                       <q-tab-panel name="fed" class="tab1" style="overflow: hidden;">
-                        <div class="row justify-start items-center q-gutter-lg counts">
+                        <main-map></main-map>
+                        <div class="row justify-start items-center q-gutter-lg">
                           <div class="col-auto row items-end">
                             当前机构数量：
                             <span>
@@ -206,6 +207,7 @@ import { StateInterface } from 'src/store'
 import ServerTable from 'components/Server/ServerTable.vue'
 // import BucketTable from 'components/BucketTable/BucketTable.vue'
 import GroupTable from 'components/Group/GroupTable.vue'
+import MainMap from 'components/Chart/MainMap.vue'
 
 export default defineComponent({
   name: 'Main',
@@ -213,7 +215,8 @@ export default defineComponent({
     // GlobalHeaderContent,
     ServerTable,
     // BucketTable,
-    GroupTable
+    GroupTable,
+    MainMap
   },
   props: {},
   setup () {
@@ -289,10 +292,10 @@ export default defineComponent({
 
 // todo debug
 .tab1 {
-  background-image: url('/img/city_map.png');
-  background-repeat: no-repeat;
-  background-size: auto;
-  height: 190px;
+  //background-image: url('/img/city_map.png');
+  //background-repeat: no-repeat;
+  //background-size: auto;
+  height: 248px;
 }
 
 .tab2 {
