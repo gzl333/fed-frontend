@@ -396,6 +396,14 @@ const routes: RouteRecordRaw[] = [
                 component: () => import('pages/My/Federation/FederationMonitorServer.vue')
               }
             ]
+          },
+          {
+            path: 'dev',
+            meta: {
+              requireLogin: true,
+              requireFedAdmin: true // 云联邦管理员才能访问
+            },
+            component: () => import('pages/My/Federation/DEV-Test.vue')
           }
         ]
       }

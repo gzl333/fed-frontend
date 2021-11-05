@@ -7,8 +7,11 @@
           <!--          <img :src="$t('resource.title')" alt="中国科技云联邦" class="title q-pt-sm">-->
 
           <q-icon v-if="$i18n.locale==='zh'" name="img:svg/fed-title-cn.svg"
-                  style="width: 250px;height: 30px; opacity: 0.7"/>
-          <q-icon v-else name="img:svg/fed-title-en.svg" style="width: 373px;height: 30px; opacity: 0.7;"/>
+                  color="primary" style="width: 250px;height: 30px; opacity: 0.7;"/>
+<!--          <q-icon v-else name="img:svg/fed-title-en.svg"-->
+<!--                  color="" style="width: 270px;height: 30px; opacity: 0.7;"/>-->
+          <q-icon v-else name="img:svg/fed-title-en-bold.svg"
+                  color="" style="width: 280px;height: 30px; opacity: 0.7;"/>
 
         </q-toolbar-title>
 
@@ -24,7 +27,7 @@
             map-options
             options-dense
           >
-            <template v-slot:prepend >
+            <template v-slot:prepend>
               <q-icon class="q-pa-none q-ma-none" name="language"/>
             </template>
           </q-select>

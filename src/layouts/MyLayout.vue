@@ -54,6 +54,11 @@ export default defineComponent({
     void $store.dispatch('fed/loadAllTables')
     /* my内页所有table加载起始点 */
 
+    /* 本页需加载的table */
+    // dataCenterTable
+    // serviceTable
+    /* 本页需加载的table */
+
     const currentUser = $store.state.account
     const isRightDrawerOpen = computed(() => $store.state.account.items.isRightDrawerOpen)
     const isFooterOpen = computed(() => $store.state.account.items.isFooterOpen)

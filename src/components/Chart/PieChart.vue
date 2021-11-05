@@ -86,13 +86,12 @@ export default defineComponent({
             data: [
               {
                 name: $store.state.fed.tables.serviceTable.byId[1]?.name,
-                value: 999
+                value: $store.state.fed.tables.serviceAllocationTable.byId['1']?.public_ip_total
               },
               {
                 name: $store.state.fed.tables.serviceTable.byId[2]?.name,
-                value: 555
+                value: $store.state.fed.tables.serviceAllocationTable.byId['2']?.vcpu_total
               }
-
             ]
           }
         ]

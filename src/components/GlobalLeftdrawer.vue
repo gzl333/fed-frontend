@@ -71,7 +71,6 @@
           </q-item>
 
           <q-item
-            :disable="process?.env.PROD"
             clickable
             :active="activeItem === 'federation'"
             @click="activeItem = 'federation'"
@@ -114,6 +113,7 @@ export default defineComponent({
 .active-item {
   //color: white !important; // 不起作用
   background-color: $c-blue-6;
+
 }
 
 .logo {

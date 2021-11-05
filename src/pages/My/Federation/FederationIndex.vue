@@ -46,6 +46,16 @@
                     :ripple="false"
                     to="/my/federation/monitor"
                   />
+                  <!--DEV-->
+                  <q-route-tab
+                    v-if="$store.state.account.items.fedRole === 'federal-admin' && isDev"
+                    class="q-px-none q-py-md q-mx-md"
+                    name="DEV"
+                    icon="insights"
+                    :label="$t('DEV')"
+                    :ripple="false"
+                    to="/my/federation/dev"
+                  />
                 </q-tabs>
               </div>
 
@@ -86,6 +96,7 @@ export default defineComponent({
   props: {},
   setup () {
     return {
+      isDev: process.env.DEV,
       activeTab: ref('member_list')
     }
   }

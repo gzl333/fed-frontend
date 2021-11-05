@@ -9,7 +9,6 @@ declare module '@vue/runtime-core' {
     $axios: AxiosInstance;
   }
 }
-
 // const api = axios.create(/* { timeout: 1000 , baseURL: 'https://api.example.com'} */)
 
 // APIBASE的唯一配置。 包装好接口api base地址的axios实例

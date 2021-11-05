@@ -5,12 +5,12 @@ import { $api } from 'boot/api'
 import { normalize, schema } from 'normalizr'
 
 const actions: ActionTree<FedModuleInterface, StateInterface> = {
-  /* $store加载总顺序，体现依赖关系 */
+  /* $store加载依赖逻辑 */
   loadAllTables (context) {
     if (!context.state.tables.dataCenterTable.isLoaded) {
-      void context.dispatch('loadDataCenterTable').then(() => {
+      void context.dispatch('loadDataCenterTable').then(() => { // 1. 基础依赖
         if (!context.state.tables.serviceTable.isLoaded) {
-          void context.dispatch('loadServiceTable').then(() => {
+          void context.dispatch('loadServiceTable').then(() => { // 2. 基础依赖
             if (!context.state.tables.serviceAllocationTable.isLoaded) {
               void context.dispatch('loadServiceAllocationTable')
             }
@@ -72,7 +72,7 @@ const actions: ActionTree<FedModuleInterface, StateInterface> = {
     //   void context.dispatch('provider/loadAdminQuotaApplicationTable', null, { root: true })
     // }
   },
-  /* $store加载总起点 */
+  /* $store加载依赖逻辑 */
 
   /* dataCenterTable */
   async loadDataCenterTable (context) {
