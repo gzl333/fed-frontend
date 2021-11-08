@@ -12,19 +12,19 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
-    "@quasar/extras": "^1.10.12",
+    "@quasar/extras": "^1.11.5",
     "axios": "^0.21.1",
     "core-js": "^3.12.0",
     "echarts": "^5.2.0",
     "jwt-decode": "^3.1.2",
     "normalizr": "^3.6.1",
     "qs": "^6.10.1",
-    "quasar": "^2.0.4",
+    "quasar": "^2.3.0",
     "vue-i18n": "^9.1.6",
     "vuex": "^4.0.1"
   },
   "devDependencies": {
-    "@quasar/app": "^3.1.0",
+    "@quasar/app": "^3.1.10",
     "@types/node": "^10.17.59",
     "@typescript-eslint/eslint-plugin": "^4.22.1",
     "@typescript-eslint/parser": "^4.22.1",
