@@ -80,6 +80,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/My/Main.vue'),
         meta: {
           title: '我的首页-中国科技云联邦',
+          title_en: 'Home-CSTCloud Federation',
           requireLogin: true
         }
       },

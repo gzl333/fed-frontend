@@ -8,6 +8,7 @@ import {
 import { StateInterface } from '../store'
 import routes from './routes'
 import { Notify } from 'quasar'
+import { i18n } from 'boot/i18n'
 
 /*
  * If not building with SSR mode, you can
@@ -105,7 +106,11 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
 
     // 修改页面标题，与跳转无关，每个页面都做，所以不在上面的逻辑里。
     if (to.meta.title) {
-      document.title = to.meta.title as string
+      if (i18n.global.locale === 'zh') {
+        document.title = to.meta.title as string // 中文
+      } else {
+        document.title = to.meta.title_en as string || to.meta.title as string // 英文, fallback to 中文
+      }
     }
 
     // // 进入vmcreate和quota_apply前打开footer

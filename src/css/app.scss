@@ -1,7 +1,6 @@
 // app global css in SCSS form
 
 body {
-  overflow: hidden; // 全局令页面调整尺寸时不显示默认滚动条，避免闪烁
   //font-family: 'microsoft yahei';
 }
 
@@ -10,6 +9,7 @@ body {
   padding: 0 30px;
   width: $general-width;
 }
+
 .content-fixed-width-no-padding {
   width: $general-width-no-padding;
 }

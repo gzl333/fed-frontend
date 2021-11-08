@@ -1,11 +1,5 @@
 <template>
-  <q-drawer
-    v-model="leftDrawerOpen"
-    show-if-above
-    :width="120"
-    :breakpoint="0"
-    class="bg-c-blue1 text-white"
-  >
+
     <div class="column full-height">
       <q-scroll-area class="col overflow-hidden non-selectable visible">
 
@@ -88,21 +82,19 @@
         <div class="text-grey text-body2 text-center q-pt-xl">v0.2.7 beta</div>
       </q-scroll-area>
     </div>
-  </q-drawer>
+
 </template>
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
 
 export default defineComponent({
-  name: 'GlobalLeftdrawer',
+  name: 'GlobalLeftDrawerContent',
   components: {},
   props: {},
   setup () {
-    const leftDrawerOpen = ref(false)
     const activeItem = ref('main')
     return {
-      leftDrawerOpen,
       activeItem
     }
   }

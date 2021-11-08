@@ -58,7 +58,7 @@
 import { defineComponent, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useStore } from 'vuex'
-import { StateInterface } from '../store'
+import { StateInterface } from '../../store'
 
 export default defineComponent({
   name: 'LoginCard',

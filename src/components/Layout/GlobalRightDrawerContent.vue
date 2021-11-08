@@ -1,7 +1,6 @@
 <template>
-  <div class="GlobalRightdrawer">
-    云联邦使用手册
-    建设中...
+  <div class="GlobalRightDrawerContent">
+    this global right drawer content
   </div>
 </template>
 
@@ -9,7 +8,7 @@
 import { defineComponent } from 'vue'
 
 export default defineComponent({
-  name: 'GlobalRightdrawer',
+  name: 'GlobalRightDrawerContent',
   components: {},
   props: {},
   setup () {
@@ -19,6 +18,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.GlobalRightdrawer {
+.GlobalRightDrawerContent {
 }
 </style>

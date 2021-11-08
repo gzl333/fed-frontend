@@ -63,6 +63,7 @@ export interface AccountModuleInterface {
     // hpsAdmin: string[]
 
     // layout
+    isLeftDrawerOpen: boolean
     isRightDrawerOpen: boolean
     isFooterOpen: boolean
   }
@@ -89,6 +90,7 @@ function state (): AccountModuleInterface {
       isLogin: false,
       fedRole: 'ordinary', // 登进来默认都是普通用户
       vmsAdmin: [],
+      isLeftDrawerOpen: true,
       isRightDrawerOpen: false,
       isFooterOpen: false
     },

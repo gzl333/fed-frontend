@@ -1,25 +1,56 @@
 <template>
-  <q-layout view="hHh lpR lFr">
 
-    <global-leftdrawer/>
+  <!--todo add a total scroll area to layout -->
 
-    <q-drawer v-model="isRightDrawerOpen" side="right" :width="500" bordered>
-      <global-rightdrawer/>
+  <!--  <div class="row no-wrap">-->
+  <!--    <div class="col">-->
+  <!--      <div class="column full-height" style="height: 800px;">-->
+  <!--        <q-scroll-area class="col" visible>-->
+
+  <q-layout view="lhh LpR lff">
+
+    <q-header class="bg-white" bordered>
+      <div class="row no-wrap justify-center" style="min-width: 1290px;">
+        <global-header-content class="content-fixed-width"/>
+      </div>
+    </q-header>
+
+    <q-drawer
+      v-model="isLeftDrawerOpen"
+      side="left"
+      behavior="desktop"
+      :width="120"
+      :breakpoint="0"
+      class="bg-c-blue1 text-white"
+    >
+      <global-left-drawer-content/>
+    </q-drawer>
+
+    <q-drawer
+      v-model="isRightDrawerOpen"
+      side="right"
+      :width="500" overlay bordered
+    >
+      <global-right-drawer-content/>
     </q-drawer>
 
     <q-page-container>
-      <q-page class="row no-wrap">
-        <div class="col">
-          <div class="column full-height">
-
-            <q-scroll-area class="col" visible>
-              <router-view/>
-            </q-scroll-area>
-
-          </div>
-        </div>
+      <q-page>
+        <router-view/>
       </q-page>
     </q-page-container>
+
+    <!--    <q-page-container>-->
+    <!--      <q-page class="row no-wrap">-->
+    <!--        <div class="col">-->
+    <!--          <div class="column full-height">-->
+    <!--            <q-scroll-area class="col" visible>-->
+    <!--              <router-view/>-->
+    <!--            </q-scroll-area>-->
+    <!--          </div>-->
+    <!--        </div>-->
+    <!--      </q-page>-->
+    <!--    </q-page-container>-->
 
     <q-footer
       v-model="isFooterOpen"
@@ -29,21 +60,30 @@
         footer
       </div>
     </q-footer>
+
   </q-layout>
+
+  <!--        </q-scroll-area>-->
+  <!--      </div>-->
+  <!--    </div>-->
+  <!--  </div>-->
+
 </template>
 
 <script lang="ts">
 import { computed, defineComponent } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from '../store'
-import GlobalRightdrawer from 'components/GlobalRightdrawer.vue'
-import GlobalLeftdrawer from 'components/GlobalLeftdrawer.vue'
+import GlobalHeaderContent from 'components/Layout/GlobalHeaderContent.vue'
+import GlobalRightDrawerContent from 'components/Layout/GlobalRightDrawerContent.vue'
+import GlobalLeftDrawerContent from 'components/Layout/GlobalLeftDrawerContent.vue'
 
 export default defineComponent({
   name: 'MyLayout.vue',
   components: {
-    GlobalLeftdrawer,
-    GlobalRightdrawer
+    GlobalHeaderContent,
+    GlobalLeftDrawerContent,
+    GlobalRightDrawerContent
   },
   props: {},
   setup () {
@@ -59,18 +99,14 @@ export default defineComponent({
     // serviceTable
     /* 本页需加载的table */
 
-    const currentUser = $store.state.account
+    const isLeftDrawerOpen = computed(() => $store.state.account.items.isLeftDrawerOpen)
     const isRightDrawerOpen = computed(() => $store.state.account.items.isRightDrawerOpen)
     const isFooterOpen = computed(() => $store.state.account.items.isFooterOpen)
 
-    const toLogout = () => {
-      void $store.dispatch('account/cstLogout')
-    }
     return {
+      isLeftDrawerOpen,
       isRightDrawerOpen,
-      isFooterOpen,
-      currentUser,
-      toLogout
+      isFooterOpen
     }
   }
 })

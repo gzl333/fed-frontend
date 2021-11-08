@@ -1,5 +1,5 @@
 <template>
-  <div class="GlobalHeader">
+  <div class="GlobalHeaderContent ">
     <div class="row">
       <q-toolbar class="q-pa-none">
         <q-toolbar-title shrink>
@@ -7,15 +7,16 @@
           <!--          <img :src="$t('resource.title')" alt="中国科技云联邦" class="title q-pt-sm">-->
 
           <q-icon v-if="$i18n.locale==='zh'" name="img:svg/fed-title-cn.svg"
-                  color="primary" style="width: 250px;height: 30px; opacity: 0.7;"/>
-<!--          <q-icon v-else name="img:svg/fed-title-en.svg"-->
-<!--                  color="" style="width: 270px;height: 30px; opacity: 0.7;"/>-->
+                  style="width: 250px;height: 30px; opacity: 0.7;"/>
+          <!--          <q-icon v-else name="img:svg/fed-title-en.svg"-->
+          <!--                  color="" style="width: 270px;height: 30px; opacity: 0.7;"/>-->
           <q-icon v-else name="img:svg/fed-title-en-bold.svg"
-                  color="" style="width: 280px;height: 30px; opacity: 0.7;"/>
+                  style="width: 280px;height: 30px; opacity: 0.7;"/>
 
         </q-toolbar-title>
 
         <q-space/>
+
         <div class="q-gutter-lg row items-center no-wrap">
           <q-select
             v-model="$i18n.locale"
@@ -37,12 +38,11 @@
             {{ $t('使用手册') }}
           </q-btn>
 
-          <!--          <q-btn disable :ripple="false" flat dense color="grey" icon="notifications">-->
-          <!--            <q-badge color="c-blue-3" text-color="white" floating>-->
-          <!--              0-->
-          <!--            </q-badge>-->
-          <!--            <q-tooltip>系统消息</q-tooltip>-->
-          <!--          </q-btn>-->
+          <q-btn v-if="isDev"  :ripple="false" flat dense color="grey" icon="notifications" @click="toggleRightDrawer">
+            <q-badge color="c-blue-3" text-color="white" floating>
+              7
+            </q-badge>
+          </q-btn>
 
           <HeaderDropdown/>
 
@@ -60,10 +60,10 @@ import { useQuasar } from 'quasar'
 
 import { StateInterface } from 'src/store'
 
-import HeaderDropdown from 'components/GlobalHeader/HeaderDropdown.vue'
+import HeaderDropdown from 'components/Layout/HeaderDropdown.vue'
 
 export default defineComponent({
-  name: 'GlobalHeader',
+  name: 'GlobalHeaderContent',
   components: { HeaderDropdown },
   props: {},
   setup () {
@@ -101,17 +101,20 @@ export default defineComponent({
       window.open(url.value)
     }
 
+    const isDev = computed(() => process.env.DEV)
+
     return {
       localeOptions,
       toggleRightDrawer,
-      gotoManual
+      gotoManual,
+      isDev
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.GlobalHeader {
+.GlobalHeaderContent {
 }
 
 .title {
@@ -119,14 +122,4 @@ export default defineComponent({
   height: 40px;
 }
 
-//.dropdown-content {
-//  min-width: 200px;
-//  //background-image: url(https://cdn.quasar.dev/img/material.png);
-//  background-color: $c-blue-3;
-//  background-size: 150% auto;
-//}
-//
-//.dropdown-items {
-//  text-align: center;
-//}
 </style>

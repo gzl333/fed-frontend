@@ -47,7 +47,7 @@ import { computed, defineComponent, ref } from 'vue'
 // import { useRoute, useRouter } from 'vue-router'
 
 import NewsList from 'components/News/NewsList.vue'
-import HeaderDropdown from 'components/GlobalHeader/HeaderDropdown.vue'
+import HeaderDropdown from 'components/Layout/HeaderDropdown.vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 

@@ -2,6 +2,8 @@
   <div class="DEV-Test">
     this is DEV-Test
     <pie-chart/>
+    <q-icon name="las la-user-circle" tag="icon"/>
+
   </div>
 </template>
 

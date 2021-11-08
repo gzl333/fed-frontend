@@ -2,27 +2,27 @@
   <div class="Main">
     <div class="column">
 
-      <div class="col-auto">
-        <div class="row justify-center">
-          <global-header class="content-fixed-width"/>
-        </div>
-      </div>
+<!--      <div class="col-auto">-->
+<!--        <div class="row justify-center">-->
+<!--          <global-header-content class="content-fixed-width"/>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <q-separator/>
+<!--      <q-separator/>-->
 
       <div class="col-auto">
         <div class="row justify-center">
           <div class="content-fixed-width">
-<!--            <q-banner v-if="isBannerOn" class="col  q-mt-lg banner-border shadow-5" inline-actions>-->
-<!--              <template v-slot:action>-->
-<!--                <q-btn flat padding="none" color="primary" label="忽略" @click="isBannerOn=false"/>-->
-<!--              </template>-->
-<!--              <div>-->
-<!--                <q-btn class="text-h6" flat padding="none" color="primary" :to="{path: '/news/center-beta'}">-->
-<!--                  中国科技云联邦试用公告-->
-<!--                </q-btn>-->
-<!--              </div>-->
-<!--            </q-banner>-->
+            <!--            <q-banner v-if="isBannerOn" class="col  q-mt-lg banner-border shadow-5" inline-actions>-->
+            <!--              <template v-slot:action>-->
+            <!--                <q-btn flat padding="none" color="primary" label="忽略" @click="isBannerOn=false"/>-->
+            <!--              </template>-->
+            <!--              <div>-->
+            <!--                <q-btn class="text-h6" flat padding="none" color="primary" :to="{path: '/news/center-beta'}">-->
+            <!--                  中国科技云联邦试用公告-->
+            <!--                </q-btn>-->
+            <!--              </div>-->
+            <!--            </q-banner>-->
           </div>
         </div>
       </div>
@@ -64,7 +64,7 @@
                           <div class="col-auto row items-end">
                             当前服务数量：
                             <span>
-                              <q-btn flat dense padding="none" :to="{path:'/my/federation/resource'}" >
+                              <q-btn flat dense padding="none" :to="{path:'/my/federation/resource'}">
                                  <div class="text-primary text-h4">
                                    {{ $store.state.fed.tables.serviceTable.allIds?.length }}
                                  </div>
@@ -95,15 +95,15 @@
                     <div>
                       <q-list dense bordered padding class="rounded-borders q-mt-sm">
 
-<!--                        <q-item clickable to="/news/center-beta">-->
-<!--                          <q-item-section>-->
-<!--                            <div class="row justify-between">-->
-<!--                              <div class="col-auto">中国科技云联邦进行网络中心试用</div>-->
-<!--                              <div class="col-auto">2021-10-26</div>-->
-<!--                            </div>-->
-<!--                          </q-item-section>-->
-<!--                        </q-item>-->
-                        <q-item clickable >
+                        <!--                        <q-item clickable to="/news/center-beta">-->
+                        <!--                          <q-item-section>-->
+                        <!--                            <div class="row justify-between">-->
+                        <!--                              <div class="col-auto">中国科技云联邦进行网络中心试用</div>-->
+                        <!--                              <div class="col-auto">2021-10-26</div>-->
+                        <!--                            </div>-->
+                        <!--                          </q-item-section>-->
+                        <!--                        </q-item>-->
+                        <q-item clickable>
                           <q-item-section>
                             <div class="row justify-between">
                               <div class="col-auto">中国科技云联邦进行网络中心试用</div>
@@ -178,7 +178,7 @@
                     {{ $t('项目组') }}
                   </div>
                   <div class="col-auto ">
-<!--                    <q-btn disable class="q-mr-md" flat padding="none" color="primary" icon="add">新建</q-btn>-->
+                    <!--                    <q-btn disable class="q-mr-md" flat padding="none" color="primary" icon="add">新建</q-btn>-->
                     <q-btn flat padding="none" color="primary" icon="more_horiz" :to="{path:'/my/group'}">更多</q-btn>
                   </div>
                 </div>
@@ -202,7 +202,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
-import GlobalHeader from 'components/GlobalHeader/GlobalHeader.vue'
+// import GlobalHeaderContent from 'components/Layout/GlobalHeaderContent.vue'
 import ServerTable from 'components/Server/ServerTable.vue'
 // import BucketTable from 'components/BucketTable/BucketTable.vue'
 import GroupTable from 'components/Group/GroupTable.vue'
@@ -210,7 +210,7 @@ import GroupTable from 'components/Group/GroupTable.vue'
 export default defineComponent({
   name: 'Main',
   components: {
-    GlobalHeader,
+    // GlobalHeaderContent,
     ServerTable,
     // BucketTable,
     GroupTable

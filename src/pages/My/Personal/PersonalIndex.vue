@@ -2,13 +2,13 @@
   <div class="PersonalIndex">
     <div class="column">
 
-      <div class="col-auto">
-        <div class="row justify-center">
-          <global-header class="content-fixed-width"/>
-        </div>
-      </div>
+<!--      <div class="col-auto">-->
+<!--        <div class="row justify-center">-->
+<!--          <global-header-content class="content-fixed-width"/>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <q-separator/>
+<!--      <q-separator/>-->
 
       <div class="col-auto">
         <div class="row justify-center">
@@ -97,13 +97,13 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import GlobalHeader from 'components/GlobalHeader/GlobalHeader.vue'
+// import GlobalHeaderContent from 'components/Layout/GlobalHeaderContent.vue'
 import PersonalAddButton from 'components/Personal/PersonalAddButton.vue'
 
 export default defineComponent({
   name: 'PersonalIndex',
   components: {
-    GlobalHeader,
+    // GlobalHeaderContent,
     PersonalAddButton
   },
   props: {},

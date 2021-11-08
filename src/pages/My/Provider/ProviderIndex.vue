@@ -2,13 +2,13 @@
   <div class="Provider">
     <div class="column">
 
-      <div class="col-auto">
-        <div class="row justify-center">
-          <global-header class="content-fixed-width"/>
-        </div>
-      </div>
+<!--      <div class="col-auto">-->
+<!--        <div class="row justify-center">-->
+<!--          <global-header-content class="content-fixed-width"/>-->
+<!--        </div>-->
+<!--      </div>-->
 
-      <q-separator/>
+<!--      <q-separator/>-->
 
       <div class="col-auto">
         <div class="row justify-center">
@@ -92,14 +92,14 @@
 
 <script lang="ts">
 import { defineComponent, ref } from 'vue'
-import GlobalHeader from 'components/GlobalHeader/GlobalHeader.vue'
+// import GlobalHeaderContent from 'components/Layout/GlobalHeaderContent.vue'
 // import ProviderAddButton from 'components/Provider/ProviderAddButton.vue'
 
 export default defineComponent({
   name: 'Provider',
   components: {
-    GlobalHeader/*,
-    ProviderAddButton */
+    // GlobalHeaderContent,
+    // ProviderAddButton
   },
   props: {},
   setup () {

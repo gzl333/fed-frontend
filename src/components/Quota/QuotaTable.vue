@@ -213,7 +213,8 @@
           </q-td>
 
           <q-td key="status" :props="props">
-            <div v-if="!props.row.expired && !props.row.exhausted" class="column justify-center items-center text-light-green">
+            <div v-if="!props.row.expired && !props.row.exhausted"
+                 class="column justify-center items-center text-light-green">
               <q-icon name="check_circle_outline" size="sm"/>
               <div>可用</div>
             </div>
@@ -255,6 +256,10 @@
       <!--      </template>-->
 
     </q-table>
+
+    <q-page-scroller position="bottom-right" :scroll-offset="150" :offset="[18, 18]">
+      <q-btn fab icon="keyboard_arrow_up" color="primary"/>
+    </q-page-scroller>
 
     <q-separator/>
 
