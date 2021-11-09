@@ -94,19 +94,19 @@
               <!--                            <q-tooltip>{{$t('该节点的服务类型为OpenStack')}}</q-tooltip>-->
             </div>
 
-<!--            <q-tooltip class="bg-grey-4" :offset="[0, -15]">-->
-<!--              <span class="text-black">-->
-<!--                {{ $t('该节点的服务类型为') }}-->
-<!--              </span>-->
-<!--              <q-icon-->
-<!--                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"-->
-<!--                name="img:svg/EVCloud-Logo-Horizontal.svg"-->
-<!--                style="width: 100px;height: 20px"/>-->
-<!--              <q-icon-->
-<!--                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"-->
-<!--                name="img:svg/OpenStack-Logo-Horizontal.svg"-->
-<!--                style="width: 100px;height: 20px"/>-->
-<!--            </q-tooltip>-->
+            <!--            <q-tooltip class="bg-grey-4" :offset="[0, -15]">-->
+            <!--              <span class="text-black">-->
+            <!--                {{ $t('该节点的服务类型为') }}-->
+            <!--              </span>-->
+            <!--              <q-icon-->
+            <!--                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('ev')"-->
+            <!--                name="img:svg/EVCloud-Logo-Horizontal.svg"-->
+            <!--                style="width: 100px;height: 20px"/>-->
+            <!--              <q-icon-->
+            <!--                v-if="$store.state.fed.tables.serviceTable.byId[props.row.service]?.service_type.toLowerCase().includes('open')"-->
+            <!--                name="img:svg/OpenStack-Logo-Horizontal.svg"-->
+            <!--                style="width: 100px;height: 20px"/>-->
+            <!--            </q-tooltip>-->
           </q-td>
 
           <q-td key="image" :props="props">
@@ -209,7 +209,7 @@
     </q-table>
 
     <q-page-scroller position="bottom-right" :scroll-offset="150" :offset="[18, 18]">
-      <q-btn fab icon="keyboard_arrow_up" color="primary" />
+      <q-btn fab icon="keyboard_arrow_up" color="primary"/>
     </q-page-scroller>
 
     <q-separator/>
@@ -267,7 +267,7 @@ export default defineComponent({
         align: 'center',
         classes: 'ellipsis',
         headerStyle: 'padding: 0 0 0 1px',
-        style: 'max-width: 150px;padding: 15px 0px'
+        style: 'width: 100px;padding: 15px 0px'
       },
       ...((props.isGroup && !props.isHideGroup) ? [{ // 是group且不hide时加入这个配置
         name: 'group',
@@ -337,7 +337,7 @@ export default defineComponent({
         label: locale.value === 'zh' ? '状态' : 'Status',
         field: 'status',
         align: 'center',
-        style: 'padding: 15px 0px',
+        style: 'padding: 15px 0px; width: 100px', // 固定宽度防止更新状态时抖动
         headerStyle: 'padding: 0 2px'
       },
       {

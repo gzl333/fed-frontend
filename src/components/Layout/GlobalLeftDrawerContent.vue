@@ -1,13 +1,13 @@
 <template>
 
-    <div class="column full-height">
+    <div class="column full-height bg-c-blue1 text-white">
       <q-scroll-area class="col overflow-hidden non-selectable visible">
 
         <q-list>
 
           <q-item>
             <q-item-section class="column items-center q-py-sm">
-              <img src="fedlogo.png" class="logo"/>
+              <img src="fedlogo.png" class="logo" />
             </q-item-section>
           </q-item>
 
@@ -79,7 +79,7 @@
 
         </q-list>
 
-        <div class="text-grey text-body2 text-center q-pt-xl">v0.2.7 beta</div>
+        <div class="text-grey text-body2 text-center q-pt-xl">v0.2.8 beta</div>
       </q-scroll-area>
     </div>
 

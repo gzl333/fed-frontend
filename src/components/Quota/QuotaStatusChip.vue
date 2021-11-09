@@ -8,7 +8,7 @@
         {{ $t('获取中') }}
         <q-icon name="refresh" size="xs"/>
       </div>
-      <q-tooltip>{{ $t('刷新配额申请状态') }}</q-tooltip>
+      <q-tooltip>{{ $t('刷新申请状态') }}</q-tooltip>
     </q-chip>
 
     <q-chip v-if="application.status === 'wait'"
@@ -18,7 +18,7 @@
         {{ $t('待审批') }}
         <q-icon name="refresh" size="xs"/>
       </div>
-      <q-tooltip>{{ $t('刷新配额申请状态') }}</q-tooltip>
+      <q-tooltip>{{ $t('刷新申请状态') }}</q-tooltip>
     </q-chip>
 
     <q-chip v-if="application.status === 'pending'"
@@ -28,7 +28,7 @@
         {{ $t('审批中') }}
         <q-icon name="refresh" size="xs"/>
       </div>
-      <q-tooltip>{{ $t('刷新配额申请状态') }}</q-tooltip>
+      <q-tooltip>{{ $t('刷新申请状态') }}</q-tooltip>
     </q-chip>
 
     <q-chip v-if="application.status === 'pass'"
@@ -43,7 +43,7 @@
         <div class="row items-center justify-center full-width">
           {{ $t('已拒绝') }}
         </div>
-        <q-icon name="help_outline" color="red" size="xs"/>
+        <q-icon name="info_outline" color="red" size="xs"/>
       </q-chip>
       <q-tooltip class="bg-grey-4 text-black" :offset="[0, 0]">
         <div>{{$t('拒绝原因: ')}}</div>

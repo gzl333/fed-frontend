@@ -1,14 +1,14 @@
 <template>
 
   <q-layout class="mobile-only">
-    <div class="text-center">
-      本站暂不支持移动端访问，请使用桌面设备登录。
+    <div class="text-center text-h3">
+      本站暂不支持移动端访问，请使用桌面设备登录使用，请谅解！。
     </div>
   </q-layout>
 
   <q-layout class="desktop-only" view="hHh lpR fFf">
 
-    <q-header :elevated="scrollRatio===0.4" class="home-header row justify-center" :style="dynamicBackground">
+    <q-header :elevated="scrollRatio===0.4" class="home-header row justify-center" :style="dynamicBackground" style="min-width: 500px;">
       <div class="row justify-between items-center no-wrap content-fixed-width">
 
         <div class="col-auto">
