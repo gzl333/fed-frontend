@@ -1,7 +1,7 @@
 <template>
   <!-- notice dialogRef here -->
   <q-dialog ref="dialogRef" @hide="onHideClick">
-    <q-card class="q-dialog-plugin dialog-primary ">
+    <q-card class="q-dialog-plugin dialog-negative ">
 
       <q-card-section class="row items-center justify-center q-pb-md">
         <div class="text-negative">{{ action === 'delete' ? $t('删除云主机') : $t('强制删除云主机') }}</div>
@@ -46,7 +46,7 @@
           </div>
           <div class="col">
             {{
-              locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[server.service]?.data_center]?.name :
+              $i18n.locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[server.service]?.data_center]?.name :
                 $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[server.service]?.data_center]?.name_en
             }}
           </div>
@@ -58,7 +58,7 @@
           </div>
           <div class="col">
             {{
-              locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[server.service]?.name : $store.state.fed.tables.serviceTable.byId[server.service]?.name_en
+              $i18n.locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[server.service]?.name : $store.state.fed.tables.serviceTable.byId[server.service]?.name_en
             }}
 
             <span>
@@ -66,7 +66,7 @@
                 v-if="$store.state.fed.tables.serviceTable.byId[server.service]?.service_type.toLowerCase().includes('ev')"
                 name="img:svg/EVCloud-Logo-Horizontal.svg"
                 style="width: 100px;height: 20px"/>
-<!--            <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>-->
+              <!--            <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>-->
             </span>
 
             <span>
@@ -74,7 +74,7 @@
                 v-if="$store.state.fed.tables.serviceTable.byId[server.service]?.service_type.toLowerCase().includes('open')"
                 name="img:svg/OpenStack-Logo-Horizontal.svg"
                 style="width: 100px;height: 20px"/>
-<!--            <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>-->
+              <!--            <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>-->
             </span>
 
           </div>
@@ -112,8 +112,8 @@
             可用期
           </div>
           <div class="col">
-            {{ new Date(server.creation_time).toLocaleString(locale) }} -
-            {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString(locale) : '永久有效' }}
+            {{ new Date(server.creation_time).toLocaleString($i18n.locale) }} -
+            {{ server.expiration_time ? new Date(server.expiration_time).toLocaleString($i18n.locale) : '永久有效' }}
             <!--            <q-icon-->
             <!--              v-if="server.expiration_time !== null && (new Date(server.expiration_time).getTime() - new Date().getTime()) < 0"-->
             <!--              name="help_outline" color="red" size="xs">-->
@@ -127,6 +127,7 @@
       <q-separator/>
 
       <q-card-section>
+
         <div class="row items-center">
           <div class="col text-grey-7">
             请仔细阅读以下事项，并在确认后勾选：
@@ -162,7 +163,7 @@
           size="lg"
           @update:model-value=" $store.dispatch('server/toggleDeleteLock', {isGroup:isGroup, serverId: serverId})"
         >
-          <span :class="toggle?'text-black':'text-primary'">{{ toggle ? $t('已锁定') : $t('已解除') }}</span>
+          <span :class="toggle?'text-black':'text-primary'">{{ toggle ? $t('已锁定') : $t('已解除锁定') }}</span>
           <q-tooltip v-if="server.lock === 'free'">
             {{ $t('未锁定云主机删除操作') }}
           </q-tooltip>
@@ -175,9 +176,22 @@
 
       <!-- buttons example -->
       <q-card-actions align="between">
-        <q-btn class="q-ma-sm" color="primary" unelevated :disable="toggle || !check1 || !check2" :label="$t('确认')"
-               @click="onOKClick"/>
+
+        <div class="row justify-center items-center">
+          <q-btn class="q-ma-sm" :color="toggle || !check1 || !check2 ? 'grey' : 'primary'"
+                 unelevated
+                 :disable="toggle || !check1 || !check2"
+                 :label="$t('确认')"
+                 @click="onOKClick"/>
+          <div class="col">
+            {{ $t('不想重新申请配额？请尝试') }}
+            <q-btn type="a" color="primary" flat padding="none" label="重建云主机"
+                   @click="()=> {onCancelClick(); $store.dispatch('server/triggerServerRebuildDialog', {serverId: server.id, isGroup})}"/>
+          </div>
+        </div>
+
         <q-btn class="q-ma-sm" color="primary" unelevated :label="$t('取消')" @click="onCancelClick"/>
+
       </q-card-actions>
     </q-card>
   </q-dialog>
@@ -188,7 +202,7 @@ import { computed, defineComponent, ref } from 'vue'
 import { Notify, useDialogPluginComponent } from 'quasar'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
-import { useI18n } from 'vue-i18n'
+// import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'ServerDeleteDialog',
@@ -218,7 +232,7 @@ export default defineComponent({
       onDialogCancel
     } = useDialogPluginComponent()
     const $store = useStore<StateInterface>()
-    const { locale } = useI18n({ useScope: 'global' })
+    // const { locale } = useI18n({ useScope: 'global' })
     const server = computed(() => props.isGroup ? $store.state.server.tables.groupServerTable.byId[props.serverId] : $store.state.server.tables.personalServerTable.byId[props.serverId])
 
     const keepServerDeleteLock = () => {
@@ -275,7 +289,7 @@ export default defineComponent({
       onHideClick,
       onOKClick,
       onCancelClick,
-      locale,
+      // locale,
       server,
       toggle,
       toggle_btn,

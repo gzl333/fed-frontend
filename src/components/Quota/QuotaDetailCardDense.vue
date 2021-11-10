@@ -4,42 +4,51 @@
     <q-card flat square class="bg-grey-1">
       <q-card-section class="q-pa-sm">
 
-        <div class="row justify-end text-center">
+        <div class="row justify-between text-center">
 
-          <div class="col-8 text-left">
+          <div class="col-auto text-left">
             <span class="text-grey q-px-sm">云主机时长<q-tooltip>云主机创建后可用的时间</q-tooltip></span>
             <span>{{ quota.duration_days }}天</span>
           </div>
 
-          <div class="col text-right q-px-sm ">
-            <q-btn v-if="isGroup" label="项目组配额详情" flat dense padding="none" color="primary"
-                   :to="{path: `/my/group/quota/detail/${quota.id}`}"/>
-            <q-btn v-else label="个人配额详情" flat dense padding="none" color="primary"
-                   :to="{path: `/my/personal/quota/detail/${quota.id}`}"/>
+          <div class="col-auto text-right q-px-sm ">
+            <q-btn label="配额详情" flat dense padding="none" color="primary"
+                   :to="isGroup ? {path: `/my/group/quota/detail/${quota.id}`} : {path: `/my/personal/quota/detail/${quota.id}`}"/>
           </div>
 
         </div>
 
-        <div class="row justify-end text-center">
+        <div class="row justify-between items-center text-center">
 
-          <div class="col-8 text-left">
+          <div class="col-auto text-left">
             <span class="text-grey q-px-sm">配额过期时间</span>
             <span v-if="quota.expiration_time">{{ new Date(quota.expiration_time).toLocaleString() }}</span>
             <span v-else>长期有效</span>
           </div>
-          <div class="col text-right q-px-sm">
-            <span v-if="quota.expired" class="text-red">已过期 </span>
-            <span v-if="quota.exhausted" class="text-red">已用尽</span>
+
+          <div class="col-auto text-right q-px-sm">
+
+            <div v-if="!quota.expired && !quota.exhausted" class="row justify-end items-center text-light-green">
+              <q-icon name="check_circle_outline" size="sm"/>
+              <div>可用</div>
+            </div>
+
+            <div v-else class="row justify-end items-center text-red">
+              <q-icon name="highlight_off" size="sm"/>
+              <span>不可用:</span>
+              <span v-if="quota.expired" class="text-red">已过期</span>
+              <span v-if="quota.exhausted" class="text-red">,已用尽</span>
+            </div>
+
           </div>
         </div>
 
       </q-card-section>
 
-      <q-separator color="white"/>
-      <q-separator color="white"/>
+      <q-separator color="white" size="2px"/>
 
       <q-card-section class="q-pa-sm">
-        <div class="row">
+        <div class="row justify-evenly items-center">
 
           <div class="col-auto">
             <div class="column justify-start items-center" style="height: 120px">
@@ -233,8 +242,7 @@ export default defineComponent({
     }
   },
   setup () {
-    return {
-    }
+    return {}
   }
 })
 </script>

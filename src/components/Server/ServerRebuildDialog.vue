@@ -179,7 +179,7 @@
 
       <!-- buttons example -->
       <q-card-actions align="between">
-        <q-btn class="q-ma-sm" color="primary" unelevated :label="$t('确认')" :disable="!check" @click="onOKClick"/>
+        <q-btn class="q-ma-sm" :color="!check ? 'grey' : 'primary'" unelevated :label="$t('确认')" :disable="!check" @click="onOKClick"/>
         <q-btn class="q-ma-sm" color="primary" unelevated :label="$t('取消')" @click="onCancelClick"/>
       </q-card-actions>
     </q-card>

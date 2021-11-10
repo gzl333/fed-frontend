@@ -52,13 +52,13 @@
 
                       <div>
                         {{
-                          locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[quota.service]?.name : $store.state.fed.tables.serviceTable.byId[quota.service]?.name_en
+                          $i18n.locale === 'zh' ? $store.state.fed.tables.serviceTable.byId[quota.service]?.name : $store.state.fed.tables.serviceTable.byId[quota.service]?.name_en
                         }}
                       </div>
 
                       <div>
                         {{
-                          locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[quota.service]?.data_center]?.name :
+                          $i18n.locale === 'zh' ? $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[quota.service]?.data_center]?.name :
                             $store.state.fed.tables.dataCenterTable.byId[$store.state.fed.tables.serviceTable.byId[quota.service]?.data_center]?.name_en
                         }}
                       </div>
@@ -270,14 +270,14 @@
                       <div v-if="!quota.expiration_time">长期有效</div>
                       <div v-else class="column justify-center items-center">
 
-                        <div v-if="locale==='zh'">
-                          <div>{{ new Date(quota.expiration_time).toLocaleString(locale).split(' ')[0] }}</div>
-                          <div>{{ new Date(quota.expiration_time).toLocaleString(locale).split(' ')[1] }}</div>
+                        <div v-if="$i18n.locale==='zh'">
+                          <div>{{ new Date(quota.expiration_time).toLocaleString($i18n.locale).split(' ')[0] }}</div>
+                          <div>{{ new Date(quota.expiration_time).toLocaleString($i18n.locale).split(' ')[1] }}</div>
                         </div>
 
                         <div v-else>
-                          <div>{{ new Date(quota.expiration_time).toLocaleString(locale).split(',')[0] }}</div>
-                          <div>{{ new Date(quota.expiration_time).toLocaleString(locale).split(',')[1] }}</div>
+                          <div>{{ new Date(quota.expiration_time).toLocaleString($i18n.locale).split(',')[0] }}</div>
+                          <div>{{ new Date(quota.expiration_time).toLocaleString($i18n.locale).split(',')[1] }}</div>
                         </div>
 
                         <div v-if="quota.expired" class="text-grey">
@@ -348,16 +348,16 @@
             </div>
             <!--            配额详情结束-->
 
-            <!--            云主机列表开始-->
+            <!--            云主机开始-->
             <div class="row">
               <div class="col">
                 <div class="q-pt-lg q-pb-sm text-grey">
-                  关联云主机列表
+                  关联云主机
                 </div>
                 <server-table :servers="servers" :is-group="isGroup" is-hide-group/>
               </div>
             </div>
-            <!--            云主机列表结束-->
+            <!--            云主机结束-->
           </div>
 
         </div>
@@ -373,7 +373,6 @@ import ServerTable from 'components/Server/ServerTable.vue'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 // import { useRouter } from 'vue-router'
-import { useI18n } from 'vue-i18n'
 
 export default defineComponent({
   name: 'QuotaDetailCard',
@@ -392,10 +391,6 @@ export default defineComponent({
   },
   setup (props) {
     const $store = useStore<StateInterface>()
-    const { locale } = useI18n({ useScope: 'global' })
-
-    // // 进入本页面强制更新vmtable ???
-    // void $store.dispatch('server/updateVmTable')
 
     // 获取quota对象
     const quota = computed(() => props.isGroup ? $store.state.server.tables.groupQuotaTable.byId[props.quotaId] : $store.state.server.tables.personalQuotaTable.byId[props.quotaId])
@@ -403,7 +398,6 @@ export default defineComponent({
     const servers = computed(() => quota.value.servers?.map((serverId) => props.isGroup ? $store.state.server.tables.groupServerTable.byId[serverId] : $store.state.server.tables.personalServerTable.byId[serverId]))
 
     return {
-      locale,
       quota,
       servers
     }

@@ -10,6 +10,7 @@ import { i18n } from 'boot/i18n'
 import { axios } from 'boot/axios'
 import ServerDeleteDialog from 'components/Server/ServerDeleteDialog.vue'
 import ServerRebuildDialog from 'components/Server/ServerRebuildDialog.vue'
+import QuotaDeleteDialog from 'components/Quota/QuotaDeleteDialog.vue'
 
 // 云主机状态码参考。具体显示位置写在SererStatus组件里
 /* const statusCodeMap = new Map<number, string>(
@@ -1004,25 +1005,11 @@ const actions: ActionTree<ServerModuleInterface, StateInterface> = {
     })
   },
   triggerDeleteQuotaDialog (context, payload: { quotaId: string; isGroup?: boolean; isJump?: boolean }) {
-    // todo 删除配额对话框再详细
-    // 操作的确认提示
     Dialog.create({
-      class: 'dialog-primary',
-      title: '删除配额',
-      message:
-        '删除后的配额无法恢复。 确认删除此配额？',
-      focus: 'cancel',
-      ok: {
-        label: '确认',
-        push: false,
-        outline: true,
-        color: 'primary'
-      },
-      cancel: {
-        label: '放弃',
-        push: false,
-        unelevated: true,
-        color: 'primary'
+      component: QuotaDeleteDialog,
+      componentProps: {
+        quotaId: payload.quotaId,
+        isGroup: payload.isGroup
       }
     }).onOk(async () => {
       const respDelete = await $api.quota.deleteQuota({ path: { id: payload.quotaId } })

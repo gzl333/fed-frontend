@@ -69,7 +69,7 @@
                     v-if="service.service_type.toLowerCase().includes('ev')"
                     name="img:svg/EVCloud-Logo-Horizontal.svg"
                     style="width: 100px;height: 20px"/>
-<!--                  <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>-->
+                  <!--                  <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>-->
                 </span>
                 <span>
                   <q-icon
@@ -77,7 +77,7 @@
                     v-if="service.service_type.toLowerCase().includes('open')"
                     name="img:svg/OpenStack-Logo-Horizontal.svg"
                     style="width: 100px;height: 20px"/>
-<!--                   <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>-->
+                  <!--                   <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>-->
                 </span>
 
               </q-radio>
@@ -118,7 +118,8 @@
                        class="radio non-selectable"
                        dense v-model="radioQuota"
                        :disable="quota.expired || quota.exhausted">
-                <quota-detail-card-intense :quota="quota" :is-group="isGroup"/>
+                <quota-detail-card-dense :quota="quota" :is-group="isGroup"/>
+<!--                <q-btn label="a" :to="{path: '/'}"/>-->
               </q-radio>
             </div>
 
@@ -147,7 +148,7 @@
                          class="radio non-selectable"
                          v-model="radioQuota"
                          dense :disable="quota.expired || quota.exhausted">
-                  <quota-detail-card-intense :quota="quota" :is-group="isGroup"/>
+                  <quota-detail-card-dense :quota="quota" :is-group="isGroup"/>
                 </q-radio>
               </div>
             </div>
@@ -334,7 +335,7 @@
                   v-if="$store.state.fed.tables.serviceTable.byId[radioService]?.service_type.toLowerCase().includes('ev')"
                   name="img:svg/EVCloud-Logo-Horizontal.svg"
                   style="width: 100px;height: 20px"/>
-<!--                <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>-->
+                <!--                <q-tooltip>{{ $t('该节点的服务类型为EVCloud') }}</q-tooltip>-->
               </span>
 
               <span>
@@ -342,7 +343,7 @@
                   v-if="$store.state.fed.tables.serviceTable.byId[radioService]?.service_type.toLowerCase().includes('open')"
                   name="img:svg/OpenStack-Logo-Horizontal.svg"
                   style="width: 100px;height: 20px"/>
-<!--                <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>-->
+                <!--                <q-tooltip>{{ $t('该节点的服务类型为OpenStack') }}</q-tooltip>-->
               </span>
 
             </div>
@@ -439,14 +440,14 @@ import { StateInterface } from 'src/store'
 import { useI18n } from 'vue-i18n'
 import { Notify } from 'quasar'
 
-import QuotaDetailCardIntense from 'components/Quota/QuotaDetailCardDense.vue'
+import QuotaDetailCardDense from 'components/Quota/QuotaDetailCardDense.vue'
 import { useRouter } from 'vue-router'
 import { $api } from 'boot/api'
 import useGetOsIconName from 'src/hooks/useGetOsIconName'
 
 export default defineComponent({
   name: 'ServerDeployCard',
-  components: { QuotaDetailCardIntense },
+  components: { QuotaDetailCardDense },
   props: {
     isGroup: {
       type: Boolean,

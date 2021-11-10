@@ -2,13 +2,13 @@
   <div class="GroupIndex">
     <div class="column">
 
-<!--      <div class="col-auto">-->
-<!--        <div class="row justify-center">-->
-<!--          <global-header-content class="content-fixed-width"/>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!--      <div class="col-auto">-->
+      <!--        <div class="row justify-center">-->
+      <!--          <global-header-content class="content-fixed-width"/>-->
+      <!--        </div>-->
+      <!--      </div>-->
 
-<!--      <q-separator/>-->
+      <!--      <q-separator/>-->
 
       <div class="col-auto">
         <div class="row justify-center">
@@ -48,16 +48,16 @@
                     :ripple="false"
                     to="/my/group/server"
                   />
-<!--                  <q-route-tab-->
-<!--                    disable-->
-<!--                    no-caps-->
-<!--                    class="q-px-none q-py-md q-mx-md"-->
-<!--                    name="obs"-->
-<!--                    icon="fas fa-database"-->
-<!--                    :label="$t('组对象存储')"-->
-<!--                    :ripple="false"-->
-<!--                    to="/my/group_obsolete/obs"-->
-<!--                  />-->
+                  <!--                  <q-route-tab-->
+                  <!--                    disable-->
+                  <!--                    no-caps-->
+                  <!--                    class="q-px-none q-py-md q-mx-md"-->
+                  <!--                    name="obs"-->
+                  <!--                    icon="fas fa-database"-->
+                  <!--                    :label="$t('组对象存储')"-->
+                  <!--                    :ripple="false"-->
+                  <!--                    to="/my/group_obsolete/obs"-->
+                  <!--                  />-->
                   <q-route-tab
                     no-caps
                     class="q-px-none q-py-md q-mx-md"
@@ -81,15 +81,19 @@
 
       <q-separator/>
 
-      <div class="col-auto q-pt-xl">
-        <div class="row justify-center">
-          <!--          <div class="col"/>-->
-          <!--          <div class="col-xs-12 col-md-10">-->
-          <router-view class="content-fixed-width"/>
-          <!--          </div>-->
-          <!--          <div class="col"/>-->
+<!--      <q-scroll-area style="height: calc(100vh - 300px); width: 1720px;" visible>-->
+
+        <div class="col-auto q-pt-xl">
+          <div class="row justify-center">
+            <!--          <div class="col"/>-->
+            <!--          <div class="col-xs-12 col-md-10">-->
+            <router-view class="content-fixed-width"/>
+            <!--          </div>-->
+            <!--          <div class="col"/>-->
+          </div>
         </div>
-      </div>
+
+<!--      </q-scroll-area>-->
 
     </div>
   </div>

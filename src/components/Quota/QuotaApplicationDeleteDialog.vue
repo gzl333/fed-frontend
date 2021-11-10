@@ -1,6 +1,6 @@
 <template>
   <div class="QuotaApplicationDeleteDialog">
-    this is QuotaApplicationDeleteDialog
+
   </div>
 </template>
 
