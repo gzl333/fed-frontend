@@ -40,8 +40,8 @@ export default defineComponent({
         { name: '延庆区', value: 42.3, lng: 115.981186, lat: 40.462706 }
       ]
       const pointData = [
-        { name: '中国科学院计算机网络信息中心', value: 10, LngAndLat: [116.342428, 39.99322] },
-        { name: '地球大数据科学工程专项', value: 10, LngAndLat: [116.63853, 40.322563] }
+        { name: '中国科学院计算机网络信息中心', value: 8, LngAndLat: [116.342428, 39.99322] },
+        { name: '地球大数据科学工程专项', value: 8, LngAndLat: [116.63853, 40.322563] }
       ]
       const convertData = function (data: any) {
         const res = []
@@ -109,7 +109,7 @@ export default defineComponent({
               borderColor: '#31CCEC',
               borderWidth: '1',
               borderRadius: 5,
-              padding: [8, 5, 8],
+              padding: [7, 5, 7],
               color: '#1d1d1d',
               fontSize: 12,
               fontWeight: 'normal'
@@ -123,7 +123,8 @@ export default defineComponent({
               color: '#027BE3'
             }
           }
-        }, {
+        },
+        {
           name: '机构数',
           type: 'map',
           mapType: 'bj',

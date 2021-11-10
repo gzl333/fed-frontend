@@ -1,6 +1,6 @@
 <template>
   <div class="BeiJingMap row">
-    <div ref="container" :style="{ width: '500px', height: '450px' }"/>
+    <div ref="container" :style="{ width: '600px', height: '450px' }"/>
   </div>
 </template>
 
