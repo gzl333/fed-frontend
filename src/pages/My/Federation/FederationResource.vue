@@ -3,7 +3,18 @@
     <!--    <div>{{treeDate}}</div>-->
     <div class="row">
       <div class="row column col-grow">
-        <div class="text-dark text-h5 ">当前机构数量：{{ $store.state.fed.tables.dataCenterTable.allIds?.length }}</div>
+        <div class="row items-center q-gutter-lg text-h6">
+          <div class="col-auto row items-end">
+            <div class="text-grey">当前机构数量：</div>
+            <div class="text-primary text-h4">{{ $store.state.fed.tables.dataCenterTable.allIds?.length }}</div>
+          </div>
+          <div class="col-auto row items-end">
+            <div class="text-grey">当前服务数量：</div>
+            <div class="text-primary text-h4">
+              {{ $store.state.fed.tables.serviceTable.allIds?.length }}
+            </div>
+          </div>
+        </div>
         <div class="row">
         </div>
         <div class="row">
@@ -27,18 +38,82 @@
       </div>
     </div>
     <q-separator class="q-my-md"/>
-    <div class="text-h5">服务自主资源配置</div>
-    <div class="row q-mt-lg">
-      <resource-pie-chart :data="fedCpuNum" title="CPU"></resource-pie-chart>
-      <resource-pie-chart :data="fedRamNum" title="内存"></resource-pie-chart>
-      <resource-pie-chart :data="fedDiskNum" title="硬盘"></resource-pie-chart>
+    <div class="row justify-between">
+      <div class="col-auto text-h6 text-grey">服务自主资源配置</div>
+      <div class="col-auto row q-gutter-lg">
+
+        <div class="col-auto row">
+          <div class="col-auto text-h6 text-grey">
+            总计CPU:
+          </div>
+          <div class="col-auto text-h6 text-primary">
+            {{ serviceCpuNum.reduce((accumulator, item) => accumulator + item.value, 0) }}核
+          </div>
+        </div>
+
+        <div class="col-auto row">
+          <div class="col-auto text-h6 text-grey">
+            总计内存:
+          </div>
+          <div class="col-auto text-h6 text-primary">
+            {{ serviceRamNum.reduce((accumulator, item) => accumulator + item.value, 0) / 1024}}GB
+          </div>
+        </div>
+
+        <div class="col-auto row">
+          <div class="col-auto text-h6 text-grey">
+            总计硬盘:
+          </div>
+          <div class="col-auto text-h6 text-primary">
+            {{ serviceDiskNum.reduce((accumulator, item) => accumulator + item.value, 0) }}GB
+          </div>
+        </div>
+
+      </div>
     </div>
-    <q-separator class="q-my-md"/>
-    <div class="text-h5">联邦资源配置</div>
     <div class="row q-mt-lg">
       <resource-pie-chart :data="serviceCpuNum" title="CPU"></resource-pie-chart>
       <resource-pie-chart :data="serviceRamNum" title="内存"></resource-pie-chart>
       <resource-pie-chart :data="serviceDiskNum" title="硬盘"></resource-pie-chart>
+    </div>
+    <q-separator class="q-my-md"/>
+    <div class="row justify-between">
+      <div class="col-auto text-h6 text-grey">联邦资源配置</div>
+      <div class="col-auto row q-gutter-lg">
+
+        <div class="col-auto row">
+          <div class="col-auto text-h6 text-grey">
+            总计CPU:
+          </div>
+          <div class="col-auto text-h6 text-primary">
+            {{ fedCpuNum.reduce((accumulator, item) => accumulator + item.value, 0) }}核
+          </div>
+        </div>
+
+        <div class="col-auto row">
+          <div class="col-auto text-h6 text-grey">
+            总计内存:
+          </div>
+          <div class="col-auto text-h6 text-primary">
+            {{ fedRamNum.reduce((accumulator, item) => accumulator + item.value, 0) / 1024}}GB
+          </div>
+        </div>
+
+        <div class="col-auto row">
+          <div class="col-auto text-h6 text-grey">
+            总计硬盘:
+          </div>
+          <div class="col-auto text-h6 text-primary">
+            {{ fedDiskNum.reduce((accumulator, item) => accumulator + item.value, 0) }}GB
+          </div>
+        </div>
+
+      </div>
+    </div>
+    <div class="row q-mt-lg">
+      <resource-pie-chart :data="fedCpuNum" title="CPU"></resource-pie-chart>
+      <resource-pie-chart :data="fedRamNum" title="内存"></resource-pie-chart>
+      <resource-pie-chart :data="fedDiskNum" title="硬盘"></resource-pie-chart>
     </div>
     <q-separator class="q-my-lg"/>
   </div>

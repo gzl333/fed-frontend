@@ -201,7 +201,7 @@
 
               </div>
               <div class="col-auto content-area">
-                <q-tab-panels v-model="tab" animated>
+                <q-tab-panels v-model="tab" >
 
                   <q-tab-panel class="q-pa-none overflow-hidden" name="server">
                     <server-table :servers="servers" is-group is-hide-group/>

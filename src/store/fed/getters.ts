@@ -4,7 +4,7 @@ import { FedModuleInterface } from './state'
 import { i18n } from 'boot/i18n'
 
 const getters: GetterTree<FedModuleInterface, StateInterface> = {
-  getFedCpuPie (state): Record<string, string | number>[] {
+  getServiceCpuPie (state): Record<string, string | number>[] {
     const dataArr: Record<string, string | number>[] = []
     for (const item of state.tables.serviceAllocationTable.allIds) {
       const dataObj: Record<string, string | number> = {}
@@ -14,7 +14,7 @@ const getters: GetterTree<FedModuleInterface, StateInterface> = {
     }
     return dataArr
   },
-  getFedRamPie (state): Record<string, string | number>[] {
+  getServiceRamPie (state): Record<string, string | number>[] {
     const dataArr: Record<string, string | number>[] = []
     for (const item of state.tables.serviceAllocationTable.allIds) {
       const dataObj: Record<string, string | number> = {}
@@ -24,7 +24,7 @@ const getters: GetterTree<FedModuleInterface, StateInterface> = {
     }
     return dataArr
   },
-  getFedDiskPie (state): Record<string, string | number>[] {
+  getServiceDiskPie (state): Record<string, string | number>[] {
     const dataArr: Record<string, string | number>[] = []
     for (const item of state.tables.serviceAllocationTable.allIds) {
       const dataObj: Record<string, string | number> = {}
@@ -34,7 +34,7 @@ const getters: GetterTree<FedModuleInterface, StateInterface> = {
     }
     return dataArr
   },
-  getServiceCpuPie (state): Record<string, string | number>[] {
+  getFedCpuPie (state): Record<string, string | number>[] {
     const dataArr: Record<string, string | number>[] = []
     for (const item of state.tables.fedAllocationTable.allIds) {
       const dataObj: Record<string, string | number> = {}
@@ -44,7 +44,7 @@ const getters: GetterTree<FedModuleInterface, StateInterface> = {
     }
     return dataArr
   },
-  getServiceRamPie (state): Record<string, string | number>[] {
+  getFedRamPie (state): Record<string, string | number>[] {
     const dataArr: Record<string, string | number>[] = []
     for (const item of state.tables.fedAllocationTable.allIds) {
       const dataObj: Record<string, string | number> = {}
@@ -54,7 +54,7 @@ const getters: GetterTree<FedModuleInterface, StateInterface> = {
     }
     return dataArr
   },
-  getServiceDiskPie (state): Record<string, string | number>[] {
+  getFedDiskPie (state): Record<string, string | number>[] {
     const dataArr: Record<string, string | number>[] = []
     for (const item of state.tables.fedAllocationTable.allIds) {
       const dataObj: Record<string, string | number> = {}

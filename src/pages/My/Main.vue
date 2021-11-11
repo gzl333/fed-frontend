@@ -35,7 +35,7 @@
               <div class="col">
                 <div class="row">
 
-                  <div class="col q-pt-lg q-mr-md">
+                  <div class="col q-pt-lg q-mr-md ">
                     <q-tabs
                       v-model="tab1"
                       active-color="black"
@@ -44,11 +44,11 @@
                       align="left"
                       narrow-indicator
                     >
-                      <q-tab class="q-px-sm text-h6 " name="fed">云联邦</q-tab>
+                      <q-tab class="q-px-sm text-h6 " name="fed">联邦成员</q-tab>
                       <q-tab class="q-px-sm text-h6 " name="sum">资源汇聚</q-tab>
                     </q-tabs>
 
-                    <q-tab-panels v-model="tab1" animated class="non-selectable">
+                    <q-tab-panels v-model="tab1"  class="non-selectable overflow-hidden">
                       <q-tab-panel name="fed" class="tab1" style="overflow: hidden;">
                         <main-map></main-map>
                         <div class="row justify-start items-center q-gutter-lg">
