@@ -1,7 +1,7 @@
 <template>
 
   <!-- notice dialogRef here -->
-  <q-dialog ref="dialogRef" @hide="onHideClick">
+  <q-dialog ref="dialogRef" @hide="onDialogHide">
     <q-card class="q-dialog-plugin dialog-negative ">
 
       <q-card-section class="row items-center justify-center q-pb-md">
@@ -57,7 +57,7 @@
                :disable="!check1 || !check2"
                :label="$t('确认')"
                @click="onOKClick"/>
-        <q-btn class="q-ma-sm" color="primary" unelevated :label="$t('取消')" @click="onCancelClick"/>
+        <q-btn class="q-ma-sm" color="primary" unelevated :label="$t('取消')" @click="onDialogCancel"/>
       </q-card-actions>
     </q-card>
   </q-dialog>
