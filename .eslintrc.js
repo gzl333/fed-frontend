@@ -103,12 +103,12 @@ module.exports = {
     '@typescript-eslint/restrict-plus-operands': 'off',
     '@typescript-eslint/restrict-template-expressions': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
+    '@typescript-eslint/no-misused-promises': 'off',
 
     // allow debugger during development only
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
-    // GOSC project settings:
-    // enable eval()
-    // 'no-eval': 'off'
+    // CSTCloud Federation project settings:
+    // 'no-eval': 'off'    // enable eval()
   }
 }
