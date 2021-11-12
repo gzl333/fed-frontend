@@ -94,6 +94,8 @@ export default defineComponent({
           },
           showEffectOn: 'emphasis',
           rippleEffect: {
+            number: 4,
+            scale: 4,
             brushType: 'stroke'
           },
           hoverAnimation: true,
@@ -104,12 +106,12 @@ export default defineComponent({
               formatter: function (params: any) {
                 return params.name
               },
-              lineHeight: 20,
+              lineHeight: 15,
               backgroundColor: '#fafafa',
               borderColor: '#31CCEC',
               borderWidth: '1',
               borderRadius: 5,
-              padding: [5, 15, 4],
+              padding: [8, 10, 5],
               color: '#1d1d1d',
               fontSize: 14,
               fontWeight: 'normal'

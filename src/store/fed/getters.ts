@@ -111,8 +111,15 @@ const getters: GetterTree<FedModuleInterface, StateInterface> = {
       )
     }
     return dataCenterOptions
-  }
+  },
   /* join federation使用 */
+  getDefaultTicked (state): string[] {
+    const defaultTicked = []
+    for (const dataCenter of Object.values(state.tables.dataCenterTable.byId)) {
+      defaultTicked.push(dataCenter.name)
+    }
+    return defaultTicked
+  }
 }
 
 export default getters

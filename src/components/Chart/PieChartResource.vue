@@ -40,7 +40,6 @@ export default defineComponent({
       const option = computed(() => ({
         title: {
           text: props.title,
-          // left: 'center'
           right: 120
         },
         tooltip: {
@@ -73,11 +72,6 @@ export default defineComponent({
             radius: ['40%', '70%'],
             avoidLabelOverlap: false,
             center: ['65%', '50%'],
-            // itemStyle: {
-            //   borderRadius: 10,
-            //   borderColor: '#fff',
-            //   borderWidth: 2
-            // },
             label: {
               show: false,
               position: 'center'
