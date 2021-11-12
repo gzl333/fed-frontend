@@ -21,6 +21,8 @@ export interface DataCenterInterface {
     message: string
   },
   desc: string
+  longitude: number
+  latitude: number
 
   // 来自service接口
   services: string[] // 全部services汇总
@@ -37,6 +39,8 @@ export interface ServiceInterface {
   need_vpn: boolean
   status: number
   data_center: string
+  longitude: number
+  latitude: number
 }
 
 // 资源配置接口： 服务提供给联邦的配额用 资源配置 来描述

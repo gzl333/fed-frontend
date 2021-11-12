@@ -2,13 +2,13 @@
   <div class="PersonalIndex">
     <div class="column">
 
-<!--      <div class="col-auto">-->
-<!--        <div class="row justify-center">-->
-<!--          <global-header-content class="content-fixed-width"/>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!--      <div class="col-auto">-->
+      <!--        <div class="row justify-center">-->
+      <!--          <global-header-content class="content-fixed-width"/>-->
+      <!--        </div>-->
+      <!--      </div>-->
 
-<!--      <q-separator/>-->
+      <!--      <q-separator/>-->
 
       <div class="col-auto">
         <div class="row justify-center">
@@ -38,16 +38,16 @@
                     :ripple="false"
                     to="/my/personal/server"
                   />
-<!--                  <q-route-tab-->
-<!--                    disable-->
-<!--                    no-caps-->
-<!--                    class="q-px-none q-py-md q-mx-md"-->
-<!--                    name="obs"-->
-<!--                    icon="fas fa-database"-->
-<!--                    label="对象存储"-->
-<!--                    :ripple="false"-->
-<!--                    to="/my/personal/obs"-->
-<!--                  />-->
+                  <!--                  <q-route-tab-->
+                  <!--                    disable-->
+                  <!--                    no-caps-->
+                  <!--                    class="q-px-none q-py-md q-mx-md"-->
+                  <!--                    name="obs"-->
+                  <!--                    icon="fas fa-database"-->
+                  <!--                    label="对象存储"-->
+                  <!--                    :ripple="false"-->
+                  <!--                    to="/my/personal/obs"-->
+                  <!--                  />-->
                   <q-route-tab
                     no-caps
                     class="q-px-none q-py-md q-mx-md"
@@ -108,9 +108,12 @@ export default defineComponent({
   },
   props: {},
   setup () {
+    const activeTab = ref('server')
+    const fabButton = ref(false)
+
     return {
-      activeTab: ref('vm'),
-      fabButton: ref(false)
+      activeTab,
+      fabButton
     }
   }
 })
