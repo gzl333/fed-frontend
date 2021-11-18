@@ -2,7 +2,7 @@
   <div class="Manage">
   <div class="row q-col-gutter-xl">
     <div class="col-8">
-    <div class="row q-pb-md q-col-gutter-xl">
+    <div class="row q-pb-md q-col-gutter-md">
       <div class="col-6 row items-center">
         <div class="col-3 text-subtitle1">用户ID:</div>
         <q-input outlined dense v-model="searchQuery['user-id']" label="请输入用户ID" class="col-9"/>
@@ -12,19 +12,19 @@
         <q-input outlined dense v-model="searchQuery.username" label="请输入用户账号" class="col-9"/>
       </div>
     </div>
-    <div class="row q-pb-md q-col-gutter-xl">
+    <div class="row q-pb-md q-col-gutter-md">
       <div class="col-6 row items-center">
         <div class="col-3 text-subtitle1">VOID:</div>
         <q-input outlined dense v-model="searchQuery['vo-id']" label="请输入VOID" class="col-9"/>
       </div>
       <div class="col-6 row items-center">
         <div class="col-3 text-subtitle1">服务:</div>
-        <q-select map-options emit-value outlined dense stack-label label="请选择服务" :options="filterOptions" v-model="searchQuery.service_id" class="col-9" color="primary"/>
+        <q-select map-options emit-value outlined dense stack-label label="请选择服务" :options="filterOptions" v-model="searchQuery.service_id" class="col-9"/>
       </div>
     </div>
     </div>
     <div class="row col-4 items-center">
-      <q-btn outline color="primary" text-color="black" label="搜索" class="col-4" @click="search"/>
+      <q-btn outline color="primary" text-color="black" label="搜索" class="col-4" @click="searchData"/>
     </div>
   </div>
     <q-table
@@ -38,7 +38,7 @@
       loading-label="网络请求中，请稍候..."
       no-data-label="暂无云主机"
       hide-pagination
-      :pagination="{ rowsPerPage: 0 }"
+      :pagination="paginationTable"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -83,18 +83,14 @@
       </template>
     </q-table>
     <q-separator/>
-    <div class="row items-center q-pa-md text-grey">
-      <span class="q-pr-md">共{{ paginationTable.count }}台云主机</span>
-      <q-select color="grey" v-model="paginationTable.rowsPerPage" :options="[5,10,15,20,25,30]" dense options-dense
-                borderless @update:model-value="changePageSize">
-      </q-select>/页
+    <div class="row items-center justify-between q-pa-md">
+      <span class="text-grey">15条/页 共{{ paginationTable.count }}台云主机</span>
       <q-pagination
         v-model="paginationTable.page"
-        :max="Math.ceil(paginationTable.count/paginationTable.rowsPerPage)"
-        :max-pages="9"
+        :max="Math.ceil(paginationTable.count/15)"
+        :max-pages="7"
+        ellipsess
         direction-links
-        outline
-        :ripple="false"
         @update:model-value="changePagination"
       />
     </div>
@@ -216,16 +212,21 @@ export default defineComponent({
     const paginationTable = ref({
       page: 1,
       count: 0,
-      rowsPerPage: 15
+      rowsPerPage: 9999
     })
+    const payload = {
+      page: 1,
+      page_size: 15,
+      'as-admin': true
+    }
     const getData = (query: any) => {
-      if (Object.prototype.toString.call(searchQuery.value.service_id) === '[object Object]') {
-        searchQuery.value.service_id = ''
-      }
       const response = $store.dispatch('provider/loadAdminServerTable', query)
       return response
     }
-    const search = () => {
+    const searchData = () => {
+      if (Object.prototype.toString.call(searchQuery.value.service_id) === '[object Object]') {
+        searchQuery.value.service_id = ''
+      }
       if ((searchQuery.value['vo-id'] !== '' && searchQuery.value['user-id'] !== '') || (searchQuery.value['vo-id'] !== '' && searchQuery.value.username !== '')) {
         Notify.create({
           classes: 'notification-negative shadow-15',
@@ -252,14 +253,8 @@ export default defineComponent({
       searchQuery.value.page = val
       void getData(searchQuery.value)
     }
-    const changePageSize = () => {
-      searchQuery.value.page_size = paginationTable.value.rowsPerPage
-      searchQuery.value.page = 1
-      paginationTable.value.page = 1
-      void getData(searchQuery.value)
-    }
     onMounted(() => {
-      void getData(searchQuery.value).then((res) => {
+      void getData(payload).then((res) => {
         paginationTable.value.count = res.data.count
       })
     })
@@ -271,8 +266,7 @@ export default defineComponent({
       searchQuery,
       filterOptions,
       changePagination,
-      search,
-      changePageSize
+      searchData
     }
   }
 })
