@@ -2,7 +2,7 @@
   <div class="Manage">
   <div class="row q-col-gutter-xl">
     <div class="col-8">
-    <div class="row q-pb-md q-col-gutter-md">
+    <div class="row q-pb-md q-col-gutter-xl">
       <div class="col-6 row items-center">
         <div class="col-3 text-subtitle1">用户ID:</div>
         <q-input outlined dense v-model="searchQuery['user-id']" label="请输入用户ID" class="col-9"/>
@@ -12,14 +12,14 @@
         <q-input outlined dense v-model="searchQuery.username" label="请输入用户账号" class="col-9"/>
       </div>
     </div>
-    <div class="row q-pb-md q-col-gutter-md">
+    <div class="row q-pb-md q-col-gutter-xl">
       <div class="col-6 row items-center">
         <div class="col-3 text-subtitle1">VOID:</div>
         <q-input outlined dense v-model="searchQuery['vo-id']" label="请输入VOID" class="col-9"/>
       </div>
       <div class="col-6 row items-center">
         <div class="col-3 text-subtitle1">服务:</div>
-        <q-select map-options emit-value outlined dense stack-label label="请选择服务" :options="filterOptions" v-model="searchQuery.service_id" class="col-9"/>
+        <q-select map-options emit-value outlined dense stack-label label="请选择服务" :options="filterOptions" v-model="searchQuery.service_id" class="col-9" color="primary"/>
       </div>
     </div>
     </div>
