@@ -1,31 +1,34 @@
 <template>
   <div class="Manage">
-
-    <div class="row items-center justify-between q-py-md">
-
-      <div class="col-3">
-        <div class="row justify-start">
-          <div class="col">
-            <q-input disable dense outlined v-model="text" stack-label :label="$t('搜索')">
-              <template v-slot:append>
-                <q-icon name="search"/>
-              </template>
-            </q-input>
-          </div>
-        </div>
+  <div class="row q-col-gutter-xl">
+    <div class="col-8">
+    <div class="row q-pb-md q-col-gutter-md">
+      <div class="col-6 row items-center">
+        <div class="col-3 text-subtitle1">用户ID:</div>
+        <q-input outlined dense v-model="searchQuery['user-id']" label="请输入用户ID" class="col-9"/>
       </div>
-
-      <div class="col-3">
-        <q-select map-options emit-value outlined dense stack-label label="筛选" :options="filterOptions"
-                  v-model="filterSelection" @update:model-value="change"/>
+      <div class="col-6 row items-center">
+        <div class="col-3 text-subtitle1">用户账号:</div>
+        <q-input outlined dense v-model="searchQuery.username" label="请输入用户账号" class="col-9"/>
       </div>
-
     </div>
-
+    <div class="row q-pb-md q-col-gutter-md">
+      <div class="col-6 row items-center">
+        <div class="col-3 text-subtitle1">VOID:</div>
+        <q-input outlined dense v-model="searchQuery['vo-id']" label="请输入VOID" class="col-9"/>
+      </div>
+      <div class="col-6 row items-center">
+        <div class="col-3 text-subtitle1">服务:</div>
+        <q-select map-options emit-value outlined dense stack-label label="请选择服务" :options="filterOptions" v-model="searchQuery.service_id" class="col-9"/>
+      </div>
+    </div>
+    </div>
+    <div class="row col-4 items-center">
+      <q-btn outline color="primary" text-color="black" label="搜索" class="col-4" @click="searchData"/>
+    </div>
+  </div>
     <q-table
       flat
-      card-class=""
-      table-class=""
       table-header-class="bg-grey-1 text-grey"
       :rows="rows"
       :columns="columns"
@@ -87,7 +90,6 @@
         :max="Math.ceil(paginationTable.count/15)"
         :max-pages="7"
         ellipsess
-        flat
         direction-links
         @update:model-value="changePagination"
       />
@@ -97,6 +99,7 @@
 
 <script lang="ts">
 import { computed, defineComponent, ref, onMounted } from 'vue'
+import { Notify } from 'quasar'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
@@ -108,7 +111,7 @@ export default defineComponent({
     const $store = useStore<StateInterface>()
     // 获取列表数据
     const rows = computed(() => $store.getters['provider/getAdminServers'])
-
+    const filterOptions = computed(() => $store.getters['fed/getServices'])
     // 列表分栏定义
     const columns = [
       {
@@ -193,39 +196,65 @@ export default defineComponent({
         headerStyle: 'padding: 0 5px'
       }
     ]
-    const filterSelection = ref({
-      label: '全部服务',
-      value: ''
+    const searchQuery: any = ref({
+      page: 1,
+      page_size: 15,
+      username: '',
+      service_id: {
+        label: '全部服务',
+        value: ''
+      },
+      'user-id': '',
+      'as-admin': true,
+      'vo-id': ''
+
     })
-    // q-pagination 所需配置对象
     const paginationTable = ref({
       page: 1,
       count: 0,
-      rowsPerPage: 9999 // 此为能显示的最大行数
+      rowsPerPage: 9999
     })
     const payload = {
       page: 1,
       page_size: 15,
       'as-admin': true
     }
-    const change = () => {
-      Object.assign(payload, { service_id: filterSelection.value })
-      paginationTable.value.count = 0
-      paginationTable.value.page = 1
-      payload.page = 1
-      void $store.dispatch('provider/loadAdminServerTable', payload).then((res) => {
-        paginationTable.value.count = res.data.count
-      }).catch(() => {
+    const getData = (query: any) => {
+      const response = $store.dispatch('provider/loadAdminServerTable', query)
+      return response
+    }
+    const searchData = () => {
+      if (Object.prototype.toString.call(searchQuery.value.service_id) === '[object Object]') {
+        searchQuery.value.service_id = ''
+      }
+      if ((searchQuery.value['vo-id'] !== '' && searchQuery.value['user-id'] !== '') || (searchQuery.value['vo-id'] !== '' && searchQuery.value.username !== '')) {
+        Notify.create({
+          classes: 'notification-negative shadow-15',
+          icon: 'mdi-alert',
+          textColor: 'negative',
+          message: 'VOID不能与用户ID或用户账号同时提交',
+          position: 'top',
+          closeBtn: true,
+          timeout: 3000,
+          multiLine: false
+        })
+      } else {
+        searchQuery.value.page = 1
         paginationTable.value.count = 0
-      })
+        paginationTable.value.page = 1
+        void getData(searchQuery.value).then((res) => {
+          paginationTable.value.count = res.data.count
+        }).catch(() => {
+          paginationTable.value.count = 0
+        })
+      }
     }
     const changePagination = (val: number) => {
-      payload.page = val
-      void $store.dispatch('provider/loadAdminServerTable', payload)
+      searchQuery.value.page = val
+      void getData(searchQuery.value)
     }
-    const filterOptions = computed(() => $store.getters['fed/getServices'])
     onMounted(() => {
-      void $store.dispatch('provider/loadAdminServerTable', payload).then((res) => {
+      void getData(payload).then((res) => {
         paginationTable.value.count = res.data.count
       })
     })
@@ -234,10 +263,10 @@ export default defineComponent({
       paginationTable,
       columns,
       rows,
+      searchQuery,
       filterOptions,
-      filterSelection,
       changePagination,
-      change
+      searchData
     }
   }
 })
