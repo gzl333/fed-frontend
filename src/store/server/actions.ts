@@ -12,7 +12,7 @@ import ServerDeleteDialog from 'components/Server/ServerDeleteDialog.vue'
 import ServerRebuildDialog from 'components/Server/ServerRebuildDialog.vue'
 import QuotaDeleteDialog from 'components/Quota/QuotaDeleteDialog.vue'
 
-// 云主机状态码参考。具体显示位置写在SererStatus组件里
+// 云主机状态码参考。具体显示位置写在ServerStatus组件里
 /* const statusCodeMap = new Map<number, string>(
   [
     [0, '无法获取状态'],

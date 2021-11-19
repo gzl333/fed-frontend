@@ -52,7 +52,7 @@ module.exports = configure(function (/* ctx */) {
       'fontawesome-v5',
       // 'eva-icons',
       // 'themify',
-      // 'line-awesome',
+      'line-awesome',
       // 'roboto-font-latin-ext', // this or either 'roboto-font', NEVER both!
 
       'roboto-font', // optional, you are not bound to it
@@ -100,22 +100,22 @@ module.exports = configure(function (/* ctx */) {
         }
 
         // for i18n resources (json/json5/yaml)
-        cfg.module.rules.push({
-          test: /\.(json5?|ya?ml)$/, // target json, json5, yaml and yml files
-          type: 'javascript/auto',
-          // Use `Rule.include` to specify the files of locale messages to be pre-compiled
-          include: [
-            path.resolve(__dirname, './src/i18n')
-          ],
-          loader: '@intlify/vue-i18n-loader'
-        })
-
-        // for i18n custom block
-        cfg.module.rules.push({
-          resourceQuery: /blockType=i18n/,
-          type: 'javascript/auto',
-          loader: '@intlify/vue-i18n-loader'
-        })
+        // cfg.module.rules.push({
+        //   test: /\.(json5?|ya?ml)$/, // target json, json5, yaml and yml files
+        //   type: 'javascript/auto',
+        //   // Use `Rule.include` to specify the files of locale messages to be pre-compiled
+        //   include: [
+        //     path.resolve(__dirname, './src/i18n')
+        //   ],
+        //   loader: '@intlify/vue-i18n-loader'
+        // })
+        //
+        // // for i18n custom block
+        // cfg.module.rules.push({
+        //   resourceQuery: /blockType=i18n/,
+        //   type: 'javascript/auto',
+        //   loader: '@intlify/vue-i18n-loader'
+        // })
       }
 
     },

@@ -1,19 +1,17 @@
 <template>
-  <div class="DEV-Test">
-    this is DEV-Test
-    <pie-chart/>
-
+  <div class="FederationMonitorVideoMeeting.vue">
+    this is FederationMonitorVideoMeeting.vue
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-import PieChart from 'components/Chart/PieChart.vue'
 
 export default defineComponent({
-  name: 'DEV-Test',
-  components: { PieChart },
+  name: 'FederationMonitorVideoMeeting.vue',
+  components: {},
   props: {},
+  emits: {},
   setup () {
     return {}
   }
@@ -21,6 +19,6 @@ export default defineComponent({
 </script>
 
 <style lang="scss" scoped>
-.DEV-Test {
+.FederationMonitorVideoMeeting.vue {
 }
 </style>

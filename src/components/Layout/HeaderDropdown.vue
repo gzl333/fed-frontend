@@ -4,7 +4,7 @@
     <q-btn-dropdown :ripple="false" flat class="q-py-none q-px-none text-weight-regular" color="grey-8" no-caps>
 
       <template v-slot:label class="q-pa-none q-ma-none">
-        <q-icon name="mdi-account-circle-outline"/>
+        <q-icon name="las la-user-circle"/>
         {{ $store.state.account.items.decoded?.email }}
       </template>
 

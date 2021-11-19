@@ -22,6 +22,12 @@
                        icon="mdi-server"
                        :label="$t('主机集群')"
                        to="/my/federation/monitor/server"/>
+          <q-route-tab class="q-px-none q-py-none q-mr-md"
+                       :ripple="false"
+                       name="meeting"
+                       icon="las la-video"
+                       :label="$t('视频会议')"
+                       to="/my/federation/monitor/meeting"/>
         </q-tabs>
       </div>
 

@@ -73,6 +73,9 @@ const routes: RouteRecordRaw[] = [
     path: '/my',
     component: () => import('layouts/MyLayout.vue'),
     redirect: '/my/main',
+    meta: {
+      requireLogin: true
+    },
     children: [
       {
         path: 'main',
@@ -80,8 +83,7 @@ const routes: RouteRecordRaw[] = [
         component: () => import('pages/My/Main.vue'),
         meta: {
           title: '我的首页-中国科技云联邦',
-          title_en: 'Home-CSTCloud Federation',
-          requireLogin: true
+          title_en: 'Home-CSTCloud Federation'
         }
       },
       {
@@ -94,76 +96,56 @@ const routes: RouteRecordRaw[] = [
         children: [
           {
             path: 'server',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Personal/PersonalServer.vue')
           },
           {
             path: 'server/deploy',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Personal/PersonalServerDeploy.vue'),
             props: true // 接收url中的参数
           },
           {
             path: 'server/detail/:serverId', // serverId 动态路由匹配
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Personal/PersonalServerDetail.vue')
           },
           {
             path: 'vd',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Personal/Vd.vue')
           },
           {
             path: 'obs',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Personal/Obs.vue')
           },
           {
             path: 'quota',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Personal/QuotaIndex.vue'),
             redirect: '/my/personal/quota/list',
             children: [
               {
                 path: 'list',
-                meta: {
-                  requireLogin: true
-                },
+                meta: {},
                 component: () => import('pages/My/Personal/QuotaList.vue')
               },
               {
                 path: 'application',
-                meta: {
-                  requireLogin: true
-                },
+                meta: {},
                 component: () => import('pages/My/Personal/QuotaApplication.vue')
               }
             ]
           },
           {
             path: 'quota/detail/:id', // quotaId 动态路由匹配
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Personal/QuotaDetail.vue')
           },
           {
             path: 'quota/apply',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Personal/QuotaApply.vue'),
             props: true // 接收url中的参数
           },
@@ -176,9 +158,7 @@ const routes: RouteRecordRaw[] = [
           // },
           {
             path: 'vpn',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Personal/Vpn.vue')
           }
         ]
@@ -193,99 +173,73 @@ const routes: RouteRecordRaw[] = [
         children: [
           {
             path: 'server', // 组云主机
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Group/GroupServer.vue')
           },
           {
             path: 'server/detail/:serverId',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Group/GroupServerDetail.vue')
           },
           {
             path: 'server/deploy',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Group/GroupServerDeploy.vue'),
             props: true // 接收url中的参数
           },
           {
             path: 'obs', // 组资源
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Group/GroupObs.vue')
           },
           {
             path: 'quota', // 组配额
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Group/GroupQuotaIndex.vue'),
             redirect: '/my/group/quota/list',
             children: [
               {
                 path: 'list',
-                meta: {
-                  requireLogin: true
-                },
+                meta: {},
                 component: () => import('pages/My/Group/GroupQuotaList.vue')
               },
               {
                 path: 'application',
-                meta: {
-                  requireLogin: true
-                },
+                meta: {},
                 component: () => import('pages/My/Group/GroupQuotaApplication.vue')
               }
             ]
           },
           {
             path: 'quota/detail/:quotaId',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Group/GroupQuotaDetail.vue')
           },
           {
             path: 'quota/apply',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Group/GroupQuotaApply.vue'),
             props: true // 接收url中的参数
           },
           {
             path: 'list', // 组列表
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Group/GroupList.vue')
           },
           {
             path: 'detail/:id', // groupId 动态路由匹配
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Group/GroupDetail.vue'),
             props: true // 接收url中的参数
           },
           {
             path: 'member/:id', // groupId 动态路由匹配
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Group/GroupMember.vue')
           },
           {
             path: 'create',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Group/GroupCreate.vue'),
             props: true // 接收url中的参数
           }
@@ -302,58 +256,42 @@ const routes: RouteRecordRaw[] = [
         children: [
           {
             path: 'quota',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Provider/QuotaAudit.vue')
           },
           {
             path: 'server',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Provider/ServerCreated.vue')
           },
           {
             path: 'provided',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Provider/Provided.vue')
           },
           {
             path: 'service',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Provider/Service.vue')
           },
           {
             path: 'join_service',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Provider/Join.vue')
           },
           {
             path: 'create_datacenter',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Provider/CreateDatacenter.vue')
           },
           {
             path: 'configuration',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Provider/Configuration.vue')
           },
           {
             path: 'quit',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Provider/Quit.vue')
           }
         ]
@@ -368,15 +306,12 @@ const routes: RouteRecordRaw[] = [
         children: [
           {
             path: 'resource',
-            meta: {
-              requireLogin: true
-            },
+            meta: {},
             component: () => import('pages/My/Federation/FederationResource.vue')
           },
           {
             path: 'monitor',
             meta: {
-              requireLogin: true,
               requireFedAdmin: true // 云联邦管理员才能访问
             },
             redirect: '/my/federation/monitor/storage',
@@ -384,24 +319,24 @@ const routes: RouteRecordRaw[] = [
             children: [
               {
                 path: 'storage',
-                meta: {
-                  requireLogin: true
-                },
+                meta: {},
                 component: () => import('pages/My/Federation/FederationMonitorStorage.vue')
               },
               {
                 path: 'server',
-                meta: {
-                  requireLogin: true
-                },
+                meta: {},
                 component: () => import('pages/My/Federation/FederationMonitorServer.vue')
+              },
+              {
+                path: 'meeting',
+                meta: {},
+                component: () => import('pages/My/Federation/FederationMonitorVideoMeeting.vue')
               }
             ]
           },
           {
             path: 'dev',
             meta: {
-              requireLogin: true,
               requireFedAdmin: true // 云联邦管理员才能访问
             },
             component: () => import('pages/My/Federation/DEV-Test.vue')
