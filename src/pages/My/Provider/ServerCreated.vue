@@ -24,7 +24,7 @@
     </div>
     </div>
     <div class="row col-4 items-center">
-      <q-btn outline color="primary" text-color="black" label="搜索" class="col-4" @click="searchData"/>
+      <q-btn outline color="primary" text-color="black" label="搜索" class="col-4" @click="search"/>
     </div>
   </div>
     <q-table
@@ -38,7 +38,7 @@
       loading-label="网络请求中，请稍候..."
       no-data-label="暂无云主机"
       hide-pagination
-      :pagination="paginationTable"
+      :pagination="{ rowsPerPage: 0 }"
     >
       <template v-slot:body="props">
         <q-tr :props="props">
@@ -83,14 +83,18 @@
       </template>
     </q-table>
     <q-separator/>
-    <div class="row items-center justify-between q-pa-md">
-      <span class="text-grey">15条/页 共{{ paginationTable.count }}台云主机</span>
+    <div class="row items-center q-pa-md text-grey">
+      <span class="q-pr-md">共{{ paginationTable.count }}台云主机</span>
+      <q-select color="grey" v-model="paginationTable.rowsPerPage" :options="[5,10,15,20,25,30]" dense options-dense
+                borderless @update:model-value="changePageSize">
+      </q-select>/页
       <q-pagination
         v-model="paginationTable.page"
-        :max="Math.ceil(paginationTable.count/15)"
-        :max-pages="7"
-        ellipsess
+        :max="Math.ceil(paginationTable.count/paginationTable.rowsPerPage)"
+        :max-pages="9"
         direction-links
+        outline
+        :ripple="false"
         @update:model-value="changePagination"
       />
     </div>
@@ -212,21 +216,16 @@ export default defineComponent({
     const paginationTable = ref({
       page: 1,
       count: 0,
-      rowsPerPage: 9999
+      rowsPerPage: 15
     })
-    const payload = {
-      page: 1,
-      page_size: 15,
-      'as-admin': true
-    }
     const getData = (query: any) => {
-      const response = $store.dispatch('provider/loadAdminServerTable', query)
-      return response
-    }
-    const searchData = () => {
       if (Object.prototype.toString.call(searchQuery.value.service_id) === '[object Object]') {
         searchQuery.value.service_id = ''
       }
+      const response = $store.dispatch('provider/loadAdminServerTable', query)
+      return response
+    }
+    const search = () => {
       if ((searchQuery.value['vo-id'] !== '' && searchQuery.value['user-id'] !== '') || (searchQuery.value['vo-id'] !== '' && searchQuery.value.username !== '')) {
         Notify.create({
           classes: 'notification-negative shadow-15',
@@ -253,8 +252,14 @@ export default defineComponent({
       searchQuery.value.page = val
       void getData(searchQuery.value)
     }
+    const changePageSize = () => {
+      searchQuery.value.page_size = paginationTable.value.rowsPerPage
+      searchQuery.value.page = 1
+      paginationTable.value.page = 1
+      void getData(searchQuery.value)
+    }
     onMounted(() => {
-      void getData(payload).then((res) => {
+      void getData(searchQuery.value).then((res) => {
         paginationTable.value.count = res.data.count
       })
     })
@@ -266,7 +271,8 @@ export default defineComponent({
       searchQuery,
       filterOptions,
       changePagination,
-      searchData
+      search,
+      changePageSize
     }
   }
 })
