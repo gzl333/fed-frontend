@@ -1,32 +1,18 @@
 <template>
   <div class="Manage">
-  <div class="row q-col-gutter-xl">
-    <div class="col-8">
-    <div class="row q-pb-md q-col-gutter-xl">
-      <div class="col-6 row items-center">
-        <div class="col-3 text-subtitle1">用户ID:</div>
-        <q-input outlined dense v-model="searchQuery['user-id']" label="请输入用户ID" class="col-9"/>
+    <div class="row q-col-gutter-md q-pb-md">
+      <div class="row col-6 items-center q-col-gutter-xs">
+        <div class="col-2 text-subtitle1">搜索条件:</div>
+        <q-select outlined dense clearable v-model="model" :options="options" label="请选择" class="col-5"
+                  @update:model-value="change"/>
+        <q-input outlined dense v-model="text" label="请输入" :disable="disable" class="col-5"/>
       </div>
-      <div class="col-6 row items-center">
-        <div class="col-3 text-subtitle1">用户账号:</div>
-        <q-input outlined dense v-model="searchQuery.username" label="请输入用户账号" class="col-9"/>
-      </div>
-    </div>
-    <div class="row q-pb-md q-col-gutter-xl">
-      <div class="col-6 row items-center">
-        <div class="col-3 text-subtitle1">VOID:</div>
-        <q-input outlined dense v-model="searchQuery['vo-id']" label="请输入VOID" class="col-9"/>
-      </div>
-      <div class="col-6 row items-center">
-        <div class="col-3 text-subtitle1">服务:</div>
-        <q-select map-options emit-value outlined dense stack-label label="请选择服务" :options="filterOptions" v-model="searchQuery.service_id" class="col-9" color="primary"/>
+      <div class="col-5 row items-center">
+        <q-select map-options emit-value outlined dense stack-label label="请选择服务" :options="filterOptions"
+                  v-model="searchQuery.service_id" class="col-7" color="primary"/>
+        <q-btn outline color="primary" text-color="black" label="搜索" class="col-3 q-ml-md" @click="search"/>
       </div>
     </div>
-    </div>
-    <div class="row col-4 items-center">
-      <q-btn outline color="primary" text-color="black" label="搜索" class="col-4" @click="search"/>
-    </div>
-  </div>
     <q-table
       flat
       table-header-class="bg-grey-1 text-grey"
@@ -83,27 +69,29 @@
       </template>
     </q-table>
     <q-separator/>
-    <div class="row items-center q-pa-md text-grey">
-      <span class="q-pr-md">共{{ paginationTable.count }}台云主机</span>
-      <q-select color="grey" v-model="paginationTable.rowsPerPage" :options="[5,10,15,20,25,30]" dense options-dense
-                borderless @update:model-value="changePageSize">
-      </q-select>/页
-      <q-pagination
-        v-model="paginationTable.page"
-        :max="Math.ceil(paginationTable.count/paginationTable.rowsPerPage)"
-        :max-pages="9"
-        direction-links
-        outline
-        :ripple="false"
-        @update:model-value="changePagination"
-      />
+    <div class="row q-pa-sm text-grey justify-between items-center">
+      <div class="row items-center">
+        <span class="q-pr-md">共{{ paginationTable.count }}台云主机</span>
+        <q-select color="grey" v-model="paginationTable.rowsPerPage" :options="[5,10,15,20,25,30]" dense options-dense
+                  borderless @update:model-value="changePageSize">
+        </q-select>
+        <span>/页</span>
+      </div>
+        <q-pagination
+          v-model="paginationTable.page"
+          :max="Math.ceil(paginationTable.count/paginationTable.rowsPerPage)"
+          :max-pages="9"
+          direction-links
+          outline
+          :ripple="false"
+          @update:model-value="changePagination"
+        />
     </div>
   </div>
 </template>
 
 <script lang="ts">
 import { computed, defineComponent, ref, onMounted } from 'vue'
-import { Notify } from 'quasar'
 import { useStore } from 'vuex'
 import { StateInterface } from 'src/store'
 
@@ -203,21 +191,32 @@ export default defineComponent({
     const searchQuery: any = ref({
       page: 1,
       page_size: 15,
-      username: '',
       service_id: {
         label: '全部服务',
         value: ''
       },
-      'user-id': '',
-      'as-admin': true,
-      'vo-id': ''
-
+      'as-admin': true
     })
     const paginationTable = ref({
       page: 1,
       count: 0,
       rowsPerPage: 15
     })
+    const disable = ref(true)
+    const options = ref(['用户ID', '用户账号', 'VOID'])
+    const model: any = ref(null)
+    const text = ref('')
+    const change = () => {
+      delete searchQuery.value.username
+      delete searchQuery.value['user-id']
+      delete searchQuery.value['vo-id']
+      if (model.value !== null) {
+        disable.value = false
+      } else {
+        text.value = ''
+        disable.value = true
+      }
+    }
     const getData = (query: any) => {
       if (Object.prototype.toString.call(searchQuery.value.service_id) === '[object Object]') {
         searchQuery.value.service_id = ''
@@ -226,21 +225,23 @@ export default defineComponent({
       return response
     }
     const search = () => {
-      if ((searchQuery.value['vo-id'] !== '' && searchQuery.value['user-id'] !== '') || (searchQuery.value['vo-id'] !== '' && searchQuery.value.username !== '')) {
-        Notify.create({
-          classes: 'notification-negative shadow-15',
-          icon: 'mdi-alert',
-          textColor: 'negative',
-          message: 'VOID不能与用户ID或用户账号同时提交',
-          position: 'top',
-          closeBtn: true,
-          timeout: 3000,
-          multiLine: false
+      searchQuery.value.page = 1
+      paginationTable.value.count = 0
+      paginationTable.value.page = 1
+      if (model.value === null) {
+        void getData(searchQuery.value).then((res) => {
+          paginationTable.value.count = res.data.count
+        }).catch(() => {
+          paginationTable.value.count = 0
         })
       } else {
-        searchQuery.value.page = 1
-        paginationTable.value.count = 0
-        paginationTable.value.page = 1
+        if (model.value === '用户ID') {
+          searchQuery.value['user-id'] = text.value
+        } else if (model.value === '用户账号') {
+          searchQuery.value.username = text.value
+        } else {
+          searchQuery.value['vo-id'] = text.value
+        }
         void getData(searchQuery.value).then((res) => {
           paginationTable.value.count = res.data.count
         }).catch(() => {
@@ -270,9 +271,14 @@ export default defineComponent({
       rows,
       searchQuery,
       filterOptions,
+      model,
+      disable,
+      text,
+      options,
       changePagination,
       search,
-      changePageSize
+      changePageSize,
+      change
     }
   }
 })
