@@ -1,15 +1,17 @@
 <template>
   <div class="FederationMonitorVideoMeeting.vue">
-    this is FederationMonitorVideoMeeting.vue
+    <country-meeting-map></country-meeting-map>
   </div>
 </template>
 
 <script lang="ts">
 import { defineComponent } from 'vue'
-
+import CountryMeetingMap from 'components/Chart/CountryMeetingMap.vue'
 export default defineComponent({
   name: 'FederationMonitorVideoMeeting.vue',
-  components: {},
+  components: {
+    CountryMeetingMap
+  },
   props: {},
   emits: {},
   setup () {
