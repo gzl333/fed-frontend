@@ -1,12 +1,16 @@
 <template>
   <div class="PieChart">
-    <div ref="container" :style="{ width: '600px', height: '300px' }"/>
+
+    <!--container尺寸由调用者决定-->
+    <div ref="container" style="width: 100%; height: 100%;"/>
+
   </div>
 </template>
 
 <script lang="ts">
-import { computed, defineComponent, onMounted, ref, watch } from 'vue'
-import { StateInterface } from 'src/store'
+import { defineComponent, onMounted, ref, watch, toRefs } from 'vue'
+// import { useStore } from 'vuex'
+// import { StateInterface } from 'src/store'
 // import { useRouter } from 'vue-router'
 // import { useI18n } from 'vue-i18n'
 
@@ -24,7 +28,6 @@ import {
 import {
   CanvasRenderer
 } from 'echarts/renderers'
-import { useStore } from 'vuex'
 // 注册所需组件
 echarts.use(
   [TooltipComponent, LegendComponent, PieChart, CanvasRenderer]
@@ -34,9 +37,14 @@ echarts.use(
 export default defineComponent({
   name: 'PieChart',
   components: {},
-  props: {},
-  setup () {
-    const $store = useStore<StateInterface>()
+  props: {
+    option: {
+      type: Object,
+      required: true
+    }
+  },
+  setup (props) {
+    // const $store = useStore<StateInterface>()
     // const $router = useRouter()
     // const { locale } = useI18n({ useScope: 'global' })
 
@@ -48,62 +56,16 @@ export default defineComponent({
       // 初始化当前chart对象
       const chart = echarts.init(container.value!)
 
-      // 一定要在最外部包裹computed，其他写法都不是完整的响应式对象
-      const option = computed(() => ({
-        tooltip: {
-          trigger: 'item'
-        },
-        legend: {
-          top: '5%',
-          left: 'center'
-        },
-        series: [
-          {
-            // name: '访问来源',
-            type: 'pie',
-            radius: ['40%', '70%'],
-            avoidLabelOverlap: false,
-            itemStyle: {
-              borderRadius: 10,
-              borderColor: '#fff',
-              borderWidth: 2
-            },
-            label: {
-              show: false,
-              position: 'center'
-            },
-            emphasis: {
-              label: {
-                show: true,
-                fontSize: '10',
-                fontWeight: 'bold'
-              }
-            },
-            labelLine: {
-              show: false
-            },
-            // data数组可用getter写
-            data: [
-              {
-                name: $store.state.fed.tables.serviceTable.byId[1]?.name,
-                value: $store.state.fed.tables.serviceAllocationTable.byId['1']?.public_ip_total
-              },
-              {
-                name: $store.state.fed.tables.serviceTable.byId[2]?.name,
-                value: $store.state.fed.tables.serviceAllocationTable.byId['2']?.vcpu_total
-              }
-            ]
-          }
-        ]
-      }))
-
       // onMounted时必须渲染一次, 否则切换页面不显示
-      chart.setOption(option.value)
+      chart.setOption(props.option)
 
       // 保持图表数据更新的方法
-      watch(option, () => {
-        chart.setOption(option.value)
-      })
+      const { option } = toRefs(props)
+      watch(option, // watch所监听的值： 放法1： 把props.option转化成响应式对象。 方法2：写成函数返回值形式() => props.option
+        () => {
+          chart.setOption(props.option)
+        },
+        { deep: true })
     })
 
     return {

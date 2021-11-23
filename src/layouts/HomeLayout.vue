@@ -2,7 +2,7 @@
 
   <q-layout class="mobile-only">
     <div class="text-center text-h3">
-      本站暂不支持移动端访问，请使用桌面设备登录使用，请谅解！。
+      本站暂不支持移动端访问，请使用桌面设备登录，请谅解！。
     </div>
   </q-layout>
 

@@ -63,8 +63,8 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
     } else if (to.meta.requireLogin && !isLogin) {
       // 要求登录的页面，如果没有登录，则返回home页面
       next({ path: '/' })
-    } else if (to.fullPath === '/' && isLogin) {
-      // home页面，如果已经登录了，则跳转到/my
+    } else if (!to.meta.requireLogin && isLogin) {
+      // 不要求登录的页面，如果已经登录，则跳转到/my
       next({ path: '/my' })
     } else {
       // 之前都是登录状态有关的强制跳转。进入else后登录状态已经正常，进行页面访问权限的限制跳转
@@ -121,6 +121,7 @@ export default route<StateInterface>(function ({ store/*, ssrContext */ }) {
     //   store.commit('account/closeFooter')
     // }
 
+    // 不符合上述所有条件的catch-all跳转，否则会卡在空白页
     next()
   })
 
