@@ -8,7 +8,7 @@
 import { defineComponent, onMounted, ref, watch, computed } from 'vue'
 
 import * as echarts from 'echarts'
-import bj from 'assets/map/beijing.json'
+import bj from 'assets/map/BeiJing.json'
 import { GeoJSONSourceInput } from 'echarts/types/src/coord/geo/geoTypes'
 
 export default defineComponent({
