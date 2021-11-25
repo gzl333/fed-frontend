@@ -1,226 +1,136 @@
 <template>
   <div class="CountryMeetingMap">
-      <div ref="container" :style="{ width: '1230px', height: '600px' }"/>
+    <div ref="container" :style="{ width: '1230px', height: '600px' }"/>
   </div>
 </template>
 <script lang="ts">
 import { computed, defineComponent, onMounted, ref, watch } from 'vue'
-// import { StateInterface } from 'src/store'
-// import { useStore } from 'vuex'
 
 import * as echarts from 'echarts'
 import china from 'assets/map/China.json'
 import { GeoJSONSourceInput } from 'echarts/types/src/coord/geo/geoTypes'
+
 export default defineComponent({
   name: 'CountryMeetingMap',
   components: {},
   props: {},
   setup () {
-    // const $store = useStore<StateInterface>()
     const container = ref<HTMLElement>()
-    const geoCoordsMap: Record<string, number[]> = {
-      上海: [121.4648, 31.2891],
-      东莞: [113.8953, 22.901],
-      东营: [118.7073, 37.5513],
-      中山: [113.4229, 22.478],
-      临汾: [111.4783, 36.1615],
-      临沂: [118.3118, 35.2936],
-      丹东: [124.541, 40.4242],
-      丽水: [119.5642, 28.1854],
-      乌鲁木齐: [87.9236, 43.5883],
-      佛山: [112.8955, 23.1097],
-      保定: [115.0488, 39.0948],
-      兰州: [103.5901, 36.3043],
-      包头: [110.3467, 41.4899],
-      北京: [116.4551, 40.2539],
-      北海: [109.314, 21.6211],
-      南京: [118.8062, 31.9208],
-      南宁: [108.479, 23.1152],
-      南昌: [116.0046, 28.6633],
-      南通: [121.1023, 32.1625],
-      厦门: [118.1689, 24.6478],
-      台州: [121.1353, 28.6688],
-      合肥: [117.29, 32.0581],
-      呼和浩特: [111.4124, 40.4901],
-      咸阳: [108.4131, 34.8706],
-      哈尔滨: [127.9688, 45.368],
-      唐山: [118.4766, 39.6826],
-      嘉兴: [120.9155, 30.6354],
-      大同: [113.7854, 39.8035],
-      大连: [122.2229, 39.4409],
-      天津: [117.4219, 39.4189],
-      太原: [112.3352, 37.9413],
-      威海: [121.9482, 37.1393],
-      宁波: [121.5967, 29.6466],
-      宝鸡: [107.1826, 34.3433],
-      宿迁: [118.5535, 33.7775],
-      常州: [119.4543, 31.5582],
-      广州: [113.5107, 23.2196],
-      廊坊: [116.521, 39.0509],
-      延安: [109.1052, 36.4252],
-      张家口: [115.1477, 40.8527],
-      徐州: [117.5208, 34.3268],
-      德州: [116.6858, 37.2107],
-      惠州: [114.6204, 23.1647],
-      成都: [103.9526, 30.7617],
-      扬州: [119.4653, 32.8162],
-      承德: [117.5757, 41.4075],
-      拉萨: [91.1865, 30.1465],
-      无锡: [120.3442, 31.5527],
-      日照: [119.2786, 35.5023],
-      昆明: [102.9199, 25.4663],
-      杭州: [119.5313, 29.8773],
-      枣庄: [117.323, 34.8926],
-      柳州: [109.3799, 24.9774],
-      株洲: [113.5327, 27.0319],
-      武汉: [114.3896, 30.6628],
-      汕头: [117.1692, 23.3405],
-      江门: [112.6318, 22.1484],
-      沈阳: [123.1238, 42.1216],
-      沧州: [116.8286, 38.2104],
-      河源: [114.917, 23.9722],
-      泉州: [118.3228, 25.1147],
-      泰安: [117.0264, 36.0516],
-      泰州: [120.0586, 32.5525],
-      济南: [117.1582, 36.8701],
-      济宁: [116.8286, 35.3375],
-      海口: [110.3893, 19.8516],
-      淄博: [118.0371, 36.6064],
-      淮安: [118.927, 33.4039],
-      深圳: [114.5435, 22.5439],
-      清远: [112.9175, 24.3292],
-      温州: [120.498, 27.8119],
-      渭南: [109.7864, 35.0299],
-      湖州: [119.8608, 30.7782],
-      湘潭: [112.5439, 27.7075],
-      滨州: [117.8174, 37.4963],
-      潍坊: [119.0918, 36.524],
-      烟台: [120.7397, 37.5128],
-      玉溪: [101.9312, 23.8898],
-      珠海: [113.7305, 22.1155],
-      盐城: [120.2234, 33.5577],
-      盘锦: [121.9482, 41.0449],
-      石家庄: [114.4995, 38.1006],
-      福州: [119.4543, 25.9222],
-      秦皇岛: [119.2126, 40.0232],
-      绍兴: [120.564, 29.7565],
-      聊城: [115.9167, 36.4032],
-      肇庆: [112.1265, 23.5822],
-      舟山: [122.2559, 30.2234],
-      苏州: [120.6519, 31.3989],
-      莱芜: [117.6526, 36.2714],
-      菏泽: [115.6201, 35.2057],
-      营口: [122.4316, 40.4297],
-      葫芦岛: [120.1575, 40.578],
-      衡水: [115.8838, 37.7161],
-      衢州: [118.6853, 28.8666],
-      西宁: [101.4038, 36.8207],
-      西安: [109.1162, 34.2004],
-      贵阳: [106.6992, 26.7682],
-      连云港: [119.1248, 34.552],
-      邢台: [114.8071, 37.2821],
-      邯郸: [114.4775, 36.535],
-      郑州: [113.4668, 34.6234],
-      鄂尔多斯: [108.9734, 39.2487],
-      重庆: [107.7539, 30.1904],
-      金华: [120.0037, 29.1028],
-      铜川: [109.0393, 35.1947],
-      银川: [106.3586, 38.1775],
-      镇江: [119.4763, 31.9702],
-      长春: [125.8154, 44.2584],
-      长沙: [113.0823, 28.2568],
-      长治: [112.8625, 36.4746],
-      阳泉: [113.4778, 38.0951],
-      青岛: [120.4651, 36.3373],
-      韶关: [113.7964, 24.7028]
+    const geoCoordsMap: any = ref({})
+    const connectData: any = ref([])
+    const series: any = ref([])
+    let index = 0
+    // const color = ['#a6c84c', '#ffa022', '#46bee9']
+    const trainPath = 'path://M807.4 938.5c-139.5-8-250.2-31.7-250.2-173.2v-95.5c0-35.5 72.5-64.3 108-64.3h0.3l0.9-152.4c0-8.5-6.9-15.4-15.4-15.4H373.2c-8.5 0-15.4 6.9-15.4 15.4l0.6 148.7c33.6 2.1 103.8 30 103.8 64.1v95.5c0 142.2-111.8 168.4-252.3 175.3l-0.1 0.3 0.9 71.5c0 8.5 6.9 15.4 15.4 15.4h568.1c8.5 0 15.4-6.9 15.4-15.4l-0.8-69.8-1.4-0.2zM598.2 64.5V18.6c0-8.5-6.9-15.4-15.4-15.4H428.6c-8.5 0-15.4 6.9-15.4 15.4V67C212.1 111.8 61.7 291.3 61.7 506c0 153.6 77 289.2 194.4 370.3l42.7-136.7C236 681 196.7 597.4 196.7 504.7c0-177.4 143.8-321.3 321.3-321.3s321.3 143.8 321.3 321.3c0 97.9-43.8 185.5-112.8 244.5l40.1 127.4C884.2 795.4 961.4 659.7 961.4 506c0-218.8-156.2-401.1-363.2-441.5z'
+    const getData = (coodrs: Record<string, number[]>, data: []) => {
+      geoCoordsMap.value = coodrs
+      connectData.value = data
+      const dataArr = []
+      const startArr = ['网络中心', connectData.value]
+      dataArr.push(startArr)
+      dataArr.forEach(function (item: any) {
+        series.value.push({
+          name: item[0],
+          type: 'lines',
+          zlevel: 1,
+          lineStyle: {
+            normal: {
+              // legend 颜色
+              // color: color[i],
+              width: 0,
+              curveness: 0.2
+            }
+          },
+          data: convertData(item[1])
+        },
+        {
+          name: item[0],
+          type: 'lines',
+          zlevel: 2,
+          symbol: ['none'],
+          symbolSize: 9,
+          effect: {
+            show: true,
+            period: 6,
+            trailLength: 0.3,
+            symbol: trainPath,
+            symbolSize: 6
+          },
+          lineStyle: {
+            normal: {
+              // 线段颜色
+              color: function () {
+                const length = item[1].length - 1
+                const copyIndex = index
+                if (index < length) {
+                  index = index + 1
+                } else {
+                  index = 0
+                }
+                if (item[1][copyIndex][1].status === '0') {
+                  return '#FF0000'
+                } else {
+                  return '#00FF00'
+                }
+              },
+              width: 1.3,
+              opacity: 0.6,
+              curveness: 0.2
+            }
+          },
+          data: convertData(item[1])
+        },
+        {
+          name: item[0],
+          type: 'effectScatter',
+          coordinateSystem: 'geo',
+          zlevel: 2,
+          rippleEffect: {
+            brushType: 'stroke'
+          },
+          label: {
+            normal: {
+              show: true,
+              // color: '#012248',
+              position: 'right',
+              formatter: '{b}'
+            }
+          },
+          symbolSize: function (val: number[]) {
+            return val[2]
+          },
+          itemStyle: {
+            normal: {
+              // 点的颜色
+              // color: color[i]
+            },
+            emphasis: {
+              areaColor: '#2B91B7'
+            }
+          },
+          data: item[1].map(function (dataItem: any) {
+            return {
+              name: dataItem[1].name,
+              value: geoCoordsMap.value[dataItem[1].name].concat([dataItem[1].value]),
+              status: dataItem[1].status
+            }
+          }
+          )
+        })
+      })
     }
-    const XAData = [
-      [{ name: '西安' }, {
-        name: '北京',
-        value: 60,
-        status: '0'
-      }],
-      [{ name: '西安' }, {
-        name: '上海',
-        value: 60,
-        status: '0'
-      }],
-      [{ name: '西安' }, {
-        name: '广州',
-        value: 60,
-        status: '0'
-      }],
-      [{ name: '西安' }, {
-        name: '西宁',
-        value: 60,
-        status: '0'
-      }],
-      [{ name: '西安' }, {
-        name: '银川',
-        value: 60,
-        status: '0'
-      }]
-    ]
-    // const XNData = [
-    //   [{ name: '西宁' }, {
-    //     name: '北京',
-    //     value: 60
-    //   }],
-    //   [{ name: '西宁' }, {
-    //     name: '上海',
-    //     value: 60
-    //   }],
-    //   [{ name: '西宁' }, {
-    //     name: '广州',
-    //     value: 60
-    //   }],
-    //   [{ name: '西宁' }, {
-    //     name: '西安',
-    //     value: 60
-    //   }],
-    //   [{ name: '西宁' }, {
-    //     name: '银川',
-    //     value: 60
-    //   }]
-    // ]
-    const YCData = [
-      [{ name: '银川' }, {
-        name: '北京',
-        value: 60,
-        status: '1'
-      }],
-      [{ name: '银川' }, {
-        name: '广州',
-        value: 60,
-        status: '1'
-      }],
-      [{ name: '银川' }, {
-        name: '上海',
-        value: 60,
-        status: '1'
-      }],
-      [{ name: '银川' }, {
-        name: '西安',
-        value: 60,
-        status: '1'
-      }],
-      [{ name: '银川' }, {
-        name: '西宁',
-        value: 60,
-        status: '1'
-      }]
-    ]
-    // const planePath = 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z'
     const convertData = function (data: any[]) {
       const res = []
       for (let i = 0; i < data.length; i++) {
         const dataItem = data[i]
-        const fromCoords = geoCoordsMap[dataItem[0].name]
-        const toCoords = geoCoordsMap[dataItem[1].name]
+        const fromCoords = geoCoordsMap.value[dataItem[0].name]
+        const toCoords = geoCoordsMap.value[dataItem[1].name]
         if (fromCoords && toCoords) {
           res.push({
             fromName: dataItem[0].name,
             toName: dataItem[1].name,
+            status: dataItem[1].status,
+            ping: dataItem[1].ping,
             coords: [fromCoords, toCoords],
             value: dataItem[1].value
           })
@@ -228,126 +138,26 @@ export default defineComponent({
       }
       return res
     }
-    let index = 0
-    const color = ['#a6c84c', '#ffa022', '#46bee9']// 航线的颜色
-    const series: any = [];
-    [['西安', XAData], ['银川', YCData]].forEach(function (item: any, i) {
-      series.push({
-        name: item[0] + ' Top3',
-        type: 'lines',
-        zlevel: 1,
-        effect: {
-          show: true,
-          period: 6,
-          trailLength: 0.9,
-          // arrow箭头的颜色
-          color: '#BDBDBD',
-          symbolSize: 4
-        },
-        lineStyle: {
-          normal: {
-            // legend 颜色
-            // color: color[i],
-            width: 0,
-            curveness: 0.2
-          }
-        },
-        data: convertData(item[1])
-      },
-      {
-        name: item[0] + ' Top3',
-        type: 'lines',
-        zlevel: 2,
-        symbol: ['none', 'arrow'],
-        symbolSize: 10,
-        effect: {
-          show: true,
-          period: 6,
-          trailLength: 0,
-          symbol: 'none',
-          symbolSize: 15
-        },
-        lineStyle: {
-          normal: {
-            // 线段颜色
-            color: function () {
-              const length = item[1].length - 1
-              const index1 = index
-              if (index < length) {
-                index = index + 1
-              } else {
-                index = 0
-              }
-              if (item[1][index1][1].status === '0') {
-                return '#FF0000'
-              } else {
-                return '#00FF00'
-              }
-            },
-            width: 1,
-            opacity: 0.6,
-            curveness: 0.2
-          }
-        },
-        data: convertData(item[1])
-      },
-      {
-        name: item[0] + ' Top3',
-        type: 'effectScatter',
-        coordinateSystem: 'geo',
-        zlevel: 2,
-        rippleEffect: {
-          brushType: 'stroke'
-        },
-        label: {
-          normal: {
-            show: true,
-            color: '#012248',
-            position: 'right',
-            formatter: '{b}'
-          }
-        },
-        symbolSize: function (val: number[]) {
-          return val[2] / 8
-        },
-        itemStyle: {
-          normal: {
-            // 点的颜色
-            color: color[i]
-          },
-          emphasis: {
-            areaColor: '#2B91B7'
-          }
-        },
-        data: item[1].map(function (dataItem: any) {
-          return {
-            name: dataItem[1].name,
-            value: geoCoordsMap[dataItem[1].name].concat([dataItem[1].value])
-          }
-        }
-        )
-      })
-    })
     onMounted(() => {
       const chart = echarts.init(container.value!)
       echarts.registerMap('china', china as GeoJSONSourceInput)
       const option = computed(() => ({
-        backgroundColor: '#3481EA',
+        backgroundColor: '#fff',
         title: {
           text: '视频会议监控（全国）',
-          // subtext: '全国',
           left: 'center',
           textStyle: {
-            color: '#fff'
+            color: '#000000'
           }
         },
         tooltip: {
           trigger: 'item',
           formatter: function (params: any) {
             if (params.seriesType === 'effectScatter') {
-              return '线路：' + params.data.name + '' + params.data.value[2]
+              const status = params.data.status === '0' ? '离线' : '在线'
+              return params.data.name + '<br/>' + '状态:' + status
             } else if (params.seriesType === 'lines') {
-              return params.data.fromName + '>' + params.data.toName + '<br />' + params.data.value
+              return params.data.fromName + '——' + params.data.toName + '<br/>' + 'ping值:' + params.data.ping
             } else {
               return params.name
             }
@@ -355,11 +165,10 @@ export default defineComponent({
         },
         legend: {
           orient: 'vertical',
-          top: 'bottom',
-          left: 'right',
-          data: ['西安 Top3', '西宁 Top3', '银川 Top3'],
+          top: '10%',
+          right: '10%',
           textStyle: {
-            color: '#fff'
+            color: '#000000'
           },
           selectedMode: 'multiple'
         },
@@ -373,30 +182,33 @@ export default defineComponent({
           },
           roam: true,
           center: [105.97, 34.71],
-          //   放大我们的地图
           zoom: 1.5,
           itemStyle: {
             normal: {
-              areaColor: '#fff',
+              areaColor: '#BDBDBD',
               borderColor: 'skyblue',
               borderWidth: 1
             },
             emphasis: {
-              areaColor: 'yellow'
+              areaColor: '#F5A9A9'
             }
           }
         },
-        series: series
+        series: series.value
       }))
       chart.setOption(option.value)
-      // 保持图表数据更新的方法
       watch(option, () => {
+        chart.setOption(option.value)
+      })
+      watch(series.value, () => {
         chart.setOption(option.value)
       })
     })
 
     return {
-      container
+      container,
+      connectData,
+      getData
     }
   }
 })

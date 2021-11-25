@@ -344,6 +344,13 @@ export const $api = {
         params: payload.query
       }
       return apiFed.get('/monitor/server/query', config)
+    },
+
+    getMonitorVideoQuery (payload: { query: { query: string } }) {
+      const config = {
+        params: payload.query
+      }
+      return apiFed.get('/monitor/video-meeting/query', config)
     }
   },
   network: {
