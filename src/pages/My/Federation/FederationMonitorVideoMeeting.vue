@@ -1,7 +1,45 @@
 <template>
-  <div class="FederationMonitorVideoMeeting.vue">
-    <country-meeting-map ref="CRef"></country-meeting-map>
-    <b-j-meeting-map ref="BRef"></b-j-meeting-map>
+  <div class="FederationMonitorVideoMeeting">
+    <q-card flat bordered class="my-card row q-mt-md">
+      <div class="col-9">
+      <country-meeting-map ref="CRef"></country-meeting-map>
+      </div>
+      <div class="col-3">
+      <div class="q-pa-md">
+        <q-card class="my-card col-12 q-mt-sm">
+          <q-scroll-area style="height: 550px">
+            <q-card-section v-for="item in allData" :key="item[1].name">
+              <div class="row">
+                <div class="col-4">{{item[1].name}}</div>
+                <div class="col-4">状态:{{item[1].status === '0' ? '离线' : '在线'}}</div>
+                <div class="col-4">ping值:{{parseFloat(item[1].ping).toFixed(2)}}</div>
+              </div>
+            </q-card-section>
+          </q-scroll-area>
+        </q-card>
+      </div>
+      </div>
+    </q-card>
+    <q-card flat bordered class="my-card row q-mt-md">
+      <div class="col-9">
+        <b-j-meeting-map ref="BRef"></b-j-meeting-map>
+      </div>
+      <div class="col-3">
+        <div class="q-pa-md">
+          <q-card class="my-card col-12 q-mt-sm">
+            <q-scroll-area style="height: 550px">
+              <q-card-section v-for="item in bjData" :key="item[1].name">
+                <div class="row">
+                  <div class="col-4">{{item[1].name}}</div>
+                  <div class="col-4">状态:{{item[1].status === '0' ? '离线' : '在线'}}</div>
+                  <div class="col-4">ping值:{{parseFloat(item[1].ping).toFixed(2)}}</div>
+                </div>
+              </q-card-section>
+            </q-scroll-area>
+          </q-card>
+        </div>
+      </div>
+    </q-card>
   </div>
 </template>
 
@@ -12,7 +50,7 @@ import CountryMeetingMap from 'components/Chart/CountryMeetingMap.vue'
 import BJMeetingMap from 'components/Chart/BJMeetingMap.vue'
 
 export default defineComponent({
-  name: 'FederationMonitorVideoMeeting.vue',
+  name: 'FederationMonitorVideoMeeting',
   components: {
     CountryMeetingMap,
     BJMeetingMap
@@ -46,7 +84,7 @@ export default defineComponent({
             const InObj: any = {}
             InArr.push(startObj)
             InObj.name = item.metric.name
-            InObj.value = 7
+            InObj.value = 4
             InObj.status = item.value[1]
             InArr.push(InObj)
             allData.value.push(InArr)
@@ -58,13 +96,14 @@ export default defineComponent({
               const InObj: any = {}
               InArr.push(startObj)
               InObj.name = item.metric.name
-              InObj.value = 7
+              InObj.value = 4
               InObj.status = item.value[1]
               InArr.push(InObj)
               bjData.value.push(InArr)
             }
           }
         }
+        console.log(allObj.value)
       })
     }
     const getDelayData = async () => {
@@ -102,16 +141,17 @@ export default defineComponent({
     return {
       getStatusData,
       getDelayData,
+      sendData,
       BRef,
       CRef,
       allData,
-      sendData
+      bjData
     }
   }
 })
 </script>
 
 <style lang="scss" scoped>
-.FederationMonitorVideoMeeting.vue {
+.FederationMonitorVideoMeeting {
 }
 </style>

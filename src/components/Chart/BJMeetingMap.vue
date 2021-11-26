@@ -1,6 +1,6 @@
 <template>
   <div class="bjMeetingMap">
-      <div ref="container" :style="{ width: '1230px', height: '600px' }"/>
+    <div ref="container" :style="{ width: '900', height: '600px' }"/>
   </div>
 </template>
 <script lang="ts">
@@ -9,6 +9,7 @@ import { computed, defineComponent, onMounted, ref, watch } from 'vue'
 import * as echarts from 'echarts'
 import bj from 'assets/map/BeiJing.json'
 import { GeoJSONSourceInput } from 'echarts/types/src/coord/geo/geoTypes'
+
 export default defineComponent({
   name: 'bjMeetingMap',
   components: {},
@@ -20,7 +21,7 @@ export default defineComponent({
     const series: any = ref([])
     let index = 0
     // const color = ['#a6c84c', '#ffa022', '#46bee9']
-    const trainPath = 'path://M807.4 938.5c-139.5-8-250.2-31.7-250.2-173.2v-95.5c0-35.5 72.5-64.3 108-64.3h0.3l0.9-152.4c0-8.5-6.9-15.4-15.4-15.4H373.2c-8.5 0-15.4 6.9-15.4 15.4l0.6 148.7c33.6 2.1 103.8 30 103.8 64.1v95.5c0 142.2-111.8 168.4-252.3 175.3l-0.1 0.3 0.9 71.5c0 8.5 6.9 15.4 15.4 15.4h568.1c8.5 0 15.4-6.9 15.4-15.4l-0.8-69.8-1.4-0.2zM598.2 64.5V18.6c0-8.5-6.9-15.4-15.4-15.4H428.6c-8.5 0-15.4 6.9-15.4 15.4V67C212.1 111.8 61.7 291.3 61.7 506c0 153.6 77 289.2 194.4 370.3l42.7-136.7C236 681 196.7 597.4 196.7 504.7c0-177.4 143.8-321.3 321.3-321.3s321.3 143.8 321.3 321.3c0 97.9-43.8 185.5-112.8 244.5l40.1 127.4C884.2 795.4 961.4 659.7 961.4 506c0-218.8-156.2-401.1-363.2-441.5z'
+    const style = 'path://M807.4 938.5c-139.5-8-250.2-31.7-250.2-173.2v-95.5c0-35.5 72.5-64.3 108-64.3h0.3l0.9-152.4c0-8.5-6.9-15.4-15.4-15.4H373.2c-8.5 0-15.4 6.9-15.4 15.4l0.6 148.7c33.6 2.1 103.8 30 103.8 64.1v95.5c0 142.2-111.8 168.4-252.3 175.3l-0.1 0.3 0.9 71.5c0 8.5 6.9 15.4 15.4 15.4h568.1c8.5 0 15.4-6.9 15.4-15.4l-0.8-69.8-1.4-0.2zM598.2 64.5V18.6c0-8.5-6.9-15.4-15.4-15.4H428.6c-8.5 0-15.4 6.9-15.4 15.4V67C212.1 111.8 61.7 291.3 61.7 506c0 153.6 77 289.2 194.4 370.3l42.7-136.7C236 681 196.7 597.4 196.7 504.7c0-177.4 143.8-321.3 321.3-321.3s321.3 143.8 321.3 321.3c0 97.9-43.8 185.5-112.8 244.5l40.1 127.4C884.2 795.4 961.4 659.7 961.4 506c0-218.8-156.2-401.1-363.2-441.5z'
     const convertData = function (data: any[]) {
       const res = []
       for (let i = 0; i < data.length; i++) {
@@ -47,95 +48,84 @@ export default defineComponent({
       const startArr = ['网络中心', connectData.value]
       dataArr.push(startArr)
       dataArr.forEach(function (item: any) {
-        series.value.push({
-          name: item[0],
-          type: 'lines',
-          zlevel: 1,
-          lineStyle: {
-            normal: {
-              // legend 颜色
-              // color: color[i],
-              width: 0,
-              curveness: 0.2
-            }
-          },
-          data: convertData(item[1])
-        },
-        {
-          name: item[0],
-          type: 'lines',
-          zlevel: 2,
-          symbol: ['none'],
-          symbolSize: 9,
-          effect: {
-            show: true,
-            period: 6,
-            trailLength: 0.3,
-            symbol: trainPath,
-            symbolSize: 6
-          },
-          lineStyle: {
-            normal: {
-              // 线段颜色
-              color: function () {
-                const length = item[1].length - 1
-                const copyIndex = index
-                if (index < length) {
-                  index = index + 1
-                } else {
-                  index = 0
-                }
-                if (item[1][copyIndex][1].status === '0') {
-                  return '#FF0000'
-                } else {
-                  return '#00FF00'
-                }
-              },
-              width: 1.3,
-              opacity: 0.6,
-              curveness: 0.2
-            }
-          },
-          data: convertData(item[1])
-        },
-        {
-          name: item[0],
-          type: 'effectScatter',
-          coordinateSystem: 'geo',
-          zlevel: 2,
-          rippleEffect: {
-            brushType: 'stroke'
-          },
-          label: {
-            normal: {
+        series.value.push(
+          {
+            name: item[0],
+            type: 'lines',
+            zlevel: 2,
+            symbol: ['none'],
+            symbolSize: 9,
+            effect: {
               show: true,
-              // 点字体颜色
-              // color: '#fff',
-              position: 'right',
-              formatter: '{b}'
-            }
-          },
-          symbolSize: function (val: number[]) {
-            return val[2]
-          },
-          itemStyle: {
-            normal: {
-              // 点的颜色
-              // color: color[i]
+              period: 6,
+              trailLength: 0.3,
+              symbol: style,
+              symbolSize: 6
             },
-            emphasis: {
-              areaColor: '#2B91B7'
-            }
+            lineStyle: {
+              normal: {
+                // 线段颜色
+                color: function () {
+                  const length = item[1].length - 1
+                  const copyIndex = index
+                  if (index < length) {
+                    index = index + 1
+                  } else {
+                    index = 0
+                  }
+                  if (item[1][copyIndex][1].status === '0') {
+                    return '#FF0000'
+                  } else {
+                    return '#00FF00'
+                  }
+                },
+                width: 1.3,
+                opacity: 0.6,
+                curveness: 0.2
+              }
+            },
+            data: convertData(item[1])
           },
-          data: item[1].map(function (dataItem: any) {
-            return {
-              name: dataItem[1].name,
-              value: geoCoordsMap.value[dataItem[1].name].concat([dataItem[1].value]),
-              status: dataItem[1].status
+          {
+            name: item[0],
+            type: 'effectScatter',
+            coordinateSystem: 'geo',
+            zlevel: 2,
+            rippleEffect: {
+              brushType: 'stroke',
+              number: 3,
+              scale: 5
+            },
+            label: {
+              normal: {
+                show: true,
+                // 点字体颜色
+                // color: '#fff',
+                position: 'right',
+                formatter: '{b}'
+              }
+            },
+            symbolSize: function (val: number[]) {
+              return val[2]
+            },
+            itemStyle: {
+              normal: {
+                // 点的颜色
+                // color: color[i]
+              },
+              emphasis: {
+                areaColor: '#2B91B7'
+              }
+            },
+            data: item[1].map(function (dataItem: any) {
+              return {
+                name: dataItem[1].name,
+                value: geoCoordsMap.value[dataItem[1].name].concat([dataItem[1].value]),
+                status: dataItem[1].status
+              }
             }
-          }
-          )
-        })
+            )
+          })
       })
     }
 
@@ -146,7 +136,7 @@ export default defineComponent({
         backgroundColor: '#ffffff',
         title: {
           text: '视频会议监控（北京市）',
-          left: 'center',
+          left: '55%',
           textStyle: {
             color: '#000000'
           }
@@ -167,7 +157,7 @@ export default defineComponent({
         legend: {
           orient: 'vertical',
           top: '10%',
-          right: '10%',
+          right: 0,
           textStyle: {
             // legend 字体颜色
             color: '#000000'
@@ -183,8 +173,10 @@ export default defineComponent({
               color: '#012248'
             }
           },
-          roam: true,
+          roam: 'scale',
           // center: [105.97, 34.71],
+          top: '10%',
+          left: '15%',
           zoom: 1.1,
           itemStyle: {
             normal: {
