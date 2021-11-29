@@ -62,7 +62,7 @@
             </q-parallax>
           </div>
           <div class="home-footer">
-            <div>©CNIC 2021</div>
+            <div>©2021 CNIC 京ICP备09112257号-94</div>
           </div>
         </q-scroll-area>
       </q-page>

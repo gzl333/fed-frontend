@@ -28,8 +28,7 @@ const mutation: MutationTree<AccountModuleInterface> = {
     state.items.loginType = payload.loginType
     state.items.access = payload.access
     state.items.refresh = payload.refresh
-    const decoded = jwtDecode<DecodedToken>(payload.access)
-    state.items.decoded = decoded
+    state.items.decoded = jwtDecode<DecodedToken>(payload.access)
 
     // localStorage
     localStorage.setItem('access', state.items.access)
