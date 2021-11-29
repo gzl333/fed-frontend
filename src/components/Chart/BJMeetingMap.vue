@@ -148,28 +148,18 @@ export default defineComponent({
               const status = params.data.status === '0' ? '离线' : '在线'
               return params.data.name + '<br/>' + '状态:' + status
             } else if (params.seriesType === 'lines') {
-              const str = params.data.fromName + '——' + params.data.toName
-              const str1 = params.data.status === '0' ? '<span style="color: red">离线</span>' : '<span style="color: green">在线</span>'
+              const name = params.data.fromName + '——' + params.data.toName
+              const status = params.data.status === '0' ? '<span style="color: red">离线</span>' : '<span style="color: green">在线</span>'
               if (params.data.status === '0') {
-                return str + '<br/>' + '状态:' + str1
+                return name + '<br/>' + '状态:' + status
               } else {
-                return str + '<br/>' + '状态:' + str1 + '</br>' + 'ping值:' + params.data.ping
+                return name + '<br/>' + '状态:' + status + '</br>' + 'ping值:' + params.data.ping
               }
             } else {
               return params.name
             }
           }
         },
-        // legend: {
-        //   orient: 'vertical',
-        //   top: '10%',
-        //   right: 0,
-        //   textStyle: {
-        //     // legend 字体颜色
-        //     color: '#000000'
-        //   },
-        //   selectedMode: 'multiple'
-        // },
         geo: {
           map: 'bj',
           label: {
@@ -181,10 +171,6 @@ export default defineComponent({
           },
           roam: 'none',
           center: [116.335858, 39.9799827],
-          // top: 0,
-          // left: '15%',
-          // bottom: '30%',
-          // bottom: 150,
           zoom: 5.5,
           itemStyle: {
             normal: {

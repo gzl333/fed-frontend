@@ -5,25 +5,22 @@
         <country-meeting-map ref="CRef"></country-meeting-map>
       </div>
       <div class="col-3">
-        <div>
-          <q-card class="my-card col-12">
-            <q-scroll-area style="height: 550px">
-              <div v-for="item in allData" :key="item[1].name">
-                <div class="row q-pa-sm">
-                  <div class="col-4">{{ item[1].name }}</div>
-                  <div class="col-3">
-                    <span>状态:</span>
-                    <span
-                      :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{
-                        item[1].status === '0' ? '离线' : '在线'
-                      }}</span>
-                  </div>
-                  <div class="col-5" v-if="item[1].status === '1'">ping:{{ parseFloat(item[1].ping).toFixed(6) }}ms</div>
+        <q-card class="my-card q-mt-md">
+          <q-scroll-area style="height: 550px">
+            <div v-for="item in countryData" :key="item[1].name">
+              <div class="row q-pa-sm">
+                <div class="col-4">{{ item[1].name }}</div>
+                <div class="col-3">
+                  <span>状态:</span>
+                  <span :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{
+                      item[1].status === '0' ? '离线' : '在线'
+                    }}</span>
                 </div>
+                <div class="col-5" v-if="item[1].status === '1'">ping:{{ parseFloat(item[1].ping).toFixed(6) }}ms</div>
               </div>
-            </q-scroll-area>
-          </q-card>
-        </div>
+            </div>
+          </q-scroll-area>
+        </q-card>
       </div>
     </q-card>
     <q-card flat bordered class="my-card row q-mt-md">
@@ -31,25 +28,23 @@
         <b-j-meeting-map ref="BRef"></b-j-meeting-map>
       </div>
       <div class="col-3">
-        <div class="q-pa-md">
-          <q-card class="my-card col-12 q-mt-sm">
-            <q-scroll-area style="height: 550px">
-              <div v-for="item in bjData" :key="item[1].name">
-                <div class="row q-pa-sm">
-                  <div class="col-4">{{ item[1].name }}</div>
-                  <div class="col-3">
-                    <span>状态:</span>
-                    <span
-                      :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{
-                        item[1].status === '0' ? '离线' : '在线'
-                      }}</span>
-                  </div>
-                  <div class="col-5" v-if="item[1].status === '1'">ping:{{ parseFloat(item[1].ping).toFixed(6) }}ms</div>
+        <q-card class="my-card q-mt-md">
+          <q-scroll-area style="height: 550px">
+            <div v-for="item in bjData" :key="item[1].name">
+              <div class="row q-pa-sm">
+                <div class="col-4">{{ item[1].name }}</div>
+                <div class="col-3">
+                  <span>状态:</span>
+                  <span :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{
+                      item[1].status === '0' ? '离线' : '在线'
+                    }}</span>
+                </div>
+                <div class="col-5" v-if="item[1].status === '1'">ping:{{ parseFloat(item[1].ping).toFixed(6) }}ms
                 </div>
               </div>
-            </q-scroll-area>
-          </q-card>
-        </div>
+            </div>
+          </q-scroll-area>
+        </q-card>
       </div>
     </q-card>
   </div>
@@ -72,51 +67,23 @@ export default defineComponent({
   setup () {
     const CRef: any = ref(null)
     const BRef: any = ref(null)
-    const allObj: any = ref({})
-    const allData: any = ref([])
-    const bjObj: any = ref({})
+    const statusData: any = ref([])
+    const pingData: any = ref([])
+    const countryData: any = ref([])
     const bjData: any = ref([])
+    const countryObj: any = ref({})
+    const countryFilterData: any = ref([])
+    const bjObj: any = ref({})
+    const bjFilterData: any = ref([])
     const getStatusData = async () => {
       const config = {
         query: {
           query: 'node_status'
         }
       }
-      const startObj = {
-        name: '网络中心'
-      }
       await $api.monitor.getMonitorVideoQuery(config).then((res: any) => {
-        for (const item of res.data[0].value) {
-          const outArr = []
-          outArr.push(item.metric.latitude)
-          outArr.push(item.metric.longitude)
-          allObj.value[item.metric.name] = outArr
-          // if (item.metric.name !== '网络中心') {
-          const InArr = []
-          const InObj: any = {}
-          InArr.push(startObj)
-          InObj.name = item.metric.name
-          InObj.value = 4
-          InObj.status = item.value[1]
-          InArr.push(InObj)
-          allData.value.push(InArr)
-          // }
-          if ((item.metric.latitude > 115.7 && item.metric.latitude < 117.4) && (item.metric.longitude > 39.4 || item.metric.longitude < 41.6)) {
-            bjObj.value[item.metric.name] = outArr
-            // if (item.metric.name !== '网络中心') {
-            const InArr = []
-            const InObj: any = {}
-            InArr.push(startObj)
-            InObj.name = item.metric.name
-            InObj.value = 4
-            InObj.status = item.value[1]
-            InArr.push(InObj)
-            bjData.value.push(InArr)
-          }
-          // }
-        }
-        console.log(allObj.value)
-        console.log(allData.value)
+        statusData.value = res.data
+        handleStatusData()
       })
     }
     const getDelayData = async () => {
@@ -126,38 +93,76 @@ export default defineComponent({
         }
       }
       await $api.monitor.getMonitorVideoQuery(config).then((res) => {
-        for (const item of res.data[0].value) {
-          if (item.metric.name !== '网络中心') {
-            for (const service of allData.value) {
-              if (service[1].name === item.metric.name) {
-                service[1].ping = item.value[1]
-              }
-            }
-            for (const service of bjData.value) {
-              if (service[1].name === item.metric.name) {
-                service[1].ping = item.value[1]
-              }
+        pingData.value = res.data
+        handlePingData()
+      })
+    }
+    const handleStatusData = () => {
+      const startObj = {
+        name: '网络中心'
+      }
+      statusData.value.forEach((item: any) => {
+        item.value.forEach((item1: any) => {
+          const outArr = []
+          outArr.push(item1.metric.latitude)
+          outArr.push(item1.metric.longitude)
+          countryObj.value[item1.metric.name] = outArr
+          const InArr = []
+          const InObj: any = {}
+          InArr.push(startObj)
+          InObj.name = item1.metric.name
+          InObj.value = 4
+          InObj.status = item1.value[1]
+          InArr.push(InObj)
+          countryData.value.push(InArr)
+          if ((item1.metric.latitude > 115.7 && item1.metric.latitude < 117.4) && (item1.metric.longitude > 39.4 || item1.metric.longitude < 41.6)) {
+            bjObj.value[item1.metric.name] = outArr
+            const InArr = []
+            const InObj: any = {}
+            InArr.push(startObj)
+            InObj.name = item1.metric.name
+            InObj.value = 4
+            InObj.status = item1.value[1]
+            InArr.push(InObj)
+            bjData.value.push(InArr)
+          }
+        })
+      })
+    }
+    const handlePingData = () => {
+      pingData.value.forEach((item: any) => {
+        item.value.forEach((item1: any) => {
+          for (const service of countryData.value) {
+            if (service[1].name === item1.metric.name) {
+              service[1].ping = item1.value[1]
             }
           }
-        }
+          for (const service of bjData.value) {
+            if (service[1].name === item1.metric.name) {
+              service[1].ping = item1.value[1]
+            }
+          }
+        })
       })
+    }
+    const filterData = () => {
+      countryFilterData.value = countryData.value.filter((item: any) => item[1].name !== '网络中心')
+      bjFilterData.value = bjData.value.filter((item: any) => item[1].name !== '网络中心')
     }
     const sendData = async () => {
       await getStatusData()
       await getDelayData()
-      CRef.value.getData(allObj.value, allData.value)
-      BRef.value.getData(bjObj.value, bjData.value)
+      filterData()
+      CRef.value.getData(countryObj.value, countryFilterData.value)
+      BRef.value.getData(bjObj.value, bjFilterData.value)
     }
     onMounted(() => {
       void sendData()
     })
     return {
-      getStatusData,
-      getDelayData,
-      sendData,
       BRef,
       CRef,
-      allData,
+      countryData,
       bjData
     }
   }
