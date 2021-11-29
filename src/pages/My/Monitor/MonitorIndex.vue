@@ -29,6 +29,14 @@
                   inline-label
                 >
                   <q-route-tab
+                    class="q-px-none q-py-md q-mr-md"
+                    name="meeting"
+                    icon="insert_chart_outlined"
+                    :label="$t('视频会议')"
+                    :ripple="false"
+                    to="/my/monitor/meeting"
+                  />
+                  <q-route-tab
                     v-if="$store.state.account.items.fedRole === 'federal-admin'"
                     class="q-px-none q-py-md q-mr-md"
                     name="server"
@@ -46,15 +54,6 @@
                     :ripple="false"
                     to="/my/monitor/storage"
                   />
-                  <q-route-tab
-                    class="q-px-none q-py-md q-mr-md"
-                    name="meeting"
-                    icon="insert_chart_outlined"
-                    :label="$t('视频会议')"
-                    :ripple="false"
-                    to="/my/monitor/meeting"
-                  />
-
                   <!--DEV-->
 <!--                  <q-route-tab-->
 <!--                    v-if="$store.state.account.items.fedRole === 'federal-admin' && isDev"-->
@@ -102,7 +101,7 @@ export default defineComponent({
   emits: {},
   setup () {
     return {
-      activeTab: ref('server')
+      activeTab: ref('meeting')
     }
   }
 })

@@ -314,11 +314,16 @@ const routes: RouteRecordRaw[] = [
       {
         path: 'monitor',
         component: () => import('pages/My/Monitor/MonitorIndex.vue'),
-        redirect: '/my/monitor/server',
+        redirect: '/my/monitor/meeting',
         meta: {
           title: '综合监控-中国科技云联邦'
         },
         children: [
+          {
+            path: 'meeting',
+            meta: {},
+            component: () => import('pages/My/Monitor/MonitorVideoMeeting.vue')
+          },
           {
             path: 'server',
             meta: {
@@ -332,11 +337,6 @@ const routes: RouteRecordRaw[] = [
               requireFedAdmin: true // 云联邦管理员才能访问
             },
             component: () => import('pages/My/Monitor/MonitorStorage.vue')
-          },
-          {
-            path: 'meeting',
-            meta: {},
-            component: () => import('pages/My/Monitor/MonitorVideoMeeting.vue')
           }
         ]
       }

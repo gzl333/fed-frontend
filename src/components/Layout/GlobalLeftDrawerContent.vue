@@ -92,7 +92,7 @@
 
         </q-list>
 
-        <div class="text-grey text-body2 text-center q-pt-xl">v0.2.8 beta</div>
+        <div class="text-grey text-body2 text-center q-pt-xl">v0.2.9 beta</div>
       </q-scroll-area>
     </div>
 
