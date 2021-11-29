@@ -11,14 +11,14 @@
               <div v-for="item in allData" :key="item[1].name">
                 <div class="row q-pa-sm">
                   <div class="col-4">{{ item[1].name }}</div>
-                  <div class="col-4">
+                  <div class="col-3">
                     <span>状态:</span>
                     <span
                       :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{
                         item[1].status === '0' ? '离线' : '在线'
                       }}</span>
                   </div>
-                  <div class="col-4" v-if="item[1].status === '1'">ping值:{{ parseFloat(item[1].ping).toFixed(2) }}</div>
+                  <div class="col-5" v-if="item[1].status === '1'">ping:{{ parseFloat(item[1].ping).toFixed(6) }}ms</div>
                 </div>
               </div>
             </q-scroll-area>
@@ -37,14 +37,14 @@
               <div v-for="item in bjData" :key="item[1].name">
                 <div class="row q-pa-sm">
                   <div class="col-4">{{ item[1].name }}</div>
-                  <div class="col-4">
+                  <div class="col-3">
                     <span>状态:</span>
                     <span
                       :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{
                         item[1].status === '0' ? '离线' : '在线'
                       }}</span>
                   </div>
-                  <div class="col-4" v-if="item[1].status === '1'">ping值:{{ parseFloat(item[1].ping).toFixed(2) }}</div>
+                  <div class="col-5" v-if="item[1].status === '1'">ping:{{ parseFloat(item[1].ping).toFixed(6) }}ms</div>
                 </div>
               </div>
             </q-scroll-area>
