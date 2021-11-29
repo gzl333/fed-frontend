@@ -133,7 +133,7 @@ export default defineComponent({
       const chart = echarts.init(container.value!)
       echarts.registerMap('bj', bj as GeoJSONSourceInput)
       const option = computed(() => ({
-        backgroundColor: '#ffffff',
+        backgroundColor: '#FAFAFA',
         title: {
           text: '视频会议监控（北京市）',
           left: '55%',
@@ -148,22 +148,28 @@ export default defineComponent({
               const status = params.data.status === '0' ? '离线' : '在线'
               return params.data.name + '<br/>' + '状态:' + status
             } else if (params.seriesType === 'lines') {
-              return params.data.fromName + '——' + params.data.toName + '<br/>' + 'ping值:' + params.data.ping
+              const str = params.data.fromName + '——' + params.data.toName
+              const str1 = params.data.status === '0' ? '<span style="color: red">离线</span>' : '<span style="color: green">在线</span>'
+              if (params.data.status === '0') {
+                return str + '<br/>' + '状态:' + str1
+              } else {
+                return str + '<br/>' + '状态:' + str1 + '</br>' + 'ping值:' + params.data.ping
+              }
             } else {
               return params.name
             }
           }
         },
-        legend: {
-          orient: 'vertical',
-          top: '10%',
-          right: 0,
-          textStyle: {
-            // legend 字体颜色
-            color: '#000000'
-          },
-          selectedMode: 'multiple'
-        },
+        // legend: {
+        //   orient: 'vertical',
+        //   top: '10%',
+        //   right: 0,
+        //   textStyle: {
+        //     // legend 字体颜色
+        //     color: '#000000'
+        //   },
+        //   selectedMode: 'multiple'
+        // },
         geo: {
           map: 'bj',
           label: {
@@ -173,14 +179,16 @@ export default defineComponent({
               color: '#012248'
             }
           },
-          roam: 'scale',
-          // center: [105.97, 34.71],
-          top: '10%',
-          left: '15%',
-          zoom: 1.1,
+          roam: 'none',
+          center: [116.335858, 39.9799827],
+          // top: 0,
+          // left: '15%',
+          // bottom: '30%',
+          // bottom: 150,
+          zoom: 5.5,
           itemStyle: {
             normal: {
-              areaColor: '#BDBDBD',
+              areaColor: '#E6E6E6',
               borderColor: 'skyblue',
               borderWidth: 1
             },

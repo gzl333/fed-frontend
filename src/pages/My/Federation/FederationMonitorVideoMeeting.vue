@@ -2,22 +2,28 @@
   <div class="FederationMonitorVideoMeeting">
     <q-card flat bordered class="my-card row q-mt-md">
       <div class="col-9">
-      <country-meeting-map ref="CRef"></country-meeting-map>
+        <country-meeting-map ref="CRef"></country-meeting-map>
       </div>
       <div class="col-3">
-      <div class="q-pa-md">
-        <q-card class="my-card col-12 q-mt-sm">
-          <q-scroll-area style="height: 550px">
-            <q-card-section v-for="item in allData" :key="item[1].name">
-              <div class="row">
-                <div class="col-4">{{item[1].name}}</div>
-                <div class="col-4">状态:{{item[1].status === '0' ? '离线' : '在线'}}</div>
-                <div class="col-4">ping值:{{parseFloat(item[1].ping).toFixed(2)}}</div>
+        <div>
+          <q-card class="my-card col-12">
+            <q-scroll-area style="height: 550px">
+              <div v-for="item in allData" :key="item[1].name">
+                <div class="row q-pa-sm">
+                  <div class="col-4">{{ item[1].name }}</div>
+                  <div class="col-4">
+                    <span>状态:</span>
+                    <span
+                      :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{
+                        item[1].status === '0' ? '离线' : '在线'
+                      }}</span>
+                  </div>
+                  <div class="col-4" v-if="item[1].status === '1'">ping值:{{ parseFloat(item[1].ping).toFixed(2) }}</div>
+                </div>
               </div>
-            </q-card-section>
-          </q-scroll-area>
-        </q-card>
-      </div>
+            </q-scroll-area>
+          </q-card>
+        </div>
       </div>
     </q-card>
     <q-card flat bordered class="my-card row q-mt-md">
@@ -28,13 +34,19 @@
         <div class="q-pa-md">
           <q-card class="my-card col-12 q-mt-sm">
             <q-scroll-area style="height: 550px">
-              <q-card-section v-for="item in bjData" :key="item[1].name">
-                <div class="row">
-                  <div class="col-4">{{item[1].name}}</div>
-                  <div class="col-4">状态:{{item[1].status === '0' ? '离线' : '在线'}}</div>
-                  <div class="col-4">ping值:{{parseFloat(item[1].ping).toFixed(2)}}</div>
+              <div v-for="item in bjData" :key="item[1].name">
+                <div class="row q-pa-sm">
+                  <div class="col-4">{{ item[1].name }}</div>
+                  <div class="col-4">
+                    <span>状态:</span>
+                    <span
+                      :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{
+                        item[1].status === '0' ? '离线' : '在线'
+                      }}</span>
+                  </div>
+                  <div class="col-4" v-if="item[1].status === '1'">ping值:{{ parseFloat(item[1].ping).toFixed(2) }}</div>
                 </div>
-              </q-card-section>
+              </div>
             </q-scroll-area>
           </q-card>
         </div>
@@ -79,7 +91,19 @@ export default defineComponent({
           outArr.push(item.metric.latitude)
           outArr.push(item.metric.longitude)
           allObj.value[item.metric.name] = outArr
-          if (item.metric.name !== '网络中心') {
+          // if (item.metric.name !== '网络中心') {
+          const InArr = []
+          const InObj: any = {}
+          InArr.push(startObj)
+          InObj.name = item.metric.name
+          InObj.value = 4
+          InObj.status = item.value[1]
+          InArr.push(InObj)
+          allData.value.push(InArr)
+          // }
+          if ((item.metric.latitude > 115.7 && item.metric.latitude < 117.4) && (item.metric.longitude > 39.4 || item.metric.longitude < 41.6)) {
+            bjObj.value[item.metric.name] = outArr
+            // if (item.metric.name !== '网络中心') {
             const InArr = []
             const InObj: any = {}
             InArr.push(startObj)
@@ -87,23 +111,12 @@ export default defineComponent({
             InObj.value = 4
             InObj.status = item.value[1]
             InArr.push(InObj)
-            allData.value.push(InArr)
+            bjData.value.push(InArr)
           }
-          if ((item.metric.latitude > 115.7 && item.metric.latitude < 117.4) && (item.metric.longitude > 39.4 || item.metric.longitude < 41.6)) {
-            bjObj.value[item.metric.name] = outArr
-            if (item.metric.name !== '网络中心') {
-              const InArr = []
-              const InObj: any = {}
-              InArr.push(startObj)
-              InObj.name = item.metric.name
-              InObj.value = 4
-              InObj.status = item.value[1]
-              InArr.push(InObj)
-              bjData.value.push(InArr)
-            }
-          }
+          // }
         }
         console.log(allObj.value)
+        console.log(allData.value)
       })
     }
     const getDelayData = async () => {
