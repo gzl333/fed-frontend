@@ -77,6 +77,19 @@
             </q-item-section>
           </q-item>
 
+          <q-item
+            clickable
+            :active="activeItem === 'monitor'"
+            @click="activeItem = 'monitor'"
+            active-class="active-item"
+            to='/my/monitor'
+          >
+            <q-item-section class="column items-center">
+              <q-icon name="las la-tachometer-alt" size="lg"/>
+              <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('综合监控') }}</div>
+            </q-item-section>
+          </q-item>
+
         </q-list>
 
         <div class="text-grey text-body2 text-center q-pt-xl">v0.2.8 beta</div>

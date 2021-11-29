@@ -36,26 +36,6 @@
                     :ripple="false"
                     to="/my/federation/resource"
                   />
-                  <!--云联邦管理员可见-->
-                  <q-route-tab
-                    v-if="$store.state.account.items.fedRole === 'federal-admin'"
-                    class="q-px-none q-py-md q-mx-md"
-                    name="monitor"
-                    icon="insights"
-                    :label="$t('联邦监控')"
-                    :ripple="false"
-                    to="/my/federation/monitor"
-                  />
-                  <!--DEV-->
-                  <q-route-tab
-                    v-if="$store.state.account.items.fedRole === 'federal-admin' && isDev"
-                    class="q-px-none q-py-md q-mx-md"
-                    name="DEV"
-                    icon="insights"
-                    :label="$t('DEV')"
-                    :ripple="false"
-                    to="/my/federation/dev"
-                  />
                 </q-tabs>
               </div>
 

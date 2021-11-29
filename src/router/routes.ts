@@ -308,38 +308,35 @@ const routes: RouteRecordRaw[] = [
             path: 'resource',
             meta: {},
             component: () => import('pages/My/Federation/FederationResource.vue')
-          },
+          }
+        ]
+      },
+      {
+        path: 'monitor',
+        component: () => import('pages/My/Monitor/MonitorIndex.vue'),
+        redirect: '/my/monitor/server',
+        meta: {
+          title: '综合监控-中国科技云联邦'
+        },
+        children: [
           {
-            path: 'monitor',
+            path: 'server',
             meta: {
               requireFedAdmin: true // 云联邦管理员才能访问
             },
-            redirect: '/my/federation/monitor/storage',
-            component: () => import('pages/My/Federation/FederationMonitorIndex.vue'),
-            children: [
-              {
-                path: 'storage',
-                meta: {},
-                component: () => import('pages/My/Federation/FederationMonitorStorage.vue')
-              },
-              {
-                path: 'server',
-                meta: {},
-                component: () => import('pages/My/Federation/FederationMonitorServer.vue')
-              },
-              {
-                path: 'meeting',
-                meta: {},
-                component: () => import('pages/My/Federation/FederationMonitorVideoMeeting.vue')
-              }
-            ]
+            component: () => import('pages/My/Monitor/MonitorServer.vue')
           },
           {
-            path: 'dev',
+            path: 'storage',
             meta: {
               requireFedAdmin: true // 云联邦管理员才能访问
             },
-            component: () => import('pages/My/Federation/DEV-Test.vue')
+            component: () => import('pages/My/Monitor/MonitorStorage.vue')
+          },
+          {
+            path: 'meeting',
+            meta: {},
+            component: () => import('pages/My/Monitor/MonitorVideoMeeting.vue')
           }
         ]
       }

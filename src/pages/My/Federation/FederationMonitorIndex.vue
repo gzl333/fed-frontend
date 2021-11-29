@@ -12,13 +12,13 @@
         >
           <q-route-tab class="q-px-none q-py-none q-mr-md"
                        :ripple="false"
-                       name="quota"
+                       name="storage"
                        icon="mdi-database"
                        :label="$t('存储集群')"
                        to="/my/federation/monitor/storage"/>
           <q-route-tab class="q-px-none q-py-none q-mr-md"
                        :ripple="false"
-                       name="application"
+                       name="server"
                        icon="mdi-server"
                        :label="$t('主机集群')"
                        to="/my/federation/monitor/server"/>
