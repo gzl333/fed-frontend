@@ -16,7 +16,7 @@
                       item[1].status === '0' ? '离线' : '在线'
                     }}</span>
                 </div>
-                <div class="col-5" v-if="item[1].status === '1'">ping:{{ parseFloat(item[1].ping).toFixed(6) }}ms</div>
+                <div class="col-5" v-if="item[1].status === '1'">ping:{{ (parseFloat(item[1].ping) * 1000).toFixed(3) }}ms</div>
               </div>
             </div>
           </q-scroll-area>
@@ -39,7 +39,7 @@
                       item[1].status === '0' ? '离线' : '在线'
                     }}</span>
                 </div>
-                <div class="col-5" v-if="item[1].status === '1'">ping:{{ parseFloat(item[1].ping).toFixed(6) }}ms
+                <div class="col-5" v-if="item[1].status === '1'">ping:{{ (parseFloat(item[1].ping) * 1000).toFixed(3) }}ms
                 </div>
               </div>
             </div>

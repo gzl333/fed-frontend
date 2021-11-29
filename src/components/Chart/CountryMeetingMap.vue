@@ -132,7 +132,7 @@ export default defineComponent({
       const option = computed(() => ({
         backgroundColor: '#FAFAFA',
         title: {
-          text: '视频会议监控（全国）',
+          text: '视频会议节点网络状态-全国',
           left: '55%',
           textStyle: {
             color: '#000000'
