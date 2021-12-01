@@ -186,9 +186,11 @@ export default defineComponent({
       }))
       chart.setOption(option.value)
       watch(option, () => {
+        chart.clear()
         chart.setOption(option.value)
       })
       watch(series.value, () => {
+        chart.clear()
         chart.setOption(option.value)
       })
     })
