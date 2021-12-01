@@ -11,17 +11,22 @@
       <div class="col-3">
         <q-card class="my-card q-mt-md">
           <q-scroll-area style="height: 550px">
-            <div v-for="item in countryCardData" :key="item[1].name">
-              <div class="row q-pa-sm">
-                <div class="col-4">{{ item[1].name }}</div>
-                <div class="col-3">
-                  <span>状态:</span>
-                  <span :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{
-                      item[1].status === '0' ? '离线' : '在线'
-                    }}</span>
+            <div v-for="item in countryCardData" :key="item[1].name" class="q-py-xs q-px-md">
+              <div class="row justify-center">{{ item[1].name }}</div>
+              <div class="row">
+                  <div class="col-2">IP地址:</div>
+                  <div class="col-5" v-for="(item1, index) in item[1].ipv4" :key="index">{{ item1 }}</div>
                 </div>
-                <div class="col-5" v-if="item[1].status === '1'">ping:{{ (parseFloat(item[1].ping) * 1000).toFixed(3) }}ms</div>
+              <div class="row">
+                <div class="col-7">
+                  <span>状态:</span>
+                  <span :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{ item[1].status === '0' ? '离线' : '在线' }}</span>
+                </div>
+                <div v-if="item[1].status === '1'" class="col-5">
+                  ping:{{ (parseFloat(item[1].ping) * 1000).toFixed(3) }}ms
+                </div>
               </div>
+              <q-separator class="q-mt-sm"/>
             </div>
           </q-scroll-area>
         </q-card>
@@ -34,18 +39,22 @@
       <div class="col-3">
         <q-card class="my-card q-mt-md">
           <q-scroll-area style="height: 550px">
-            <div v-for="item in bjCardData" :key="item[1].name">
-              <div class="row q-pa-sm">
-                <div class="col-4">{{ item[1].name }}</div>
-                <div class="col-3">
+            <div v-for="item in bjCardData" :key="item[1].name" class="q-py-xs q-px-md">
+              <div class="row justify-center">{{ item[1].name }}</div>
+              <div class="row">
+                <div class="col-2">IP地址:</div>
+                <div class="col-5" v-for="(item1, index) in item[1].ipv4" :key="index">{{ item1 }}</div>
+              </div>
+              <div class="row">
+                <div class="col-7">
                   <span>状态:</span>
-                  <span :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{
-                      item[1].status === '0' ? '离线' : '在线'
-                    }}</span>
+                  <span :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{ item[1].status === '0' ? '离线' : '在线' }}</span>
                 </div>
-                <div class="col-5" v-if="item[1].status === '1'">ping:{{ (parseFloat(item[1].ping) * 1000).toFixed(3) }}ms
+                <div v-if="item[1].status === '1'" class="col-5">
+                  ping:{{ (parseFloat(item[1].ping) * 1000).toFixed(3) }}ms
                 </div>
               </div>
+              <q-separator class="q-mt-sm"/>
             </div>
           </q-scroll-area>
         </q-card>
@@ -138,24 +147,26 @@ export default defineComponent({
           outArr.push(item1.metric.latitude)
           outArr.push(item1.metric.longitude)
           countryObj.value[item1.metric.name] = outArr
-          const InArr = []
-          const InObj: any = {}
-          InArr.push(startObj)
-          InObj.name = item1.metric.name
-          InObj.value = 4
-          InObj.status = item1.value[1]
-          InArr.push(InObj)
-          countryCardData.value.push(InArr)
+          const inArr = []
+          const inObj: any = {}
+          inArr.push(startObj)
+          inObj.name = item1.metric.name
+          inObj.value = 4
+          inObj.status = item1.value[1]
+          inObj.ipv4 = item1.metric.ipv4s
+          inArr.push(inObj)
+          countryCardData.value.push(inArr)
           if ((item1.metric.latitude > 115.7 && item1.metric.latitude < 117.4) && (item1.metric.longitude > 39.4 || item1.metric.longitude < 41.6)) {
             bjObj.value[item1.metric.name] = outArr
-            const InArr = []
-            const InObj: any = {}
-            InArr.push(startObj)
-            InObj.name = item1.metric.name
-            InObj.value = 4
-            InObj.status = item1.value[1]
-            InArr.push(InObj)
-            bjCardData.value.push(InArr)
+            const inArr = []
+            const inObj: any = {}
+            inArr.push(startObj)
+            inObj.name = item1.metric.name
+            inObj.value = 4
+            inObj.status = item1.value[1]
+            inObj.ipv4 = item1.metric.ipv4s
+            inArr.push(inObj)
+            bjCardData.value.push(inArr)
           }
         })
       })
