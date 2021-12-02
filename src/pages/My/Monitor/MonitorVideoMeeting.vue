@@ -20,9 +20,9 @@
               <div class="row">
                 <div class="col-7">
                   <span>状态:</span>
-                  <span :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{
-                      item[1].status === '0' ? '离线' : '在线'
-                    }}</span>
+                  <span :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">
+                    {{item[1].status === '0' ? '离线' : '在线' }}
+                  </span>
                 </div>
                 <div v-if="item[1].status === '1'" class="col-5">
                   ping:{{ (parseFloat(item[1].ping) * 1000).toFixed(3) }}ms
@@ -50,9 +50,9 @@
               <div class="row">
                 <div class="col-7">
                   <span>状态:</span>
-                  <span :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">{{
-                      item[1].status === '0' ? '离线' : '在线'
-                    }}</span>
+                  <span :class="item[1].status === '0' ? 'text-negative' : 'text-positive'">
+                    {{item[1].status === '0' ? '离线' : '在线' }}
+                  </span>
                 </div>
                 <div v-if="item[1].status === '1'" class="col-5">
                   ping:{{ (parseFloat(item[1].ping) * 1000).toFixed(3) }}ms
@@ -80,13 +80,13 @@ export default defineComponent({
   props: {},
   emits: {},
   setup () {
-    const statusData: any = ref([])
-    const pingData: any = ref([])
+    const statusData = ref([])
+    const pingData = ref([])
     // 父组件展示需要的数据
     const countryCardData: any = ref([])
     const bjCardData: any = ref([])
     // 所有服务经纬度数据
-    const countryObj: any = ref({})
+    const countryObj: Record<string, any> = ref({})
     // 全国地图需要的数据
     const countryFilterData: any = ref([])
     const countrySeries: any = ref([])
@@ -122,6 +122,114 @@ export default defineComponent({
       }
     ]
     const style = 'path://M807.4 938.5c-139.5-8-250.2-31.7-250.2-173.2v-95.5c0-35.5 72.5-64.3 108-64.3h0.3l0.9-152.4c0-8.5-6.9-15.4-15.4-15.4H373.2c-8.5 0-15.4 6.9-15.4 15.4l0.6 148.7c33.6 2.1 103.8 30 103.8 64.1v95.5c0 142.2-111.8 168.4-252.3 175.3l-0.1 0.3 0.9 71.5c0 8.5 6.9 15.4 15.4 15.4h568.1c8.5 0 15.4-6.9 15.4-15.4l-0.8-69.8-1.4-0.2zM598.2 64.5V18.6c0-8.5-6.9-15.4-15.4-15.4H428.6c-8.5 0-15.4 6.9-15.4 15.4V67C212.1 111.8 61.7 291.3 61.7 506c0 153.6 77 289.2 194.4 370.3l42.7-136.7C236 681 196.7 597.4 196.7 504.7c0-177.4 143.8-321.3 321.3-321.3s321.3 143.8 321.3 321.3c0 97.9-43.8 185.5-112.8 244.5l40.1 127.4C884.2 795.4 961.4 659.7 961.4 506c0-218.8-156.2-401.1-363.2-441.5z'
+    const countryOption = computed(() => ({
+      backgroundColor: '#FAFAFA',
+      title: {
+        text: '视频会议节点网络状态-全国',
+        left: '55%',
+        textStyle: {
+          color: '#000000'
+        }
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: function (params: any) {
+          if (params.seriesType === 'effectScatter') {
+            const status = params.data.status === '0' ? '<span style="color: red">离线</span>' : '<span style="color: green">在线</span>'
+            return params.data.name + '<br/>' + '状态:' + status
+          } else if (params.seriesType === 'lines') {
+            const name = params.data.fromName + '——' + params.data.toName
+            const status = params.data.status === '0' ? '<span style="color: red">离线</span>' : '<span style="color: green">在线</span>'
+            const ipv4 = params.data.ipv4
+            if (params.data.status === '0') {
+              return name + '<br/>' + '状态:' + status + '</br>' + 'IP地址:' + ipv4
+            } else {
+              return name + '<br/>' + '状态:' + status + '</br>' + 'ping值:' + params.data.ping + '</br>' + 'IP地址:' + ipv4
+            }
+          } else {
+            return params.name
+          }
+        }
+      },
+      geo: {
+        map: 'china',
+        label: {
+          emphasis: {
+            show: true,
+            color: '#012248'
+          }
+        },
+        roam: 'none',
+        top: '30%',
+        left: '25%',
+        zoom: 1.5,
+        itemStyle: {
+          normal: {
+            areaColor: '#E6E6E6',
+            borderColor: 'skyblue',
+            borderWidth: 1
+          },
+          emphasis: {
+            areaColor: '#F5A9A9'
+          }
+        }
+      },
+      series: countrySeries.value
+    }))
+    const bjOption = computed(() => ({
+      backgroundColor: '#FAFAFA',
+      title: {
+        text: '视频会议节点网络状态-北京市',
+        left: '55%',
+        textStyle: {
+          color: '#000000'
+        }
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: function (params: any) {
+          if (params.seriesType === 'effectScatter') {
+            const status = params.data.status === '0' ? '离线' : '在线'
+            return params.data.name + '<br/>' + '状态:' + status
+          } else if (params.seriesType === 'lines') {
+            const name = params.data.fromName + '——' + params.data.toName
+            const status = params.data.status === '0' ? '<span style="color: red">离线</span>' : '<span style="color: green">在线</span>'
+            const ipv4 = params.data.ipv4
+            if (params.data.status === '0') {
+              return name + '<br/>' + '状态:' + status + '</br>' + 'IP地址:' + ipv4
+            } else {
+              return name + '<br/>' + '状态:' + status + '</br>' + 'ping值:' + params.data.ping + '</br>' + 'IP地址:' + ipv4
+            }
+          } else {
+            return params.name
+          }
+        }
+      },
+      geo: {
+        map: 'bj',
+        label: {
+          emphasis: {
+            show: true,
+            // 地图高亮字体颜色
+            color: '#012248'
+          }
+        },
+        roam: 'none',
+        center: [116.335858, 39.9799827],
+        zoom: 5.5,
+        itemStyle: {
+          normal: {
+            areaColor: '#E6E6E6',
+            borderColor: 'skyblue',
+            borderWidth: 1
+          },
+          emphasis: {
+            areaColor: '#F5A9A9'
+          }
+        }
+      },
+      series: bjSeries.value
+    }))
     const convertData = function (data: any[]) {
       const res = []
       for (let i = 0; i < data.length; i++) {
@@ -216,60 +324,6 @@ export default defineComponent({
           })
       })
     }
-    const countryOption = computed(() => ({
-      backgroundColor: '#FAFAFA',
-      title: {
-        text: '视频会议节点网络状态-全国',
-        left: '55%',
-        textStyle: {
-          color: '#000000'
-        }
-      },
-      tooltip: {
-        trigger: 'item',
-        formatter: function (params: any) {
-          if (params.seriesType === 'effectScatter') {
-            const status = params.data.status === '0' ? '<span style="color: red">离线</span>' : '<span style="color: green">在线</span>'
-            return params.data.name + '<br/>' + '状态:' + status
-          } else if (params.seriesType === 'lines') {
-            const name = params.data.fromName + '——' + params.data.toName
-            const status = params.data.status === '0' ? '<span style="color: red">离线</span>' : '<span style="color: green">在线</span>'
-            const ipv4 = params.data.ipv4
-            if (params.data.status === '0') {
-              return name + '<br/>' + '状态:' + status + '</br>' + 'IP地址:' + ipv4
-            } else {
-              return name + '<br/>' + '状态:' + status + '</br>' + 'ping值:' + params.data.ping + '</br>' + 'IP地址:' + ipv4
-            }
-          } else {
-            return params.name
-          }
-        }
-      },
-      geo: {
-        map: 'china',
-        label: {
-          emphasis: {
-            show: true,
-            color: '#012248'
-          }
-        },
-        roam: 'none',
-        top: '30%',
-        left: '25%',
-        zoom: 1.5,
-        itemStyle: {
-          normal: {
-            areaColor: '#E6E6E6',
-            borderColor: 'skyblue',
-            borderWidth: 1
-          },
-          emphasis: {
-            areaColor: '#F5A9A9'
-          }
-        }
-      },
-      series: countrySeries.value
-    }))
     const getBJData = () => {
       const dataArr = []
       dataArr.push(bjFilterData.value)
@@ -345,60 +399,6 @@ export default defineComponent({
           })
       })
     }
-    const bjOption = computed(() => ({
-      backgroundColor: '#FAFAFA',
-      title: {
-        text: '视频会议节点网络状态-北京市',
-        left: '55%',
-        textStyle: {
-          color: '#000000'
-        }
-      },
-      tooltip: {
-        trigger: 'item',
-        formatter: function (params: any) {
-          if (params.seriesType === 'effectScatter') {
-            const status = params.data.status === '0' ? '离线' : '在线'
-            return params.data.name + '<br/>' + '状态:' + status
-          } else if (params.seriesType === 'lines') {
-            const name = params.data.fromName + '——' + params.data.toName
-            const status = params.data.status === '0' ? '<span style="color: red">离线</span>' : '<span style="color: green">在线</span>'
-            const ipv4 = params.data.ipv4
-            if (params.data.status === '0') {
-              return name + '<br/>' + '状态:' + status + '</br>' + 'IP地址:' + ipv4
-            } else {
-              return name + '<br/>' + '状态:' + status + '</br>' + 'ping值:' + params.data.ping + '</br>' + 'IP地址:' + ipv4
-            }
-          } else {
-            return params.name
-          }
-        }
-      },
-      geo: {
-        map: 'bj',
-        label: {
-          emphasis: {
-            show: true,
-            // 地图高亮字体颜色
-            color: '#012248'
-          }
-        },
-        roam: 'none',
-        center: [116.335858, 39.9799827],
-        zoom: 5.5,
-        itemStyle: {
-          normal: {
-            areaColor: '#E6E6E6',
-            borderColor: 'skyblue',
-            borderWidth: 1
-          },
-          emphasis: {
-            areaColor: '#F5A9A9'
-          }
-        }
-      },
-      series: bjSeries.value
-    }))
     const getStatusData = async () => {
       const config = {
         query: {
@@ -432,7 +432,7 @@ export default defineComponent({
           outArr.push(item1.metric.longitude)
           countryObj.value[item1.metric.name] = outArr
           const inArr = []
-          const inObj: any = {}
+          const inObj: Record<string, any> = {}
           inArr.push(startObj)
           inObj.name = item1.metric.name
           inObj.value = 4
@@ -442,7 +442,7 @@ export default defineComponent({
           countryCardData.value.push(inArr)
           if ((item1.metric.latitude > 115.7 && item1.metric.latitude < 117.4) && (item1.metric.longitude > 39.4 || item1.metric.longitude < 41.6)) {
             const inArr = []
-            const inObj: any = {}
+            const inObj: Record<string, any> = {}
             inArr.push(startObj)
             inObj.name = item1.metric.name
             inObj.value = 4
@@ -495,6 +495,7 @@ export default defineComponent({
     }, filterSelection.value.value * 1000)
     onMounted(() => {
       void sendData()
+      // console.log(countryObj.value)
     })
     onUnmounted(() => {
       clearInterval(timer)
