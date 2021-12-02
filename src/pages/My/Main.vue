@@ -2,13 +2,13 @@
   <div class="Main">
     <div class="column">
 
-<!--      <div class="col-auto">-->
-<!--        <div class="row justify-center">-->
-<!--          <global-header-content class="content-fixed-width"/>-->
-<!--        </div>-->
-<!--      </div>-->
+      <!--      <div class="col-auto">-->
+      <!--        <div class="row justify-center">-->
+      <!--          <global-header-content class="content-fixed-width"/>-->
+      <!--        </div>-->
+      <!--      </div>-->
 
-<!--      <q-separator/>-->
+      <!--      <q-separator/>-->
 
       <div class="col-auto">
         <div class="row justify-center">
@@ -48,9 +48,9 @@
                       <q-tab class="q-px-sm text-h6 " name="sum">资源汇聚</q-tab>
                     </q-tabs>
 
-                    <q-tab-panels v-model="tab1"  class="non-selectable overflow-hidden">
+                    <q-tab-panels v-model="tab1" class="non-selectable overflow-hidden">
                       <q-tab-panel name="fed" class="tab1" style="overflow: hidden;">
-                        <main-map></main-map>
+                        <bei-jing-chart :option="option" style="width: 600px; height: 195px"></bei-jing-chart>
                         <div class="row justify-start items-center q-gutter-lg">
                           <div class="col-auto row items-end">
                             当前机构数量：
@@ -207,7 +207,7 @@ import { StateInterface } from 'src/store'
 import ServerTable from 'components/Server/ServerTable.vue'
 // import BucketTable from 'components/BucketTable/BucketTable.vue'
 import GroupTable from 'components/Group/GroupTable.vue'
-import MainMap from 'components/Chart/MainMap.vue'
+import BeiJingChart from 'components/Chart/BeiJingChart.vue'
 
 export default defineComponent({
   name: 'Main',
@@ -216,7 +216,7 @@ export default defineComponent({
     ServerTable,
     // BucketTable,
     GroupTable,
-    MainMap
+    BeiJingChart
   },
   props: {},
   setup () {
@@ -267,7 +267,209 @@ export default defineComponent({
     // ]
 
     const isBannerOn = ref(true)
-
+    const labelData = [
+      {
+        name: '怀柔区',
+        value: 38.4,
+        lng: 116.63853,
+        lat: 40.322563
+      },
+      {
+        name: '密云区',
+        value: 47.9,
+        lng: 116.849551,
+        lat: 40.382999
+      },
+      {
+        name: '昌平区',
+        value: 196.3,
+        lng: 116.237832,
+        lat: 40.226854
+      },
+      {
+        name: '顺义区',
+        value: 102,
+        lng: 116.663242,
+        lat: 40.1362
+      },
+      {
+        name: '平谷区',
+        value: 42.3,
+        lng: 117.128025,
+        lat: 40.147115
+      },
+      {
+        name: '门头沟区',
+        value: 30.8,
+        lng: 116.108179,
+        lat: 39.94648
+      },
+      {
+        name: '海淀区',
+        value: 369.4,
+        lng: 116.304872,
+        lat: 39.96553
+      },
+      {
+        name: '石景山区',
+        value: 65.2,
+        lng: 116.229612,
+        lat: 39.912017
+      },
+      {
+        name: '西城区',
+        value: 129.8,
+        lng: 116.372397,
+        lat: 39.918561
+      },
+      {
+        name: '东城区',
+        value: 90.5,
+        lng: 116.42272,
+        lat: 39.934579
+      },
+      {
+        name: '朝阳区',
+        value: 395.5,
+        lng: 116.449767,
+        lat: 39.927254
+      },
+      {
+        name: '大兴区',
+        value: 156.2,
+        lng: 116.348053,
+        lat: 39.732833
+      },
+      {
+        name: '房山区',
+        value: 104.6,
+        lng: 116.149892,
+        lat: 39.755039
+      },
+      {
+        name: '丰台区',
+        value: 232.4,
+        lng: 116.293105,
+        lat: 39.865042
+      },
+      {
+        name: '通州区',
+        value: 42.3,
+        lng: 116.662928,
+        lat: 39.917001
+      },
+      {
+        name: '延庆区',
+        value: 42.3,
+        lng: 115.981186,
+        lat: 40.462706
+      }
+    ]
+    const pointData = [
+      {
+        name: '中国科学院计算机网络信息中心',
+        value: 8,
+        LngAndLat: [116.342428, 39.99322]
+      },
+      {
+        name: '地球大数据科学工程专项',
+        value: 8,
+        LngAndLat: [116.63853, 40.322563]
+      }
+    ]
+    const convertData = function (data: any) {
+      const res = []
+      for (let i = 0; i < data.length; i++) {
+        const geoCoord = data[i].LngAndLat
+        if (geoCoord) {
+          res.push({
+            name: data[i].name,
+            value: geoCoord.concat(data[i].value)
+          })
+        }
+      }
+      return res
+    }
+    const option = computed(() => ({
+      tooltip: {
+        show: true,
+        trigger: 'item',
+        formatter: '{b}'
+      },
+      geo: {
+        map: 'bj',
+        label: {
+          normal: {
+            show: false
+          },
+          emphasis: {
+            show: false
+          }
+        },
+        roam: false,
+        itemStyle: {
+          normal: {
+            areaColor: '#ECEFF4',
+            borderColor: '#4C566A'
+          },
+          emphasis: {
+            areaColor: '#2B91B7'
+          }
+        },
+        zoom: 1.2
+      },
+      series: [{
+        name: '机构',
+        type: 'effectScatter',
+        coordinateSystem: 'geo',
+        data: convertData(pointData),
+        symbolSize: function (val: number[]) {
+          return val[2]
+        },
+        showEffectOn: 'emphasis',
+        rippleEffect: {
+          brushType: 'stroke'
+        },
+        hoverAnimation: true,
+        label: {
+          normal: {
+            show: true,
+            position: 'left',
+            formatter: function (params: any) {
+              return params.name
+            },
+            lineHeight: 10,
+            backgroundColor: '#fafafa',
+            borderColor: '#31CCEC',
+            borderWidth: '1',
+            borderRadius: 5,
+            padding: [7, 5, 7],
+            color: '#1d1d1d',
+            fontSize: 12,
+            fontWeight: 'normal'
+          },
+          emphasis: {
+            show: true
+          }
+        },
+        itemStyle: {
+          normal: {
+            color: '#027BE3'
+          }
+        }
+      },
+      {
+        name: '机构数',
+        type: 'map',
+        mapType: 'bj',
+        geoIndex: 0,
+        itemStyle: {
+          normal: { label: { show: true } },
+          emphasis: { label: { show: true } }
+        },
+        data: labelData
+      }]
+    }))
     return {
       $store,
       currentUser,
@@ -276,7 +478,8 @@ export default defineComponent({
       servers,
       groups,
       // buckets,
-      isBannerOn
+      isBannerOn,
+      option
     }
   }
 })

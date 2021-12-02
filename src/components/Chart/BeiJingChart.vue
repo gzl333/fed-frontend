@@ -7,7 +7,6 @@
 import { defineComponent, onMounted, ref, toRefs, watch } from 'vue'
 
 import * as echarts from 'echarts'
-import china from 'assets/map/China.json'
 import bj from 'assets/map/BeiJing.json'
 import { GeoJSONSourceInput } from 'echarts/types/src/coord/geo/geoTypes'
 
@@ -24,12 +23,10 @@ export default defineComponent({
     const container = ref<HTMLElement>()
     onMounted(() => {
       const chart = echarts.init(container.value!)
-      echarts.registerMap('china', china as GeoJSONSourceInput)
       echarts.registerMap('bj', bj as GeoJSONSourceInput)
       chart.setOption(props.option)
       const { option } = toRefs(props)
       watch(option, () => {
-        chart.clear()
         chart.setOption(props.option)
       }, { deep: true })
     })
