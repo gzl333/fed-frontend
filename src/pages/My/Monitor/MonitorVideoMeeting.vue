@@ -89,6 +89,8 @@ export default defineComponent({
     const bjObj: any = ref({})
     const bjFilterData: any = ref([])
     const isShow = ref(true)
+    const lastCountryData: any = ref([])
+    const lastBJData: any = ref([])
     const filterSelection = ref({
       label: '每30s刷新',
       value: 30
@@ -142,6 +144,8 @@ export default defineComponent({
         name: '网络中心'
       }
       statusData.value.forEach((item: any) => {
+        const arr: any = []
+        const arr1: any = []
         item.value.forEach((item1: any) => {
           const outArr = []
           outArr.push(item1.metric.latitude)
@@ -156,6 +160,7 @@ export default defineComponent({
           inObj.ipv4 = item1.metric.ipv4s
           inArr.push(inObj)
           countryCardData.value.push(inArr)
+          arr.push(inArr)
           if ((item1.metric.latitude > 115.7 && item1.metric.latitude < 117.4) && (item1.metric.longitude > 39.4 || item1.metric.longitude < 41.6)) {
             bjObj.value[item1.metric.name] = outArr
             const inArr = []
@@ -167,8 +172,14 @@ export default defineComponent({
             inObj.ipv4 = item1.metric.ipv4s
             inArr.push(inObj)
             bjCardData.value.push(inArr)
+            arr1.push(inArr)
           }
         })
+        // console.log('arr', arr)
+        lastCountryData.value.push(arr)
+        lastBJData.value.push(arr1)
+        console.log(lastCountryData.value)
+        console.log(lastBJData.value)
       })
     }
     const handlePingData = () => {

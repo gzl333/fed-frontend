@@ -34,7 +34,8 @@ export default defineComponent({
             coords: [fromCoords, toCoords],
             value: dataItem[1].value,
             status: dataItem[1].status,
-            ping: dataItem[1].ping
+            ping: dataItem[1].ping,
+            ipv4: dataItem[1].ipv4
           })
         }
       }
@@ -149,10 +150,11 @@ export default defineComponent({
             } else if (params.seriesType === 'lines') {
               const name = params.data.fromName + '——' + params.data.toName
               const status = params.data.status === '0' ? '<span style="color: red">离线</span>' : '<span style="color: green">在线</span>'
+              const ipv4 = params.data.ipv4
               if (params.data.status === '0') {
-                return name + '<br/>' + '状态:' + status
+                return name + '<br/>' + '状态:' + status + '</br>' + 'IP地址:' + ipv4
               } else {
-                return name + '<br/>' + '状态:' + status + '</br>' + 'ping值:' + params.data.ping
+                return name + '<br/>' + '状态:' + status + '</br>' + 'ping值:' + params.data.ping + '</br>' + 'IP地址:' + ipv4
               }
             } else {
               return params.name

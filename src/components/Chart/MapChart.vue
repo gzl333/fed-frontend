@@ -27,7 +27,6 @@ export default defineComponent({
       const dataArr = []
       const startArr = ['网络中心', connectData.value]
       dataArr.push(startArr)
-      // console.log(dataArr)
       dataArr.forEach(function (item: any) {
         series.value.push(
           {
