@@ -1,6 +1,10 @@
 <template>
-  <div class="CountryMeetingMap">
-    <div ref="container" style="width: 100%; height: 100%;"/>
+  <div class="CountryMeetingMap row">
+    <div ref="container" style="width: 95%; height: 100%;"/>
+    <div style="background-color: #FAFAFA; width: 5%;" class="row column justify-end">
+      <q-btn outline color="white" text-color="black" icon="add" class="q-mb-md" @click="roamMap(0)"/>
+      <q-btn outline color="white" text-color="black" icon="remove" @click="roamMap(1)"/>
+    </div>
   </div>
 </template>
 <script lang="ts">
@@ -22,20 +26,59 @@ export default defineComponent({
   },
   setup (props) {
     const container = ref<HTMLElement>()
+    const mapChange = ref()
+    const roamMap = (val: number) => {
+      mapChange.value = val
+    }
     onMounted(() => {
-      const chart = echarts.init(container.value!)
+      const chart: any = echarts.init(container.value!)
       echarts.registerMap('china', china as GeoJSONSourceInput)
       echarts.registerMap('bj', bj as GeoJSONSourceInput)
       chart.setOption(props.option)
       const { option } = toRefs(props)
+      // const roamMap = (flag: any) => {
+      //   const currentZoom = chart.getOption().geo[0].zoom
+      //   let increaseAmplitude = 0
+      //   if (flag === 1) {
+      //     increaseAmplitude = 0.8
+      //     // option.value.geo.zoom = option.value.geo.zoom * increaseAmplitude
+      //   } else {
+      //     increaseAmplitude = 1.2
+      //     // option.value.geo.zoom = option.value.geo.zoom * increaseAmplitude
+      //   }
+      //   chart.setOption({
+      //     geo: {
+      //       zoom: currentZoom * increaseAmplitude
+      //     }
+      //   })
+      // }
       watch(option, () => {
         chart.clear()
         chart.setOption(props.option)
       }, { deep: true })
+      watch(mapChange, () => {
+        if (mapChange.value !== null) {
+          const currentZoom = chart.getOption().geo[0].zoom
+          let increaseAmplitude = 0
+          if (mapChange.value === 1) {
+            increaseAmplitude = 0.8
+          } else {
+            increaseAmplitude = 1.2
+          }
+          if ((currentZoom * increaseAmplitude >= 1) && (currentZoom * increaseAmplitude <= 5)) {
+            chart.setOption({
+              geo: {
+                zoom: currentZoom * increaseAmplitude
+              }
+            })
+          }
+          mapChange.value = null
+        }
+      })
     })
-
     return {
-      container
+      container,
+      roamMap
     }
   }
 })
