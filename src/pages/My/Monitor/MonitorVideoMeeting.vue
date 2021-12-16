@@ -61,8 +61,8 @@ export default defineComponent({
   props: {},
   emits: {},
   setup () {
-    const statusData = ref([])
-    const pingData = ref([])
+    const statusData: any = ref([])
+    const pingData: any = ref([])
     // 全国数据
     const nationalData: any = ref([])
     // 所有服务经纬度数据
@@ -309,10 +309,11 @@ export default defineComponent({
           query: 'node_status'
         }
       }
+      let response: any = []
       await $api.monitor.getMonitorVideoQuery(config).then((res: any) => {
-        statusData.value = res.data
-        handleStatusData()
+        response = res.data
       })
+      return response
     }
     const getDelayData = async () => {
       const config = {
@@ -320,10 +321,11 @@ export default defineComponent({
           query: 'node_lantency'
         }
       }
+      let response: any = []
       await $api.monitor.getMonitorVideoQuery(config).then((res) => {
-        pingData.value = res.data
-        handlePingData()
+        response = res.data
       })
+      return response
     }
     const handleStatusData = () => {
       const startObj = {
@@ -350,16 +352,16 @@ export default defineComponent({
     const handlePingData = () => {
       pingData.value.forEach((item: any) => {
         item.value.forEach((item1: any) => {
-          for (const service of nationalData.value) {
-            if (service[1].name === item1.metric.name) {
-              service[1].ping = item1.value[1]
+          nationalData.value.forEach((item2: any) => {
+            if (item2[1].name === item1.metric.name) {
+              item2[1].ping = item1.value[1]
             }
-          }
+          })
         })
       })
     }
     const filterData = () => {
-      countryFilterData.value = nationalData.value.filter((item: any) => item[1].name !== '45信息化大厦501')
+      return nationalData.value.filter((item: any) => item[1].name !== '45信息化大厦501')
     }
     const getTableRow = () => {
       tableRow.value = nationalData.value.map((item: any) => item[1])
@@ -369,11 +371,11 @@ export default defineComponent({
       searchFilterData.value = []
       const data = allData.value
       if (searchQuery.value.name !== '' && searchQuery.value.status !== '2') {
-        tableRow.value = data.filter((item: any) => item.status === searchQuery.value.status && item.name.toLowerCase().includes(searchQuery.value.name))
+        tableRow.value = data.filter((item: any) => item.status === searchQuery.value.status && (item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase()) || item.ipv4.includes(searchQuery.value.name.trim())))
       } else if (searchQuery.value.name === '' && searchQuery.value.status !== '2') {
         tableRow.value = data.filter((item: any) => item.status === searchQuery.value.status)
       } else if (searchQuery.value.name !== '' && searchQuery.value.status === '2') {
-        tableRow.value = data.filter((item: any) => item.name.toLowerCase().includes(searchQuery.value.name))
+        tableRow.value = data.filter((item: any) => item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase().trim()) || item.ipv4.includes(searchQuery.value.name.trim()))
       } else {
         tableRow.value = allData.value
       }
@@ -388,22 +390,24 @@ export default defineComponent({
       searchQuery.value.status = val.value
     }
     const refresh = () => {
-      isRefresh.value = false
       searchQuery.value.status = '2'
       searchQuery.value.name = ''
       coordinateData.value = {}
       nationalData.value = []
-      countrySeries.value = []
-      void initialization().then(() => {
-        isRefresh.value = true
-      })
+      // countrySeries.value = []
+      void initialization()
     }
     const initialization = async () => {
-      await getStatusData()
-      await getDelayData()
-      filterData()
+      isRefresh.value = false
+      statusData.value = await getStatusData()
+      handleStatusData()
+      pingData.value = await getDelayData()
+      handlePingData()
+      countryFilterData.value = filterData()
       getCountryData(countryFilterData.value)
       getTableRow()
+      isRefresh.value = true
+      // console.log(countrySeries.value)
     }
     let timer = setInterval(() => {
       void refresh()
