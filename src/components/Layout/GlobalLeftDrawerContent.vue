@@ -50,6 +50,19 @@
             </q-item-section>
           </q-item>
 
+          <q-item
+            clickable
+            :active="activeItem === 'vpn'"
+            @click="activeItem = 'vpn'"
+            active-class="active-item"
+            to='/my/vpn'
+          >
+            <q-item-section class="column items-center">
+              <q-icon name="vpn_lock" size="lg"/>
+              <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('VPN') }}</div>
+            </q-item-section>
+          </q-item>
+
           <!--有服务管理权限的用户才能看到，同时在路由里进行权限限制-->
           <q-item v-if="$store.state.account.items.vmsAdmin.length > 0"
                   clickable
@@ -66,6 +79,19 @@
 
           <q-item
             clickable
+            :active="activeItem === 'monitor'"
+            @click="activeItem = 'monitor'"
+            active-class="active-item"
+            to='/my/monitor'
+          >
+            <q-item-section class="column items-center">
+              <q-icon name="las la-tachometer-alt" size="lg"/>
+              <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('综合监测') }}</div>
+            </q-item-section>
+          </q-item>
+
+          <q-item
+            clickable
             :active="activeItem === 'federation'"
             @click="activeItem = 'federation'"
             active-class="active-item"
@@ -74,19 +100,6 @@
             <q-item-section class="column items-center">
               <q-icon name="construction" size="lg"/>
               <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('联邦管理') }}</div>
-            </q-item-section>
-          </q-item>
-
-          <q-item
-            clickable
-            :active="activeItem === 'monitor'"
-            @click="activeItem = 'monitor'"
-            active-class="active-item"
-            to='/my/monitor'
-          >
-            <q-item-section class="column items-center">
-              <q-icon name="las la-tachometer-alt" size="lg"/>
-              <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('综合监控') }}</div>
             </q-item-section>
           </q-item>
 

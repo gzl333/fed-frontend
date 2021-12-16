@@ -339,6 +339,13 @@ const routes: RouteRecordRaw[] = [
             component: () => import('pages/My/Monitor/MonitorStorage.vue')
           }
         ]
+      },
+      {
+        path: 'vpn',
+        component: () => import('pages/My/Vpn/VpnIndex.vue'),
+        meta: {
+          title: 'VPN-中国科技云联邦'
+        }
       }
     ]
   },
