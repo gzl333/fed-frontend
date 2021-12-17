@@ -26,9 +26,9 @@ export default defineComponent({
   setup (props) {
     const container = ref<HTMLElement>()
     let myChart: any
-    const roamMap = (flag: any) => {
+    const roamMap = (flag: number) => {
       const currentZoom = myChart.getOption().geo[0].zoom
-      let increaseAmplitude = 0
+      let increaseAmplitude
       if (flag === 1) {
         increaseAmplitude = 0.8
       } else {
@@ -47,13 +47,30 @@ export default defineComponent({
       myChart = chart
       echarts.registerMap('china', china as GeoJSONSourceInput)
       chart.setOption(props.option)
-      // chart.on('mouseup', function (params: any) {
-      //   console.log(params)
-      //   console.log(chart.getOption().geo)
-      // })
+      chart.on('globalout', function () {
+        const point = chart.getOption().geo[0].center
+        const zoom = chart.getOption().geo[0].zoom
+        if (point !== null && zoom <= 1.5 && ((point[0] < 80.1 || point[0] > 127.8) || (point[1] < 24.1 || point[1] > 30.8))) {
+          chart.setOption({
+            geo: {
+              center: null
+            }
+          })
+        }
+      })
+      chart.on('mouseup', function () {
+        const point = chart.getOption().geo[0].center
+        const zoom = chart.getOption().geo[0].zoom
+        if (point !== null && zoom <= 1.5 && ((point[0] < 80.1 || point[0] > 127.8) || (point[1] < 24.1 || point[1] > 30.8))) {
+          chart.setOption({
+            geo: {
+              center: null
+            }
+          })
+        }
+      })
       const { option } = toRefs(props)
       watch(option, () => {
-        console.log(props.option)
         chart.clear()
         chart.setOption(props.option)
       }, { deep: true })

@@ -68,19 +68,20 @@ export default defineComponent({
   props: {},
   emits: {},
   setup () {
-    const statusData: any = ref([])
-    const pingData: any = ref([])
+    const statusData = ref([])
+    const pingData = ref([])
+    // 表格数据
+    const tableRow = ref([])
+    const allData = ref([])
+    // 刷新相关数据
+    const isRefresh = ref(true)
+    // 全国地图需要的数据
+    const countryFilterData = ref([])
+    const countrySeries: any = ref([])
     // 全国数据
     const nationalData: any = ref([])
     // 所有服务经纬度数据
     const coordinateData: Record<string, any> = ref({})
-    // 全国地图需要的数据
-    const countryFilterData: any = ref([])
-    const countrySeries: any = ref([])
-    // 表格数据
-    const tableRow: any = ref([])
-    const allData = ref([])
-    const pointData: any = ref([])
     // 搜索过滤后的数据
     const searchFilterData: any = ref([])
     // 搜索条件
@@ -102,8 +103,6 @@ export default defineComponent({
         label: '离线'
       }
     ]
-    // 刷新相关数据
-    const isRefresh = ref(true)
     const refreshSelection = ref({
       label: '每30s刷新',
       value: 30
@@ -266,7 +265,6 @@ export default defineComponent({
     }
     const getCountryData = (data: any) => {
       countrySeries.value = []
-      pointData.value = []
       const dataArr = []
       dataArr.push(data)
       dataArr.forEach(function (item: any) {
