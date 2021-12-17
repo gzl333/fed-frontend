@@ -11,7 +11,8 @@
               <q-icon name="close" @click="searchQuery.name = ''" class="cursor-pointer"/>
             </template>
           </q-input>
-          <q-select outlined dense v-model="searchQuery.status" :options="statusOptions" map-options option-value="value" label="状态"
+          <q-select outlined dense v-model="searchQuery.status" :options="statusOptions" map-options
+                    option-value="value" label="状态"
                     class="col-4 q-ml-md" @update:model-value="change"/>
           <q-btn color="primary" label="搜索" class="col-2 q-ml-md" @click="search"/>
         </div>
@@ -39,6 +40,12 @@
               </q-td>
               <q-td key="ping" :props="props">
                 {{ (parseFloat(props.row.ping) * 1000).toFixed(3) }}ms
+              </q-td>
+              <q-td key="longitude" :props="props">
+                <div>{{ props.row.longitude }}</div>
+              </q-td>
+              <q-td key="latitude" :props="props">
+                <div>{{ props.row.latitude }}</div>
               </q-td>
             </q-tr>
           </template>
@@ -73,6 +80,7 @@ export default defineComponent({
     // 表格数据
     const tableRow: any = ref([])
     const allData = ref([])
+    const pointData: any = ref([])
     // 搜索过滤后的数据
     const searchFilterData: any = ref([])
     // 搜索条件
@@ -147,6 +155,18 @@ export default defineComponent({
         align: 'center',
         label: 'ping',
         field: 'ping'
+      },
+      {
+        name: 'longitude',
+        align: 'center',
+        label: '经度',
+        field: 'longitude'
+      },
+      {
+        name: 'latitude',
+        align: 'center',
+        label: '纬度',
+        field: 'latitude'
       }
     ]
     const style = 'path://M807.4 938.5c-139.5-8-250.2-31.7-250.2-173.2v-95.5c0-35.5 72.5-64.3 108-64.3h0.3l0.9-152.4c0-8.5-6.9-15.4-15.4-15.4H373.2c-8.5 0-15.4 6.9-15.4 15.4l0.6 148.7c33.6 2.1 103.8 30 103.8 64.1v95.5c0 142.2-111.8 168.4-252.3 175.3l-0.1 0.3 0.9 71.5c0 8.5 6.9 15.4 15.4 15.4h568.1c8.5 0 15.4-6.9 15.4-15.4l-0.8-69.8-1.4-0.2zM598.2 64.5V18.6c0-8.5-6.9-15.4-15.4-15.4H428.6c-8.5 0-15.4 6.9-15.4 15.4V67C212.1 111.8 61.7 291.3 61.7 506c0 153.6 77 289.2 194.4 370.3l42.7-136.7C236 681 196.7 597.4 196.7 504.7c0-177.4 143.8-321.3 321.3-321.3s321.3 143.8 321.3 321.3c0 97.9-43.8 185.5-112.8 244.5l40.1 127.4C884.2 795.4 961.4 659.7 961.4 506c0-218.8-156.2-401.1-363.2-441.5z'
@@ -190,7 +210,7 @@ export default defineComponent({
         roam: true,
         scaleLimit: {
           min: 1,
-          max: 5
+          max: 150
         },
         top: '30%',
         left: '31%',
@@ -212,17 +232,33 @@ export default defineComponent({
       const res = []
       for (let i = 0; i < data.length; i++) {
         const dataItem = data[i]
-        const fromCoords = coordinateData.value[dataItem[0].name]
-        const toCoords = coordinateData.value[dataItem[1].name]
-        if (fromCoords && toCoords) {
+        if (dataItem[1].latitude !== 0 && dataItem[1].longitude !== 0) {
+          const fromCoords = [116.342428, 39.99322]
+          const toCoords = coordinateData.value[dataItem[1].name]
+          if (fromCoords && toCoords) {
+            res.push({
+              fromName: dataItem[0].name,
+              toName: dataItem[1].name,
+              coords: [fromCoords, toCoords],
+              value: dataItem[1].value,
+              status: dataItem[1].status,
+              ping: dataItem[1].ping,
+              ipv4: dataItem[1].ipv4
+            })
+          }
+        }
+      }
+      return res
+    }
+    const convertPointData = function (data: any[]) {
+      const res = []
+      for (let i = 0; i < data.length; i++) {
+        const dataItem = data[i]
+        if (dataItem[1].latitude !== 0 && dataItem[1].longitude !== 0) {
           res.push({
-            fromName: dataItem[0].name,
-            toName: dataItem[1].name,
-            coords: [fromCoords, toCoords],
-            value: dataItem[1].value,
-            status: dataItem[1].status,
-            ping: dataItem[1].ping,
-            ipv4: dataItem[1].ipv4
+            name: dataItem[1].name,
+            value: coordinateData.value[dataItem[1].name].concat([dataItem[1].value]),
+            status: dataItem[1].status
           })
         }
       }
@@ -230,6 +266,7 @@ export default defineComponent({
     }
     const getCountryData = (data: any) => {
       countrySeries.value = []
+      pointData.value = []
       const dataArr = []
       dataArr.push(data)
       dataArr.forEach(function (item: any) {
@@ -292,14 +329,7 @@ export default defineComponent({
                 areaColor: '#2B91B7'
               }
             },
-            data: item.map(function (dataItem: any) {
-              return {
-                name: dataItem[1].name,
-                value: coordinateData.value[dataItem[1].name].concat([dataItem[1].value]),
-                status: dataItem[1].status
-              }
-            }
-            )
+            data: convertPointData(item)
           })
       })
     }
@@ -329,13 +359,13 @@ export default defineComponent({
     }
     const handleStatusData = () => {
       const startObj = {
-        name: '45信息化大厦501'
+        name: '信息化大厦'
       }
       statusData.value.forEach((item: any) => {
         item.value.forEach((item1: any) => {
           const outArr = []
-          outArr.push(item1.metric.latitude)
           outArr.push(item1.metric.longitude)
+          outArr.push(item1.metric.latitude)
           coordinateData.value[item1.metric.name] = outArr
           const inArr = []
           const inObj: Record<string, any> = {}
@@ -344,6 +374,8 @@ export default defineComponent({
           inObj.value = 4
           inObj.status = item1.value[1]
           inObj.ipv4 = item1.metric.ipv4s
+          inObj.longitude = item1.metric.longitude
+          inObj.latitude = item1.metric.latitude
           inArr.push(inObj)
           nationalData.value.push(inArr)
         })
@@ -359,9 +391,7 @@ export default defineComponent({
           })
         })
       })
-    }
-    const filterData = () => {
-      return nationalData.value.filter((item: any) => item[1].name !== '45信息化大厦501')
+      return nationalData.value
     }
     const getTableRow = () => {
       tableRow.value = nationalData.value.map((item: any) => item[1])
@@ -380,9 +410,7 @@ export default defineComponent({
         tableRow.value = allData.value
       }
       tableRow.value.forEach((item: any) => {
-        if (item.name !== '45信息化大厦501') {
-          searchFilterData.value.push(countryFilterData.value.find((item1: any) => item1[1].name === item.name))
-        }
+        searchFilterData.value.push(countryFilterData.value.find((item1: any) => item1[1].name === item.name))
       })
       getCountryData(searchFilterData.value)
     }
@@ -394,7 +422,6 @@ export default defineComponent({
       searchQuery.value.name = ''
       coordinateData.value = {}
       nationalData.value = []
-      // countrySeries.value = []
       void initialization()
     }
     const initialization = async () => {
@@ -402,12 +429,10 @@ export default defineComponent({
       statusData.value = await getStatusData()
       handleStatusData()
       pingData.value = await getDelayData()
-      handlePingData()
-      countryFilterData.value = filterData()
+      countryFilterData.value = handlePingData()
       getCountryData(countryFilterData.value)
       getTableRow()
       isRefresh.value = true
-      // console.log(countrySeries.value)
     }
     let timer = setInterval(() => {
       void refresh()

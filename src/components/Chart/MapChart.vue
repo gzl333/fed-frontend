@@ -34,7 +34,7 @@ export default defineComponent({
       } else {
         increaseAmplitude = 1.2
       }
-      if ((currentZoom * increaseAmplitude >= 1) && (currentZoom * increaseAmplitude <= 5)) {
+      if ((currentZoom * increaseAmplitude >= 1) && (currentZoom * increaseAmplitude <= 150)) {
         myChart.setOption({
           geo: {
             zoom: currentZoom * increaseAmplitude
@@ -47,8 +47,13 @@ export default defineComponent({
       myChart = chart
       echarts.registerMap('china', china as GeoJSONSourceInput)
       chart.setOption(props.option)
+      // chart.on('mouseup', function (params: any) {
+      //   console.log(params)
+      //   console.log(chart.getOption().geo)
+      // })
       const { option } = toRefs(props)
       watch(option, () => {
+        console.log(props.option)
         chart.clear()
         chart.setOption(props.option)
       }, { deep: true })
