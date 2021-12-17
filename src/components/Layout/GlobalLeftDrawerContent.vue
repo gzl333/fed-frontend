@@ -59,7 +59,7 @@
           >
             <q-item-section class="column items-center">
               <q-icon name="vpn_lock" size="lg"/>
-              <div class="text-c-blue5 text-bold text-center line-height-1em">{{ $t('VPN') }}</div>
+              <div class="text-c-blue5 text-bold text-center line-height-1em">VPN</div>
             </q-item-section>
           </q-item>
 

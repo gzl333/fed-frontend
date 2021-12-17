@@ -344,7 +344,8 @@ const routes: RouteRecordRaw[] = [
         path: 'vpn',
         component: () => import('pages/My/Vpn/VpnIndex.vue'),
         meta: {
-          title: 'VPN-中国科技云联邦'
+          title: 'VPN-中国科技云联邦',
+          title_en: 'VPN-CSTCloud Federation'
         }
       }
     ]
