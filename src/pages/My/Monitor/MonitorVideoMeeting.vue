@@ -5,52 +5,51 @@
     </q-card>
     <q-card flat class="q-mt-lg">
       <div class="row justify-between q-mt-md">
-        <div class="col-8 row">
-          <q-input outlined dense v-model="searchQuery.name" placeholder="筛选单位名称或IP地址" class="col-4">
+        <div class="col-6 row">
+          <q-select outlined dense v-model="searchQuery.status" :options="statusOptions" map-options option-value="value" label="状态" class="col-2" @update:model-value="change"/>
+          <q-input outlined dense v-model="searchQuery.name" placeholder="筛选单位名称或IP地址" class="col-6  q-ml-md">
             <template v-slot:append v-if="searchQuery.name !== ''">
               <q-icon name="close" @click="searchQuery.name = ''" class="cursor-pointer"/>
             </template>
           </q-input>
-          <q-select outlined dense v-model="searchQuery.status" :options="statusOptions" map-options
-                    option-value="value" label="状态"
-                    class="col-2 q-ml-md" @update:model-value="change"/>
-          <q-btn color="primary" label="搜索" class="col-2 q-ml-md" @click="search" unelevated/>
         </div>
-        <div class="col-2 row justify-end">
+        <div class="col-6 row justify-end">
           <q-icon name="refresh" size="md" v-show="isRefresh" @click="refresh" class="col-2"/>
-          <q-select outlined dense v-model="refreshSelection" :options="refreshOptions" label="刷新时间" class="col-10"/>
+          <q-btn color="primary" :label="disable === true ? '打开自动刷新' : '关闭自动刷新'" class="col-2 q-mr-md q-pa-none" @click="openOrClose" unelevated/>
+          <q-select outlined dense v-model="refreshSelection" :options="refreshOptions" label="刷新时间" class="col-5" :disable = "disable"/>
         </div>
       </div>
       <q-table
-          flat
-          table-header-class="bg-grey-1 text-grey"
-          :rows="tableRow"
-          :columns="columns"
-          :rows-per-page-options="[10, 15, 20, 25, 50, 0]"
-        >
-          <template v-slot:body="props">
-            <q-tr :props="props">
-              <q-td key="name" :props="props">
-                <div>{{ props.row.name }}</div>
-              </q-td>
-              <q-td key="ipv4" :props="props">
-                <span v-for="(item, index) in props.row.ipv4" :key="index">{{ item }}</span>
-              </q-td>
-              <q-td key="status" :props="props" :class="props.row.status === '0' ? 'text-negative' : 'text-positive'">
-                {{ props.row.status === '0' ? '离线' : '在线' }}
-              </q-td>
-              <q-td key="ping" :props="props" :class="parseFloat(props.row.ping) > 1 ? 'text-red' : ''">
-                {{ (parseFloat(props.row.ping) * 1000).toFixed(3) }}ms
-              </q-td>
-              <q-td key="longitude" :props="props">
-                <div>{{ props.row.longitude }}</div>
-              </q-td>
-              <q-td key="latitude" :props="props">
-                <div>{{ props.row.latitude }}</div>
-              </q-td>
-            </q-tr>
-          </template>
-        </q-table>
+        flat
+        table-header-class="bg-grey-1 text-grey"
+        :rows="tableData"
+        :columns="columns"
+        :rows-per-page-options="[10, 15, 20, 25, 50, 0]"
+        v-model:pagination="initialPagination"
+      >
+        <template v-slot:body="props">
+          <q-tr :props="props">
+            <q-td key="name" :props="props">
+              <div>{{ props.row.name }}</div>
+            </q-td>
+            <q-td key="ipv4" :props="props">
+              <span v-for="(item, index) in props.row.ipv4" :key="index">{{ item }}</span>
+            </q-td>
+            <q-td key="status" :props="props" :class="props.row.status === '0' ? 'text-negative' : 'text-positive'">
+              {{ props.row.status === '0' ? '离线' : '在线' }}
+            </q-td>
+            <q-td key="ping" :props="props" :class="parseFloat(props.row.ping) > 1 ? 'text-red' : ''">
+              {{ (parseFloat(props.row.ping) * 1000).toFixed(3) }}ms
+            </q-td>
+            <q-td key="longitude" :props="props">
+              <div>{{ props.row.longitude }}</div>
+            </q-td>
+            <q-td key="latitude" :props="props">
+              <div>{{ props.row.latitude }}</div>
+            </q-td>
+          </q-tr>
+        </template>
+      </q-table>
     </q-card>
   </div>
 </template>
@@ -72,9 +71,20 @@ export default defineComponent({
     const pingData = ref([])
     // 表格数据
     const tableRow = ref([])
-    const allData = ref([])
+    const tableData = computed(() => {
+      if (searchQuery.value.name !== '' && searchQuery.value.status !== '2') {
+        return tableRow.value.filter((item: any) => item.status === searchQuery.value.status && (item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase()) || item.ipv4.includes(searchQuery.value.name.trim())))
+      } else if (searchQuery.value.name === '' && searchQuery.value.status !== '2') {
+        return tableRow.value.filter((item: any) => item.status === searchQuery.value.status)
+      } else if (searchQuery.value.name !== '' && searchQuery.value.status === '2') {
+        return tableRow.value.filter((item: any) => item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase().trim()) || item.ipv4.includes(searchQuery.value.name.trim()))
+      } else {
+        return tableRow.value
+      }
+    })
     // 刷新相关数据
     const isRefresh = ref(true)
+    const disable = ref(false)
     // 全国地图需要的数据
     const countryFilterData = ref([])
     const countrySeries: any = ref([])
@@ -84,6 +94,9 @@ export default defineComponent({
     const coordinateData: Record<string, any> = ref({})
     // 搜索过滤后的数据
     const searchFilterData: any = ref([])
+    const initialPagination = ref({
+      page: 1
+    })
     // 搜索条件
     const searchQuery = ref({
       status: '2',
@@ -232,6 +245,19 @@ export default defineComponent({
       },
       series: countrySeries.value
     }))
+    let timer = setInterval(() => {
+      void refresh()
+    }, refreshSelection.value.value * 1000)
+    const openOrClose = () => {
+      disable.value = !disable.value
+      if (disable.value === true) {
+        clearInterval(timer)
+      } else {
+        timer = setInterval(() => {
+          void refresh()
+        }, refreshSelection.value.value * 1000)
+      }
+    }
     const convertData = function (data: any[]) {
       const res = []
       for (let i = 0; i < data.length; i++) {
@@ -398,31 +424,11 @@ export default defineComponent({
     }
     const getTableRow = () => {
       tableRow.value = nationalData.value.map((item: any) => item[1])
-      allData.value = tableRow.value
-    }
-    const search = () => {
-      searchFilterData.value = []
-      const data = allData.value
-      if (searchQuery.value.name !== '' && searchQuery.value.status !== '2') {
-        tableRow.value = data.filter((item: any) => item.status === searchQuery.value.status && (item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase()) || item.ipv4.includes(searchQuery.value.name.trim())))
-      } else if (searchQuery.value.name === '' && searchQuery.value.status !== '2') {
-        tableRow.value = data.filter((item: any) => item.status === searchQuery.value.status)
-      } else if (searchQuery.value.name !== '' && searchQuery.value.status === '2') {
-        tableRow.value = data.filter((item: any) => item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase().trim()) || item.ipv4.includes(searchQuery.value.name.trim()))
-      } else {
-        tableRow.value = allData.value
-      }
-      tableRow.value.forEach((item: any) => {
-        searchFilterData.value.push(countryFilterData.value.find((item1: any) => item1[1].name === item.name))
-      })
-      getCountryData(searchFilterData.value)
     }
     const change = (val: Record<string, string>) => {
       searchQuery.value.status = val.value
     }
     const refresh = () => {
-      searchQuery.value.status = '2'
-      searchQuery.value.name = ''
       coordinateData.value = {}
       nationalData.value = []
       void initialization()
@@ -435,11 +441,9 @@ export default defineComponent({
       countryFilterData.value = handlePingData()
       getCountryData(countryFilterData.value)
       getTableRow()
+      initialPagination.value.page = 1
       isRefresh.value = true
     }
-    let timer = setInterval(() => {
-      void refresh()
-    }, refreshSelection.value.value * 1000)
     onMounted(() => {
       void initialization()
     })
@@ -452,18 +456,28 @@ export default defineComponent({
         void refresh()
       }, refreshSelection.value.value * 1000)
     })
+    watch(tableData, () => {
+      searchFilterData.value = []
+      initialPagination.value.page = 1
+      tableData.value.forEach((item: any) => {
+        searchFilterData.value.push(countryFilterData.value.find((item1: any) => item1[1].name === item.name))
+      })
+      getCountryData(searchFilterData.value)
+    })
     return {
       refreshSelection,
       refreshOptions,
       isRefresh,
       countryOption,
       columns,
-      tableRow,
+      tableData,
       statusOptions,
       searchQuery,
+      initialPagination,
+      disable,
+      openOrClose,
       refresh,
-      change,
-      search
+      change
     }
   }
 })
