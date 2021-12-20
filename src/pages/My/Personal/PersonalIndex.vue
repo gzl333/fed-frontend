@@ -57,15 +57,15 @@
                     :ripple="false"
                     to="/my/personal/quota"
                   />
-                  <q-route-tab
-                    no-caps
-                    class="q-px-none q-py-md q-mx-sm"
-                    name="vpn"
-                    icon="vpn_lock"
-                    label="VPN"
-                    :ripple="false"
-                    to="/my/personal/vpn"
-                  />
+<!--                  <q-route-tab-->
+<!--                    no-caps-->
+<!--                    class="q-px-none q-py-md q-mx-sm"-->
+<!--                    name="vpn"-->
+<!--                    icon="vpn_lock"-->
+<!--                    label="VPN"-->
+<!--                    :ripple="false"-->
+<!--                    to="/my/personal/vpn"-->
+<!--                  />-->
                 </q-tabs>
               </div>
 
