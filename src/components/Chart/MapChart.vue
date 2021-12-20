@@ -32,9 +32,9 @@ export default defineComponent({
       if (flag === 1) {
         increaseAmplitude = 0.8
       } else {
-        increaseAmplitude = 1.2
+        increaseAmplitude = 1.4
       }
-      if ((currentZoom * increaseAmplitude >= 1) && (currentZoom * increaseAmplitude <= 150)) {
+      if ((currentZoom * increaseAmplitude >= 0.7) && (currentZoom * increaseAmplitude <= 150)) {
         myChart.setOption({
           geo: {
             zoom: currentZoom * increaseAmplitude
@@ -50,7 +50,7 @@ export default defineComponent({
       chart.on('globalout', function () {
         const point = chart.getOption().geo[0].center
         const zoom = chart.getOption().geo[0].zoom
-        if (point !== null && zoom <= 1.5 && ((point[0] < 80.1 || point[0] > 127.8) || (point[1] < 24.1 || point[1] > 30.8))) {
+        if (point !== null && zoom <= 7 && ((point[0] < 80.1 || point[0] > 127.8) || (point[1] < 24.1 || point[1] > 30.8))) {
           chart.setOption({
             geo: {
               center: null
@@ -61,7 +61,7 @@ export default defineComponent({
       chart.on('mouseup', function () {
         const point = chart.getOption().geo[0].center
         const zoom = chart.getOption().geo[0].zoom
-        if (point !== null && zoom <= 1.5 && ((point[0] < 80.1 || point[0] > 127.8) || (point[1] < 24.1 || point[1] > 30.8))) {
+        if (point !== null && zoom <= 7 && ((point[0] < 80.1 || point[0] > 127.8) || (point[1] < 24.1 || point[1] > 30.8))) {
           chart.setOption({
             geo: {
               center: null

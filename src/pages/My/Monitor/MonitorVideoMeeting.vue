@@ -1,28 +1,29 @@
 <template>
   <div class="FederationMonitorVideoMeeting">
-    <q-card flat bordered class="my-card row">
+    <q-card flat bordered class="row">
       <map-chart :option="countryOption" style="width: 1228px; height: 600px"></map-chart>
     </q-card>
-    <q-card flat bordered class="my-card q-mt-lg">
-      <div class="row justify-evenly q-mt-md">
+    <q-card flat class="q-mt-lg">
+      <div class="row justify-between q-mt-md">
         <div class="col-8 row">
-          <q-input outlined dense v-model="searchQuery.name" placeholder="请输入名称" class="col-4">
-            <template v-slot:append>
+          <q-input outlined dense v-model="searchQuery.name" placeholder="筛选单位名称或IP地址" class="col-4">
+            <template v-slot:append v-if="searchQuery.name !== ''">
               <q-icon name="close" @click="searchQuery.name = ''" class="cursor-pointer"/>
             </template>
           </q-input>
           <q-select outlined dense v-model="searchQuery.status" :options="statusOptions" map-options
                     option-value="value" label="状态"
-                    class="col-4 q-ml-md" @update:model-value="change"/>
-          <q-btn color="primary" label="搜索" class="col-2 q-ml-md" @click="search"/>
+                    class="col-2 q-ml-md" @update:model-value="change"/>
+          <q-btn color="primary" label="搜索" class="col-2 q-ml-md" @click="search" unelevated/>
         </div>
-        <div class="row justify-end col-3">
+        <div class="col-2 row justify-end">
           <q-icon name="refresh" size="md" v-show="isRefresh" @click="refresh" class="col-2"/>
           <q-select outlined dense v-model="refreshSelection" :options="refreshOptions" label="刷新时间" class="col-10"/>
         </div>
       </div>
-      <div class="q-pa-md">
-        <q-table
+      <q-table
+          flat
+          table-header-class="bg-grey-1 text-grey"
           :rows="tableRow"
           :columns="columns"
           :rows-per-page-options="[10, 15, 20, 25, 50, 0]"
@@ -38,7 +39,7 @@
               <q-td key="status" :props="props" :class="props.row.status === '0' ? 'text-negative' : 'text-positive'">
                 {{ props.row.status === '0' ? '离线' : '在线' }}
               </q-td>
-              <q-td key="ping" :props="props">
+              <q-td key="ping" :props="props" :class="parseFloat(props.row.ping) > 1 ? 'text-red' : ''">
                 {{ (parseFloat(props.row.ping) * 1000).toFixed(3) }}ms
               </q-td>
               <q-td key="longitude" :props="props">
@@ -50,7 +51,6 @@
             </q-tr>
           </template>
         </q-table>
-      </div>
     </q-card>
   </div>
 </template>
@@ -141,31 +141,36 @@ export default defineComponent({
         name: 'ipv4',
         align: 'center',
         label: 'ip地址',
-        field: 'ipv4'
+        field: 'ipv4',
+        style: 'width: 200px'
       },
       {
         name: 'status',
         align: 'center',
         label: '状态',
-        field: 'status'
+        field: 'status',
+        style: 'width: 50px'
       },
       {
         name: 'ping',
         align: 'center',
         label: 'ping',
-        field: 'ping'
+        field: 'ping',
+        style: 'width: 200px'
       },
       {
         name: 'longitude',
         align: 'center',
         label: '经度',
-        field: 'longitude'
+        field: 'longitude',
+        style: 'width: 150px'
       },
       {
         name: 'latitude',
         align: 'center',
         label: '纬度',
-        field: 'latitude'
+        field: 'latitude',
+        style: 'width: 150px'
       }
     ]
     const style = 'path://M807.4 938.5c-139.5-8-250.2-31.7-250.2-173.2v-95.5c0-35.5 72.5-64.3 108-64.3h0.3l0.9-152.4c0-8.5-6.9-15.4-15.4-15.4H373.2c-8.5 0-15.4 6.9-15.4 15.4l0.6 148.7c33.6 2.1 103.8 30 103.8 64.1v95.5c0 142.2-111.8 168.4-252.3 175.3l-0.1 0.3 0.9 71.5c0 8.5 6.9 15.4 15.4 15.4h568.1c8.5 0 15.4-6.9 15.4-15.4l-0.8-69.8-1.4-0.2zM598.2 64.5V18.6c0-8.5-6.9-15.4-15.4-15.4H428.6c-8.5 0-15.4 6.9-15.4 15.4V67C212.1 111.8 61.7 291.3 61.7 506c0 153.6 77 289.2 194.4 370.3l42.7-136.7C236 681 196.7 597.4 196.7 504.7c0-177.4 143.8-321.3 321.3-321.3s321.3 143.8 321.3 321.3c0 97.9-43.8 185.5-112.8 244.5l40.1 127.4C884.2 795.4 961.4 659.7 961.4 506c0-218.8-156.2-401.1-363.2-441.5z'
