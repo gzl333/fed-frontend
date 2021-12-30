@@ -71,17 +71,6 @@ export default defineComponent({
     const pingData = ref([])
     // 表格数据
     const tableRow = ref([])
-    const tableData = computed(() => {
-      if (searchQuery.value.name !== '' && searchQuery.value.status !== '2') {
-        return tableRow.value.filter((item: any) => item.status === searchQuery.value.status && (item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase()) || item.ipv4.includes(searchQuery.value.name.trim())))
-      } else if (searchQuery.value.name === '' && searchQuery.value.status !== '2') {
-        return tableRow.value.filter((item: any) => item.status === searchQuery.value.status)
-      } else if (searchQuery.value.name !== '' && searchQuery.value.status === '2') {
-        return tableRow.value.filter((item: any) => item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase().trim()) || item.ipv4.includes(searchQuery.value.name.trim()))
-      } else {
-        return tableRow.value
-      }
-    })
     // 刷新相关数据
     const isRefresh = ref(true)
     const disable = ref(false)
@@ -94,6 +83,17 @@ export default defineComponent({
     const coordinateData: Record<string, any> = ref({})
     // 搜索过滤后的数据
     const searchFilterData: any = ref([])
+    const tableData = computed(() => {
+      if (searchQuery.value.name !== '' && searchQuery.value.status !== '2') {
+        return tableRow.value.filter((item: any) => item.status === searchQuery.value.status && (item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase()) || item.ipv4.includes(searchQuery.value.name.trim())))
+      } else if (searchQuery.value.name === '' && searchQuery.value.status !== '2') {
+        return tableRow.value.filter((item: any) => item.status === searchQuery.value.status)
+      } else if (searchQuery.value.name !== '' && searchQuery.value.status === '2') {
+        return tableRow.value.filter((item: any) => item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase().trim()) || item.ipv4.includes(searchQuery.value.name.trim()))
+      } else {
+        return tableRow.value
+      }
+    })
     const initialPagination = ref({
       page: 1
     })
@@ -245,19 +245,6 @@ export default defineComponent({
       },
       series: countrySeries.value
     }))
-    let timer = setInterval(() => {
-      void refresh()
-    }, refreshSelection.value.value * 1000)
-    const openOrClose = () => {
-      disable.value = !disable.value
-      if (disable.value === true) {
-        clearInterval(timer)
-      } else {
-        timer = setInterval(() => {
-          void refresh()
-        }, refreshSelection.value.value * 1000)
-      }
-    }
     const convertData = function (data: any[]) {
       const res = []
       for (let i = 0; i < data.length; i++) {
@@ -427,6 +414,19 @@ export default defineComponent({
     }
     const change = (val: Record<string, string>) => {
       searchQuery.value.status = val.value
+    }
+    let timer = setInterval(() => {
+      void refresh()
+    }, refreshSelection.value.value * 1000)
+    const openOrClose = () => {
+      disable.value = !disable.value
+      if (disable.value === true) {
+        clearInterval(timer)
+      } else {
+        timer = setInterval(() => {
+          void refresh()
+        }, refreshSelection.value.value * 1000)
+      }
     }
     const refresh = () => {
       coordinateData.value = {}
