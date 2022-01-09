@@ -245,7 +245,7 @@ export default defineComponent({
       },
       series: countrySeries.value
     }))
-    const convertData = function (data: any[]) {
+    const convertData = function (data: any) {
       const res = []
       for (let i = 0; i < data.length; i++) {
         const dataItem = data[i]
@@ -267,7 +267,7 @@ export default defineComponent({
       }
       return res
     }
-    const convertPointData = function (data: any[]) {
+    const convertPointData = function (data: any) {
       const res = []
       for (let i = 0; i < data.length; i++) {
         const dataItem = data[i]
