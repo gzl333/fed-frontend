@@ -83,24 +83,24 @@ export default defineComponent({
     const coordinateData: Record<string, any> = ref({})
     // 搜索过滤后的数据
     const searchFilterData: any = ref([])
+    // 搜索条件
+    const searchQuery = ref({
+      status: '2',
+      name: ''
+    })
     const tableData = computed(() => {
       if (searchQuery.value.name !== '' && searchQuery.value.status !== '2') {
-        return tableRow.value.filter((item: any) => item.status === searchQuery.value.status && (item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase()) || item.ipv4.includes(searchQuery.value.name.trim())))
+        return tableRow.value.filter((item: Record<string, any>) => item.status === searchQuery.value.status && (item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase()) || item.ipv4.toString().indexOf(searchQuery.value.name.trim()) !== -1))
       } else if (searchQuery.value.name === '' && searchQuery.value.status !== '2') {
-        return tableRow.value.filter((item: any) => item.status === searchQuery.value.status)
+        return tableRow.value.filter((item: Record<string, any>) => item.status === searchQuery.value.status)
       } else if (searchQuery.value.name !== '' && searchQuery.value.status === '2') {
-        return tableRow.value.filter((item: any) => item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase().trim()) || item.ipv4.includes(searchQuery.value.name.trim()))
+        return tableRow.value.filter((item: Record<string, any>) => item.name.toLowerCase().includes(searchQuery.value.name.toLowerCase().trim()) || item.ipv4.toString().indexOf(searchQuery.value.name.trim()) !== -1)
       } else {
         return tableRow.value
       }
     })
     const initialPagination = ref({
       page: 1
-    })
-    // 搜索条件
-    const searchQuery = ref({
-      status: '2',
-      name: ''
     })
     const statusOptions = [
       {
@@ -281,11 +281,11 @@ export default defineComponent({
       }
       return res
     }
-    const getCountryData = (data: any) => {
+    const getCountryData = (data: any[]) => {
       countrySeries.value = []
       const dataArr = []
       dataArr.push(data)
-      dataArr.forEach(function (item: any) {
+      dataArr.forEach(function (item) {
         countrySeries.value.push(
           {
             type: 'lines',
@@ -302,7 +302,7 @@ export default defineComponent({
             lineStyle: {
               normal: {
                 // 线段颜色
-                color: function (item1: any) {
+                color: function (item1: Record<string, any>) {
                   if (item1.data.status === '0') {
                     return '#FF0000'
                   } else {
@@ -356,7 +356,7 @@ export default defineComponent({
         }
       }
       let response: any = []
-      await $api.monitor.getMonitorVideoQuery(config).then((res: any) => {
+      await $api.monitor.getMonitorVideoQuery(config).then((res) => {
         response = res.data
       })
       return response
@@ -377,8 +377,8 @@ export default defineComponent({
       const startObj = {
         name: '信息化大厦'
       }
-      statusData.value.forEach((item: any) => {
-        item.value.forEach((item1: any) => {
+      statusData.value.forEach((item: Record<string, any>) => {
+        item.value.forEach((item1: Record<string, any>) => {
           const outArr = []
           outArr.push(item1.metric.longitude)
           outArr.push(item1.metric.latitude)
@@ -398,9 +398,9 @@ export default defineComponent({
       })
     }
     const handlePingData = () => {
-      pingData.value.forEach((item: any) => {
-        item.value.forEach((item1: any) => {
-          nationalData.value.forEach((item2: any) => {
+      pingData.value.forEach((item: Record<string, any>) => {
+        item.value.forEach((item1: Record<string, any>) => {
+          nationalData.value.forEach((item2: Record<string, string | number | number[]>[]) => {
             if (item2[1].name === item1.metric.name) {
               item2[1].ping = item1.value[1]
             }
@@ -410,7 +410,7 @@ export default defineComponent({
       return nationalData.value
     }
     const getTableRow = () => {
-      tableRow.value = nationalData.value.map((item: any) => item[1])
+      tableRow.value = nationalData.value.map((item: Record<string, string | number | number[]>[]) => item[1])
     }
     const change = (val: Record<string, string>) => {
       searchQuery.value.status = val.value
@@ -459,8 +459,8 @@ export default defineComponent({
     watch(tableData, () => {
       searchFilterData.value = []
       initialPagination.value.page = 1
-      tableData.value.forEach((item: any) => {
-        searchFilterData.value.push(countryFilterData.value.find((item1: any) => item1[1].name === item.name))
+      tableData.value.forEach((item: Record<string, number | string | number[]>) => {
+        searchFilterData.value.push(countryFilterData.value.find((item1: Record<string, string | number | number[]>[]) => item1[1].name === item.name))
       })
       getCountryData(searchFilterData.value)
     })
