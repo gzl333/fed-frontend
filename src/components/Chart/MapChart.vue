@@ -8,7 +8,7 @@
   </div>
 </template>
 <script lang="ts">
-import { defineComponent, onMounted, ref, toRefs, watch } from 'vue'
+import { defineComponent, onMounted, ref, toRefs, watch, onUnmounted } from 'vue'
 
 import * as echarts from 'echarts'
 import china from 'assets/map/China.json'
@@ -74,6 +74,11 @@ export default defineComponent({
         chart.clear()
         chart.setOption(props.option)
       }, { deep: true })
+    })
+    onUnmounted(() => {
+      myChart.clear()
+      echarts.dispose(myChart)
+      // myChart.dispose()
     })
     return {
       container,
