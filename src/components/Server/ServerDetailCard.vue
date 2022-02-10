@@ -243,7 +243,7 @@
 
                   <div class="col-shrink">
                     <!--根据内容改变长度的input. 一个字母占8像素，一个汉字占16像素.https://github.com/quasarframework/quasar/issues/1958-->
-                    <q-input :input-style="{width:`${vpn.password.length * 8}px`, maxWidth: '200px', minWidth: '32px'}"
+                    <q-input :input-style="{width:`${vpn.password.length * (isPwdVpn?5:8)}px`, maxWidth: '200px', minWidth: '32px'}"
                              v-model="vpn.password" readonly borderless dense
                              :type="isPwdVpn ? 'password' : 'text'">
                       <template v-slot:append>

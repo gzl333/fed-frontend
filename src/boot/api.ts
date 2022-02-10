@@ -520,7 +520,7 @@ export const $api = {
     },
     deleteServer (payload: { path: { id: string }, query?: { force?: boolean } }) {
       const config = {
-        data: payload.query
+        params: payload.query
       }
       return apiFed.delete('/server/' + payload.path.id, config)
     },
@@ -538,7 +538,7 @@ export const $api = {
       const config = {
         params: payload.query
       }
-      return apiFed.post('/server/' + payload.path.id + '/lock', {}, config)
+      return apiFed.post('/server/' + payload.path.id + '/lock', null, config)
     },
     postServerRebuild (payload: {
       path: {id: string}
