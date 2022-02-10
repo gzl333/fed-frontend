@@ -3,7 +3,7 @@
 
     <q-btn-dropdown :ripple="false" flat class="q-py-none q-px-none text-weight-regular" color="grey-8" no-caps>
 
-      <template v-slot:label class="q-pa-none q-ma-none">
+      <template v-slot:label >
         <q-icon name="las la-user-circle"/>
         {{ $store.state.account.items.decoded?.email }}
       </template>

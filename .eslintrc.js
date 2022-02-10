@@ -112,7 +112,7 @@ module.exports = {
     // allow debugger during development only
     'no-debugger': process.env.NODE_ENV === 'production' ? 'error' : 'off',
 
-    // CSTCloud Federation project settings:
-    // 'no-eval': 'off'    // enable eval()
+    // vue
+    'vue/multi-word-component-names': 'off'
   }
 }
